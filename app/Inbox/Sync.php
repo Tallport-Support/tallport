@@ -112,14 +112,15 @@ class Sync
             'times'       => $times,
             'statuses'    => $statuses,
             'labels'      => [
-                'just_now'    => __('Just now'),
-                'unread'      => __('Unread'),
-                'phone'       => __('Phone'),
-                'attachments' => __('Attachments'),
-                'closed'      => __('Closed'),
-                'spam'        => __('Spam'),
-                'deleted'     => __('Deleted'),
-                'drafts'      => __('Drafts'),
+                'just_now'      => __('Just now'),
+                'conversations' => __(':count conversations'),
+                'unread'        => __('Unread'),
+                'phone'         => __('Phone'),
+                'attachments'   => __('Attachments'),
+                'closed'        => __('Closed'),
+                'spam'          => __('Spam'),
+                'deleted'       => __('Deleted'),
+                'drafts'        => __('Drafts'),
             ],
         ];
     }
@@ -367,6 +368,7 @@ class Sync
             $folders = $folders->merge(AllMailboxes::folders($this->user)->where('type', '!=', AllMailboxes::TYPE_SENT));
         }
         $lists = [];
+        $totals = $this->totals($folders);
         foreach ($folders as $folder) {
             $order = [];
             foreach ($folder->getOrderByArray() as $block) {
@@ -383,11 +385,28 @@ class Sync
                 'type'  => (int) $folder->type,
                 'order' => $order,
                 'time'  => self::ORDER_COLUMNS[$time] ?? 'last_reply',
-                'total' => (int) $folder->total_count,
+                'total' => $totals[$folder->id] ?? 0,
             ];
         }
 
         return $lists;
+    }
+
+    /**
+     * How many conversations each folder's list has (as its own query counts them), until the
+     * next change.
+     */
+    protected function totals($folders)
+    {
+        return \Cache::remember('inbox_totals_'.$this->user->id.'_'.Changes::latest().'_'.$this->scope(), 60, function () use ($folders) {
+            $totals = [];
+            foreach ($folders as $folder) {
+                $query = $folder->id < 0 ? AllMailboxes::query($folder, $this->user) : Conversation::getQueryByFolder($folder, $this->user->id);
+                $totals[$folder->id] = (int) $query->count();
+            }
+
+            return $totals;
+        });
     }
 
     protected function starredFolderId($mailbox_id)

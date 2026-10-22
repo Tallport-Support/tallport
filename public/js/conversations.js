@@ -100,15 +100,35 @@ var folderOpen = function (folder_id, conversation_id) {
 	}
 	document.body.setAttribute('data-folder_id', folder_id);
 	document.getElementById('app-content').setAttribute('aria-busy', 'true');
-	listDrawing = folder_id;
+	listFromCopy(folder_id, conversation_id);
 	Livewire.dispatch('folder-open', {folder_id: parseInt(folder_id), conversation_id: conversation_id || null});
-	// At once from the browser's copy (public/js/inbox.js), until the server's list is there.
-	if (window.TallportInbox) {
+};
+
+/**
+ * A folder's list at once from the browser's copy (public/js/inbox.js), until the server's
+ * list (or page) is there.
+ */
+var listFromCopy = function (folder_id, conversation_id) {
+	listDrawing = folder_id;
+	if (window.TallportInbox && document.querySelector('.conv-list-host')) {
 		TallportInbox.list(folder_id, 50).then(function (list) {
 			if (list && listDrawing === folder_id) {
-				listDraw(folder_id, list);
+				listDraw(folder_id, list, conversation_id || listOpened(folder_id));
 			}
 		});
+	}
+};
+/** The conversation last opened in a folder, which it opens at again (as the server remembers). */
+var listOpened = function (folder_id, conversation_id) {
+	try {
+		var opened = JSON.parse(sessionStorage.getItem('tallport_folder_opened') || '{}');
+		if (conversation_id) {
+			opened[folder_id] = conversation_id;
+			sessionStorage.setItem('tallport_folder_opened', JSON.stringify(opened));
+		}
+		return opened[folder_id] || null;
+	} catch (e) {
+		return null;
 	}
 };
 
@@ -140,7 +160,7 @@ var listTime = function (timestamp, config) {
 	var hours = Math.floor(seconds / 3600);
 	return hours ? config.times.h[hours] : config.times.m[Math.floor(seconds / 60)];
 };
-var listDraw = function (folder_id, list) {
+var listDraw = function (folder_id, list, opened_id) {
 	var host = document.querySelector('.conv-list-host');
 	var parts = document.getElementById('conv-row-parts');
 	var folder_link = document.querySelector('.app-sidebar a[data-folder_id="'+folder_id+'"]');
@@ -180,12 +200,20 @@ var listDraw = function (folder_id, list) {
 	var scroll = el('div', 'f-pane__scroll split-view__list');
 	var items = el('ul', 'f-item-list conv-list__items');
 	items.setAttribute('role', 'list');
+	// It opens at the conversation last opened in it, else its first.
+	var current = list.rows.some(function (row) { return row.id == opened_id; }) ? opened_id : (list.rows[0] && list.rows[0].id);
 	list.rows.forEach(function (row) {
+		if (row.id == current && document.querySelector('.conv-pane')) {
+			row.unread = false;
+		}
 		var li = el('li', 'conv-row'+(row.status == 1 ? ' conv-active' : '')+(row.status == 4 ? ' conv-spam' : ''));
 		li.setAttribute('data-conversation_id', row.id);
 		var link = el('a', 'f-item-row conv-row__link');
 		link.href = folder_link.href+'/'+row.number;
 		link.setAttribute('data-conversation_id', row.id);
+		if (row.id == current && document.querySelector('.conv-pane')) {
+			link.setAttribute('aria-current', 'page');
+		}
 		if (all) {
 			link.setAttribute('data-fruit-mark', row.mark[0]);
 		}
@@ -193,9 +221,7 @@ var listDraw = function (folder_id, list) {
 			link.setAttribute('data-unread', '');
 		}
 		var top = el('span', 'f-item-row__top');
-		var title = el('span', 'f-item-row__title', row.customer.name || row.customer.email);
-		title.title = row.customer.email;
-		top.appendChild(title);
+		top.appendChild(el('span', 'f-item-row__title', row.customer.name || row.customer.email));
 		top.appendChild(el('span', 'f-item-row__time', listTime(row[list.spec.time] || row.updated, config)));
 		if (row.unread) {
 			top.appendChild(el('span', 'f-item-row__unread')).setAttribute('aria-hidden', 'true');
@@ -258,6 +284,14 @@ var listDraw = function (folder_id, list) {
 	listUndraw();
 	host.after(section);
 	host.hidden = true;
+	// The list's heading: the folder, its mailbox and how many.
+	var heading = document.querySelector('.app-list-title');
+	if (heading) {
+		var group = folder_link.closest('.app-sidebar__folders');
+		var mailbox_name = ((all ? group && group.previousElementSibling : group && group.closest('details') && group.closest('details').querySelector('.mailbox-name')) || {textContent: ''}).textContent.trim();
+		heading.querySelector('h1').textContent = folder_link.querySelector('.f-sidebar__identity').textContent.trim();
+		heading.querySelector('p').textContent = mailbox_name+' · '+config.labels.conversations.replace(':count', list.spec.total);
+	}
 };
 var listUndraw = function () {
 	document.querySelectorAll('.conv-list-local').forEach(function (section) {
@@ -268,6 +302,9 @@ var listUndraw = function () {
 		host.hidden = false;
 	}
 };
+document.addEventListener('livewire:navigated', function () {
+	listDrawing = null;
+});
 // The server's list is there (or didn't come): it shows.
 document.addEventListener('livewire:init', function () {
 	Livewire.hook('commit', function (hook) {
@@ -290,6 +327,8 @@ document.addEventListener('click', function (e) {
 	}
 	e.preventDefault();
 	if (!document.querySelector('.conv-pane') || !document.querySelector('.conv-list-host')) {
+		// A page without a conversation (an empty folder's, a narrow one): the list at once too.
+		listFromCopy(link.getAttribute('data-folder_id'));
 		Livewire.navigate(link.href);
 		return;
 	}
@@ -332,6 +371,7 @@ document.addEventListener('livewire:init', function () {
 		document.body.setAttribute('data-mailbox_id', data.mailbox_id);
 		document.body.setAttribute('data-folder_id', data.folder_id);
 		document.body.removeAttribute('data-page-url');
+		listOpened(data.folder_id, data.id);
 		window.history.replaceState(Object.assign({}, window.history.state || {}, {tallport_conversation: {id: data.id, folder_id: data.folder_id}, tallport_folder: {folder_id: data.folder_id}}), '', data.url);
 		// The styles changed since this page was loaded (an update): the conversation loads anew.
 		if (data.styles && !document.querySelector('link[rel="stylesheet"][href="'+data.styles+'"]')) {
@@ -351,6 +391,7 @@ document.addEventListener('livewire:navigated', function () {
 	if (!document.body.getAttribute('data-conversation_id')) {
 		return;
 	}
+	listOpened(document.body.getAttribute('data-folder_id'), parseInt(document.body.getAttribute('data-conversation_id')));
 	// Back to this page after conversations opened in place opens it again (with
 	// Livewire's own entry kept).
 	window.history.replaceState(Object.assign({}, window.history.state || {}, {tallport_conversation: {

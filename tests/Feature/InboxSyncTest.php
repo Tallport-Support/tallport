@@ -148,6 +148,7 @@ class InboxSyncTest extends FeatureTestCase
             $listed = collect((new ConversationListQuery())->folderList($folder, $this->agent)['conversations']->items())->pluck('id')->sort()->values()->all();
             $keyed = $rows->filter(fn ($row) => in_array($folder->id, $row['folders']))->keys()->sort()->values()->all();
             $this->assertSame($listed, $keyed, 'Folder '.$folder->type);
+            $this->assertSame(count($listed), (new Sync($this->agent))->lists()[$folder->id]['total'] ?? null, 'Total of folder '.$folder->type);
         }
     }
 
@@ -171,6 +172,7 @@ class InboxSyncTest extends FeatureTestCase
             $listed = collect((new ConversationListQuery())->folderList($folder, $this->agent)['conversations']->items())->pluck('id')->sort()->values()->all();
             $keyed = $rows->filter(fn ($row) => in_array($folder->id, $row['folders']))->keys()->sort()->values()->all();
             $this->assertSame($listed, $keyed, 'All Mailboxes folder '.$folder->type);
+            $this->assertSame(count($listed), (new Sync($this->agent))->lists()[$folder->id]['total'] ?? null, 'Total of All Mailboxes folder '.$folder->type);
         }
         $this->assertArrayNotHasKey(-\App\Misc\AllMailboxes::TYPE_SENT, (new Sync($this->agent))->lists());
     }

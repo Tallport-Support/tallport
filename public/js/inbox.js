@@ -325,7 +325,7 @@
             return store('rows').then(function (s) {
                 return request(s.index('folders').getAll(IDBKeyRange.only(parseInt(folder_id))));
             }).then(function (entries) {
-                if (entries.length < Math.min(size, spec.total)) {
+                if (!entries.length || entries.length < Math.min(size, spec.total)) {
                     return null;
                 }
                 return Promise.all(entries.map(function (entry) { return decrypt(entry.box); })).then(function (rows) {
