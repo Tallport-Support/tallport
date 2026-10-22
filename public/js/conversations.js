@@ -1568,7 +1568,7 @@ document.addEventListener('alpine:init', function () {
 					});
 					// No answer (a dropped connection): undone after a while.
 					clearTimeout(rowPendingTimer);
-					rowPendingTimer = setTimeout(rowUndo, 10000);
+					rowPendingTimer = setTimeout(rowUndo, navigator.onLine === false ? 0 : 10000);
 					var focused = document.activeElement;
 					var lost = !focused || focused === document.body || targets.some(function (li) { return li.contains(focused); }) || focused.closest('.f-context-menu');
 					targets.forEach(function (li) {
