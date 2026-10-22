@@ -242,6 +242,7 @@ class Sync
             $unread = array_flip(ConversationRead::unreadIds($conversations, $this->user));
             $indirect = \DB::table('conversation_folder')->whereIn('conversation_id', $conversations->pluck('id'))->get(['conversation_id', 'folder_id'])->groupBy('conversation_id');
             $all = $this->allMailboxesKeys($conversations->pluck('id')->all());
+            $panes = self::paneVersions($conversations);
             // As the list shows them: in the user's language.
             $subjects = \App\Ai\Translations::subjects($conversations, $this->user);
             $previews = \App\Ai\Translations::previews($conversations, $this->user);
@@ -251,6 +252,7 @@ class Sync
                 $row['translated_subject'] = $subjects[$conversation->id] ?? null;
                 $one_liner = \App\Ai\Summaries::getAny($conversation, \App\Ai\Settings::language($conversation->mailbox_cached, $this->user))['one_liner'] ?? '';
                 $row['list_preview'] = (string) ($one_liner ?: ($previews[$conversation->id] ?? $conversation->preview));
+                $row['pane'] = $panes[$conversation->id] ?? null;
                 $rows[] = $row;
             }
         }
@@ -328,6 +330,31 @@ class Sync
         }
 
         return array_values(array_unique($keys));
+    }
+
+    /**
+     * What each conversation's pane shows, in short: when it changes (a message, an edit, a
+     * translation, its summary, its status), a snapshot of the pane in the browser
+     * (public/js/inbox.js) is out of date. [conversation ID => version]
+     */
+    public static function paneVersions($conversations)
+    {
+        $conversations = collect($conversations);
+        if ($conversations->isEmpty()) {
+            return [];
+        }
+        $threads = \DB::table('threads')->whereIn('conversation_id', $conversations->pluck('id'))->groupBy('conversation_id')
+            ->selectRaw('conversation_id, count(*) as n, max(updated_at) as updated, max(ai_assistant_updated_at) as ai')->get()->keyBy('conversation_id');
+        $versions = [];
+        foreach ($conversations as $conversation) {
+            $thread = $threads[$conversation->id] ?? null;
+            $versions[$conversation->id] = substr(sha1(json_encode([
+                (string) $conversation->updated_at, (string) $conversation->ai_assistant_updated_at,
+                $thread ? [(int) $thread->n, (string) $thread->updated, (string) $thread->ai] : null,
+            ])), 0, 12);
+        }
+
+        return $versions;
     }
 
     /**

@@ -253,6 +253,39 @@ class InboxSyncTest extends FeatureTestCase
         $this->assertTrue((new Sync($this->agent))->since($cursor)['restart']);
     }
 
+    /**
+     * What a conversation's pane shows, in short (a snapshot in the browser is of one version):
+     * it changes with a message, a translation or its status; the page and an open in place say it.
+     */
+    public function testThePanesVersion()
+    {
+        $conversation = $this->conversation('Where is my order?');
+        $version = fn () => Sync::paneVersions([$conversation->fresh()])[$conversation->id];
+        $first = $version();
+        $this->assertSame($first, collect((new Sync($this->agent))->rows([$conversation->id]))->first()['pane']);
+        $this->assertSame($first, $version(), 'Unchanged.');
+
+        $this->travel(1)->seconds();
+        $this->sendReply($this->agent, ['mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => 'On its way.']);
+        $this->assertNotSame($first, $second = $version(), 'A message.');
+
+        $this->travel(1)->seconds();
+        \DB::table('inbox_changes')->delete();
+        Changes::forget();
+        \App\Ai\Translations::store($conversation->threads()->where('type', \App\Thread::TYPE_CUSTOMER)->first(), 'nl', 'en', 'Waar is mijn bestelling?');
+        $this->assertNotSame($second, $third = $version(), 'A translation.');
+        $this->assertContains($conversation->id, $this->logged(), 'Synced again.');
+
+        $this->travel(1)->seconds();
+        $conversation->fresh()->changeStatus(Conversation::STATUS_PENDING, $this->agent);
+        $this->assertNotSame($third, $version(), 'Its status.');
+
+        $this->actingAs($this->agent)->withUnencryptedCookie('tallport_narrow', '0')->get('/conversation/'.$conversation->id)
+            ->assertSee('data-pane-version="'.$version().'"', false);
+        \Livewire\Livewire::actingAs($this->agent)->test(\App\Livewire\ConversationPane::class, ['conversation' => $conversation->fresh(), 'folder' => $conversation->folder])
+            ->dispatch('conversation-open', id: $conversation->id)->assertDispatched('conversation-opened', version: $version());
+    }
+
     public function testTheEndpointAndTheSessionsKey()
     {
         $conversation = $this->conversation('Question');

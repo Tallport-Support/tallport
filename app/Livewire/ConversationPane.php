@@ -94,6 +94,8 @@ class ConversationPane extends Component
             url: \App\Misc\Addresses::forConversation($conversation, $this->openedFolder()),
             title: '#'.$conversation->number.' '.$conversation->getSubject().($customer ? ' - '.$customer->getFullName(true) : ''),
             styles: $styles,
+            // Its snapshot in the browser's copy is of this (App\Inbox\Sync::paneVersions()).
+            version: \App\Inbox\Sync::paneVersions([$conversation])[$conversation->id],
         );
     }
 

@@ -8,7 +8,7 @@
     @section('body_class', 'body-conv')
 @endif
 
-@section('body_attrs')@parent data-conversation_id="{{ $conversation->id }}" data-mailbox_id="{{ $conversation->mailbox_id }}" data-folder_id="{{ $folder->id }}"@endsection
+@section('body_attrs')@parent data-conversation_id="{{ $conversation->id }}" data-mailbox_id="{{ $conversation->mailbox_id }}" data-folder_id="{{ $folder->id }}" data-pane-version="{{ App\Inbox\Sync::paneVersions([$conversation])[$conversation->id] }}"@endsection
 {{-- Its address beside the folder shown (App\Misc\Addresses), whatever address opened it (a folder's,
      the link to share, an older one): reload and Back come back here. And a message to scroll to. --}}
 @section('body_attrs')@parent data-page-url="{{ App\Misc\Addresses::forConversation($conversation, $folder, request()->attributes->get('focus_thread_id')) }}" @if (request()->attributes->get('focus_thread_id')) data-focus-thread="{{ request()->attributes->get('focus_thread_id') }}" @endif@endsection

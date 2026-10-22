@@ -113,7 +113,11 @@ var listFromCopy = function (folder_id, conversation_id) {
 	if (window.TallportInbox && document.querySelector('.conv-list-host')) {
 		TallportInbox.list(folder_id, 50).then(function (list) {
 			if (list && listDrawing === folder_id) {
-				listDraw(folder_id, list, conversation_id || listOpened(folder_id));
+				var opened_id = listDraw(folder_id, list, conversation_id || listOpened(folder_id));
+				// Beside it, the conversation it opens at.
+				if (opened_id && document.querySelector('.conv-pane')) {
+					paneFromCopy(opened_id);
+				}
 			}
 		});
 	}
@@ -300,6 +304,8 @@ var listDraw = function (folder_id, list, opened_id) {
 		heading.querySelector('h1').textContent = folder_link.querySelector('.f-sidebar__identity').textContent.trim();
 		heading.querySelector('p').textContent = mailbox_name+' · '+list.spec.count;
 	}
+
+	return current;
 };
 var listUndraw = function () {
 	document.querySelectorAll('.conv-list-local').forEach(function (section) {
@@ -316,6 +322,14 @@ document.addEventListener('livewire:navigated', function () {
 // The server's list is there (or didn't come): it shows.
 document.addEventListener('livewire:init', function () {
 	Livewire.hook('commit', function (hook) {
+		if (hook.component.name == 'conversation-pane' && paneDrawing !== null) {
+			var pane_done = function () {
+				paneDrawing = null;
+				paneUndraw();
+			};
+			hook.succeed(pane_done);
+			hook.fail(pane_done);
+		}
 		if (hook.component.name == 'conversation-list' && listDrawing !== null) {
 			var done = function () {
 				listDrawing = null;
@@ -355,6 +369,101 @@ var conversationOpen = function (open) {
 	});
 	document.getElementById('app-content').setAttribute('aria-busy', 'true');
 	Livewire.dispatch('conversation-open', open);
+	paneFromCopy(open.id);
+};
+
+/**
+ * A conversation as it was last shown (its pane, toolbar and customer), from the browser's
+ * copy (public/js/inbox.js) while the server's comes, when nothing in it changed since. Saved
+ * each time one is shown; inert, without Livewire or Alpine.
+ */
+var PANE_PARTS = ['.conv-pane', '#conv-toolbar', '#conv-layout-customer'];
+var paneDrawing = null;
+var paneFromCopy = function (id) {
+	paneDrawing = parseInt(id);
+	if (window.TallportInbox && document.querySelector('.conv-pane')) {
+		TallportInbox.pane(id).then(function (parts) {
+			if (parts && paneDrawing === parseInt(id)) {
+				paneDraw(parts);
+			}
+		});
+	}
+};
+var paneSnapshot = function () {
+	var id = document.body.getAttribute('data-conversation_id');
+	var version = document.body.getAttribute('data-pane-version');
+	if (!id || !version || !window.TallportInbox || document.querySelector('.pane-local')) {
+		return;
+	}
+	var parts = {};
+	PANE_PARTS.forEach(function (selector) {
+		var real = document.querySelector(selector);
+		if (!real) {
+			return;
+		}
+		var copy = real.cloneNode(true);
+		// Where it was scrolled to (a chat at its newest message).
+		var from = real.querySelectorAll('*');
+		var to = copy.querySelectorAll('*');
+		for (var i = 0; i < from.length; i++) {
+			if (from[i].scrollHeight > from[i].clientHeight + 4 && (from[i].scrollTop || from[i].scrollHeight - from[i].clientHeight - from[i].scrollTop < 24)) {
+				to[i].setAttribute('data-snap-scroll', from[i].scrollHeight - from[i].clientHeight - from[i].scrollTop < 24 ? 'bottom' : Math.round(from[i].scrollTop));
+			}
+		}
+		copy.querySelectorAll('script, template').forEach(function (node) {
+			node.remove();
+		});
+		// Shown only while Livewire loads (or offline): not in a conversation as it was shown.
+		copy.querySelectorAll('*').forEach(function (node) {
+			if (Array.prototype.some.call(node.attributes, function (attribute) {
+				return /^wire:(loading|offline)/.test(attribute.name) && !/\.remove/.test(attribute.name);
+			})) {
+				node.remove();
+			}
+		});
+		[copy].concat(Array.prototype.slice.call(copy.querySelectorAll('*'))).forEach(function (node) {
+			Array.prototype.slice.call(node.attributes).forEach(function (attribute) {
+				if (/^(x-|wire:|@|:)/.test(attribute.name)) {
+					node.removeAttribute(attribute.name);
+				}
+			});
+		});
+		parts[selector] = copy.outerHTML;
+	});
+	TallportInbox.savePane(id, version, parts);
+};
+var paneDraw = function (parts) {
+	paneUndraw();
+	PANE_PARTS.forEach(function (selector) {
+		var real = document.querySelector(selector);
+		if (!real || !parts[selector]) {
+			return;
+		}
+		var template = document.createElement('template');
+		template.innerHTML = parts[selector];
+		var copy = template.content.firstElementChild;
+		copy.classList.add('pane-local');
+		copy.setAttribute('x-ignore', '');
+		copy.setAttribute('aria-busy', 'true');
+		copy.inert = true;
+		real.after(copy);
+		real.style.display = 'none';
+		copy.querySelectorAll('[data-snap-scroll]').forEach(function (node) {
+			var scroll = node.getAttribute('data-snap-scroll');
+			node.scrollTop = scroll == 'bottom' ? node.scrollHeight : parseInt(scroll);
+		});
+	});
+};
+var paneUndraw = function () {
+	document.querySelectorAll('.pane-local').forEach(function (node) {
+		node.remove();
+	});
+	PANE_PARTS.forEach(function (selector) {
+		var real = document.querySelector(selector);
+		if (real) {
+			real.style.display = '';
+		}
+	});
 };
 // Back and Forward between conversations and folders opened in place.
 window.addEventListener('popstate', function (e) {
@@ -379,7 +488,10 @@ document.addEventListener('livewire:init', function () {
 		document.body.setAttribute('data-mailbox_id', data.mailbox_id);
 		document.body.setAttribute('data-folder_id', data.folder_id);
 		document.body.removeAttribute('data-page-url');
+		document.body.setAttribute('data-pane-version', data.version || '');
 		listOpened(data.folder_id, data.id);
+		// As it's shown now, for the next time (once it has settled).
+		setTimeout(paneSnapshot, 600);
 		window.history.replaceState(Object.assign({}, window.history.state || {}, {tallport_conversation: {id: data.id, folder_id: data.folder_id}, tallport_folder: {folder_id: data.folder_id}}), '', data.url);
 		// The styles changed since this page was loaded (an update): the conversation loads anew.
 		if (data.styles && !document.querySelector('link[rel="stylesheet"][href="'+data.styles+'"]')) {
@@ -400,6 +512,7 @@ document.addEventListener('livewire:navigated', function () {
 		return;
 	}
 	listOpened(document.body.getAttribute('data-folder_id'), parseInt(document.body.getAttribute('data-conversation_id')));
+	setTimeout(paneSnapshot, 600);
 	// Back to this page after conversations opened in place opens it again (with
 	// Livewire's own entry kept).
 	window.history.replaceState(Object.assign({}, window.history.state || {}, {tallport_conversation: {

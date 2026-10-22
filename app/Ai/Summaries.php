@@ -152,6 +152,8 @@ class Summaries
             }
             $query->update($updates);
             $model->ai_assistant = $json;
+            // A summary or translation: the conversation's pane changed (App\Inbox\Changes).
+            \App\Inbox\Changes::conversations([(int) ($model->conversation_id ?? $model->id)]);
 
             return $data;
         });

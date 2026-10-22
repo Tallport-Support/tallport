@@ -13,7 +13,8 @@
 (function () {
     'use strict';
 
-    var VERSION = 1;
+    var VERSION = 2;
+    var PANES = 200;
     var TEMPORARY_DAYS = 3;
     var POLL_MS = 60000;
     var PAGE_PAUSE_MS = 250;
@@ -50,13 +51,19 @@
     function open() {
         if (!dbPromise) {
             var req = indexedDB.open(dbName, VERSION);
-            req.onupgradeneeded = function () {
+            req.onupgradeneeded = function (event) {
                 var db = req.result;
-                var rows = db.createObjectStore('rows', { keyPath: 'id' });
-                rows.createIndex('mailbox', 'mailbox_id');
-                rows.createIndex('folders', 'folders', { multiEntry: true });
-                rows.createIndex('activity', 'last_activity');
-                db.createObjectStore('meta', { keyPath: 'k' });
+                if (event.oldVersion < 1) {
+                    var rows = db.createObjectStore('rows', { keyPath: 'id' });
+                    rows.createIndex('mailbox', 'mailbox_id');
+                    rows.createIndex('folders', 'folders', { multiEntry: true });
+                    rows.createIndex('activity', 'last_activity');
+                    db.createObjectStore('meta', { keyPath: 'k' });
+                }
+                // Snapshots of conversations as they were shown (conversations.js).
+                if (event.oldVersion < 2) {
+                    db.createObjectStore('panes', { keyPath: 'id' }).createIndex('saved', 'saved');
+                }
             };
             dbPromise = request(req);
         }
@@ -99,9 +106,10 @@
     /** Everything gone (a new session, another scope, a cursor too old): synced anew. */
     function wipe() {
         return open().then(function (db) {
-            var tx = db.transaction(['rows', 'meta'], 'readwrite');
+            var tx = db.transaction(['rows', 'meta', 'panes'], 'readwrite');
             tx.objectStore('rows').clear();
             tx.objectStore('meta').clear();
+            tx.objectStore('panes').clear();
             return new Promise(function (resolve) { tx.oncomplete = resolve; tx.onerror = resolve; });
         });
     }
@@ -338,6 +346,65 @@
         });
     }
 
+    /**
+     * A conversation as it was shown (its pane, toolbar and customer: HTML), encrypted, with
+     * what it showed (App\Inbox\Sync::paneVersions()); the most recent few hundred.
+     */
+    function savePane(id, version, parts) {
+        if (!dbName || !version) {
+            return Promise.resolve();
+        }
+        return encrypt(parts).then(function (box) {
+            return store('panes', 'readwrite').then(function (s) {
+                return request(s.put({ id: parseInt(id), version: version, saved: Date.now(), box: box })).then(function () {
+                    return request(s.count());
+                }).then(function (count) {
+                    if (count <= PANES) {
+                        return null;
+                    }
+                    // The oldest go.
+                    return new Promise(function (resolve) {
+                        var cursor = s.index('saved').openCursor();
+                        var left = count - PANES;
+                        cursor.onsuccess = function () {
+                            var c = cursor.result;
+                            if (!c || left-- <= 0) {
+                                return resolve();
+                            }
+                            c.delete();
+                            c.continue();
+                        };
+                        cursor.onerror = function () { resolve(); };
+                    });
+                });
+            });
+        }).catch(function () {});
+    }
+
+    /**
+     * A conversation's snapshot, when it still shows what the conversation has (its row's
+     * version is the same); else null.
+     */
+    function pane(id) {
+        if (!dbName) {
+            return Promise.resolve(null);
+        }
+        id = parseInt(id);
+        return Promise.all([
+            store('panes').then(function (s) { return request(s.get(id)); }),
+            store('rows').then(function (s) { return request(s.get(id)); }),
+        ]).then(function (found) {
+            if (!found[0] || !found[1]) {
+                return null;
+            }
+            return decrypt(found[1].box).then(function (row) {
+                return row.pane === found[0].version ? decrypt(found[0].box) : null;
+            });
+        }).catch(function () {
+            return null;
+        });
+    }
+
     /** Changed here (a Livewire action): synced now, not at the server's hint a few seconds on. */
     var soon = null;
     function syncSoon() {
@@ -391,6 +458,8 @@
     window.TallportInbox = {
         forget: function () { return dbName ? forget() : Promise.resolve(); },
         list: list,
+        pane: pane,
+        savePane: savePane,
     };
 
     // Livewire starts before the page is loaded.
