@@ -21,12 +21,13 @@ document.addEventListener('DOMContentLoaded', function() {
 		elements[0].click();
 		return true;
 	};
+	// As a click: Newer and Older open in place (conversations.js).
 	var go = function(link) {
 		var href = link ? link.getAttribute('href') : '';
 		if (!href || href == '#') {
 			return false;
 		}
-		window.location.href = href;
+		link.click();
 		return true;
 	};
 	var formOpen = function() {
