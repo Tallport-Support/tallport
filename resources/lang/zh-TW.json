@@ -531,6 +531,7 @@
     "%identifier% added": "%identifier% 已新增",
     ":app_name Test Email": ":app_name 測試電子郵件",
     ":count conversations": ":count 個對話",
+    ":count conversation|:count conversations": ":count 個對話",
     ":date @ :time": ":date @ :time",
     ":first_name has access to the selected mailboxes:": ":first_name 可存取以下選取的信箱：",
     ":host is not available on :port port. Make sure that :host address is correct and that outgoing port :port on YOUR server is open.": ":host 無法在連接埠 :port 上使用。請確認 :host 位址正確，且您的伺服器對外連接埠 :port 已開放。",

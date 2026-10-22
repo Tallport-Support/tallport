@@ -191,8 +191,13 @@ var listDraw = function (folder_id, list, opened_id) {
 	};
 	var section = el('section', 'table-conversations conv-list conv-list-local'+(all ? ' show-mailbox' : ''));
 	section.setAttribute('aria-busy', 'true');
+	// Empty: as conversations_table shows it.
+	if (!list.rows.length) {
+		section = el('div', 'conv-list-local');
+		section.appendChild(part('empty'));
+	}
 	var header = host.querySelector('.conv-list__header');
-	if (header) {
+	if (header && list.rows.length) {
 		header = header.cloneNode(true);
 		header.inert = true;
 		section.appendChild(header);
@@ -280,7 +285,9 @@ var listDraw = function (folder_id, list, opened_id) {
 		items.appendChild(li);
 	});
 	scroll.appendChild(items);
-	section.appendChild(scroll);
+	if (list.rows.length) {
+		section.appendChild(scroll);
+	}
 	listUndraw();
 	host.after(section);
 	host.hidden = true;
@@ -290,7 +297,7 @@ var listDraw = function (folder_id, list, opened_id) {
 		var group = folder_link.closest('.app-sidebar__folders');
 		var mailbox_name = ((all ? group && group.previousElementSibling : group && group.closest('details') && group.closest('details').querySelector('.mailbox-name')) || {textContent: ''}).textContent.trim();
 		heading.querySelector('h1').textContent = folder_link.querySelector('.f-sidebar__identity').textContent.trim();
-		heading.querySelector('p').textContent = mailbox_name+' · '+config.labels.conversations.replace(':count', list.spec.total);
+		heading.querySelector('p').textContent = mailbox_name+' · '+list.spec.count;
 	}
 };
 var listUndraw = function () {

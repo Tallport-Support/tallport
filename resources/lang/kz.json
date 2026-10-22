@@ -9,6 +9,7 @@
     "24-hour clock (e.g. 14:13)": "24-сағаттық формат (мысалы, 14:13)",
     ":app_name Test Email": "Тест хаты :app_name",
     ":count conversations": ":count тикеттің",
+    ":count conversation|:count conversations": ":count тикет",
     ":date @ :time": ":date бойынша :time",
     ":first_name has access to the selected mailboxes:": ":first_name келесі пошта жәшіктеріне қол жеткізе алады:",
     ":host is not available on :port port. Make sure that :host address is correct and that outgoing port :port on YOUR server is open.": "Сервер :host :port портында  қол жетімді емес. Мекенжай :host дұрыс және шығыс порт :port сіздің серверіңізде қол жетімді екеніне қол жеткізіңіз.",

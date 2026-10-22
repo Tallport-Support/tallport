@@ -9,6 +9,7 @@
     "24-hour clock (e.g. 14:13)": "24-timers klokke (f.eks. 14:13)",
     ":app_name Test Email": ":app_name Test-e-post",
     ":count conversations": ":count samtaler",
+    ":count conversation|:count conversations": ":count samtale|:count samtaler",
     ":date @ :time": ":date kl. :time",
     ":first_name has access to the selected mailboxes:": ":first_name har tilgang til de valgte innboksene:",
     ":host is not available on :port port. Make sure that :host address is correct and that outgoing port :port on YOUR server is open.": ":host er ikke tilgjengelig på port :port. Forsikre deg om at :host-adressen er korrekt og at utgående port :port på DIN server er åpen.",

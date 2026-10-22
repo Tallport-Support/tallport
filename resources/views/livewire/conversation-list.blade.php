@@ -11,5 +11,9 @@
         <x-icon.ban class="f-icon conv-badge" role="img" data-part="spam" />
         <x-icon.copy class="f-icon conv-badge" role="img" data-part="drafts" />
         <x-fruit::badge class="conv-deleted" data-part="deleted">{{ __('Deleted') }}</x-fruit::badge>
+        <x-fruit::empty-state data-part="empty">
+            <x-slot:icon><x-icon.inbox /></x-slot:icon>
+            {{ __('There are no conversations here') }}
+        </x-fruit::empty-state>
     </template>
 </div>

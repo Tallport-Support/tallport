@@ -9,6 +9,7 @@
     "24-hour clock (e.g. 14:13)": "24-urni format (npr. 14:13)",
     ":app_name Test Email": ":app_name testna e-pošta",
     ":count conversations": ":count pogovorov",
+    ":count conversation|:count conversations": ":count pogovor|:count pogovora|:count pogovori|:count pogovorov",
     ":date @ :time": ":date ob :time",
     ":first_name has access to the selected mailboxes:": ":first_name ima dostop do izbranih poštnih predalov:",
     ":host is not available on :port port. Make sure that :host address is correct and that outgoing port :port on YOUR server is open.": ":host ni na voljo na vratih :port. Prepričajte se, da je naslov :host pravilen in da so odhodna vrata :port na VAŠEM strežniku odprta.",

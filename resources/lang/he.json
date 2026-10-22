@@ -10,6 +10,7 @@
     "24-hour clock (e.g. 14:13)": "שעון 24 שעות (לדוגמה: 14:13)",
     ":app_name Test Email": "אימייל בדיקה של :app_name",
     ":count conversations": ":count שיחות בסך הכל",
+    ":count conversation|:count conversations": ":count שיחה|:count שיחות",
     ":date @ :time": ":date ב-:time",
     ":first_name has access to the selected mailboxes:": "ל :first_name יש גישה לתיבות הדואר שנבחרו:",
     ":host is not available on :port port. Make sure that :host address is correct and that outgoing port :port on YOUR server is open.": "השרת :host אינו זמין בפורט :port. ודא שהכתובת :host נכונה ושהפורט היוצא :port פתוח בשרת שלך.",

@@ -10,6 +10,7 @@
     "24-hour clock (e.g. 14:13)": "24-timmarsklocka (t.ex. 14:13)",
     ":app_name Test Email": ":app_name Test E-post",
     ":count conversations": ":count konversationer",
+    ":count conversation|:count conversations": ":count konversation|:count konversationer",
     ":date @ :time": ":date @ :time",
     ":first_name has access to the selected mailboxes:": ":first_name har tillgång till de valda brevlådorna.",
     ":host is not available on :port port. Make sure that :host address is correct and that outgoing port :port on YOUR server is open.": ":host är inte tillgänglig på port :port. Kontrollera att :host-adressen är korrekt och att utgående port :port på DIN server är öppen.",

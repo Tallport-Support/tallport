@@ -9,6 +9,7 @@
     "24-hour clock (e.g. 14:13)": "Relógio de 24 horas (ex.:14:13)",
     ":app_name Test Email": ":app_name E-mail de teste",
     ":count conversations": ":count total de conversas",
+    ":count conversation|:count conversations": "{1} :count conversa|[0,*] :count conversas",
     ":date @ :time": ":date @ :time",
     ":first_name has access to the selected mailboxes:": ":first_name tem acesso para a contas selecionadas:",
     ":host is not available on :port port. Make sure that :host address is correct and that outgoing port :port on YOUR server is open.": "O :host não está disponível na porta :port. Certifique-se de que o endereço :host está correcto e que a porta de saída :port no SEU servidor está aberta.",

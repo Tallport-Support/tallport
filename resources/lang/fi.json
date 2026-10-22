@@ -1497,6 +1497,7 @@
     "This log file is larger than 50 MB. Download it to read it.": "Tämä lokitiedosto on yli 50 Mt. Lataa se lukeaksesi sen.",
     "Danger Zone": "Vaaravyöhyke",
     ":count conversations": ":count keskustelua",
+    ":count conversation|:count conversations": ":count keskustelu|:count keskustelua",
     "Local time": "Paikallinen aika",
     "Search conversations": "Hae keskusteluista",
     "Select": "Valitse",

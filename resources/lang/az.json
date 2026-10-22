@@ -9,6 +9,7 @@
     "24-hour clock (e.g. 14:13)": "24 saatlıq format (məs. 14:13)",
     ":app_name Test Email": ":app_name Test E-poçtu",
     ":count conversations": ":count söhbət",
+    ":count conversation|:count conversations": ":count söhbət",
     ":date @ :time": ":date @ :time",
     ":first_name has access to the selected mailboxes:": ":first_name seçilmiş poçt qutularına giriş hüququna malikdir:",
     ":host is not available on :port port. Make sure that :host address is correct and that outgoing port :port on YOUR server is open.": ":host :port portunda əlçatan deyil. :host ünvanının düzgün olduğuna və SİZİN serverinizdə çıxış portu :port-un açıq olduğuna əmin olun.",

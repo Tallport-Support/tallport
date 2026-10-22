@@ -9,6 +9,7 @@
     "24-hour clock (e.g. 14:13)": "24 小时制（例如 14:13）",
     ":app_name Test Email": ":app_name测试邮件",
     ":count conversations": ":count对话",
+    ":count conversation|:count conversations": ":count 个对话",
     ":date @ :time": ":date @ :time",
     ":first_name has access to the selected mailboxes:": ":first_name 有权访问所选邮箱：",
     ":host is not available on :port port. Make sure that :host address is correct and that outgoing port :port on YOUR server is open.": ":host 在 :port 端口上不可用。确保 :host 地址正确，并且您服务器上的传出端口 :port 已打开。",

@@ -113,7 +113,6 @@ class Sync
             'statuses'    => $statuses,
             'labels'      => [
                 'just_now'      => __('Just now'),
-                'conversations' => __(':count conversations'),
                 'unread'        => __('Unread'),
                 'phone'         => __('Phone'),
                 'attachments'   => __('Attachments'),
@@ -386,6 +385,8 @@ class Sync
                 'order' => $order,
                 'time'  => self::ORDER_COLUMNS[$time] ?? 'last_reply',
                 'total' => $totals[$folder->id] ?? 0,
+                // As the list's heading says it.
+                'count' => trans_choice(':count conversation|:count conversations', $totals[$folder->id] ?? 0),
             ];
         }
 

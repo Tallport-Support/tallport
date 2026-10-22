@@ -9,6 +9,7 @@
     "24-hour clock (e.g. 14:13)": "24-часовой формат (например, 14:13)",
     ":app_name Test Email": "Тестовое письмо от :app_name",
     ":count conversations": ":count тикетов",
+    ":count conversation|:count conversations": ":count тикет|:count тикета|:count тикетов",
     ":date @ :time": ":date в :time",
     ":first_name has access to the selected mailboxes:": "У :first_name есть доступ к следующим почтовым ящикам:",
     ":host is not available on :port port. Make sure that :host address is correct and that outgoing port :port on YOUR server is open.": "Сервер :host недоступен на :port порту. Убедитесь, что адрес :host правильный и что исходящий порт :port на ВАШЕМ сервере открыт.",

@@ -10,6 +10,7 @@
     "24-hour clock (e.g. 14:13)": "24時間表記 (e.g. 14:13)",
     ":app_name Test Email": ":app_name テストメール",
     ":count conversations": ":count 総会話数",
+    ":count conversation|:count conversations": ":count 件の会話",
     ":date @ :time": ":date @ :time",
     ":first_name has access to the selected mailboxes:": ":first_name は、選択したメールボックスにアクセスできます。",
     ":host is not available on :port port. Make sure that :host address is correct and that outgoing port :port on YOUR server is open.": ":host は :port ポートを使用できません。:host アドレスが正しく、サーバの送信ポート :port が開放されていることを確認してください。",

@@ -10,6 +10,7 @@
     "24-hour clock (e.g. 14:13)": "24 órás időformátum (pl. 14:13)",
     ":app_name Test Email": ":app_name Teszt E-mail",
     ":count conversations": ":count beszélgetés",
+    ":count conversation|:count conversations": ":count beszélgetés",
     ":date @ :time": ":date @ :time",
     ":first_name has access to the selected mailboxes:": ":first_name hozzáféréssel rendelkezik a kiválasztott postafiókokhoz:",
     ":host is not available on :port port. Make sure that :host address is correct and that outgoing port :port on YOUR server is open.": "A :host nem érhető el a :port porton. Győződj meg róla, hogy a :host cím helyes, és hogy a :port kimenő port nyitva van A TE szervereden.",
