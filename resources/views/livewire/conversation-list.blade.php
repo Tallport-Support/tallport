@@ -11,6 +11,8 @@
         <x-icon.ban class="f-icon conv-badge" role="img" data-part="spam" />
         <x-icon.copy class="f-icon conv-badge" role="img" data-part="drafts" />
         <x-fruit::badge class="conv-deleted" data-part="deleted">{{ __('Deleted') }}</x-fruit::badge>
+        {{-- A list's header where the page has none to copy (an empty folder's): its height. --}}
+        <x-fruit::list-header class="conv-list__header" data-part="header"><span class="f-button f-button--ghost f-button--small" aria-hidden="true">&nbsp;</span></x-fruit::list-header>
         <x-fruit::empty-state data-part="empty">
             <x-slot:icon><x-icon.inbox /></x-slot:icon>
             {{ __('There are no conversations here') }}

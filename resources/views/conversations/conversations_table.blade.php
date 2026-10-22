@@ -131,7 +131,8 @@
         <div class="f-pane__scroll split-view__list" @if ($row_menus) x-data="tallportRowMenu" data-selection-title="{{ $row_selection_count > 1 ? trans_choice('Actions for :count conversation|Actions for :count conversations', $row_selection_count) : '' }}" @endif>
         <x-fruit::item-list class="conv-list__items" :id="empty($no_checkboxes) ? 'conversations' : null" :selection="empty($no_checkboxes) ? 'multiple' : 'none'" :aria-label="__('Conversations')">
             @php
-                $unread_ids = App\ConversationRead::unreadIds($conversations, Auth::user());
+                // The conversation open beside the list is being read (shown read, as the browser draws it).
+                $unread_ids = array_diff(App\ConversationRead::unreadIds($conversations, Auth::user()), array_filter([$current_conversation_id]));
                 // A translated conversation previews its latest message in the user's language.
                 $translated_previews = App\Ai\Translations::previews($conversations, Auth::user());
                 $translated_subjects = App\Ai\Translations::subjects($conversations, Auth::user());

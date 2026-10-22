@@ -196,9 +196,9 @@ var listDraw = function (folder_id, list, opened_id) {
 		section = el('div', 'conv-list-local');
 		section.appendChild(part('empty'));
 	}
-	var header = host.querySelector('.conv-list__header');
-	if (header && list.rows.length) {
-		header = header.cloneNode(true);
+	if (list.rows.length) {
+		var header = host.querySelector('.conv-list__header');
+		header = header ? header.cloneNode(true) : part('header');
 		header.inert = true;
 		section.appendChild(header);
 	}
@@ -223,6 +223,7 @@ var listDraw = function (folder_id, list, opened_id) {
 			link.setAttribute('data-fruit-mark', row.mark[0]);
 		}
 		if (row.unread) {
+			li.setAttribute('data-unread', '');
 			link.setAttribute('data-unread', '');
 		}
 		var top = el('span', 'f-item-row__top');
