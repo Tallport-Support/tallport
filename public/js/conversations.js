@@ -62,7 +62,20 @@ document.addEventListener('click', function (e) {
 		return;
 	}
 	e.preventDefault();
-	window.history.pushState({tallport_conversation: open, tallport_folder: {folder_id: document.body.getAttribute('data-folder_id')}}, '', link.href);
+	var state = {tallport_conversation: open, tallport_folder: {folder_id: document.body.getAttribute('data-folder_id')}};
+	// Offline: only what the browser's copy has; else nothing moves.
+	if (offline()) {
+		paneFromCopy(open.id).then(function (shown) {
+			if (!shown) {
+				offlineToast('unavailable');
+				return;
+			}
+			window.history.pushState(state, '', link.href);
+			conversationMark(open.id);
+		});
+		return;
+	}
+	window.history.pushState(state, '', link.href);
 	conversationOpen(open);
 });
 
@@ -73,6 +86,23 @@ document.addEventListener('click', function (e) {
  * The sidebar stays, with the folder marked; an empty folder loads its page.
  */
 var folderOpen = function (folder_id, conversation_id) {
+	folderMark(folder_id);
+	document.getElementById('app-content').setAttribute('aria-busy', 'true');
+	var drawn = listFromCopy(folder_id, conversation_id);
+	// Offline: the browser's copy alone (or nothing to show).
+	if (offline()) {
+		drawn.then(function (shown) {
+			document.getElementById('app-content').removeAttribute('aria-busy');
+			if (!shown) {
+				offlineToast('unavailable');
+			}
+		});
+		return;
+	}
+	Livewire.dispatch('folder-open', {folder_id: parseInt(folder_id), conversation_id: conversation_id || null});
+};
+/** The sidebar and the page say which folder is open. */
+var folderMark = function (folder_id) {
 	var link = document.querySelector('.app-sidebar a[data-folder_id="'+folder_id+'"]');
 	document.querySelectorAll('.app-sidebar a[data-folder_id][aria-current]').forEach(function (item) {
 		item.removeAttribute('aria-current');
@@ -99,37 +129,45 @@ var folderOpen = function (folder_id, conversation_id) {
 		}
 	}
 	document.body.setAttribute('data-folder_id', folder_id);
-	document.getElementById('app-content').setAttribute('aria-busy', 'true');
-	var drawn = listFromCopy(folder_id, conversation_id);
-	// Offline: the browser's copy alone (or nothing to show).
-	if (offline()) {
-		drawn.then(function (shown) {
-			if (!shown) {
-				offlineToast('unavailable');
-			}
-		});
-		return;
-	}
-	Livewire.dispatch('folder-open', {folder_id: parseInt(folder_id), conversation_id: conversation_id || null});
 };
 
 /**
  * A folder's list at once from the browser's copy (public/js/inbox.js), until the server's
  * list (or page) is there.
  */
+var listWanted = null;
 var listFromCopy = function (folder_id, conversation_id) {
-	listDrawing = folder_id;
+	listWanted = folder_id;
 	if (!window.TallportInbox || !document.querySelector('.conv-list-host')) {
 		return Promise.resolve(false);
 	}
 	return TallportInbox.list(folder_id, 50).then(function (list) {
-		if (!list || listDrawing !== folder_id) {
+		if (!list || listWanted !== folder_id) {
 			return false;
 		}
 		var opened_id = listDraw(folder_id, list, conversation_id || listOpened(folder_id));
-		// Beside it, the conversation it opens at.
+		listDrawing = folder_id;
+		// Offline and empty: no conversation beside it (as its page has none).
+		if (!list.rows.length && offline()) {
+			paneUndraw();
+			PANE_PARTS.forEach(function (selector) {
+				var real = document.querySelector(selector);
+				if (real) {
+					real.style.display = 'none';
+				}
+			});
+			return true;
+		}
+		// Beside it, the conversation it opens at (offline: at its address).
 		if (opened_id && document.querySelector('.conv-pane')) {
-			paneFromCopy(opened_id);
+			return paneFromCopy(opened_id).then(function (shown) {
+				var row = document.querySelector('.conv-list-local a.conv-row__link[data-conversation_id="'+opened_id+'"]');
+				if (shown && offline() && row) {
+					window.history.replaceState(window.history.state, '', row.href);
+					document.body.setAttribute('data-conversation_id', opened_id);
+				}
+				return true;
+			});
 		}
 		return true;
 	});
@@ -330,7 +368,9 @@ var listUndraw = function () {
 };
 document.addEventListener('livewire:navigated', function () {
 	listDrawing = null;
+	listWanted = null;
 	paneDrawing = null;
+	paneWanted = null;
 	paneUndraw();
 });
 // The server's list is there (or didn't come): it shows.
@@ -340,9 +380,11 @@ document.addEventListener('livewire:init', function () {
 		var name = hook.component && hook.component.name;
 		if (['conversation-pane', 'conversation-toolbar', 'conversation-inspector'].indexOf(name) >= 0) {
 			paneDrawing = null;
+			paneWanted = null;
 			paneUndraw();
 		} else if (name == 'conversation-list') {
 			listDrawing = null;
+			listWanted = null;
 			listUndraw();
 		}
 	});
@@ -358,14 +400,16 @@ document.addEventListener('livewire:init', function () {
 		if (hook.component.name == 'conversation-pane') {
 			var pane_done = function () {
 				paneDrawing = null;
+				paneWanted = null;
 				paneUndraw();
 			};
 			hook.succeed(pane_done);
 			hook.fail(pane_done);
 		}
-		if (hook.component.name == 'conversation-list' && listDrawing !== null) {
+		if (hook.component.name == 'conversation-list') {
 			var done = function () {
 				listDrawing = null;
+				listWanted = null;
 				listUndraw();
 			};
 			hook.succeed(done);
@@ -381,33 +425,45 @@ document.addEventListener('click', function (e) {
 		return;
 	}
 	e.preventDefault();
+	// Offline: only what the browser's copy has; else nothing moves.
+	if (offline()) {
+		var offline_folder = link.getAttribute('data-folder_id');
+		listFromCopy(offline_folder).then(function (shown) {
+			if (!shown) {
+				offlineToast('unavailable');
+				return;
+			}
+			window.history.pushState({tallport_folder: {folder_id: offline_folder}}, '', link.href);
+			folderMark(offline_folder);
+		});
+		return;
+	}
 	if (!document.querySelector('.conv-pane') || !document.querySelector('.conv-list-host')) {
 		// A page without a conversation (an empty folder's, a narrow one): the list at once too.
-		var drawn = listFromCopy(link.getAttribute('data-folder_id'));
-		if (offline()) {
-			drawn.then(function (shown) {
-				if (!shown) {
-					offlineToast('unavailable');
-				}
-			});
-			return;
-		}
+		listFromCopy(link.getAttribute('data-folder_id'));
 		Livewire.navigate(link.href);
 		return;
 	}
 	window.history.pushState({tallport_folder: {folder_id: link.getAttribute('data-folder_id')}}, '', link.href);
 	folderOpen(link.getAttribute('data-folder_id'));
 });
-var conversationOpen = function (open) {
+/** The list says which conversation is open. */
+var conversationMark = function (id) {
 	document.querySelectorAll('a.conv-row__link[aria-current]').forEach(function (row) {
 		row.removeAttribute('aria-current');
 	});
 	document.querySelectorAll('a.conv-row__link').forEach(function (row) {
 		var row_open = conversationOpenLink(row);
-		if (row_open && row_open.id == open.id) {
+		if (row_open && row_open.id == id) {
 			row.setAttribute('aria-current', 'page');
 		}
 	});
+	if (offline()) {
+		document.body.setAttribute('data-conversation_id', id);
+	}
+};
+var conversationOpen = function (open) {
+	conversationMark(open.id);
 	document.getElementById('app-content').setAttribute('aria-busy', 'true');
 	var drawn = paneFromCopy(open.id);
 	if (offline()) {
@@ -504,14 +560,16 @@ document.addEventListener('livewire:init', function () {
 });
 var paneDrawing = null;
 var paneDrawTimer = null;
+var paneWanted = null;
 var paneFromCopy = function (id) {
-	paneDrawing = parseInt(id);
+	paneWanted = parseInt(id);
 	if (!window.TallportInbox || !document.querySelector('.conv-pane')) {
 		return Promise.resolve(false);
 	}
 	return TallportInbox.pane(id).then(function (parts) {
-		if (parts && paneDrawing === parseInt(id)) {
+		if (parts && paneWanted === parseInt(id)) {
 			paneDraw(parts);
+			paneDrawing = parseInt(id);
 			return true;
 		}
 		return false;
@@ -660,6 +718,7 @@ var paneDraw = function (parts) {
 	offlineDisable();
 };
 var paneUndraw = function () {
+	paneDrawing = null;
 	document.querySelectorAll('.pane-local').forEach(function (node) {
 		node.remove();
 	});
@@ -695,6 +754,7 @@ document.addEventListener('livewire:init', function () {
 		document.body.removeAttribute('data-page-url');
 		document.body.setAttribute('data-pane-version', data.version || '');
 		paneDrawing = null;
+		paneWanted = null;
 		paneUndraw();
 		listOpened(data.folder_id, data.id);
 		// As it's shown now, for the next time (once it has settled); then those after it.
