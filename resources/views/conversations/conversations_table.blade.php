@@ -132,7 +132,7 @@
             $row_leaves_reopening = $folder->type == App\Folder::TYPE_CLOSED;
             $row_leaves_assigning = in_array($folder->type, [App\Folder::TYPE_UNASSIGNED, App\Folder::TYPE_ASSIGNED]);
         @endphp
-        <div class="f-pane__scroll split-view__list" @if ($row_menus) x-data="tallportRowMenu" data-selection-title="{{ $row_selection_count > 1 ? trans_choice('Actions for :count conversation|Actions for :count conversations', $row_selection_count) : '' }}" @endif>
+        <div class="f-pane__scroll split-view__list" @if ($row_menus) x-data="tallportRowMenu" data-unread-label="{{ __('Unread') }}" data-selection-title="{{ $row_selection_count > 1 ? trans_choice('Actions for :count conversation|Actions for :count conversations', $row_selection_count) : '' }}" @endif>
         <x-fruit::item-list class="conv-list__items" :id="empty($no_checkboxes) ? 'conversations' : null" :selection="empty($no_checkboxes) ? 'multiple' : 'none'" :aria-label="__('Conversations')">
             @php
                 // The conversation a folder opens at is being read (shown read, as the browser draws it).

@@ -335,6 +335,13 @@ document.addEventListener('livewire:init', function () {
 		}
 	});
 	Livewire.hook('commit', function (hook) {
+		// A change shown at once (tallportRowMenu.rowNow()): kept when saved, undone if not.
+		if (hook.component.name == 'conversation-list') {
+			hook.succeed(function () {
+				rowPending = [];
+			});
+			hook.fail(rowUndo);
+		}
 		if (hook.component.name == 'conversation-pane') {
 			var pane_done = function () {
 				paneDrawing = null;
@@ -391,6 +398,23 @@ var conversationOpen = function (open) {
  * each time one is shown; inert, without Livewire or Alpine.
  */
 var PANE_PARTS = ['.conv-pane', '#conv-toolbar', '#conv-layout-customer'];
+var rowPending = [];
+var rowUndo = function () {
+	if (!rowPending.length) {
+		return;
+	}
+	rowPending.forEach(function (was) {
+		was.li.innerHTML = was.html;
+		was.li.hidden = was.hidden;
+		if (was.unread) {
+			was.li.dataset.unread = '';
+		} else {
+			delete was.li.dataset.unread;
+		}
+	});
+	rowPending = [];
+	Tallport.toast(Lang.get('messages.error_occurred'), 'danger');
+};
 var paneDrawing = null;
 var paneDrawTimer = null;
 var paneFromCopy = function (id) {
@@ -1531,6 +1555,12 @@ document.addEventListener('alpine:init', function () {
 			rowNow: function (row, change) {
 				var targets = rows(row);
 				setTimeout(function () {
+					// As they were, should the server refuse it (rowUndo()).
+					targets.forEach(function (li) {
+						rowPending.push({li: li, html: li.innerHTML, hidden: li.hidden, unread: 'unread' in li.dataset});
+					});
+					var focused = document.activeElement;
+					var lost = !focused || focused === document.body || targets.some(function (li) { return li.contains(focused); }) || focused.closest('.f-context-menu');
 					targets.forEach(function (li) {
 						var link = li.querySelector('a.conv-row__link');
 						if (change == 'leave') {
@@ -1545,14 +1575,36 @@ document.addEventListener('alpine:init', function () {
 							li.dataset.unread = '';
 							link.setAttribute('data-unread', '');
 							var top = link.querySelector('.f-item-row__top');
+							var list = li.closest('[data-unread-label]');
 							if (top && !top.querySelector('.f-item-row__unread')) {
 								var dot = document.createElement('span');
 								dot.className = 'f-item-row__unread';
 								dot.setAttribute('aria-hidden', 'true');
-								top.appendChild(dot);
+								var label = document.createElement('span');
+								label.className = 'f-sr-only';
+								label.textContent = list ? list.dataset.unreadLabel : '';
+								top.append(dot, label);
 							}
 						}
 					});
+					// The keyboard stays in the list: on the next row (or the one before).
+					if (change == 'leave' && lost) {
+						var all = Array.prototype.slice.call(targets[0].parentElement.querySelectorAll(':scope > li.conv-row'));
+						var last = all.indexOf(targets[targets.length - 1]);
+						var first = all.indexOf(targets[0]);
+						var next = all.slice(last + 1).concat(all.slice(0, first).reverse()).find(function (li) { return !li.hidden; });
+						// Also once the menu has closed (it gives the focus back to its row, gone now).
+						var focus = function () {
+							var link = next && next.querySelector('a.conv-row__link');
+							var active = document.activeElement;
+							if (link && (!active || active === document.body || active.closest('.f-context-menu') || targets.some(function (li) { return li.contains(active); }))) {
+								link.focus();
+							}
+						};
+						[0, 50, 200].forEach(function (delay) {
+							setTimeout(focus, delay);
+						});
+					}
 				}, 0);
 			},
 			// The selection's title comes from the server (its plural rules).

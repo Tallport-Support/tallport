@@ -138,8 +138,8 @@ class ConversationOpenInPlaceTest extends FeatureTestCase
             ->assertSet('folder_id', $mine_folder->id)->assertSet('params.current_conversation_id', $mine->id)
             ->assertSee('Lost parcel')->assertDontSee('Broken zipper')
             // The conversation it opens at: being read; marked unread there, unread.
-            ->assertDontSee('data-unread', false)
-            ->call('rowRead', $mine->id, 0)->assertSee('data-unread', false);
+            ->assertDontSee('data-unread=""', false)
+            ->call('rowRead', $mine->id, 0)->assertSee('data-unread=""', false);
         Livewire::actingAs($this->agent)->test(ConversationListToolbar::class, ['folder' => $unassigned->folder])
             ->dispatch('folder-open', folder_id: $mine_folder->id)->assertSee($mine_folder->getTypeName());
         Livewire::actingAs($this->agent)->test(ConversationPane::class, ['conversation' => $unassigned, 'folder' => $unassigned->folder])
