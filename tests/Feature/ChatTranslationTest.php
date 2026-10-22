@@ -199,6 +199,20 @@ class ChatTranslationTest extends FeatureTestCase
      * A customer's burst of messages: translated together, a few seconds after the latest,
      * with the chat before them for context; the customer's messages per hour count each.
      */
+    /**
+     * A chat's messages translated together: the language they're written in becomes the
+     * customer's (replies go out in it).
+     */
+    public function testAChatsTranslationGivesTheCustomersLanguage()
+    {
+        $this->setCustomerLanguage(null);
+        $burst = collect(['你好', '我的包裹在哪里？'])->map(fn ($text) => Thread::create($this->conversation, Thread::TYPE_CUSTOMER, $text, ['customer_id' => $this->conversation->customer_id, 'source_via' => Thread::PERSON_CUSTOMER, 'source_type' => Thread::SOURCE_TYPE_WEB]));
+        \App\Ai\Agents\ChatTranslator::fake(fn () => ['messages' => $burst->map(fn ($thread) => ['id' => $thread->id, 'translation' => 'Hi', 'same_language' => false])->all(), 'detected_language' => 'zh-Hans']);
+        (new \App\Jobs\AiTranslateChat($this->conversation->id, 'en'))->handle();
+        $this->assertSame('Hi', Translations::get($burst->last()->fresh(), 'en'));
+        $this->assertSame('zh-Hans', $this->conversation->customer->fresh()->language);
+    }
+
     public function testACustomersMessagesAreTranslatedTogether()
     {
         $first = $this->conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->first();
