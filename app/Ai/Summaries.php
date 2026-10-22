@@ -93,7 +93,9 @@ class Summaries
                 'at' => now()->toDateTimeString(),
             ];
             self::updateData($conversation, function ($data) use ($language, $summary) {
-                if ((int) ($data['summaries'][$language]['thread_id'] ?? 0) > $summary['thread_id']) {
+                // Never back to older messages, but a summary from before backgrounds is replaced.
+                $saved = $data['summaries'][$language] ?? null;
+                if ($saved && array_key_exists('background', $saved) && (int) ($saved['thread_id'] ?? 0) > $summary['thread_id']) {
                     return null;
                 }
                 $data['summaries'][$language] = $summary;

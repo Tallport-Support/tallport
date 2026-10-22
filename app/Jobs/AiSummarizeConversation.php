@@ -50,6 +50,7 @@ class AiSummarizeConversation implements ShouldQueue, ShouldBeUniqueUntilProcess
             return;
         }
 
+        $before = Summaries::get($conversation, $this->language);
         try {
             $summary = Summaries::summarize($conversation, $this->language);
         } catch (\Throwable $e) {
@@ -62,7 +63,8 @@ class AiSummarizeConversation implements ShouldQueue, ShouldBeUniqueUntilProcess
         if ($last_thread) {
             \App\Events\RealtimeConvNewThread::dispatchSelf($last_thread, ['ai_updated' => true]);
         }
-        if ($summary && Summaries::isStale($conversation, $this->language)) {
+        // The next batch of messages, only when this one was saved (never a summary over and over).
+        if ($summary && $summary != $before && Summaries::isStale($conversation, $this->language)) {
             self::request($conversation, $this->language);
         }
     }

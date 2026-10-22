@@ -201,6 +201,32 @@ class AiConversationContextTest extends FeatureTestCase
         ConversationSummarizer::assertPromptedTimes(1);
     }
 
+    /**
+     * A summary from before backgrounds, of later messages than the remake's first batch: replaced,
+     * not made over and over (each time unsaved, and queued again).
+     */
+    public function testSummaryFromBeforeBackgroundsIsReplacedNotRemadeForever()
+    {
+        [, , $conversation] = $this->conversation();
+        foreach (range(1, 22) as $i) {
+            $last = $this->message($conversation, 'Message '.$i);
+        }
+        Summaries::updateData($conversation, function ($data) use ($last) {
+            $data['summaries']['en'] = ['one_liner' => 'Old.', 'memory' => 'Old memory.', 'thread_id' => $last->id, 'at' => now()->toDateTimeString()];
+
+            return $data;
+        });
+        \Queue::fake([AiSummarizeConversation::class]);
+        ConversationSummarizer::fake([['one_liner' => 'In progress', 'background' => '', 'memory' => 'First batch']]);
+
+        (new AiSummarizeConversation($conversation->id, 'en'))->handle();
+
+        $summary = Summaries::get($conversation->fresh(), 'en');
+        $this->assertSame('In progress', $summary['one_liner']);
+        $this->assertLessThan($last->id, $summary['thread_id']);
+        \Queue::assertPushed(AiSummarizeConversation::class, 1);
+    }
+
     public function testInvalidSummaryCannotEraseMemoryOrAdvanceItsPosition()
     {
         [, , $conversation] = $this->conversation();
