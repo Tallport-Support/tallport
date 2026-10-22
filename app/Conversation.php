@@ -1239,7 +1239,8 @@ class Conversation extends Model
         // Starred by user conversations.
         } elseif ($folder->type == Folder::TYPE_STARRED) {
             $starred_conversation_ids = self::getUserStarredConversationIds($folder->mailbox_id, $user_id);
-            $query_conversations = self::whereIn('id', $starred_conversation_ids);
+            // Not deleted ones (in Deleted), as All Mailboxes' Starred.
+            $query_conversations = self::whereIn('id', $starred_conversation_ids)->where('state', self::STATE_PUBLISHED);
 
         // Conversations are connected to folder via conversation_folder table.
         } elseif ($folder->isIndirect()) {

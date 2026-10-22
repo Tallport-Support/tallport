@@ -117,11 +117,14 @@ document.addEventListener('DOMContentLoaded', function() {
 					case 'd':
 						done = click('.conv-delete', true);
 						break;
+					// From the list on screen (conversations.js), else Newer and Older.
 					case 'j':
-						done = go(nav[0]);
+						var newer = window.tallportNeighbour && tallportNeighbour(-1);
+						done = newer ? (newer.click(), true) : go(nav[0]);
 						break;
 					case 'k':
-						done = go(nav[1]);
+						var older = window.tallportNeighbour && tallportNeighbour(1);
+						done = older ? (older.click(), true) : go(nav[1]);
 						break;
 					case 'q':
 						done = go(document.querySelector('a.new-conversation-link'));

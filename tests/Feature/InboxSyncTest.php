@@ -136,7 +136,7 @@ class InboxSyncTest extends FeatureTestCase
         $this->mailbox->users()->attach($other->id);
         $this->mailbox->syncPersonalFolders([$this->agent->id, $other->id]);
         $conversations = [];
-        foreach (['unassigned', 'mine', 'theirs', 'closed', 'spam', 'deleted', 'starred'] as $name) {
+        foreach (['unassigned', 'mine', 'theirs', 'closed', 'spam', 'deleted', 'starred', 'starred and deleted'] as $name) {
             $conversations[$name] = $this->conversation(ucfirst($name));
         }
         $conversations['mine']->changeUser($this->agent->id, $this->agent);
@@ -145,6 +145,8 @@ class InboxSyncTest extends FeatureTestCase
         $conversations['spam']->changeStatus(Conversation::STATUS_SPAM, $this->agent);
         $conversations['deleted']->deleteToFolder($this->agent);
         $conversations['starred']->star($this->agent);
+        $conversations['starred and deleted']->star($this->agent);
+        $conversations['starred and deleted']->deleteToFolder($this->agent);
         $this->actingAs($this->agent);
 
         $rows = collect((new Sync($this->agent))->rows(collect($conversations)->pluck('id')->all()))->keyBy('id');

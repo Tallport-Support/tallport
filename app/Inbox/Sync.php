@@ -338,7 +338,10 @@ class Sync
         }
         foreach ($indirect as $link) {
             $folder = $folders['by_id'][$link->folder_id] ?? null;
-            if ($folder && (!$folder->user_id || $folder->user_id == $this->user->id)) {
+            // Starred: not deleted ones (Conversation::getQueryByFolder()).
+            if ($folder && (!$folder->user_id || $folder->user_id == $this->user->id)
+                && !($folder->type == Folder::TYPE_STARRED && $conversation->state != Conversation::STATE_PUBLISHED)
+            ) {
                 $keys[] = (int) $folder->id;
             }
         }

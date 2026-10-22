@@ -3362,3 +3362,11 @@ body.fruit-ui {
 .inbox-copy #nprogress {
     display: none;
 }
+
+/* A copy's toolbar (public/js/conversations.js): only Newer and Older answer. */
+#conv-toolbar.pane-local {
+    pointer-events: none;
+}
+#conv-toolbar.pane-local .conv-next-prev a {
+    pointer-events: auto;
+}

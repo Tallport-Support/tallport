@@ -52,6 +52,36 @@ var conversationOpenLink = function (link) {
 	var match = id ? null : (link.getAttribute('href') || '').match(/\/conversation\/(\d+)/);
 	return id || match ? {id: parseInt(id || match[1]), folder_id: document.body.getAttribute('data-folder_id') || ''} : null;
 };
+/**
+ * The conversation above (-1, Newer) or below (1, Older) the open one in the list on screen,
+ * its copy too: quick steps go on from what's shown, not from what the server last answered.
+ */
+window.tallportNeighbour = function (step) {
+	var list = document.querySelector('.conv-list-local') || document.querySelector('.conv-list-host');
+	if (!list || list.hidden) {
+		return null;
+	}
+	var links = Array.prototype.filter.call(list.querySelectorAll('li.conv-row a.conv-row__link'), function (link) {
+		return !link.closest('li').hidden;
+	});
+	var current = links.findIndex(function (link) {
+		return link.getAttribute('aria-current') === 'page';
+	});
+	return current >= 0 ? links[current + step] || null : null;
+};
+document.addEventListener('click', function (e) {
+	// Newer and Older: from the list on screen (its address, its copy), else their links.
+	var nav = e.target.closest && e.target.closest('.conv-next-prev a');
+	if (nav && e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+		var neighbour = tallportNeighbour(nav === nav.parentElement.querySelector('a') ? -1 : 1);
+		if (neighbour) {
+			e.preventDefault();
+			e.stopImmediatePropagation();
+			neighbour.click();
+			return;
+		}
+	}
+}, true);
 document.addEventListener('click', function (e) {
 	var link = e.target.closest && e.target.closest('a.conv-row__link, .conv-next-prev a');
 	if (!link || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || link.target == '_blank' || !document.querySelector('.conv-pane')) {
@@ -1012,7 +1042,8 @@ var paneDraw = function (parts) {
 		copy.classList.add('pane-local');
 		copy.setAttribute('x-ignore', '');
 		copy.setAttribute('aria-busy', 'true');
-		copy.inert = true;
+		// The toolbar's Newer and Older still step (style.css: nothing else answers).
+		copy.inert = selector != '#conv-toolbar';
 		real.after(copy);
 		real.style.display = 'none';
 		document.documentElement.classList.add('inbox-copy');
