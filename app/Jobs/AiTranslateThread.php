@@ -73,6 +73,10 @@ class AiTranslateThread implements ShouldQueue, ShouldBeUnique
 
     public static function request(Thread $thread, $language)
     {
+        // Fetched ahead, not opened: nothing for the AI.
+        if (\App\Inbox\Sync::prefetching()) {
+            return;
+        }
         if (!Translations::isWanted($thread) || !Translations::isMissing($thread, $language)) {
             return;
         }

@@ -286,6 +286,49 @@ class InboxSyncTest extends FeatureTestCase
             ->dispatch('conversation-open', id: $conversation->id)->assertDispatched('conversation-opened', version: $version());
     }
 
+    /**
+     * A conversation fetched ahead: rendered as it would show, but without what opening it
+     * does: nothing asked of the AI (a summary, a translation), not read, nobody told.
+     */
+    public function testAConversationFetchedAheadHasNoSideEffects()
+    {
+        \App\Option::set('aiassistant.api_key', encrypt('sk-test'));
+        \App\Option::set('aiassistant.summary_conversation_threshold', 0);
+        \App\Option::set('aiassistant.translation_language', 'en');
+        \App\Option::set('aiassistant.mailbox_email_translation', [$this->mailbox->id => 1]);
+        \App\Option::$cache = [];
+        $conversation = $this->conversation('Waar is mijn bestelling?');
+        \App\Ai\Translations::store($conversation->threads()->where('type', \App\Thread::TYPE_CUSTOMER)->first(), 'de', 'nl', 'Wo ist meine Bestellung?');
+        \DB::table('polycast_events')->delete();
+        $this->withUnencryptedCookie('tallport_narrow', '0');
+
+        // Opened, it asks the AI for its summary (this test can tell).
+        \Queue::fake();
+        $this->actingAs($this->agent)->get('/conversation/'.$conversation->id)->assertOk();
+        \Queue::assertPushed(\App\Jobs\AiSummarizeConversation::class);
+
+        \Queue::fake();
+        ConversationRead::markUnread([$conversation->id], $this->agent);
+        \DB::table('polycast_events')->delete();
+        $writes = [];
+        \DB::listen(function ($query) use (&$writes) {
+            if (preg_match('/^\s*(insert|update|delete|replace)/i', $query->sql)) {
+                $writes[] = $query->sql;
+            }
+        });
+        $response = $this->actingAs($this->agent)->getJson(route('inbox.pane', ['id' => $conversation->id]))->assertOk()
+            ->assertJsonPath('version', Sync::paneVersions([$conversation->fresh()])[$conversation->id]);
+        $this->assertStringContainsString('Waar is mijn bestelling?', $response->json('parts')['.conv-pane']);
+        $this->assertStringContainsString('conv-toolbar', $response->json('parts')['#conv-toolbar']);
+
+        \Queue::assertNothingPushed();
+        $this->assertSame([], $writes, 'Nothing written.');
+        $this->assertSame(0, \DB::table('polycast_events')->count(), 'Nobody told.');
+        $this->assertSame([$conversation->id], ConversationRead::unreadIds([$conversation], $this->agent), 'Still unread.');
+
+        $this->actingAs($this->createUser())->getJson(route('inbox.pane', ['id' => $conversation->id]))->assertNotFound();
+    }
+
     public function testTheEndpointAndTheSessionsKey()
     {
         $conversation = $this->conversation('Question');

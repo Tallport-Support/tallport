@@ -78,6 +78,15 @@ class Sync
     }
 
     /**
+     * A conversation rendered to be fetched ahead (InboxController::pane()): nothing is asked of
+     * the AI for it (a summary, a translation), as nobody opened it.
+     */
+    public static function prefetching()
+    {
+        return (bool) request()->attributes->get('inbox_prefetch');
+    }
+
+    /**
      * What the page gives the browser's copy (public/js/inbox.js), and how it draws a list row as
      * the server does (conversations_table): the time shown ("3h", in the user's language, as
      * User::dateDiffForHumans() writes it), names and labels.
@@ -106,6 +115,7 @@ class Sync
             'user'        => $user->id,
             'install'     => substr(sha1(config('app.url').config('app.key')), 0, 12),
             'url'         => route('inbox.sync'),
+            'pane_url'    => url('/inbox/pane'),
             'recent_days' => self::RECENT_DAYS,
             'locale'      => $locale,
             'timezone'    => $user->timezone ?: config('app.timezone'),

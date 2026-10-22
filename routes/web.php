@@ -120,6 +120,7 @@ Route::get('/api-keys', 'ApiKeysController@own')->middleware('password.confirm')
 // Conversations
 // The browser's local copy of the inbox (App\Inbox\Sync).
 Route::get('/inbox/sync', 'InboxController@sync')->name('inbox.sync');
+Route::get('/inbox/pane/{id}', 'InboxController@pane')->name('inbox.pane');
 Route::get('/conversation/{id}/{thread_id?}', ['uses' => 'ConversationsController@view', 'laroute' => true])->where(['id' => '\d+', 'thread_id' => '\d+'])->name('conversations.view');
 Route::post('/conversation/ajax', ['uses' => 'ConversationsController@ajax', 'laroute' => true])->name('conversations.ajax');
 Route::post('/attachments/{id}/delete', ['uses' => 'AttachmentsController@delete', 'laroute' => true])->name('attachments.delete');

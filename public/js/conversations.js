@@ -410,27 +410,94 @@ var paneSnapshot = function () {
 				to[i].setAttribute('data-snap-scroll', from[i].scrollHeight - from[i].clientHeight - from[i].scrollTop < 24 ? 'bottom' : Math.round(from[i].scrollTop));
 			}
 		}
-		copy.querySelectorAll('script, template').forEach(function (node) {
-			node.remove();
-		});
-		// Shown only while Livewire loads (or offline): not in a conversation as it was shown.
-		copy.querySelectorAll('*').forEach(function (node) {
-			if (Array.prototype.some.call(node.attributes, function (attribute) {
-				return /^wire:(loading|offline)/.test(attribute.name) && !/\.remove/.test(attribute.name);
-			})) {
-				node.remove();
-			}
-		});
-		[copy].concat(Array.prototype.slice.call(copy.querySelectorAll('*'))).forEach(function (node) {
-			Array.prototype.slice.call(node.attributes).forEach(function (attribute) {
-				if (/^(x-|wire:|@|:)/.test(attribute.name)) {
-					node.removeAttribute(attribute.name);
-				}
-			});
-		});
-		parts[selector] = copy.outerHTML;
+		parts[selector] = paneClean(copy, false);
 	});
 	TallportInbox.savePane(id, version, parts);
+};
+/**
+ * A copy without what runs (scripts, Livewire, Alpine) and what shows only while loading. One
+ * the server rendered (fetched ahead) has no Alpine state yet: what Alpine shows only on
+ * occasion (x-show, x-cloak) is left out, and a chat opens at its newest message.
+ */
+var paneClean = function (copy, rendered) {
+	copy.querySelectorAll('script, template').forEach(function (node) {
+		node.remove();
+	});
+	copy.querySelectorAll('*').forEach(function (node) {
+		if (Array.prototype.some.call(node.attributes, function (attribute) {
+			return (/^wire:(loading|offline)/.test(attribute.name) && !/\.remove/.test(attribute.name))
+				|| (rendered && /^x-(show|cloak|if)/.test(attribute.name));
+		})) {
+			node.remove();
+		}
+	});
+	if (rendered) {
+		copy.querySelectorAll('.f-history').forEach(function (node) {
+			node.setAttribute('data-snap-scroll', 'bottom');
+		});
+	}
+	[copy].concat(Array.prototype.slice.call(copy.querySelectorAll('*'))).forEach(function (node) {
+		Array.prototype.slice.call(node.attributes).forEach(function (attribute) {
+			if (/^(x-|wire:|@|:)/.test(attribute.name)) {
+				node.removeAttribute(attribute.name);
+			}
+		});
+	});
+	return copy.outerHTML;
+};
+
+/**
+ * Fetched ahead (InboxController::pane()): the next conversation in the list and the top of
+ * the folder, one at a time, those whose snapshot is missing or out of date.
+ */
+var PANE_AHEAD = 10;
+var paneAheadQueue = [];
+var paneAheadBusy = false;
+var paneAhead = function () {
+	if (!window.TallportInbox || !document.querySelector('.conv-pane')) {
+		return;
+	}
+	var rows = Array.prototype.map.call(document.querySelectorAll('.conv-list-host li.conv-row'), function (row) {
+		return parseInt(row.getAttribute('data-conversation_id'));
+	});
+	var current = parseInt(document.body.getAttribute('data-conversation_id'));
+	var next = rows[rows.indexOf(current) + 1];
+	paneAheadQueue = [next].concat(rows.slice(0, PANE_AHEAD)).filter(function (id, i, ids) {
+		return id && id !== current && ids.indexOf(id) === i;
+	});
+	paneAheadNext();
+};
+var paneAheadNext = function () {
+	if (paneAheadBusy || !paneAheadQueue.length) {
+		return;
+	}
+	paneAheadBusy = true;
+	var id = paneAheadQueue.shift();
+	var done = function () {
+		paneAheadBusy = false;
+		setTimeout(function () {
+			(window.requestIdleCallback || setTimeout)(paneAheadNext);
+		}, 300);
+	};
+	TallportInbox.paneWanted(id).then(function (wanted) {
+		if (!wanted) {
+			return null;
+		}
+		return TallportInbox.fetchPane(id).then(function (data) {
+			if (!data || data.version !== wanted) {
+				return null;
+			}
+			var parts = {};
+			Object.keys(data.parts).forEach(function (selector) {
+				var template = document.createElement('template');
+				template.innerHTML = data.parts[selector];
+				if (template.content.firstElementChild) {
+					parts[selector] = paneClean(template.content.firstElementChild, true);
+				}
+			});
+			return TallportInbox.savePane(id, data.version, parts);
+		});
+	}).catch(function () {}).then(done);
 };
 var paneDraw = function (parts) {
 	paneUndraw();
@@ -490,8 +557,9 @@ document.addEventListener('livewire:init', function () {
 		document.body.removeAttribute('data-page-url');
 		document.body.setAttribute('data-pane-version', data.version || '');
 		listOpened(data.folder_id, data.id);
-		// As it's shown now, for the next time (once it has settled).
+		// As it's shown now, for the next time (once it has settled); then those after it.
 		setTimeout(paneSnapshot, 600);
+		setTimeout(paneAhead, 1500);
 		window.history.replaceState(Object.assign({}, window.history.state || {}, {tallport_conversation: {id: data.id, folder_id: data.folder_id}, tallport_folder: {folder_id: data.folder_id}}), '', data.url);
 		// The styles changed since this page was loaded (an update): the conversation loads anew.
 		if (data.styles && !document.querySelector('link[rel="stylesheet"][href="'+data.styles+'"]')) {
@@ -513,6 +581,7 @@ document.addEventListener('livewire:navigated', function () {
 	}
 	listOpened(document.body.getAttribute('data-folder_id'), parseInt(document.body.getAttribute('data-conversation_id')));
 	setTimeout(paneSnapshot, 600);
+	setTimeout(paneAhead, 1500);
 	// Back to this page after conversations opened in place opens it again (with
 	// Livewire's own entry kept).
 	window.history.replaceState(Object.assign({}, window.history.state || {}, {tallport_conversation: {

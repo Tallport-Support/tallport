@@ -405,6 +405,37 @@
         });
     }
 
+    /**
+     * The version to fetch a conversation ahead in (its row's), when its snapshot is missing or
+     * of another; else null (or when it isn't in the copy).
+     */
+    function paneWanted(id) {
+        if (!dbName) {
+            return Promise.resolve(null);
+        }
+        id = parseInt(id);
+        return Promise.all([
+            store('panes').then(function (s) { return request(s.get(id)); }),
+            store('rows').then(function (s) { return request(s.get(id)); }),
+        ]).then(function (found) {
+            if (!found[1]) {
+                return null;
+            }
+            return decrypt(found[1].box).then(function (row) {
+                return row.pane && (!found[0] || found[0].version !== row.pane) ? row.pane : null;
+            });
+        }).catch(function () {
+            return null;
+        });
+    }
+
+    /** A conversation rendered to fetch it ahead (InboxController::pane()), or null. */
+    function fetchPane(id) {
+        return fetch(config.pane_url + '/' + parseInt(id), { credentials: 'same-origin', headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' } }).then(function (response) {
+            return response.ok ? response.json() : null;
+        });
+    }
+
     /** Changed here (a Livewire action): synced now, not at the server's hint a few seconds on. */
     var soon = null;
     function syncSoon() {
@@ -459,6 +490,8 @@
         forget: function () { return dbName ? forget() : Promise.resolve(); },
         list: list,
         pane: pane,
+        paneWanted: paneWanted,
+        fetchPane: fetchPane,
         savePane: savePane,
     };
 

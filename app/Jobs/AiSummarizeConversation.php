@@ -82,6 +82,10 @@ class AiSummarizeConversation implements ShouldQueue, ShouldBeUniqueUntilProcess
      */
     public static function request(Conversation $conversation, $language)
     {
+        // Fetched ahead, not opened: nothing for the AI.
+        if (\App\Inbox\Sync::prefetching()) {
+            return;
+        }
         // handle() checks the rest: the conversation of an event may not
         // have its new thread counted yet.
         if (Settings::isConfigured() && Settings::enabled('summaries', $conversation->mailbox)) {
