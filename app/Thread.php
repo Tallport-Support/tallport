@@ -1040,6 +1040,10 @@ class Thread extends Model
         if (!empty($data['chat_pending'])) {
             $thread->setMeta('chat_pending', true);
         }
+        // Written by the customer's app, not by them (shared logs): not their language.
+        if (!empty($data['app_text'])) {
+            $thread->setMeta('app_text', true);
+        }
         if (!$is_customer) {
             $thread->setTo([$customer->getMainEmail()]);
         }

@@ -131,6 +131,8 @@ class IncomingMessageHandler
         ], [
             'body' => $body,
             'attachments' => $attachments,
+            // A module's mark: the app wrote it (Thread::createExtended()).
+            'app_text' => !empty($message['app_text']),
         ]);
         $conversation = $result['conversation'] ?? null;
         $thread = $result['thread'] ?? null;

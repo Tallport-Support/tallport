@@ -411,7 +411,7 @@ class Translations
         });
 
         // The customer's language, while they have none (replies go out in it).
-        if ($thread->type == Thread::TYPE_CUSTOMER && !$thread->isBounce()) {
+        if ($thread->type == Thread::TYPE_CUSTOMER && !$thread->isBounce() && !$thread->getMeta('app_text')) {
             ChatTranslation::setCustomerLanguage($thread->customer, $data['language'] ?? null);
         }
 

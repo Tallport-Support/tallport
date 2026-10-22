@@ -73,6 +73,7 @@ class AiDetectCustomerLanguage implements ShouldQueue, ShouldBeUnique
     {
         return Settings::isConfigured()
             && !$thread->getMeta('chat_pending')
+            && !$thread->getMeta('app_text')
             && $thread->type == Thread::TYPE_CUSTOMER
             && $thread->state == Thread::STATE_PUBLISHED
             && $thread->conversation

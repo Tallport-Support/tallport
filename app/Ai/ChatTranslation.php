@@ -227,7 +227,10 @@ class ChatTranslation
         }
 
         $detected = Settings::detectedLanguage($answer['detected_language'] ?? '');
-        self::setCustomerLanguage($conversation->customer, $detected);
+        // Only from what the customer wrote (not their app's text, such as shared logs).
+        if ($batch->contains(fn (Thread $thread) => !$thread->getMeta('app_text'))) {
+            self::setCustomerLanguage($conversation->customer, $detected);
+        }
         $translated = collect((array) ($answer['messages'] ?? []))->filter(fn ($message) => is_array($message))->keyBy(fn ($message) => (int) ($message['id'] ?? 0));
         foreach ($batch as $thread) {
             $message = $translated[$thread->id] ?? null;

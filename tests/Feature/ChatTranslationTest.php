@@ -213,6 +213,24 @@ class ChatTranslationTest extends FeatureTestCase
         $this->assertSame('zh-Hans', $this->conversation->customer->fresh()->language);
     }
 
+    /**
+     * Text the customer's app wrote (shared logs, in English): not their language; what they
+     * write next is.
+     */
+    public function testTheAppsTextIsNotTheCustomersLanguage()
+    {
+        $this->setCustomerLanguage(null);
+        $logs = Thread::createExtended(['type' => Thread::TYPE_CUSTOMER, 'body' => 'Shared diagnostic logs: vpx-logs.txt', 'app_text' => true], $this->conversation, $this->conversation->customer);
+        \App\Ai\Agents\ChatTranslator::fake(fn () => ['messages' => [['id' => $logs->id, 'translation' => '', 'same_language' => true]], 'detected_language' => 'en']);
+        (new \App\Jobs\AiTranslateChat($this->conversation->id, 'en'))->handle();
+        $this->assertNull($this->conversation->customer->fresh()->language);
+
+        $question = Thread::create($this->conversation, Thread::TYPE_CUSTOMER, '休眠以后会断联', ['customer_id' => $this->conversation->customer_id, 'source_via' => Thread::PERSON_CUSTOMER, 'source_type' => Thread::SOURCE_TYPE_WEB]);
+        \App\Ai\Agents\ChatTranslator::fake(fn () => ['messages' => [['id' => $question->id, 'translation' => 'It disconnects after sleep', 'same_language' => false]], 'detected_language' => 'zh-Hans']);
+        (new \App\Jobs\AiTranslateChat($this->conversation->id, 'en'))->handle();
+        $this->assertSame('zh-Hans', $this->conversation->customer->fresh()->language);
+    }
+
     public function testACustomersMessagesAreTranslatedTogether()
     {
         $first = $this->conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->first();

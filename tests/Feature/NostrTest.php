@@ -324,6 +324,7 @@ class NostrTest extends FeatureTestCase
         \Eventy::addFilter('nostr.incoming_message', function ($message, $rumor) {
             if (EventBuilder::firstTag($rumor, 'app_log')) {
                 $message['text'] = 'Sent logs.';
+                $message['app_text'] = true;
                 $message['attachments'][] = ['file_name' => 'log.txt', 'data' => base64_encode(EventBuilder::firstTag($rumor, 'app_log'))];
             }
 
@@ -334,6 +335,8 @@ class NostrTest extends FeatureTestCase
 
         $this->assertSame('Sent logs.', $thread->body);
         $this->assertSame('LOG LINES', $thread->attachments()->first()->getFileContents());
+        $this->assertTrue((bool) $thread->getMeta('app_text'), 'The app wrote it: not the customer\'s language.');
+        $this->assertNull($this->receive($cfg, 'Hello')->getMeta('app_text'));
     }
 
     public function testAutoReplyLineItem()
