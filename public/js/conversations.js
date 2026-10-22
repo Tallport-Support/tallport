@@ -339,6 +339,7 @@ document.addEventListener('livewire:init', function () {
 		if (hook.component.name == 'conversation-list') {
 			hook.succeed(function () {
 				rowPending = [];
+				clearTimeout(rowPendingTimer);
 			});
 			hook.fail(rowUndo);
 		}
@@ -399,7 +400,9 @@ var conversationOpen = function (open) {
  */
 var PANE_PARTS = ['.conv-pane', '#conv-toolbar', '#conv-layout-customer'];
 var rowPending = [];
+var rowPendingTimer = null;
 var rowUndo = function () {
+	clearTimeout(rowPendingTimer);
 	if (!rowPending.length) {
 		return;
 	}
@@ -415,6 +418,10 @@ var rowUndo = function () {
 	rowPending = [];
 	Tallport.toast(Lang.get('messages.error_occurred'), 'danger');
 };
+// Offline: a change shown at once wasn't saved.
+window.addEventListener('offline', function () {
+	rowUndo();
+});
 var paneDrawing = null;
 var paneDrawTimer = null;
 var paneFromCopy = function (id) {
@@ -1559,6 +1566,9 @@ document.addEventListener('alpine:init', function () {
 					targets.forEach(function (li) {
 						rowPending.push({li: li, html: li.innerHTML, hidden: li.hidden, unread: 'unread' in li.dataset});
 					});
+					// No answer (a dropped connection): undone after a while.
+					clearTimeout(rowPendingTimer);
+					rowPendingTimer = setTimeout(rowUndo, 10000);
 					var focused = document.activeElement;
 					var lost = !focused || focused === document.body || targets.some(function (li) { return li.contains(focused); }) || focused.closest('.f-context-menu');
 					targets.forEach(function (li) {
