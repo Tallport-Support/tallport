@@ -1064,6 +1064,15 @@ var paneDraw = function (parts) {
 			node.scrollTop = scroll == 'bottom' ? node.scrollHeight : parseInt(scroll);
 		});
 	});
+	// The copy can be scrolled with the keyboard (it's inert: nothing in it takes focus).
+	var scroll = document.getElementById('app-content-scroll');
+	var heading = document.querySelector('.conv-pane.pane-local #conv-subject h2, .conv-pane.pane-local .conv-heading__customer');
+	if (scroll && !scroll.hasAttribute('tabindex')) {
+		scroll.setAttribute('tabindex', '0');
+		scroll.setAttribute('role', 'region');
+		scroll.setAttribute('aria-label', heading ? heading.textContent.trim() : document.title);
+		scroll.setAttribute('data-copy-focus', '');
+	}
 	// Never for long, whatever happens to the request (offline: while it lasts).
 	clearTimeout(paneDrawTimer);
 	paneDrawTimer = setTimeout(function undrawLater() {
@@ -1077,6 +1086,12 @@ var paneDraw = function (parts) {
 };
 var paneUndraw = function () {
 	paneDrawing = null;
+	var scroll = document.getElementById('app-content-scroll');
+	if (scroll && scroll.hasAttribute('data-copy-focus')) {
+		['tabindex', 'role', 'aria-label', 'data-copy-focus'].forEach(function (name) {
+			scroll.removeAttribute(name);
+		});
+	}
 	document.querySelectorAll('.pane-local').forEach(function (node) {
 		node.remove();
 	});
