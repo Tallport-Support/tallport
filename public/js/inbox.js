@@ -429,6 +429,30 @@
         });
     }
 
+    /**
+     * A folder's list header (sort and filter) as the server last showed it, encrypted (it names
+     * people), so a list drawn from the copy has its own (conversations.js).
+     */
+    function saveHeader(folder_id, html) {
+        if (!dbName || !html) {
+            return Promise.resolve();
+        }
+        return encrypt(html).then(function (box) {
+            return setMeta('header:' + folder_id, box);
+        }).catch(function () {});
+    }
+
+    function header(folder_id) {
+        if (!dbName) {
+            return Promise.resolve(null);
+        }
+        return getMeta('header:' + folder_id).then(function (box) {
+            return box ? decrypt(box) : null;
+        }).catch(function () {
+            return null;
+        });
+    }
+
     /** A conversation rendered to fetch it ahead (InboxController::pane()), or null. */
     function fetchPane(id) {
         return fetch(config.pane_url + '/' + parseInt(id), { credentials: 'same-origin', headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' } }).then(function (response) {
@@ -492,6 +516,8 @@
         pane: pane,
         paneWanted: paneWanted,
         fetchPane: fetchPane,
+        header: header,
+        saveHeader: saveHeader,
         savePane: savePane,
     };
 

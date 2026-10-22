@@ -143,10 +143,12 @@ var listFromCopy = function (folder_id, conversation_id) {
 	if (!window.TallportInbox || !document.querySelector('.conv-list-host')) {
 		return Promise.resolve(false);
 	}
-	return TallportInbox.list(folder_id, 50).then(function (list) {
+	return Promise.all([TallportInbox.list(folder_id, 50), TallportInbox.header(folder_id)]).then(function (found) {
+		var list = found[0];
 		if (!list || listWanted !== folder_id) {
 			return false;
 		}
+		list.header = found[1];
 		var opened_id = listDraw(folder_id, list, conversation_id || listOpened(folder_id));
 		listDrawing = folder_id;
 		// Offline and empty: no conversation beside it (as its page has none).
@@ -254,8 +256,17 @@ var listDraw = function (folder_id, list, opened_id) {
 		section.appendChild(part('empty'));
 	}
 	if (list.rows.length) {
-		var header = host.querySelector('.conv-list__header');
-		header = header ? header.cloneNode(true) : part('header');
+		// The folder's own sort and filter (as the server last showed them), else the list's before.
+		var header = null;
+		if (list.header) {
+			var header_template = document.createElement('template');
+			header_template.innerHTML = list.header;
+			header = header_template.content.firstElementChild;
+		}
+		if (!header) {
+			header = host.querySelector('.conv-list__header');
+			header = header ? header.cloneNode(true) : part('header');
+		}
 		header.inert = true;
 		section.appendChild(header);
 	}
@@ -361,6 +372,23 @@ var listDraw = function (folder_id, list, opened_id) {
 
 	return current;
 };
+/**
+ * A folder's list header as the server shows it (no filter, nothing selected), for the next
+ * time its list is drawn from the copy.
+ */
+var headerSave = function () {
+	var host = document.querySelector('.conv-list-host');
+	var list = host && !host.hidden ? host.querySelector('.table-conversations[data-folder_id]') : null;
+	var header = list && list.querySelector('.conv-list__header');
+	if (!window.TallportInbox || !header || header.querySelector('.conv-list__filter.filtered') || host.querySelector('.conv-checkbox:checked')) {
+		return;
+	}
+	var copy = header.cloneNode(true);
+	copy.querySelectorAll('details[open]').forEach(function (details) {
+		details.removeAttribute('open');
+	});
+	TallportInbox.saveHeader(list.getAttribute('data-folder_id'), paneClean(copy, false));
+};
 /** No copy shown any more: the page's own loading bar again (style.css). */
 var copyGone = function () {
 	if (!document.querySelector('.conv-list-local, .pane-local')) {
@@ -389,6 +417,7 @@ document.addEventListener('livewire:navigate', function () {
 	});
 });
 document.addEventListener('livewire:navigated', function () {
+	setTimeout(headerSave, 300);
 	document.documentElement.classList.remove('inbox-copy');
 	listDrawing = null;
 	listWanted = null;
@@ -413,11 +442,12 @@ document.addEventListener('livewire:init', function () {
 			if (conversationMarked) {
 				conversationMark(conversationMarked);
 			}
+			setTimeout(headerSave, 100);
 		}
 	});
 	Livewire.hook('commit', function (hook) {
 		// A change shown at once (tallportRowMenu.rowNow()): kept when saved, undone if not.
-		if (hook.component.name == 'conversation-list') {
+		if (['conversation-list', 'conversation-toolbar', 'conversation-subject'].indexOf(hook.component.name) >= 0) {
 			hook.succeed(function () {
 				rowPending = [];
 				clearTimeout(rowPendingTimer);
@@ -521,6 +551,10 @@ var rowUndo = function () {
 		return;
 	}
 	rowPending.forEach(function (was) {
+		if (was.undo) {
+			was.undo();
+			return;
+		}
 		was.li.innerHTML = was.html;
 		was.li.hidden = was.hidden;
 		if (was.unread) {
@@ -536,6 +570,147 @@ var rowUndo = function () {
 		Tallport.toast(Lang.get('messages.error_occurred'), 'danger');
 	}
 };
+/**
+ * The open conversation changed from its toolbar (status, assignee, star): shown at once in the
+ * toolbar and its row (out of the list when it leaves the folder), undone as rowUndo() says;
+ * refused, the server shows them as they are (ConversationToolbar::changed()).
+ */
+var nowPending = function (undo) {
+	rowPending.push({undo: undo});
+	clearTimeout(rowPendingTimer);
+	rowPendingTimer = setTimeout(rowUndo, navigator.onLine === false ? 0 : 10000);
+};
+var nowRow = function () {
+	var row = document.querySelector('.conv-list-host li.conv-row[data-conversation_id="'+document.body.getAttribute('data-conversation_id')+'"]');
+	var list = row && row.closest('[data-folder-type]');
+	return row ? {li: row, type: list ? parseInt(list.dataset.folderType) : 0} : null;
+};
+var nowLeave = function (row) {
+	rowPending.push({li: row.li, html: row.li.innerHTML, hidden: row.li.hidden, unread: 'unread' in row.li.dataset});
+	row.li.hidden = true;
+};
+var nowAttributes = function (node, names) {
+	var was = {};
+	names.forEach(function (name) {
+		was[name] = node.getAttribute(name);
+	});
+	return function () {
+		names.forEach(function (name) {
+			was[name] === null ? node.removeAttribute(name) : node.setAttribute(name, was[name]);
+		});
+	};
+};
+document.addEventListener('click', function (e) {
+	var item = e.target.closest && e.target.closest('#conv-toolbar #conv-status [data-status], #conv-toolbar #conv-assignee [data-user_id], .conv-star');
+	if (!item || item.closest('.pane-local') || offline() || item.getAttribute('aria-disabled') == 'true') {
+		return;
+	}
+	var undos = [];
+	var row = nowRow();
+	if (item.matches('.conv-star')) {
+		var starred = item.getAttribute('aria-pressed') != 'true';
+		undos.push(nowAttributes(item, ['aria-pressed']));
+		item.setAttribute('aria-pressed', starred ? 'true' : 'false');
+		if (row && !starred && row.type == 25) {
+			nowLeave(row);
+		}
+	} else if (item.hasAttribute('data-status')) {
+		var status = parseInt(item.getAttribute('data-status'));
+		var menu = item.closest('#conv-status');
+		var trigger = menu.querySelector('summary');
+		var dot = trigger.querySelector('.conv-status-dot');
+		var label = trigger.querySelector('.conv-info-val span');
+		var item_dot = item.querySelector('.conv-status-dot');
+		if (!status || !dot || !item_dot) {
+			return;
+		}
+		var name = item.textContent.trim();
+		var was_dot = dot.className;
+		var was_label = label ? label.textContent : '';
+		undos.push(nowAttributes(trigger, ['aria-label', 'title']));
+		undos.push(function () {
+			dot.className = was_dot;
+			if (label) {
+				label.textContent = was_label;
+			}
+		});
+		menu.querySelectorAll('[data-status]').forEach(function (radio) {
+			undos.push(nowAttributes(radio, ['aria-checked']));
+			radio.setAttribute('aria-checked', radio === item ? 'true' : 'false');
+		});
+		dot.className = item_dot.className;
+		if (label) {
+			label.textContent = name;
+		}
+		var prefix = (trigger.getAttribute('aria-label') || '').split(': ')[0];
+		trigger.setAttribute('aria-label', prefix+': '+name);
+		trigger.setAttribute('title', prefix+': '+name);
+		// Its row: out of a folder it leaves (Closed, Spam, the open ones), else its status shown.
+		if (row) {
+			var closing = status == 3 || status == 4;
+			if (([1, 20, 40].indexOf(row.type) >= 0 && closing) || (row.type == 60 && status != 3) || (row.type == 80 && status != 4)) {
+				nowLeave(row);
+			} else {
+				rowPending.push({li: row.li, html: row.li.innerHTML, hidden: row.li.hidden, unread: 'unread' in row.li.dataset});
+				var shown = row.li.querySelector('.conv-row__status');
+				if (status == 1) {
+					if (shown) {
+						shown.remove();
+					}
+				} else if (row.type != 60 && row.type != 80) {
+					// At the end of its meta line, as conversations_table shows it.
+					if (!shown) {
+						var link = row.li.querySelector('a.conv-row__link');
+						var meta = link.querySelector('.conv-row__meta');
+						if (!meta) {
+							meta = document.createElement('span');
+							meta.className = 'f-item-row__meta conv-row__meta';
+							link.appendChild(meta);
+						}
+						shown = document.createElement('span');
+						shown.className = 'conv-row__status';
+						meta.appendChild(shown);
+					}
+					shown.innerHTML = '';
+					shown.append(item_dot.cloneNode(true), name);
+				}
+			}
+		}
+	} else {
+		var user_id = parseInt(item.getAttribute('data-user_id'));
+		var me = parseInt(document.body.getAttribute('data-auth_user_id'));
+		var user_trigger = item.closest('#conv-assignee').querySelector('summary');
+		var user_label = user_trigger.querySelector('.conv-info-val span');
+		var was_name = user_label ? user_label.textContent : '';
+		undos.push(nowAttributes(user_trigger, ['title']));
+		undos.push(function () {
+			if (user_label) {
+				user_label.textContent = was_name;
+			}
+		});
+		item.closest('#conv-assignee').querySelectorAll('[data-user_id]').forEach(function (link) {
+			undos.push(nowAttributes(link, ['aria-current']));
+			link === item ? link.setAttribute('aria-current', 'true') : link.removeAttribute('aria-current');
+		});
+		if (user_label) {
+			user_label.textContent = item.textContent.trim();
+		}
+		if (row && ((row.type == 1 && user_id != -1) || (row.type == 20 && user_id != me) || (row.type == 40 && (user_id == -1 || user_id == me)))) {
+			nowLeave(row);
+		}
+	}
+	undos.forEach(nowPending);
+}, true);
+// On to the next conversation (the open one left its folder): in place.
+document.addEventListener('livewire:init', function () {
+	Livewire.on('conversation-next', function (event) {
+		var data = Array.isArray(event) ? event[0] : event;
+		var open = {id: data.id, folder_id: document.body.getAttribute('data-folder_id') || ''};
+		window.history.pushState({tallport_conversation: open, tallport_folder: {folder_id: open.folder_id}}, '', window.location.href);
+		conversationOpen(open);
+	});
+});
+
 /**
  * Offline (the connection gone in an open tab): what the browser's copy holds still shows
  * (lists, conversations with a snapshot); what needs the server is disabled. Back online,

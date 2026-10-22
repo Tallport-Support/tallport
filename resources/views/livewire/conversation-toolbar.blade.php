@@ -39,8 +39,8 @@
                 @if ($action_key === 'delete_mobile')
                     <x-fruit::menu-link href="#" :class="$action['class'].' conv-action-narrow'" x-on:click.prevent="{{ $delete_confirm }}">@include('conversations/partials/action_icon', ['icon' => $action['icon']]) {{ $action['label'] }}</x-fruit::menu-link>
                 @elseif (!empty($action['has_opposite']))
-                    <x-fruit::menu-link href="#" :class="$action['class']" data-follow-action="follow" x-show="!following" x-on:click.prevent="$wire.follow(true).then(ok => ok && (following = true))">@include('conversations/partials/action_icon', ['icon' => $action['icon']]) {{ $action['label'] }}</x-fruit::menu-link>
-                    <x-fruit::menu-link href="#" :class="$action['opposite']['class']" data-follow-action="unfollow" x-show="following" x-on:click.prevent="$wire.follow(false).then(ok => ok && (following = false))">@include('conversations/partials/action_icon', ['icon' => $action['icon']]) {{ $action['opposite']['label'] }}</x-fruit::menu-link>
+                    <x-fruit::menu-link href="#" :class="$action['class']" data-follow-action="follow" x-show="!following" x-on:click.prevent="following = true; $wire.follow(true).then(ok => ok || (following = false))">@include('conversations/partials/action_icon', ['icon' => $action['icon']]) {{ $action['label'] }}</x-fruit::menu-link>
+                    <x-fruit::menu-link href="#" :class="$action['opposite']['class']" data-follow-action="unfollow" x-show="following" x-on:click.prevent="following = false; $wire.follow(false).then(ok => ok || (following = true))">@include('conversations/partials/action_icon', ['icon' => $action['icon']]) {{ $action['opposite']['label'] }}</x-fruit::menu-link>
                 @else
                     <a role="menuitem" href="{{ !empty($action['url']) ? $action['url']($conversation) : '#' }}" class="f-menu-item {{ $action['class'] }}"
                         @if (in_array($action_key, ['reply', 'note', 'forward'])) x-on:click.prevent="Livewire.dispatch('composer-open', {mode: '{{ $action_key }}'}); composerFocus()" @endif

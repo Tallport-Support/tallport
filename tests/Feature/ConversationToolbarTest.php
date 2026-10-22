@@ -39,17 +39,37 @@ class ConversationToolbarTest extends FeatureTestCase
     {
         // The current status checked in the menu.
         $this->assertMatchesRegularExpression('/aria-checked="true"[^>]*data-status="'.$this->conversation->status.'"/', $this->toolbar()->html());
-        $this->toolbar()
-            ->call('assign', $this->agent->id)->assertRedirect($this->conversation->url());
+        // In place (shown at once in the browser): the conversation, the list and the counters follow.
+        $this->toolbar()->call('assign', $this->agent->id)->assertNoRedirect()->assertToasted('Assignee updated')
+            ->assertDispatched('conversation-changed', ids: [$this->conversation->id])->assertDispatched('conversations-changed')
+            ->assertDispatched('sidebar-counts');
         $this->assertSame($this->agent->id, $this->conversation->fresh()->user_id);
-        $this->assertStringStartsWith('Assignee updated', session('flash_success_floating'));
+        $this->assertNull(session('flash_success_floating'), 'No page load to show it on.');
 
-        $this->toolbar()->call('assign', $this->agent->id)->assertToasted('Assignee already set', 'danger')->assertNoRedirect();
+        // Refused: the list shown as it is (the browser's change undone).
+        $this->toolbar()->call('assign', $this->agent->id)->assertToasted('Assignee already set', 'danger')->assertNoRedirect()
+            ->assertDispatched('conversations-changed')->assertNotDispatched('conversation-changed');
 
-        $this->toolbar()->call('changeStatus', Conversation::STATUS_SPAM)->assertRedirect();
+        $this->toolbar()->call('changeStatus', Conversation::STATUS_SPAM)->assertToasted('Status updated');
         $this->assertSame(Conversation::STATUS_SPAM, $this->conversation->fresh()->status);
-        $this->toolbar()->call('changeStatus', 'not_spam')->assertRedirect();
+        $this->toolbar()->call('changeStatus', 'not_spam');
         $this->assertSame(Conversation::STATUS_ACTIVE, $this->conversation->fresh()->status);
+    }
+
+    /**
+     * Closed where the user goes on (not staying in a conversation): the next one, opened in place.
+     */
+    public function testOnToTheNextConversation()
+    {
+        $this->receiveEmail($this->mailbox, $this->makeEmail([
+            'from' => 'Sam Shopper <sam@customer.example.org>', 'to' => $this->mailbox->email, 'subject' => 'Lost parcel',
+        ]));
+        $next = Conversation::where('mailbox_id', $this->mailbox->id)->where('id', '!=', $this->conversation->id)->first();
+        $this->agent->stay_in_conversation = false;
+        $this->agent->save();
+
+        $this->toolbar()->call('changeStatus', Conversation::STATUS_CLOSED)->assertNoRedirect()
+            ->assertDispatched('conversation-next', id: $next->id);
     }
 
     public function testTheHeadingNamesTheChannel()

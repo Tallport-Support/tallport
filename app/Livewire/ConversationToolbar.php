@@ -37,12 +37,12 @@ class ConversationToolbar extends Component
 
     public function assign($user_id)
     {
-        $this->done(ConversationActions::changeUser($this->conversation(), $user_id, auth()->user(), $this->actionRequest()));
+        $this->changed(ConversationActions::changeUser($this->conversation(), $user_id, auth()->user(), $this->actionRequest()));
     }
 
     public function changeStatus($status)
     {
-        $this->done(ConversationActions::changeStatus($this->conversation(), $status, auth()->user(), $this->actionRequest()));
+        $this->changed(ConversationActions::changeStatus($this->conversation(), $status, auth()->user(), $this->actionRequest()));
     }
 
     public function restore()
@@ -100,6 +100,37 @@ class ConversationToolbar extends Component
     {
         $conversation = $this->conversation();
         $this->done(ConversationActions::delete($conversation, auth()->user(), $conversation && $conversation->state == Conversation::STATE_DELETED));
+    }
+
+    /**
+     * Its assignee or status changed (shown at once in the browser, public/js/conversations.js):
+     * the page follows in place: the toolbar, the conversation, the list and the counters; on
+     * to the next conversation where the action leads there. Refused: the toolbar and the list
+     * as they are (the browser's change undone).
+     */
+    protected function changed($result)
+    {
+        if (!empty($result['msg']) && empty($result['status'])) {
+            Fruit::toast($result['msg'], 'danger');
+            $this->dispatch('conversations-changed');
+
+            return;
+        }
+        // No page load to show the action's message on.
+        \Session::forget('flash_success_floating');
+        Fruit::toast($result['msg'], 'success');
+        $conversation = $this->conversation();
+        $this->dispatch('sidebar-counts', counts: \App\Misc\Sidebar::unreadCounts(auth()->user()));
+        $this->dispatch('conversation-changed', ids: [$conversation->id]);
+        $this->dispatch('conversations-changed');
+        $url = $result['redirect_url'] ?? $conversation->url();
+        if ($url != $conversation->url()) {
+            if (preg_match('#/conversation/(\d+)#', $url, $next)) {
+                $this->dispatch('conversation-next', id: (int) $next[1]);
+            } else {
+                $this->redirect($url, navigate: true);
+            }
+        }
     }
 
     /**
