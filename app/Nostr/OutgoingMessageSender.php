@@ -36,7 +36,7 @@ class OutgoingMessageSender
     }
 
     /**
-     * Send one agent reply to the customer key that wrote last.
+     * Send one agent reply to the device the chat is with (NostrEvent::chatKey()), nobody else.
      */
     public function sendThread(Conversation $conversation, Thread $thread)
     {
@@ -48,12 +48,12 @@ class OutgoingMessageSender
             return false;
         }
 
-        $last = NostrEvent::lastIncoming($conversation->id);
-        $pubkey = $last->pubkey ?? null;
+        $pubkey = NostrEvent::chatKey($conversation->id);
         if (!$pubkey) {
             $first = CustomerKey::forCustomer($conversation->customer_id)->first();
             $pubkey = $first->pubkey ?? null;
         }
+        $last = $pubkey ? NostrEvent::lastIncoming($conversation->id, $pubkey) : null;
         if (!$pubkey) {
             $this->fail($thread, __('The customer has no Nostr public key'));
 
@@ -209,7 +209,7 @@ class OutgoingMessageSender
             return false;
         }
 
-        $last = NostrEvent::lastIncoming($conversation->id);
+        $last = NostrEvent::lastIncoming($conversation->id, $pubkey);
         $result = $this->sendText($cfg, $pubkey, $text, [
             'subject' => $conversation->subject,
             'reply_to' => ($last && $last->rumor_id) ? [$last->rumor_id, $last->relay] : null,

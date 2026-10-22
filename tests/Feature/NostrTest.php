@@ -232,6 +232,30 @@ class NostrTest extends FeatureTestCase
         $this->assertSame(1, CustomerChannel::where('customer_id', $customer->id)->where('channel', 90)->count());
     }
 
+    /**
+     * A customer's devices (keys) each have their own chats: a message from one never goes in
+     * another's, and a reply goes to the device the chat is with, nobody else.
+     */
+    public function testEachDeviceHasItsOwnChat()
+    {
+        $cfg = $this->setUpNostr();
+        $tv = $this->receive($cfg, 'Hello from the TV')->conversation;
+        $mac_private = Keys::generatePrivateKey();
+        CustomerKey::link($tv->customer, Keys::pubkeyFromPrivate($mac_private), CustomerKey::SOURCE_API);
+
+        $mac = $this->receive($cfg, 'Hello from the Mac', [], 14, $mac_private)->conversation;
+        $this->assertNotSame($tv->id, $mac->id, 'Its own chat.');
+        $this->assertSame($tv->customer_id, $mac->customer_id, 'The same customer.');
+        $this->assertSame($tv->id, $this->receive($cfg, 'The TV again')->conversation->id);
+        $this->assertSame($mac->id, $this->receive($cfg, 'The Mac again', [], 14, $mac_private)->conversation->id);
+
+        // A chat both wrote in (before chats were per device), the Mac last: to the TV, whose chat it is.
+        NostrEvent::where('conversation_id', $mac->id)->update(['conversation_id' => $tv->id]);
+        $this->sendReply($this->agent, ['mailbox_id' => $this->mailbox->id, 'conversation_id' => $tv->id, 'body' => '<p>On it.</p>']);
+        $reply = NostrEvent::where('direction', NostrEvent::DIRECTION_OUT)->where('conversation_id', $tv->id)->orderBy('id', 'desc')->first();
+        $this->assertSame($this->customer_pubkey, $reply->pubkey);
+    }
+
     public function testEmailAutoReplyIsNotSentToNostrCustomers()
     {
         $cfg = $this->setUpNostr();

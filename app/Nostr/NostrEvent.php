@@ -84,14 +84,38 @@ class NostrEvent extends Model
     }
 
     /**
-     * Latest incoming message of a conversation: tells which key to reply to.
+     * Latest incoming message of a conversation (from one key: the chat's device).
      */
-    public static function lastIncoming($conversation_id)
+    public static function lastIncoming($conversation_id, $pubkey = null)
     {
         return self::where('conversation_id', $conversation_id)
             ->where('direction', self::DIRECTION_IN)
+            ->when($pubkey, fn ($query) => $query->where('pubkey', $pubkey))
             ->orderBy('id', 'desc')
             ->first();
+    }
+
+    /**
+     * The device a chat is with: the key of its first message, in or out. A customer's devices
+     * each have their own chats; replies go to this key alone.
+     */
+    public static function chatKey($conversation_id)
+    {
+        return self::where('conversation_id', $conversation_id)->orderBy('id')->value('pubkey');
+    }
+
+    /**
+     * The conversations (IDs, a subquery) whose chat is with this key (chatKey()).
+     */
+    public static function chatsWith($pubkey)
+    {
+        return \DB::table('nostr_events as first_event')->select('first_event.conversation_id')
+            ->where('first_event.pubkey', $pubkey)->whereNotNull('first_event.conversation_id')
+            ->whereNotExists(function ($query) {
+                $query->select(\DB::raw(1))->from('nostr_events as earlier')
+                    ->whereColumn('earlier.conversation_id', 'first_event.conversation_id')
+                    ->whereColumn('earlier.id', '<', 'first_event.id');
+            });
     }
 
     /**

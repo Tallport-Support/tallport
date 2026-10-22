@@ -120,7 +120,7 @@ class IncomingMessageHandler
             $subject = __('Nostr message');
         }
 
-        $conversation = $this->findOpenConversation($cfg, $customer);
+        $conversation = $this->findOpenConversation($cfg, $customer, $pubkey);
         $new = !$conversation;
         $result = ChatConversations::receive($conversation, $customer, [
             'subject' => $subject,
@@ -288,11 +288,20 @@ class IncomingMessageHandler
     }
 
     /**
-     * Latest Nostr conversation of this customer in this mailbox, if it is recent enough to reopen.
+     * Latest Nostr conversation of this customer in this mailbox with this device (its key:
+     * NostrEvent::chatKey()), if it is recent enough to reopen. Another of the customer's devices
+     * never writes into it: it has its own.
      */
-    public function findOpenConversation(NostrMailbox $cfg, Customer $customer)
+    public function findOpenConversation(NostrMailbox $cfg, Customer $customer, $pubkey)
     {
-        return ChatConversations::latest($cfg->mailbox()->first(), $customer, config('nostr.channel'));
+        $mailbox = $cfg->mailbox()->first();
+        $conversation = Conversation::where('mailbox_id', $mailbox->id)
+            ->where('customer_id', $customer->id)
+            ->where('channel', config('nostr.channel'))
+            ->whereIn('id', NostrEvent::chatsWith($pubkey))
+            ->orderBy('created_at', 'desc')->orderBy('id', 'desc')->first();
+
+        return ChatConversations::canContinue($conversation, $mailbox) ? $conversation : null;
     }
 
     /**
