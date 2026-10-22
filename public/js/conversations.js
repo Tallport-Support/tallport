@@ -318,11 +318,24 @@ var listUndraw = function () {
 };
 document.addEventListener('livewire:navigated', function () {
 	listDrawing = null;
+	paneDrawing = null;
+	paneUndraw();
 });
 // The server's list is there (or didn't come): it shows.
 document.addEventListener('livewire:init', function () {
+	// The live conversation (or list) shown again, by whichever request: no copy beside it.
+	Livewire.hook('morphed', function (hook) {
+		var name = hook.component && hook.component.name;
+		if (['conversation-pane', 'conversation-toolbar', 'conversation-inspector'].indexOf(name) >= 0) {
+			paneDrawing = null;
+			paneUndraw();
+		} else if (name == 'conversation-list') {
+			listDrawing = null;
+			listUndraw();
+		}
+	});
 	Livewire.hook('commit', function (hook) {
-		if (hook.component.name == 'conversation-pane' && paneDrawing !== null) {
+		if (hook.component.name == 'conversation-pane') {
 			var pane_done = function () {
 				paneDrawing = null;
 				paneUndraw();
@@ -368,8 +381,8 @@ var conversationOpen = function (open) {
 		}
 	});
 	document.getElementById('app-content').setAttribute('aria-busy', 'true');
-	Livewire.dispatch('conversation-open', open);
 	paneFromCopy(open.id);
+	Livewire.dispatch('conversation-open', open);
 };
 
 /**
@@ -379,6 +392,7 @@ var conversationOpen = function (open) {
  */
 var PANE_PARTS = ['.conv-pane', '#conv-toolbar', '#conv-layout-customer'];
 var paneDrawing = null;
+var paneDrawTimer = null;
 var paneFromCopy = function (id) {
 	paneDrawing = parseInt(id);
 	if (window.TallportInbox && document.querySelector('.conv-pane')) {
@@ -515,6 +529,9 @@ var paneDraw = function (parts) {
 		copy.inert = true;
 		real.after(copy);
 		real.style.display = 'none';
+		// Never for long, whatever happens to the request.
+		clearTimeout(paneDrawTimer);
+		paneDrawTimer = setTimeout(paneUndraw, 15000);
 		copy.querySelectorAll('[data-snap-scroll]').forEach(function (node) {
 			var scroll = node.getAttribute('data-snap-scroll');
 			node.scrollTop = scroll == 'bottom' ? node.scrollHeight : parseInt(scroll);
@@ -556,6 +573,8 @@ document.addEventListener('livewire:init', function () {
 		document.body.setAttribute('data-folder_id', data.folder_id);
 		document.body.removeAttribute('data-page-url');
 		document.body.setAttribute('data-pane-version', data.version || '');
+		paneDrawing = null;
+		paneUndraw();
 		listOpened(data.folder_id, data.id);
 		// As it's shown now, for the next time (once it has settled); then those after it.
 		setTimeout(paneSnapshot, 600);
