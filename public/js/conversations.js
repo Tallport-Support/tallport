@@ -94,6 +94,12 @@ document.addEventListener('focusin', function (e) {
 		navFocus = null;
 	}
 });
+// A click elsewhere (on text, which takes no focus) ends it too.
+document.addEventListener('pointerdown', function (e) {
+	if (navFocus !== null && !(e.target.closest && e.target.closest('.conv-next-prev'))) {
+		navFocus = null;
+	}
+}, true);
 // A copy (paneDraw()): clicks do nothing in it, but Newer and Older.
 document.addEventListener('click', function (e) {
 	var copy = e.target.closest && e.target.closest('.pane-local');
@@ -577,7 +583,11 @@ document.addEventListener('livewire:init', function () {
 			paneWanted = null;
 			paneUndraw();
 			if (name == 'conversation-toolbar') {
-				setTimeout(navRefocus, 0);
+				// Once on the server's toolbar: done (a later change to it doesn't take the focus).
+				setTimeout(function () {
+					navRefocus();
+					navFocus = null;
+				}, 0);
 			}
 		} else if (name == 'conversation-list') {
 			listDrawing = null;

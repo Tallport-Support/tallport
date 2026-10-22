@@ -3254,7 +3254,8 @@ h1.settings-toolbar__title {
 /* The conversation's toolbar stays one line, as in the example. */
 #conv-toolbar {
     flex-wrap: nowrap;
-    overflow: hidden;
+    /* Sideways only: the buttons' focus rings show in full. */
+    overflow-x: clip;
 }
 #conv-toolbar .conv-info {
     flex-wrap: nowrap;

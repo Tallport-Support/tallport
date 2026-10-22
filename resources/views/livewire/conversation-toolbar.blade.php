@@ -104,9 +104,14 @@
                     <x-fruit::menu-link href="#" class="conv-restore-trigger" wire:click.prevent="restore">{{ __('Restore') }}</x-fruit::menu-link>
                 @endif
             </x-fruit::menu>
-        </li>@action('conversation.convinfo.before_nav', $conversation, $mailbox)<li class="conv-next-prev">
-            <a href="{{ $conversation->urlPrev($conversation->getCurrentFolder()) }}" class="f-button f-button--ghost f-button--icon" title="{{ __("Newer") }}" aria-label="{{ __("Newer") }}"><x-icon.chevron-up class="f-icon" aria-hidden="true" /></a>
-            <a href="{{ $conversation->urlNext($conversation->getCurrentFolder()) }}" class="f-button f-button--ghost f-button--icon" title="{{ __("Older") }}" aria-label="{{ __("Older") }}"><x-icon.chevron-down class="f-icon" aria-hidden="true" /></a>
+        </li>@action('conversation.convinfo.before_nav', $conversation, $mailbox)@php
+            // Newer and Older: disabled at the ends of the folder's list (FruitUI: aria-disabled).
+            $nav_prev = $conversation->getNearby('prev', $conversation->getCurrentFolder());
+            $nav_next = $conversation->getNearby('next', $conversation->getCurrentFolder());
+            $nav_folder_url = \App\Misc\Sidebar::folderUrl($conversation->folder, $conversation->mailbox_id);
+        @endphp<li class="conv-next-prev">
+            <a href="{{ $nav_prev ? $nav_prev->url() : $nav_folder_url }}" class="f-button f-button--ghost f-button--icon" title="{{ __("Newer") }}" @if (!$nav_prev) aria-disabled="true" @endif aria-label="{{ __("Newer") }}"><x-icon.chevron-up class="f-icon" aria-hidden="true" /></a>
+            <a href="{{ $nav_next ? $nav_next->url() : $nav_folder_url }}" class="f-button f-button--ghost f-button--icon" title="{{ __("Older") }}" @if (!$nav_next) aria-disabled="true" @endif aria-label="{{ __("Older") }}"><x-icon.chevron-down class="f-icon" aria-hidden="true" /></a>
         </li><li class="conv-customer-toggle">
             <button type="button" class="f-button f-button--ghost f-button--icon app-inspector-toggle" x-data x-on:click="let ws = $el.closest('.app-workspace'); ws.dataset.view = ws.dataset.view === 'inspector' ? '' : 'inspector'; $el.setAttribute('aria-expanded', ws.dataset.view === 'inspector')" aria-expanded="false" aria-controls="app-inspector" aria-label="{{ __('Customer') }}" title="{{ __('Customer') }}"><x-icon.circle-user class="f-icon" aria-hidden="true" /></button>
         </li>
