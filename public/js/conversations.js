@@ -1544,6 +1544,13 @@ document.addEventListener('alpine:init', function () {
 						} else if (change == 'unread' && link && !('unread' in li.dataset)) {
 							li.dataset.unread = '';
 							link.setAttribute('data-unread', '');
+							var top = link.querySelector('.f-item-row__top');
+							if (top && !top.querySelector('.f-item-row__unread')) {
+								var dot = document.createElement('span');
+								dot.className = 'f-item-row__unread';
+								dot.setAttribute('aria-hidden', 'true');
+								top.appendChild(dot);
+							}
 						}
 					});
 				}, 0);
