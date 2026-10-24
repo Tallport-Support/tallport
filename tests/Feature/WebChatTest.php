@@ -108,6 +108,18 @@ class WebChatTest extends FeatureTestCase
         $this->get('/t/s')->assertOk()->assertHeader('Content-Type', 'text/css; charset=utf-8')->assertSee('.widget-bubble', false);
         $this->get('/t/j')->assertOk()->assertSee('tallportWebChat', false);
         $this->assertFileExists(public_path('t/t.js'));
+
+        // The PHP proxy example passes on every one of them (a path it drops breaks the chat there).
+        $this->assertSame(1, preg_match("#preg_match\\('(.+?)', \\\$path\\)#", file_get_contents(base_path('examples/website-chat/proxy/php/index.php')), $example));
+        $paths = ['t.js'];
+        foreach (\Route::getRoutes() as $route) {
+            if (str_starts_with($route->uri(), 't/')) {
+                $paths = array_merge($paths, $route->uri() == 't/{name}' ? explode('|', $route->wheres['name']) : [substr($route->uri(), 2)]);
+            }
+        }
+        foreach ($paths as $path) {
+            $this->assertSame(1, preg_match($example[1], $path), '/t/'.$path);
+        }
     }
 
     public function testAVisitorWritesAndTheTeamAnswers()

@@ -6,7 +6,8 @@ const TALLPORT = 'https://help.example.com';
 const SECRET = 'SECRET';
 
 $path = substr(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), strlen('/t/'));
-if (!preg_match('/^(t\.js|[wsjxpvmrfiec])$/', $path)) {
+// The script and the window's one-letter paths, whichever Tallport has now or adds later.
+if (!preg_match('/^(t\.js|[a-z])$/', $path)) {
     http_response_code(404);
     exit;
 }
