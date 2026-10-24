@@ -1940,5 +1940,8 @@
     "You're offline. The change wasn't saved.": "Du er frakoblet. Endringen ble ikke lagret.",
     "Not available offline.": "Ikke tilgjengelig frakoblet.",
     "Replace Image": "Erstatt Bilde",
-    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Vises for kunder i nettstedchatten, for eksempel en logo. JPG, GIF eller PNG, beskåret til et kvadrat."
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Vises for kunder i nettstedchatten, for eksempel en logo. JPG, GIF eller PNG, beskåret til et kvadrat.",
+    "Delete Mailbox…": "Slett Postkasse…",
+    "More for :name": "Mer for :name",
+    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "En postkasses adresse, signatur, tilkobling og personer ligger i dens egne innstillinger, i postkassen."
 }

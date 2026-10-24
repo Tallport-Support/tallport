@@ -30,6 +30,11 @@ class MailboxesController extends Controller
      */
     public function mailboxes()
     {
+        // Admins'; everyone else reaches a mailbox's settings from its menu in the sidebar.
+        if (!auth()->user()->isAdmin()) {
+            \Helper::denyAccess();
+        }
+
         return view('mailboxes/mailboxes');
     }
 
@@ -40,9 +45,8 @@ class MailboxesController extends Controller
     {
         $this->authorize('create', 'App\Mailbox');
 
-        $users = User::nonDeleted()->where('role', '!=', User::ROLE_ADMIN)->get();
-
-        return view('mailboxes/create', ['users' => $users]);
+        // New Mailbox is a dialog of Settings › Mailboxes.
+        return redirect()->route('mailboxes', ['new' => 1]);
     }
 
     /**
@@ -67,7 +71,7 @@ class MailboxesController extends Controller
         }
 
         if ($invalid || $validator->fails()) {
-            return redirect()->route('mailboxes.create')
+            return redirect()->route('mailboxes')
                         ->withErrors($validator)
                         ->withInput();
         }

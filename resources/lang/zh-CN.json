@@ -1938,5 +1938,8 @@
     "You're offline. The change wasn't saved.": "已离线，更改未保存。",
     "Not available offline.": "离线时不可用。",
     "Replace Image": "更换图片",
-    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "在网站聊天中向客户显示，例如徽标。支持 JPG、GIF 或 PNG，裁剪为正方形。"
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "在网站聊天中向客户显示，例如徽标。支持 JPG、GIF 或 PNG，裁剪为正方形。",
+    "Delete Mailbox…": "删除邮箱…",
+    "More for :name": ":name 的更多操作",
+    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "邮箱的地址、签名、连接和人员都在邮箱内它自己的设置中。"
 }

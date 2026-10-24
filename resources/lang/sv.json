@@ -1937,5 +1937,8 @@
     "You're offline. The change wasn't saved.": "Du är offline. Ändringen sparades inte.",
     "Not available offline.": "Inte tillgängligt offline.",
     "Replace Image": "Ersätt Bild",
-    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Visas för kunder i webbplatschatten, till exempel en logotyp. JPG, GIF eller PNG, beskuren till en kvadrat."
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Visas för kunder i webbplatschatten, till exempel en logotyp. JPG, GIF eller PNG, beskuren till en kvadrat.",
+    "Delete Mailbox…": "Radera Brevlåda…",
+    "More for :name": "Mer för :name",
+    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "En brevlådas adress, signatur, anslutning och personer finns i dess egna inställningar, i brevlådan."
 }

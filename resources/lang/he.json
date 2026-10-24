@@ -1937,5 +1937,8 @@
     "You're offline. The change wasn't saved.": "אין חיבור. השינוי לא נשמר.",
     "Not available offline.": "לא זמין במצב לא מקוון.",
     "Replace Image": "החלפת תמונה",
-    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "מוצגת ללקוחות בצ'אט לאתר, למשל לוגו. JPG, GIF או PNG, חתוכה לריבוע."
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "מוצגת ללקוחות בצ'אט לאתר, למשל לוגו. JPG, GIF או PNG, חתוכה לריבוע.",
+    "Delete Mailbox…": "מחק תיבת דואר…",
+    "More for :name": "עוד עבור :name",
+    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "הכתובת, החתימה, החיבור והאנשים של תיבת דואר נמצאים בהגדרות שלה, בתוך התיבה."
 }

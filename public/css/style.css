@@ -1937,8 +1937,20 @@ h1.settings-toolbar__title {
 .page-content {
     padding: 20px;
 }
-/* Settings › Mailboxes: a row per mailbox (mailboxes/mailboxes), and a mailbox's further pages
-   (mailboxes/settings_menu). A value that needs attention is in the warning colour. */
+/* Settings › Mailboxes: a row per mailbox (mailboxes/columns/mailboxes), its link and its menu side by
+   side; and a mailbox's settings pages (mailboxes/settings_menu). A value that needs attention is in
+   the warning colour. */
+.mailbox-row {
+    flex-wrap: nowrap;
+}
+.mailbox-row__link {
+    flex: 1;
+    color: var(--f-text);
+    text-decoration: none;
+}
+.mailbox-row__link:hover .mailbox-row__label {
+    text-decoration: underline;
+}
 .mailbox-row__main {
     display: flex;
     align-items: center;

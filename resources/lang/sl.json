@@ -1937,5 +1937,8 @@
     "You're offline. The change wasn't saved.": "Niste povezani. Sprememba ni bila shranjena.",
     "Not available offline.": "Brez povezave ni na voljo.",
     "Replace Image": "Zamenjaj Sliko",
-    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Prikazana strankam v klepetu na spletnem mestu, na primer logotip. JPG, GIF ali PNG, obrezana na kvadrat."
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Prikazana strankam v klepetu na spletnem mestu, na primer logotip. JPG, GIF ali PNG, obrezana na kvadrat.",
+    "Delete Mailbox…": "Izbriši Poštni Predal…",
+    "More for :name": "Več za :name",
+    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Naslov, podpis, povezava in osebe poštnega predala so v njegovih nastavitvah, v predalu."
 }

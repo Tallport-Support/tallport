@@ -1953,5 +1953,8 @@
     "You're offline. The change wasn't saved.": "Olet offline-tilassa. Muutosta ei tallennettu.",
     "Not available offline.": "Ei käytettävissä offline-tilassa.",
     "Replace Image": "Vaihda Kuva",
-    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Näytetään asiakkaille verkkosivun chatissa, esimerkiksi logo. JPG, GIF tai PNG, rajattuna neliöksi."
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Näytetään asiakkaille verkkosivun chatissa, esimerkiksi logo. JPG, GIF tai PNG, rajattuna neliöksi.",
+    "Delete Mailbox…": "Poista Postilaatikko…",
+    "More for :name": "Lisää: :name",
+    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Postilaatikon osoite, allekirjoitus, yhteys ja henkilöt ovat sen omissa asetuksissa, postilaatikossa."
 }

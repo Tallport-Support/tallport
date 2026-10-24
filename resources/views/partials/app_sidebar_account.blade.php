@@ -64,9 +64,7 @@
     {{-- Settings: the sidebar then lists them (partials/app_sidebar_settings). --}}
     @php
         $sidebar_settings_url = $sidebar_user->isAdmin() ? route('settings')
-            : ($sidebar_user->hasPermission(App\User::PERM_EDIT_USERS) ? route('users')
-            : ($sidebar_user->can('viewMailboxMenu', $sidebar_user) ? route('mailboxes')
-            : route('own.profile')));
+            : ($sidebar_user->hasPermission(App\User::PERM_EDIT_USERS) ? route('users') : route('own.profile'));
     @endphp
     <x-fruit::menu-link wire:navigate :href="$sidebar_settings_url" class="app-sidebar__settings">{{ __('Settings') }}</x-fruit::menu-link>
     <x-fruit::menu-separator />

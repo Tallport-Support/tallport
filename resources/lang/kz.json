@@ -2330,5 +2330,8 @@
     "You're offline. The change wasn't saved.": "Желіден тыссыз. Өзгеріс сақталмады.",
     "Not available offline.": "Желіден тыс қолжетімсіз.",
     "Replace Image": "Суретті Ауыстыру",
-    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Сайттағы чатта клиенттерге көрсетіледі, мысалы, логотип. JPG, GIF немесе PNG, шаршы пішінге қиылады."
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Сайттағы чатта клиенттерге көрсетіледі, мысалы, логотип. JPG, GIF немесе PNG, шаршы пішінге қиылады.",
+    "Delete Mailbox…": "Жәшікті Жою…",
+    "More for :name": ":name үшін қосымша",
+    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Пошталық жәшіктің мекенжайы, қолтаңбасы, қосылымы және адамдары оның өз параметрлерінде, жәшіктің ішінде."
 }

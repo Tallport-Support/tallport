@@ -1937,5 +1937,8 @@
     "You're offline. The change wasn't saved.": "Немає підключення до мережі. Зміну не збережено.",
     "Not available offline.": "Недоступно без мережі.",
     "Replace Image": "Замінити Зображення",
-    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Показується клієнтам у чаті на сайті, наприклад логотип. JPG, GIF або PNG, обрізається до квадрата."
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Показується клієнтам у чаті на сайті, наприклад логотип. JPG, GIF або PNG, обрізається до квадрата.",
+    "Delete Mailbox…": "Видалити Поштову Скриньку…",
+    "More for :name": "Більше для :name",
+    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Адреса, підпис, підключення та люди поштової скриньки — у її власних налаштуваннях, у скриньці."
 }

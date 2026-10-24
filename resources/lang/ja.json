@@ -1937,5 +1937,8 @@
     "You're offline. The change wasn't saved.": "オフラインです。変更は保存されませんでした。",
     "Not available offline.": "オフラインでは利用できません。",
     "Replace Image": "画像を置き換える",
-    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "ウェブサイトチャットで顧客に表示されます（ロゴなど）。JPG、GIF、PNG に対応し、正方形に切り抜かれます。"
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "ウェブサイトチャットで顧客に表示されます（ロゴなど）。JPG、GIF、PNG に対応し、正方形に切り抜かれます。",
+    "Delete Mailbox…": "メールボックスの削除…",
+    "More for :name": ":name のその他",
+    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "メールボックスのアドレス、署名、接続、人は、メールボックス内のそれぞれの設定にあります。"
 }

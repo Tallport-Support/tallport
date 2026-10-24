@@ -119,25 +119,38 @@ PHP;
     // Lists and pages.
 
     /**
-     * Settings › Mailboxes lists, for someone who isn't an admin, only the mailboxes they
-     * manage something of; New Mailbox lists the people (not admins) to give access.
+     * Settings › Mailboxes is admins': a row per mailbox leading to its settings, in the mailbox, with
+     * a menu (its settings, the mailbox, Delete Mailbox with the password), and New Mailbox. Others
+     * reach a mailbox's settings from its menu in the sidebar.
      */
-    public function testMailboxListAndNewMailboxForm()
+    public function testTheMailboxesList()
     {
-        $agent = $this->createUser(['first_name' => 'Alex', 'last_name' => 'Agent']);
+        $agent = $this->createUser();
         $managed = $this->createMailbox([$agent], ['name' => 'Managed Box']);
-        $this->createMailbox([$agent], ['name' => 'Worked Box']);
         $managed->users()->updateExistingPivot($agent->id, ['access' => json_encode([Mailbox::ACCESS_PERM_EDIT])]);
+        $this->createMailbox([], ['name' => 'Worked Box']);
 
-        $this->actingAs($agent)->get(route('mailboxes'))->assertOk()
-            ->assertSee('Managed Box')->assertDontSee('Worked Box');
-        $this->actingAs($this->admin)->get(route('mailboxes'))->assertOk()
-            ->assertSee('Managed Box')->assertSee('Worked Box');
+        $this->actingAs($agent)->get(route('mailboxes'))->assertForbidden();
+        $this->actingAs($agent)->get(route('own.profile'))->assertOk()->assertDontSee('href="'.route('mailboxes').'"', false);
 
-        $this->actingAs($this->admin)->get(route('mailboxes.create'))->assertOk()
-            ->assertSee('Alex Agent')
-            ->assertSee('id="user-'.$agent->id.'"', false)
-            ->assertDontSee('id="user-'.$this->admin->id.'"', false);
+        $html = $this->actingAs($this->admin)->get(route('mailboxes'))->assertOk()
+            ->assertSee('Worked Box')->assertSee($managed->email)
+            ->assertSeeInOrder(['href="'.route('mailboxes.update', ['id' => 'managed-box']).'"', 'Managed Box', 'More for Managed Box',
+                'Mailbox Settings', 'href="'.route('mailboxes.view', ['id' => 'managed-box']).'"', 'Open Mailbox', 'Delete Mailbox…'], false)
+            ->assertSee('A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.')
+            // Deleting asks for the password, in a dialog of the mailbox's own.
+            ->assertSee('Delete the Managed Box mailbox?')->assertSee('id="delete_mailbox_password_'.$managed->id.'"', false)
+            // New Mailbox: its name and address, in a dialog, closed until asked for.
+            ->assertSee('id="new_mailbox_name"', false)->assertDontSee('x-init="$nextTick(() => $dispatch(\'fruit-dialog-open\', { name: \'new-mailbox\' }))"', false)
+            ->getContent();
+        $this->assertStringNotContainsString('Danger Zone', $html);
+
+        // The older New Mailbox address, and what needs correcting: the dialog, open, with what was entered.
+        $this->actingAs($this->admin)->get(route('mailboxes.create'))->assertRedirect(route('mailboxes', ['new' => 1]));
+        $this->actingAs($this->admin)->get(route('mailboxes', ['new' => 1]))->assertSee("name: 'new-mailbox'", false);
+        $this->postForm($this->admin, route('mailboxes.create'), ['name' => 'Billing', 'email' => 'not an address'])
+            ->assertRedirect(route('mailboxes'))->assertSessionHasErrors('email');
+        $this->actingAs($this->admin)->get(route('mailboxes'))->assertSee('value="Billing"', false)->assertSee("name: 'new-mailbox'", false);
     }
 
     /**

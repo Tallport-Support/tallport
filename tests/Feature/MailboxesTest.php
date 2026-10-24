@@ -222,14 +222,14 @@ class MailboxesTest extends FeatureTestCase
 
         $current = fn ($href) => '#<a (?=[^>]*href="'.preg_quote($href, '#').'")[^>]*aria-current="page"#';
         $this->actingAs($this->admin)->get(route('mailboxes'))->assertOk()
-            ->assertSee('href="'.route('mailboxes.update', ['id' => 'support']).'"', false)->assertSee('Not set up');
+            ->assertSee('href="'.route('mailboxes.update', ['id' => 'support']).'"', false);
         $html = $this->actingAs($this->admin)->get('/mailbox/support/settings')->assertOk()
             ->assertSeeInOrder(['>Settings</h1>', 'Support', 'General', 'Connection Settings', 'Not set up', 'Permissions', '2 people', 'Auto Reply', 'On',
                 'Chat', 'Website Chat', 'Telegram', 'Matrix', 'Nostr', 'AI', 'Documentation', 'Workflows', 'Saved Replies', '>General</h1>'], false)
             // The inbox sidebar, not Settings'.
             ->assertSee('app-sidebar__mailbox', false)->assertDontSee('id="settings-search"', false)
             // Saved with its button: the signature and From name go to customers.
-            ->assertSeeInOrder(['id="mailbox-form"', 'Reopen Window', 'Save', 'Danger Zone'], false)->getContent();
+            ->assertSeeInOrder(['id="mailbox-form"', 'Reopen Window', 'Save'], false)->assertDontSee('Delete Mailbox')->getContent();
         $this->assertDoesNotMatchRegularExpression('/<form id="mailbox-form"[^>]*autoSave/', $html);
         $this->assertMatchesRegularExpression($current(route('mailboxes.general', ['id' => 'support'])), $html);
 
@@ -263,8 +263,8 @@ class MailboxesTest extends FeatureTestCase
         $this->assertMatchesRegularExpression($current(route('mailboxes.saved_replies', ['id' => 'support'])),
             $this->actingAs($this->admin)->get(route('mailboxes.saved_replies', ['id' => 'support']))->assertOk()->assertSee('>Saved Replies</h1>', false)->getContent());
 
-        // Only its permissions: the list leads there, and holds no other row.
-        $this->actingAs($manager)->get(route('mailboxes'))->assertOk()->assertSee('href="'.route('mailboxes.permissions', ['id' => 'support']).'"', false);
+        // Only its permissions: its menu's Mailbox Settings leads there, and the list holds no other row.
+        $this->actingAs($manager)->get(route('mailboxes.view', ['id' => 'support']))->assertOk()->assertSee('href="'.route('mailboxes.update', ['id' => 'support']).'"', false);
         $this->actingAs($manager)->get(route('mailboxes.permissions', ['id' => 'support']))->assertOk()
             ->assertSee('>Permissions</h1>', false)->assertDontSee('>General<', false)->assertDontSee('Auto Reply');
         $this->actingAs($manager)->get(route('mailboxes.update', ['id' => 'support']))->assertRedirect();

@@ -1981,5 +1981,8 @@
     "You're offline. The change wasn't saved.": "已離線，變更未儲存。",
     "Not available offline.": "離線時無法使用。",
     "Replace Image": "更換圖片",
-    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "在網站聊天中向客戶顯示，例如標誌。支援 JPG、GIF 或 PNG，裁切為正方形。"
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "在網站聊天中向客戶顯示，例如標誌。支援 JPG、GIF 或 PNG，裁切為正方形。",
+    "Delete Mailbox…": "刪除信箱…",
+    "More for :name": ":name 的更多動作",
+    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "信箱的地址、簽名檔、連線和人員都在信箱內它自己的設定中。"
 }

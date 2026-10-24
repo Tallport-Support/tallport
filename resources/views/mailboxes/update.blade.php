@@ -128,40 +128,5 @@
         <footer class="f-form-row settings-form__actions">
             <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
         </footer>
-
-        @if (auth()->user()->isAdmin())
-            <x-fruit::form-section :title="__('Danger Zone')" :level="3">
-                <div class="f-form-row">
-                    <div>
-                        <strong class="f-headline">{{ __('Delete Mailbox') }}</strong>
-                        <p class="f-help">{{ __('Deleting this mailbox will remove all historical data and deactivate related workflows and reports.') }}</p>
-                    </div>
-                    <x-fruit::button variant="danger" x-on:click="$dispatch('fruit-dialog-open', { name: 'delete-mailbox' })">{{ __('Delete Mailbox') }}</x-fruit::button>
-                </div>
-            </x-fruit::form-section>
-        @endif
-
     </form>
-
-    @if (auth()->user()->isAdmin())
-        <x-fruit::dialog name="delete-mailbox" aria-labelledby="delete-mailbox-title">
-            <form x-data="tallportDeleteMailbox({{ $mailbox->id }})" x-on:submit.prevent="remove">
-                <header class="f-dialog__header">
-                    <h2 id="delete-mailbox-title">{{ __('Delete the :mailbox_name mailbox?', ['mailbox_name' => $mailbox->name]) }}</h2>
-                </header>
-                <div class="f-dialog__body f-stack">
-                    <p>{{ __('Deleting this mailbox will remove all historical data and deactivate related workflows and reports.') }}</p>
-                    @if (!Auth::user()->isDummyPassword())
-                        <x-fruit::field :label="__('Please confirm your password:')">
-                            <x-fruit::input type="password" id="delete_mailbox_password" autocomplete="current-password" />
-                        </x-fruit::field>
-                    @endif
-                </div>
-                <footer class="f-dialog__footer">
-                    <x-fruit::button type="button" x-on:click="$el.closest('dialog').close()">{{ __('Cancel') }}</x-fruit::button>
-                    <x-fruit::button type="submit" variant="danger">{{ __('Delete Mailbox') }}</x-fruit::button>
-                </footer>
-            </form>
-        </x-fruit::dialog>
-    @endif
 @endsection

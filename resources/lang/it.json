@@ -1937,5 +1937,8 @@
     "You're offline. The change wasn't saved.": "Sei offline. La modifica non è stata salvata.",
     "Not available offline.": "Non disponibile offline.",
     "Replace Image": "Sostituisci Immagine",
-    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Mostrata ai clienti nella chat del sito web, ad esempio un logo. JPG, GIF o PNG, ritagliata in un quadrato."
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Mostrata ai clienti nella chat del sito web, ad esempio un logo. JPG, GIF o PNG, ritagliata in un quadrato.",
+    "Delete Mailbox…": "Elimina Casella di Posta…",
+    "More for :name": "Altro per :name",
+    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Indirizzo, firma, connessione e persone di una casella postale sono nelle sue impostazioni, all’interno della casella."
 }

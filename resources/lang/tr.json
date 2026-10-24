@@ -1937,5 +1937,8 @@
     "You're offline. The change wasn't saved.": "Çevrimdışısınız. Değişiklik kaydedilmedi.",
     "Not available offline.": "Çevrimdışıyken kullanılamaz.",
     "Replace Image": "Görseli Değiştir",
-    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Web sitesi sohbetinde müşterilere gösterilir, örneğin bir logo. JPG, GIF veya PNG, kare olarak kırpılır."
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Web sitesi sohbetinde müşterilere gösterilir, örneğin bir logo. JPG, GIF veya PNG, kare olarak kırpılır.",
+    "Delete Mailbox…": "Posta Kutusunu Sil…",
+    "More for :name": ":name için daha fazla",
+    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Bir posta kutusunun adresi, imzası, bağlantısı ve kişileri, posta kutusunun içindeki kendi ayarlarındadır."
 }

@@ -34,14 +34,13 @@
 
 @if ($sidebar_user->isAdmin()
     || $sidebar_user->hasPermission(App\User::PERM_EDIT_USERS)
-    || $sidebar_user->can('viewMailboxMenu', $sidebar_user)
     || Eventy::filter('menu.manage.can_view', false)
 )
     <p class="f-sidebar__heading">{{ __('Manage') }}</p>
-    @if ($sidebar_user->can('viewMailboxMenu', $sidebar_user))
-        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('mailboxes/mailboxes', 'mailboxes/create', 'mailboxes/update', 'mailboxes/connection', 'mailboxes/connection_incoming', 'mailboxes/permissions', 'mailboxes/auto_reply', 'mailboxes/telegram', 'mailboxes/ai', 'mailboxes/documentation', 'nostr/mailbox_settings')" :href="route('mailboxes')" :current="in_array($settings_route, ['mailboxes', 'mailboxes.create']) || (!empty($mailbox) && $mailbox instanceof App\Mailbox && $mailbox->id)"><x-slot:icon><x-icon.inbox class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Mailboxes') }}</x-fruit::sidebar-item>
+    {{-- Admins': creating and deleting mailboxes. A mailbox's settings are in the mailbox (found there). --}}
+    @if ($sidebar_user->isAdmin())
+        <x-fruit::sidebar-item wire:navigate :data-search="App\Misc\Sidebar::settingsKeywords('mailboxes/columns/mailboxes')" :href="route('mailboxes')" :current="$settings_route == 'mailboxes'"><x-slot:icon><x-icon.inbox class="f-icon" aria-hidden="true" /></x-slot:icon>{{ __('Mailboxes') }}</x-fruit::sidebar-item>
     @endif
-    {{-- A mailbox's pages (mailboxes/sidebar_menu) keep Mailboxes current: they're reached from its list. --}}
     <ul class="app-sidebar__module-items">@action('menu.manage.after_mailboxes')</ul>
     @if ($sidebar_user->isAdmin() || $sidebar_user->hasPermission(App\User::PERM_EDIT_USERS))
         {{-- In a drill-down (layouts/app) with a person open, Users leads there: current, not the page. --}}

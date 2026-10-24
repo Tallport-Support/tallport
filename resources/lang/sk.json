@@ -1937,5 +1937,8 @@
     "You're offline. The change wasn't saved.": "Ste offline. Zmena nebola uložená.",
     "Not available offline.": "Offline nie je k dispozícii.",
     "Replace Image": "Nahradiť Obrázok",
-    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Zobrazuje sa zákazníkom v chate na webovej stránke, napríklad logo. JPG, GIF alebo PNG, orezané na štvorec."
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Zobrazuje sa zákazníkom v chate na webovej stránke, napríklad logo. JPG, GIF alebo PNG, orezané na štvorec.",
+    "Delete Mailbox…": "Vymazať Mailbox…",
+    "More for :name": "Viac pre :name",
+    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Adresa, podpis, pripojenie a ľudia mailboxu sú v jeho vlastných nastaveniach, v mailboxe."
 }
