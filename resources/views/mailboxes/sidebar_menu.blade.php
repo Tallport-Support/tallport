@@ -21,6 +21,8 @@
 @if (!$menu_list_first)
     @section('split_class', 'split-view--open')
 @endif
+{{-- Settings start at the pane's edge (FruitUI), as the list beside them. --}}
+@section('page_align', 'start')
 @if ($menu_page_url)
     @section('body_attrs')@parent data-page-url="{{ $menu_page_url }}"@endsection
 @endif

@@ -18,7 +18,7 @@
         && collect($page['routes'])->contains(fn ($route) => $settings_route == $route || str_starts_with($settings_route, $route.'.'));
 @endphp
 <nav class="mailbox-settings" aria-label="{{ __('Mailbox Settings') }}">
-    <x-fruit::page style="--f-page-background: var(--f-grouped-background)">
+    <x-fruit::page align="start" style="--f-page-background: var(--f-grouped-background)">
         @foreach ($settings_groups as $settings_index => [$settings_title, $settings_group])
             @php $settings_last = $settings_index == count($settings_groups) - 1; @endphp
             @if ($settings_index == 0 || $settings_group || ($settings_last && $settings_module_pages !== ''))

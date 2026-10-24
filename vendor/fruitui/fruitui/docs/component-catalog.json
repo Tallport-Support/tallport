@@ -1423,14 +1423,14 @@
     "kind": "pattern",
     "classes": ["f-page"],
     "blade": ["page"],
-    "uses": ["settings.html", "examples/laravel/settings.blade.php"],
+    "uses": ["settings.html", "support.html", "examples/laravel/settings.blade.php"],
     "contracts": {
       "page": {
-        "purpose": "Give a page one content column, centered in its pane, that its header, content and save bar share.",
+        "purpose": "Give a page one content column, centered in its pane or from its start, that its header, content and save bar share.",
         "element": "`div.f-page` with an optional `header` (title heading, description, actions), optional `div.f-page__nav` section tabs, the content, and an optional `footer` that sticks to the bottom of the scrolling pane or window.",
         "state": "No state.",
         "keyboard": "No keyboard behavior of its own.",
-        "options": "`width`: narrow (640px, forms and settings), medium (default, 880px, reading and detail pages), wide (1200px, tables). `title`, `description`, `level` (1 to 3, default 1). Slots: default (content), `back` (a Back Link to the parent page, starting the title's row so the header keeps its height at every level, as settings drill down), `actions` (beside the title), `nav` (section tabs such as Section Navigation, under the header and spaced from the content by the page, however the content is wrapped), `footer` (a save bar: status first, actions last). The page ends with `--f-page-padding-block` of space below its last section, so the end reads as the end; a shown save bar takes that space instead (hide it with `hidden` when a page has nothing to save). Set `--f-page-background` to the background the page sits on, so the save bar covers what scrolls beneath it; `--f-page-gap`, `--f-page-padding-block` and `--f-page-padding-inline` adjust spacing."
+        "options": "`width`: narrow (640px, forms and settings), medium (default, 880px, reading and detail pages), wide (1200px, tables). `align`: center (default) or start (`f-page--start`): settings start at their pane's edge with a phone's margins instead of floating in the middle of a wide window, as a page in a Drill-Down level does by itself; use it for a settings page beside the list of its pages. `title`, `description`, `level` (1 to 3, default 1). Slots: default (content), `back` (a Back Link to the parent page, starting the title's row so the header keeps its height at every level, as settings drill down), `actions` (beside the title), `nav` (section tabs such as Section Navigation, under the header and spaced from the content by the page, however the content is wrapped), `footer` (a save bar: status first, actions last). The page ends with `--f-page-padding-block` of space below its last section, so the end reads as the end; a shown save bar takes that space instead (hide it with `hidden` when a page has nothing to save). Set `--f-page-background` to the background the page sits on, so the save bar covers what scrolls beneath it; `--f-page-gap`, `--f-page-padding-block` and `--f-page-padding-inline` adjust spacing."
       }
     }
   },

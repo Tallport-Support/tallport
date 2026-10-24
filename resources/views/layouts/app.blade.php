@@ -119,8 +119,9 @@
                         @endif
                         @hasSection('page_width')
                             {{-- A settings or detail page: one column (FruitUI's page) for its tabs and
-                                 content, with its save bar (page_footer) kept in view. --}}
-                            <x-fruit::page :width="$__env->yieldContent('page_width')" class="app-page" style="--f-page-background: var(--f-grouped-background)" x-data="{ dirty: false }" x-on:input="dirty = true" x-on:change="dirty = true">
+                                 content, with its save bar (page_footer) kept in view; a settings page
+                                 starts at the pane's edge (page_align start), a detail page is centred. --}}
+                            <x-fruit::page :width="$__env->yieldContent('page_width')" :align="trim($__env->yieldContent('page_align')) ?: 'center'" class="app-page" style="--f-page-background: var(--f-grouped-background)" x-data="{ dirty: false }" x-on:input="dirty = true" x-on:change="dirty = true">
                                 {{-- Its tabs (x-page-nav) under the header, spaced by the page. --}}
                                 @hasSection('sidebar')
                                     <x-slot:nav>@yield('sidebar')</x-slot:nav>

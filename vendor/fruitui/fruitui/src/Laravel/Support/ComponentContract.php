@@ -55,7 +55,7 @@ final class ComponentContract
         'remote-dialog' => [],
         'generated' => ['roles' => ['note']],
         'suggestion' => ['roles' => ['region']],
-        'page' => ['options' => ['width' => ['narrow', 'medium', 'wide']]],
+        'page' => ['options' => ['width' => ['narrow', 'medium', 'wide'], 'align' => ['center', 'start']]],
         'accent-picker' => ['roles' => ['radiogroup']],
         'disclosure' => ['roles' => ['group'], 'options' => ['variant' => ['box', 'quiet']]],
         'drilldown' => ['roles' => ['group', 'region']],
@@ -418,9 +418,9 @@ final class ComponentContract
     }
 
     /** A page's width and its title's heading level (1 to 3). */
-    public static function page(mixed $width, mixed $level, ComponentAttributeBag $attributes): int
+    public static function page(mixed $width, mixed $level, ComponentAttributeBag $attributes, mixed $align = 'center'): int
     {
-        self::validate('page', $attributes, ['width' => $width]);
+        self::validate('page', $attributes, ['width' => $width, 'align' => $align]);
         if (! in_array((string) $level, ['1', '2', '3'], true)) {
             throw new InvalidArgumentException('FruitUI page level must be 1, 2 or 3.');
         }
