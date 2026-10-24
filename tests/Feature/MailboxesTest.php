@@ -237,7 +237,7 @@ class MailboxesTest extends FeatureTestCase
             ->assertSee('href="'.route('mailboxes.update', ['id' => 'support']).'"', false);
         $html = $this->actingAs($this->admin)->get('/mailbox/support/settings')->assertOk()
             ->assertSeeInOrder(['>Settings</h1>', 'Support', 'General', 'Permissions', '2 people',
-                'Channels', 'Email', 'Not set up', 'Website Chat', 'Telegram', 'Matrix', 'Nostr', 'AI', 'Documentation', 'Workflows', 'Saved Replies', '>General</h1>'], false)
+                'Channels', 'Email', 'mailbox-pages__problem', 'Needs Attention', 'Website Chat', 'Telegram', 'Matrix', 'Nostr', 'AI', 'Documentation', 'Workflows', 'Saved Replies', '>General</h1>'], false)
             ->assertDontSee('Connection Settings')->assertDontSee('id="email"', false)->assertDontSee('This mailbox can&#039;t receive email yet.', false)
             // The inbox sidebar, not Settings'.
             ->assertSee('app-sidebar__mailbox', false)->assertDontSee('id="settings-search"', false)

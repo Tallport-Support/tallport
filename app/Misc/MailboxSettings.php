@@ -32,8 +32,9 @@ class MailboxSettings
             }
             // Email, a channel like the others: the first of its tabs the user may open (mailboxes/email_menu).
             if ($email_tab = array_key_first(self::emailTabs($mailbox, $user))) {
-                // Its address; not set up: none (a choice), or one it can't send or fetch with yet (a problem).
-                [$email_value, $email_problem] = !$mailbox->hasEmail() ? [__('Not set up'), false] : ($mailbox->isConnected() ? [$mailbox->email, false] : self::connection($mailbox));
+                // Its address; Not set up: none (a choice, as the other channels say it); Needs Attention:
+                // one it can't send or fetch with yet (a problem, in words too, not only in colour).
+                [$email_value, $email_problem] = !$mailbox->hasEmail() ? [__('Not set up'), false] : ($mailbox->isConnected() ? [$mailbox->email, false] : [__('Needs Attention'), true]);
                 $pages[] = self::page(__('Email'), route($email_tab, ['id' => $key]), $email_value, $email_problem, routes: ['mailboxes.email', 'mailboxes.connection', 'mailboxes.auto_reply'], channel: true);
             }
             if ($user->isAdmin()) {
@@ -124,21 +125,6 @@ class MailboxSettings
         $query = request()->getQueryString();
 
         return route($route->getName(), $parameters).($query ? '?'.$query : '');
-    }
-
-    /**
-     * How the mailbox receives and sends ("IMAP · SMTP"), or that it isn't set up (a problem).
-     */
-    public static function connection(Mailbox $mailbox)
-    {
-        if (!$mailbox->isConnected()) {
-            return [__('Not set up'), true];
-        }
-        $in = $mailbox->isDeliveredByMailServer() ? __('Mail Server') : strtoupper((string) $mailbox->getInProtocolName());
-        $out = [Mailbox::OUT_METHOD_PHP_MAIL => 'PHP mail()', Mailbox::OUT_METHOD_SENDMAIL => 'Sendmail', Mailbox::OUT_METHOD_SMTP => 'SMTP'][$mailbox->out_method]
-            ?? \App\Misc\MailProviders::NAMES[(string) $mailbox->getOutProvider()] ?? '';
-
-        return [implode(' · ', array_filter([$in, $out])), false];
     }
 
     /**
