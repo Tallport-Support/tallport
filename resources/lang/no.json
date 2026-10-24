@@ -1944,5 +1944,8 @@
     "Delete Mailbox…": "Slett Postkasse…",
     "More for :name": "Mer for :name",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "En postkasses adresse, signatur, tilkobling og personer ligger i dens egne innstillinger, i postkassen.",
-    "Channels": "Kanaler"
+    "Channels": "Kanaler",
+    "This mailbox has no email address.": "Denne postkassen har ingen e-postadresse.",
+    "No email address": "Ingen e-postadresse",
+    "Without one, this mailbox doesn’t send or receive email.": "Uten adresse sender og mottar denne postkassen ikke e-post."
 }

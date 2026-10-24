@@ -117,7 +117,8 @@ class NewConversation extends Component
         $this->from_aliases = $fromAliases;
         $this->from_alias = $fromAlias && $fromAlias != $mailbox->email ? $fromAlias : '';
 
-        $this->type = $conversation->type == Conversation::TYPE_PHONE ? Conversation::TYPE_PHONE : Conversation::TYPE_EMAIL;
+        // Email only in a mailbox with email (a channel it may not have).
+        $this->type = $conversation->type == Conversation::TYPE_PHONE || !$mailbox->hasEmail() ? Conversation::TYPE_PHONE : Conversation::TYPE_EMAIL;
         $this->thread_id = $thread ? $thread->id : null;
         $this->customer_id = $conversation->customer_id;
         $this->subject = (string) old('subject', $conversation->subject);
@@ -230,6 +231,9 @@ class NewConversation extends Component
     {
         if ($status !== null && $status !== '') {
             $this->status = (int) $status;
+        }
+        if (!Mailbox::find($this->mailbox_id)->hasEmail()) {
+            $this->type = Conversation::TYPE_PHONE;
         }
         if (trim(str_replace('&nbsp;', ' ', strip_tags($this->html(), '<img>'))) === '') {
             Fruit::toast(__('Please enter a message'), 'danger');

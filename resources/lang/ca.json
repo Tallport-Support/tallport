@@ -2032,5 +2032,8 @@
     "Delete Mailbox…": "Elimina Bústia…",
     "More for :name": "Més per a :name",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "L’adreça, la signatura, la connexió i les persones d’una bústia són a la seva pròpia configuració, dins la bústia.",
-    "Channels": "Canals"
+    "Channels": "Canals",
+    "This mailbox has no email address.": "Aquesta bústia no té adreça de correu.",
+    "No email address": "Sense adreça de correu",
+    "Without one, this mailbox doesn’t send or receive email.": "Sense adreça, aquesta bústia no envia ni rep correus."
 }

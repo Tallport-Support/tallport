@@ -42,7 +42,7 @@ class SendWebChatCode implements ShouldQueue
     {
         $visitor = Visitor::find($this->visitor_id);
         // Only while it's still the address waiting for this code.
-        if (!$visitor || $visitor->pending_email !== $this->email || !\App\WebChat\EmailCode::waiting($visitor) || !$visitor->mailbox) {
+        if (!$visitor || $visitor->pending_email !== $this->email || !\App\WebChat\EmailCode::waiting($visitor) || !$visitor->mailbox || !$visitor->mailbox->hasEmail()) {
             return;
         }
         $mailbox = $visitor->mailbox;

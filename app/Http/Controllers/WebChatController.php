@@ -276,6 +276,8 @@ class WebChatController extends Controller
     public function emailCode(Request $request)
     {
         $visitor = $this->visitor($request);
+        // Replies by email only from a mailbox with email.
+        abort_unless($visitor->mailbox->hasEmail(), 404);
         $this->limit('email:'.$visitor->token, 10, 600);
         $this->locale($request);
         $error = \App\WebChat\EmailCode::send($visitor, $request->email, WebChat::clientIp($request, $visitor->mailbox));
@@ -289,6 +291,7 @@ class WebChatController extends Controller
     public function confirmEmail(Request $request)
     {
         $visitor = $this->visitor($request);
+        abort_unless($visitor->mailbox->hasEmail(), 404);
         $this->limit('confirm:'.$visitor->token, 20, 600);
         $this->locale($request);
         $error = \App\WebChat\EmailCode::confirm($visitor, $request->code);

@@ -1948,5 +1948,8 @@
     "Delete Mailbox…": "Supprimer la Boîte aux Lettres…",
     "More for :name": "Plus pour :name",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "L’adresse, la signature, la connexion et les personnes d’une boîte de réception se trouvent dans ses propres paramètres, dans la boîte.",
-    "Channels": "Canaux"
+    "Channels": "Canaux",
+    "This mailbox has no email address.": "Cette boîte de réception n’a pas d’adresse email.",
+    "No email address": "Pas d’adresse email",
+    "Without one, this mailbox doesn’t send or receive email.": "Sans adresse, cette boîte de réception n’envoie ni ne reçoit d’emails."
 }

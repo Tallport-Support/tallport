@@ -1941,5 +1941,8 @@
     "Delete Mailbox…": "Elimina Casella di Posta…",
     "More for :name": "Altro per :name",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Indirizzo, firma, connessione e persone di una casella postale sono nelle sue impostazioni, all’interno della casella.",
-    "Channels": "Canali"
+    "Channels": "Canali",
+    "This mailbox has no email address.": "Questa casella postale non ha un indirizzo email.",
+    "No email address": "Nessun indirizzo email",
+    "Without one, this mailbox doesn’t send or receive email.": "Senza indirizzo, questa casella postale non invia né riceve email."
 }

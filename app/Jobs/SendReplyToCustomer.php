@@ -84,6 +84,13 @@ class SendReplyToCustomer implements ShouldQueue
             $this->logNotSent('the mailbox no longer exists');
             return;
         }
+        // Email is a channel the mailbox may not have (no address): not sent, said on the reply.
+        if (!$mailbox->hasEmail()) {
+            $this->logNotSent('the mailbox has no email address');
+            $this->fail(new \Exception(__('This mailbox has no email address.')));
+
+            return;
+        }
 
         // Add forwarded conversation replies.
         if ($this->conversation->threads_count == 1 && count($this->threads) == 1) {

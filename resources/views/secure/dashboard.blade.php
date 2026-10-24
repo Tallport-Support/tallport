@@ -16,12 +16,18 @@
     @if (count($mailboxes))
         <div class="dash-cards">
             @foreach ($mailboxes as $dash_mailbox)
-                <x-fruit::card class="dash-card {{ (!$dash_mailbox->isConnected() || $dash_mailbox->isArchived()) ? 'dash-card-inactive' : '' }}" data-mailbox-id="{{ $dash_mailbox->id }}">
+                @php
+                    // Ready: its email connected, or no email (a channel it may not have).
+                    $dash_ready = $dash_mailbox->isConnected() || !$dash_mailbox->hasEmail();
+                @endphp
+                <x-fruit::card class="dash-card {{ (!$dash_ready || $dash_mailbox->isArchived()) ? 'dash-card-inactive' : '' }}" data-mailbox-id="{{ $dash_mailbox->id }}">
                     @action('dash_card.before_mailbox_name', $dash_mailbox)
                     <h2 class="f-title-3 dash-card__title"><a href="{{ $dash_mailbox->url() }}" class="mailbox-name">@include('mailboxes/partials/mute_icon', ['mailbox' => $dash_mailbox]){{ $dash_mailbox->name }}</a>@if ($dash_mailbox->isArchived()) <x-fruit::badge>{{ __('Archived') }}</x-fruit::badge>@endif</h2>
-                    <div class="f-muted dash-card__email">{{ $dash_mailbox->email }}</div>
+                    @if ($dash_mailbox->hasEmail())
+                        <div class="f-muted dash-card__email">{{ $dash_mailbox->email }}</div>
+                    @endif
 
-                    @if ($dash_mailbox->isConnected())
+                    @if ($dash_ready)
                         <div class="dash-card-list">
                             @php
                                 $main_folders = $dash_mailbox->getMainFolders();

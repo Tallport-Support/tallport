@@ -453,6 +453,9 @@ class Mailbox extends Model
      */
     public function isInActive()
     {
+        if (!$this->hasEmail()) {
+            return false;
+        }
         $in_active = \Eventy::filter('mailbox.in_active', null, $this);
 
         if (is_bool($in_active)) {
@@ -513,6 +516,9 @@ class Mailbox extends Model
      */
     public function isOutActive()
     {
+        if (!$this->hasEmail()) {
+            return false;
+        }
         if ($this->getOutProvider()) {
             return \App\Misc\MailProviders::isConfigured($this->getOutProvider(), \App\Misc\MailProviders::mailboxSettings($this));
         }
@@ -662,7 +668,8 @@ class Mailbox extends Model
         }
 
         return [
-            'address' => \Eventy::filter('mailbox.get_mail_from_address', $this->email, $from_user, $conversation, $thread, $this),
+            // Without an address (no email of its own): the app's.
+            'address' => \Eventy::filter('mailbox.get_mail_from_address', $this->hasEmail() ? $this->email : \MailHelper::getSystemMailFrom(), $from_user, $conversation, $thread, $this),
             'name' => \Eventy::filter('mailbox.get_mail_from_name', $name, $from_user, $conversation, $thread, $this)
         ];
     }
@@ -734,7 +741,8 @@ class Mailbox extends Model
      */
     public function getEmailDomain()
     {
-        return explode('@', $this->email)[1];
+        // Without an address (its agents' notifications still go out): the app's own.
+        return explode('@', $this->hasEmail() ? $this->email : \MailHelper::getSystemMailFrom())[1] ?? \Helper::getDomain();
     }
 
     /**
@@ -854,7 +862,7 @@ class Mailbox extends Model
      */
     public function getEmails()
     {
-        $emails = [$this->email];
+        $emails = $this->hasEmail() ? [$this->email] : [];
 
         if ($this->aliases) {
             $aliases = explode(',', $this->aliases);
@@ -881,7 +889,7 @@ class Mailbox extends Model
             return [];
         }
 
-        if ($include_mailbox_email) {
+        if ($include_mailbox_email && $this->hasEmail()) {
             $emails = [$this->email => $this->name];
         } else {
             $emails = [];
@@ -1217,9 +1225,16 @@ class Mailbox extends Model
 
     public function setEmailAttribute($value)
     {
-        if ($value) {
-            $this->attributes['email'] = Email::sanitizeEmail($value);
-        }
+        // None: the mailbox doesn't do email (hasEmail()).
+        $this->attributes['email'] = $value ? Email::sanitizeEmail($value) : null;
+    }
+
+    /**
+     * Whether the mailbox does email, a channel like the others: it has an address.
+     */
+    public function hasEmail()
+    {
+        return (string) $this->email !== '';
     }
 
     public function deleteMailbox()

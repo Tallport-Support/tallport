@@ -1941,5 +1941,8 @@
     "Delete Mailbox…": "Izbriši Poštanski Sandučić…",
     "More for :name": "Više za :name",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Adresa, potpis, veza i osobe poštanskog sandučića nalaze se u njegovim vlastitim postavkama, u sandučiću.",
-    "Channels": "Kanali"
+    "Channels": "Kanali",
+    "This mailbox has no email address.": "Ovaj poštanski sandučić nema adresu e-pošte.",
+    "No email address": "Nema adrese e-pošte",
+    "Without one, this mailbox doesn’t send or receive email.": "Bez adrese ovaj sandučić ne šalje i ne prima e-poštu."
 }

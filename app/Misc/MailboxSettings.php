@@ -32,7 +32,8 @@ class MailboxSettings
             }
             // Email, a channel like the others: the first of its tabs the user may open (mailboxes/email_menu).
             if ($email_tab = array_key_first(self::emailTabs($mailbox, $user))) {
-                [$email_value, $email_problem] = $mailbox->isConnected() ? [$mailbox->email, false] : self::connection($mailbox);
+                // Its address; not set up: none (a choice), or one it can't send or fetch with yet (a problem).
+                [$email_value, $email_problem] = !$mailbox->hasEmail() ? [__('Not set up'), false] : ($mailbox->isConnected() ? [$mailbox->email, false] : self::connection($mailbox));
                 $pages[] = self::page(__('Email'), route($email_tab, ['id' => $key]), $email_value, $email_problem, routes: ['mailboxes.email', 'mailboxes.connection', 'mailboxes.auto_reply'], channel: true);
             }
             if ($user->isAdmin()) {
@@ -80,15 +81,18 @@ class MailboxSettings
     }
 
     /**
-     * The tabs of the mailbox's Email the user may open, in order (route => label).
+     * The tabs of the mailbox's Email the user may open, in order (route => label): sending,
+     * fetching and auto reply once it has an address.
      */
     public static function emailTabs(Mailbox $mailbox, User $user)
     {
+        $email = $mailbox->hasEmail();
+
         return array_filter([
             'mailboxes.email'               => $user->can('updateSettings', $mailbox) || $user->can('updateEmailSignature', $mailbox) ? __('Address') : null,
-            'mailboxes.connection'          => $user->isAdmin() ? __('Sending Emails') : null,
-            'mailboxes.connection.incoming' => $user->isAdmin() ? __('Fetching Emails') : null,
-            'mailboxes.auto_reply'          => $user->isAdmin() || $user->hasManageMailboxPermission($mailbox->id, Mailbox::ACCESS_PERM_AUTO_REPLIES) ? __('Auto Reply') : null,
+            'mailboxes.connection'          => $email && $user->isAdmin() ? __('Sending Emails') : null,
+            'mailboxes.connection.incoming' => $email && $user->isAdmin() ? __('Fetching Emails') : null,
+            'mailboxes.auto_reply'          => $email && ($user->isAdmin() || $user->hasManageMailboxPermission($mailbox->id, Mailbox::ACCESS_PERM_AUTO_REPLIES)) ? __('Auto Reply') : null,
         ]);
     }
 

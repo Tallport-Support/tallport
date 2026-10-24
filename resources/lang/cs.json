@@ -1941,5 +1941,8 @@
     "Delete Mailbox…": "Odstranit Schránku…",
     "More for :name": "Další pro :name",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Adresa, podpis, připojení a osoby schránky jsou v jejím vlastním nastavení, ve schránce.",
-    "Channels": "Kanály"
+    "Channels": "Kanály",
+    "This mailbox has no email address.": "Tato schránka nemá e-mailovou adresu.",
+    "No email address": "Bez e-mailové adresy",
+    "Without one, this mailbox doesn’t send or receive email.": "Bez adresy tato schránka e-maily neposílá ani nepřijímá."
 }

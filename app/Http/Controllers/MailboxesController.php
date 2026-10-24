@@ -60,12 +60,13 @@ class MailboxesController extends Controller
 
         $this->authorize('create', 'App\Mailbox');
 
+        // A name is enough: its email (a channel like the others) is set up in its settings.
         $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email|max:128|unique:mailboxes',
+            'email' => 'nullable|string|email|max:128|unique:mailboxes',
             'name'  => 'required|string|max:40',
         ]);
 
-        if (Mailbox::userEmailExists($request->email)) {
+        if ($request->filled('email') && Mailbox::userEmailExists($request->email)) {
             $invalid = true;
             $validator->errors()->add('email', __('There is a user with such email. Users and mailboxes can not have the same email addresses.'));
         }
@@ -216,7 +217,8 @@ class MailboxesController extends Controller
             }
 
             $validator = Validator::make($request->all(), $email_form ? [
-                'email'            => 'required|string|email|max:128|unique:mailboxes,email,'.$id,
+                // Optional: without it, the mailbox doesn't do email (Mailbox::hasEmail()).
+                'email'            => 'nullable|string|email|max:128|unique:mailboxes,email,'.$id,
                 'aliases'          => 'nullable|string',
                 'from_name'        => 'required|integer',
                 'from_name_custom' => 'nullable|string|max:128',
@@ -228,7 +230,7 @@ class MailboxesController extends Controller
                 'photo'            => 'nullable|image|mimes:jpeg,png,jpg,gif',
             ], [], ['chat_reopen_days' => __('Reopen Window'), 'photo' => __('Image')]);
 
-            if ($email_form && Mailbox::userEmailExists($request->email)) {
+            if ($email_form && $request->filled('email') && Mailbox::userEmailExists($request->email)) {
                 $invalid = true;
                 $validator->errors()->add('email', __('There is a user with such email. Users and mailboxes can not have the same email addresses.'));
             }
@@ -519,6 +521,11 @@ class MailboxesController extends Controller
         $mailbox = Mailbox::findOrFail($id);
         $this->authorize('admin', $mailbox);
 
+        // Its email's other tabs come with an address (Mailbox::hasEmail()).
+        if (!$mailbox->hasEmail()) {
+            return redirect()->route('mailboxes.email', ['id' => $mailbox->getSlug()]);
+        }
+
         return view('mailboxes/connection', ['mailbox' => $mailbox, 'sendmail_path' => ini_get('sendmail_path'), 'flashes' => $this->mailboxActiveWarning($mailbox)]);
     }
 
@@ -613,6 +620,11 @@ class MailboxesController extends Controller
     {
         $mailbox = Mailbox::findOrFail($id);
         $this->authorize('admin', $mailbox);
+
+        // Its email's other tabs come with an address (Mailbox::hasEmail()).
+        if (!$mailbox->hasEmail()) {
+            return redirect()->route('mailboxes.email', ['id' => $mailbox->getSlug()]);
+        }
 
         $fields = [
             'in_server'   => $mailbox->in_server ?? '',
@@ -841,7 +853,7 @@ class MailboxesController extends Controller
     {
         $flashes = [];
 
-        if ($mailbox && \Auth::user()->can('admin', $mailbox)) {
+        if ($mailbox && $mailbox->hasEmail() && \Auth::user()->can('admin', $mailbox)) {
             // What the mailbox can't do yet, and a way to set it up (not on that very page).
             if (Route::currentRouteName() != 'mailboxes.connection' && !$mailbox->isOutActive()) {
                 $flashes[] = [
@@ -871,6 +883,11 @@ class MailboxesController extends Controller
     {
         $mailbox = Mailbox::findOrFail($id);
         $this->authorize('updateAutoReply', $mailbox);
+
+        // Its email's other tabs come with an address (Mailbox::hasEmail()).
+        if (!$mailbox->hasEmail()) {
+            return redirect()->route('mailboxes.email', ['id' => $mailbox->getSlug()]);
+        }
 
         if (!$mailbox->auto_reply_subject) {
             $mailbox->auto_reply_subject = 'Re: {%subject%}';

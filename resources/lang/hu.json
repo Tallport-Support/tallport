@@ -1941,5 +1941,8 @@
     "Delete Mailbox…": "Postafiók Törlése…",
     "More for :name": "Továbbiak: :name",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "A postafiók címe, aláírása, kapcsolata és személyei a saját beállításaiban vannak, a postafiókban.",
-    "Channels": "Csatornák"
+    "Channels": "Csatornák",
+    "This mailbox has no email address.": "Ennek a postafióknak nincs e-mail-címe.",
+    "No email address": "Nincs e-mail-cím",
+    "Without one, this mailbox doesn’t send or receive email.": "Cím nélkül ez a postafiók nem küld és nem fogad e-mailt."
 }

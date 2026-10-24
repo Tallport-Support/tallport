@@ -16,10 +16,13 @@
     <div id="conv-layout-header">
         <div id="conv-toolbar" class="f-toolbar conv-header-bar conv-new-header">
             <h1 class="f-title-2">{{ __("New Conversation") }}</h1>
-            <x-fruit::segmented :legend="__('Type')" legend-hidden class="conv-switch">
-                <x-fruit::segment name="conv_type" id="email-conv-switch" :value="App\Conversation::TYPE_EMAIL" wire:model.live="type">{{ __('Email') }}</x-fruit::segment>
-                <x-fruit::segment name="conv_type" id="phone-conv-switch" :value="App\Conversation::TYPE_PHONE" wire:model.live="type">{{ __('Phone') }}</x-fruit::segment>
-            </x-fruit::segmented>
+            {{-- Email or phone; a mailbox without email (a channel it may not have): phone. --}}
+            @if ($mailbox->hasEmail())
+                <x-fruit::segmented :legend="__('Type')" legend-hidden class="conv-switch">
+                    <x-fruit::segment name="conv_type" id="email-conv-switch" :value="App\Conversation::TYPE_EMAIL" wire:model.live="type">{{ __('Email') }}</x-fruit::segment>
+                    <x-fruit::segment name="conv_type" id="phone-conv-switch" :value="App\Conversation::TYPE_PHONE" wire:model.live="type">{{ __('Phone') }}</x-fruit::segment>
+                </x-fruit::segmented>
+            @endif
             @action('conversation.new.conv_switch_buttons')
             <span class="f-toolbar__spacer"></span>
             <span class="conv-info f-muted">#<strong class="conv-new-number">@if ($number){{ $number }}@else{{ __("Pending") }}@endif</strong></span>

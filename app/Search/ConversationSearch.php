@@ -271,7 +271,7 @@ class ConversationSearch
                 switch ($operator) {
                     case 'mailbox':
                         $ids = $user->mailboxesCanView()->filter(function ($mailbox) use ($value) {
-                            return str_contains(mb_strtolower($mailbox->name), $value) || str_contains(mb_strtolower($mailbox->email), $value);
+                            return str_contains(mb_strtolower($mailbox->name), $value) || str_contains(mb_strtolower((string) $mailbox->email), $value);
                         })->pluck('id')->all();
                         $query->whereIn('conversations.mailbox_id', $ids ?: [0]);
                         break;

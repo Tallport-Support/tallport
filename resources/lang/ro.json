@@ -1941,5 +1941,8 @@
     "Delete Mailbox…": "Șterge Cutia Poștală…",
     "More for :name": "Mai multe pentru :name",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Adresa, semnătura, conexiunea și persoanele unei cutii poștale sunt în setările ei, în cutia poștală.",
-    "Channels": "Canale"
+    "Channels": "Canale",
+    "This mailbox has no email address.": "Această cutie poștală nu are adresă de email.",
+    "No email address": "Fără adresă de email",
+    "Without one, this mailbox doesn’t send or receive email.": "Fără adresă, această cutie poștală nu trimite și nu primește emailuri."
 }

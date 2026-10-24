@@ -1942,5 +1942,8 @@
     "Delete Mailbox…": "删除邮箱…",
     "More for :name": ":name 的更多操作",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "邮箱的地址、签名、连接和人员都在邮箱内它自己的设置中。",
-    "Channels": "渠道"
+    "Channels": "渠道",
+    "This mailbox has no email address.": "此邮箱没有电子邮件地址。",
+    "No email address": "无电子邮件地址",
+    "Without one, this mailbox doesn’t send or receive email.": "没有地址时，此邮箱不收发电子邮件。"
 }

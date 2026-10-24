@@ -1941,5 +1941,8 @@
     "Delete Mailbox…": "Usuń Skrzynkę Pocztową…",
     "More for :name": "Więcej dla :name",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Adres, sygnaturka, połączenie i osoby skrzynki pocztowej są w jej własnych ustawieniach, w skrzynce.",
-    "Channels": "Kanały"
+    "Channels": "Kanały",
+    "This mailbox has no email address.": "Ta skrzynka pocztowa nie ma adresu e-mail.",
+    "No email address": "Brak adresu e-mail",
+    "Without one, this mailbox doesn’t send or receive email.": "Bez adresu ta skrzynka nie wysyła ani nie odbiera e-maili."
 }

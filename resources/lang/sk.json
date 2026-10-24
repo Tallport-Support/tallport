@@ -1941,5 +1941,8 @@
     "Delete Mailbox…": "Vymazať Mailbox…",
     "More for :name": "Viac pre :name",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Adresa, podpis, pripojenie a ľudia mailboxu sú v jeho vlastných nastaveniach, v mailboxe.",
-    "Channels": "Kanály"
+    "Channels": "Kanály",
+    "This mailbox has no email address.": "Tento mailbox nemá e-mailovú adresu.",
+    "No email address": "Bez e-mailovej adresy",
+    "Without one, this mailbox doesn’t send or receive email.": "Bez adresy tento mailbox neposiela ani neprijíma e-maily."
 }

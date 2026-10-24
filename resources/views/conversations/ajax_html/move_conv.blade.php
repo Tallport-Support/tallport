@@ -4,7 +4,7 @@
         <x-fruit::select id="move-conv-mailbox-id" x-model="mailbox_id" x-bind:disabled="email !== ''">
             @foreach ($mailboxes as $mailbox)
                 @if ($mailbox->id != $conversation->mailbox_id)
-                    <option value="{{ $mailbox->id }}">{{ $mailbox->name }} ({{ $mailbox->email }})</option>
+                    <option value="{{ $mailbox->id }}">{{ $mailbox->name }}@if ($mailbox->hasEmail()) ({{ $mailbox->email }})@endif</option>
                 @endif
             @endforeach
         </x-fruit::select>

@@ -1941,5 +1941,8 @@
     "Delete Mailbox…": "Видалити Поштову Скриньку…",
     "More for :name": "Більше для :name",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Адреса, підпис, підключення та люди поштової скриньки — у її власних налаштуваннях, у скриньці.",
-    "Channels": "Канали"
+    "Channels": "Канали",
+    "This mailbox has no email address.": "Ця поштова скринька не має адреси електронної пошти.",
+    "No email address": "Немає адреси електронної пошти",
+    "Without one, this mailbox doesn’t send or receive email.": "Без адреси ця поштова скринька не надсилає й не отримує листів."
 }

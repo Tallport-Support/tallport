@@ -1,6 +1,7 @@
 {{-- Settings › Mailboxes as a drill-down level (layouts/app), for admins: a row per mailbox leading to its
      settings, in the mailbox, with a menu (its settings, the mailbox, Delete Mailbox with the password).
-     New Mailbox asks for its name and address, and opens its General settings. --}}
+     New Mailbox asks for its name and opens its General settings; its email and other channels are set
+     up there. --}}
 <x-fruit::drilldown-column :title="__('Mailboxes')" id="mailboxes">
     <x-slot:back><x-fruit::back-link :href="route('settings')" wire:navigate>{{ __('Settings') }}</x-fruit::back-link></x-slot:back>
     <x-slot:actions><x-fruit::button size="small" id="mailboxes-new" x-data x-on:click="$dispatch('fruit-dialog-open', { name: 'new-mailbox' })">{{ __('New Mailbox') }}</x-fruit::button></x-slot:actions>
@@ -15,7 +16,7 @@
                         @endif
                         <span class="mailbox-row__identity">
                             <span class="mailbox-row__name">@action('mailbox_card.before_name', $mailbox_item)<span class="mailbox-row__label">{{ $mailbox_item->name }}</span>@if ($mailbox_item->isArchived()) <x-fruit::badge>{{ __('Archived') }}</x-fruit::badge>@endif</span>
-                            <span class="mailbox-row__address">{{ $mailbox_item->email }}</span>
+                            <span class="mailbox-row__address">{{ $mailbox_item->hasEmail() ? $mailbox_item->email : __('No email address') }}</span>
                         </span>
                     </a>
                     <x-fruit::menu :title="$mailbox_item->name">
@@ -62,9 +63,6 @@
             <div class="f-dialog__body f-stack">
                 <x-fruit::field :label="__('Mailbox Name')">
                     <x-fruit::input id="new_mailbox_name" name="name" :value="old('name')" maxlength="40" required autofocus />
-                </x-fruit::field>
-                <x-fruit::field :label="__('Email Address')" :description="__('Customers email this address for help (e.g. support@domain.com)')">
-                    <x-fruit::input type="email" id="new_mailbox_email" name="email" :value="old('email')" maxlength="128" required />
                 </x-fruit::field>
             </div>
             <footer class="f-dialog__footer">

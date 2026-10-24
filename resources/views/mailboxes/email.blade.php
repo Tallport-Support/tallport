@@ -13,13 +13,13 @@
 
         <x-fruit::form-section :title="__('Address')" :level="3">
             @if (Auth::user()->isAdmin())
-                <x-fruit::field :label="__('Email Address')" layout="row">
-                    <x-fruit::input type="email" id="email" name="email" :value="old('email', $mailbox->email)" maxlength="128" required />
+                <x-fruit::field :label="__('Email Address')" :description="__('Without one, this mailbox doesn’t send or receive email.')" layout="row">
+                    <x-fruit::input type="email" id="email" name="email" :value="old('email', $mailbox->email)" maxlength="128" />
                 </x-fruit::field>
             @else
                 <div class="f-form-row">
                     <span class="f-label">{{ __('Email Address') }}</span>
-                    <span>{{ $mailbox->email }}</span>
+                    <span>{{ $mailbox->hasEmail() ? $mailbox->email : __('No email address') }}</span>
                 </div>
             @endif
             @if (Auth::user()->can('updateSettings', $mailbox))

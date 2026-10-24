@@ -1941,5 +1941,8 @@
     "Delete Mailbox…": "Verwijder Mailbox…",
     "More for :name": "Meer voor :name",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Het adres, de handtekening, de verbinding en de personen van een mailbox staan in diens eigen instellingen, in de mailbox.",
-    "Channels": "Kanalen"
+    "Channels": "Kanalen",
+    "This mailbox has no email address.": "Deze mailbox heeft geen e-mailadres.",
+    "No email address": "Geen e-mailadres",
+    "Without one, this mailbox doesn’t send or receive email.": "Zonder adres verstuurt en ontvangt deze mailbox geen e-mail."
 }

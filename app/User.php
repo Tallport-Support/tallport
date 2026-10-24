@@ -1367,6 +1367,10 @@ class User extends Authenticatable implements \Laravel\Passkeys\Contracts\Passke
     public static function mailboxEmailExists($email)
     {
         $email = Email::sanitizeEmail($email);
+        // None: not "a mailbox without one" (where() takes null for IS NULL).
+        if (!$email) {
+            return false;
+        }
         $mailbox = Mailbox::where('email', $email)->first();
 
         if ($mailbox) {

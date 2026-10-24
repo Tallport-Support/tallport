@@ -48,8 +48,11 @@ class SendAutoReply
                 return;
             }
 
-            // Chats have their own auto reply (or, on websites, the greeting), not by email.
-            if (in_array((int) $conversation->channel, [\App\Telegram\Telegram::CHANNEL, \App\Nostr\Nostr::channel(), \App\Matrix\Matrix::CHANNEL, \App\WebChat\WebChat::CHANNEL])) {
+            // Chats have their own auto reply (or, on websites, the greeting), not by email; nor has a
+            // mailbox without email.
+            if (in_array((int) $conversation->channel, [\App\Telegram\Telegram::CHANNEL, \App\Nostr\Nostr::channel(), \App\Matrix\Matrix::CHANNEL, \App\WebChat\WebChat::CHANNEL])
+                || !$conversation->mailbox->hasEmail()
+            ) {
                 return;
             }
 

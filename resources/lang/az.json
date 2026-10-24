@@ -1941,5 +1941,8 @@
     "Delete Mailbox…": "Poçt Qutusunu Sil…",
     "More for :name": ":name üçün daha çox",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Poçt qutusunun ünvanı, imzası, bağlantısı və şəxsləri onun öz parametrlərində, poçt qutusunun içindədir.",
-    "Channels": "Kanallar"
+    "Channels": "Kanallar",
+    "This mailbox has no email address.": "Bu poçt qutusunun e-poçt ünvanı yoxdur.",
+    "No email address": "E-poçt ünvanı yoxdur",
+    "Without one, this mailbox doesn’t send or receive email.": "Ünvan olmadan bu poçt qutusu e-poçt göndərmir və qəbul etmir."
 }

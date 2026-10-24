@@ -2334,5 +2334,8 @@
     "Delete Mailbox…": "Жәшікті Жою…",
     "More for :name": ":name үшін қосымша",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Пошталық жәшіктің мекенжайы, қолтаңбасы, қосылымы және адамдары оның өз параметрлерінде, жәшіктің ішінде.",
-    "Channels": "Арналар"
+    "Channels": "Арналар",
+    "This mailbox has no email address.": "Бұл пошталық жәшіктің электрондық пошта мекенжайы жоқ.",
+    "No email address": "Электрондық пошта мекенжайы жоқ",
+    "Without one, this mailbox doesn’t send or receive email.": "Мекенжайсыз бұл пошталық жәшік хат жібермейді және қабылдамайды."
 }

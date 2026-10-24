@@ -1985,5 +1985,8 @@
     "Delete Mailbox…": "刪除信箱…",
     "More for :name": ":name 的更多動作",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "信箱的地址、簽名檔、連線和人員都在信箱內它自己的設定中。",
-    "Channels": "管道"
+    "Channels": "管道",
+    "This mailbox has no email address.": "此信箱沒有電子郵件地址。",
+    "No email address": "無電子郵件地址",
+    "Without one, this mailbox doesn’t send or receive email.": "沒有地址時，此信箱不收發電子郵件。"
 }

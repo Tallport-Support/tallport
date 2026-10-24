@@ -1941,5 +1941,8 @@
     "Delete Mailbox…": "מחק תיבת דואר…",
     "More for :name": "עוד עבור :name",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "הכתובת, החתימה, החיבור והאנשים של תיבת דואר נמצאים בהגדרות שלה, בתוך התיבה.",
-    "Channels": "ערוצים"
+    "Channels": "ערוצים",
+    "This mailbox has no email address.": "לתיבת דואר זו אין כתובת אימייל.",
+    "No email address": "אין כתובת אימייל",
+    "Without one, this mailbox doesn’t send or receive email.": "בלי כתובת, תיבת הדואר הזו לא שולחת ולא מקבלת אימיילים."
 }

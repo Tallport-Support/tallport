@@ -196,7 +196,8 @@ class Mail
      */
     public static function setMailDriver($mailbox = null, $user_from = null, $conversation = null, $thread = null)
     {
-        if ($mailbox) {
+        // A mailbox without email of its own (its agents' notifications): the app's settings.
+        if ($mailbox && $mailbox->hasEmail()) {
             // Configure mail driver according to Mailbox settings.
             $oauth = $mailbox->outOauthEnabled();
 

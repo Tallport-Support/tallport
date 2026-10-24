@@ -1941,5 +1941,8 @@
     "Delete Mailbox…": "メールボックスの削除…",
     "More for :name": ":name のその他",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "メールボックスのアドレス、署名、接続、人は、メールボックス内のそれぞれの設定にあります。",
-    "Channels": "チャネル"
+    "Channels": "チャネル",
+    "This mailbox has no email address.": "このメールボックスにはメールアドレスがありません。",
+    "No email address": "メールアドレスなし",
+    "Without one, this mailbox doesn’t send or receive email.": "アドレスがない場合、このメールボックスはメールを送受信しません。"
 }

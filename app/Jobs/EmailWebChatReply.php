@@ -32,7 +32,8 @@ class EmailWebChatReply implements ShouldQueue
     {
         $thread = \App\Misc\ChatDelivery::findReply($this->thread_id);
         $conversation = $thread ? $thread->conversation : null;
-        if (!$conversation || $conversation->channel != WebChat::CHANNEL) {
+        // (Its mailbox's email may have gone since.)
+        if (!$conversation || $conversation->channel != WebChat::CHANNEL || !$conversation->mailbox->hasEmail()) {
             return;
         }
         // A later reply's own email carries this one too.

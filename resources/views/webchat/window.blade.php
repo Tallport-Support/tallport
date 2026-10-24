@@ -19,6 +19,8 @@
             'origin'   => $origin,
             'team'     => $team,
             'teamPhoto' => $team_photo,
+            // Replies by email: only from a mailbox with email (a channel it may not have).
+            'emailReplies' => $mailbox->hasEmail(),
             'greeting' => \App\WebChat\WebChat::greeting($mailbox),
             'poll'     => $poll,
             'available' => $available,

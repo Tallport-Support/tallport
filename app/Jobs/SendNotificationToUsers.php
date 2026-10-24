@@ -149,7 +149,8 @@ class SendNotificationToUsers implements ShouldQueue
             if (!$from_name) {
                 $from_name = $mailbox->name;
             }
-            $from = ['address' => $mailbox->email, 'name' => $from_name];
+            // A mailbox without email: from the app's own address (replying by email doesn't reach it).
+            $from = ['address' => $mailbox->hasEmail() ? $mailbox->email : \MailHelper::getSystemMailFrom(), 'name' => $from_name];
 
             // Set user language
             app()->setLocale($user->getLocale());

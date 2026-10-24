@@ -156,10 +156,11 @@ document.addEventListener('alpine:init', function () {
                 if (this.greeting && (this.available || this.hasConversation)) {
                     entries.unshift({ id: 'greeting', kind: 'team', team: true, author: config.team, initials: config.team.charAt(0).toUpperCase(), photo: config.teamPhoto, body: this.greeting, files: [] });
                 }
-                // Where replies also go, after the greeting; or, after their first message, the offer.
-                if (this.email) {
+                // Where replies also go, after the greeting; or, after their first message, the offer
+                // (only from a mailbox with email).
+                if (config.emailReplies && this.email) {
                     entries.splice(this.greeting ? 1 : 0, 0, { id: 'email-event', kind: 'event', body: this.text.repliesTo.replace(':email', this.email) });
-                } else {
+                } else if (config.emailReplies) {
                     var first = entries.findIndex(function (entry) { return entry.kind === 'visitor'; });
                     if (first >= 0) entries.splice(first + 1, 0, { id: 'email-card', kind: 'email' });
                 }

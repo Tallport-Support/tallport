@@ -1941,5 +1941,8 @@
     "Delete Mailbox…": "Izbriši Poštni Predal…",
     "More for :name": "Več za :name",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Naslov, podpis, povezava in osebe poštnega predala so v njegovih nastavitvah, v predalu.",
-    "Channels": "Kanali"
+    "Channels": "Kanali",
+    "This mailbox has no email address.": "Ta poštni predal nima e-poštnega naslova.",
+    "No email address": "Brez e-poštnega naslova",
+    "Without one, this mailbox doesn’t send or receive email.": "Brez naslova ta poštni predal ne pošilja in ne prejema e-pošte."
 }

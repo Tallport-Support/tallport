@@ -1942,5 +1942,8 @@
     "Delete Mailbox…": "Excluir Caixa de Correio…",
     "More for :name": "Mais para :name",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "O endereço, a assinatura, a conexão e as pessoas de uma caixa de correio ficam nas configurações dela, dentro da caixa.",
-    "Channels": "Canais"
+    "Channels": "Canais",
+    "This mailbox has no email address.": "Esta caixa de correio não tem endereço de email.",
+    "No email address": "Sem endereço de email",
+    "Without one, this mailbox doesn’t send or receive email.": "Sem endereço, esta caixa de correio não envia nem recebe emails."
 }

@@ -1941,5 +1941,8 @@
     "Delete Mailbox…": "Radera Brevlåda…",
     "More for :name": "Mer för :name",
     "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "En brevlådas adress, signatur, anslutning och personer finns i dess egna inställningar, i brevlådan.",
-    "Channels": "Kanaler"
+    "Channels": "Kanaler",
+    "This mailbox has no email address.": "Den här brevlådan har ingen e-postadress.",
+    "No email address": "Ingen e-postadress",
+    "Without one, this mailbox doesn’t send or receive email.": "Utan adress skickar och tar den här brevlådan inte emot e-post."
 }
