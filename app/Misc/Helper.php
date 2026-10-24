@@ -2836,7 +2836,13 @@ class Helper
 
     public static function cspMetaTag()
     {
-        $csp = "<meta http-equiv=\"Content-Security-Policy\" content=\"".self::getCspValue()."\">";
+        // A page shown with wire:navigate keeps the policy it was loaded with (one from a meta
+        // element can't be lifted), and Livewire gives its scripts that nonce (layouts/app): a
+        // second policy, with this request's nonce, would refuse every inline script.
+        if (request()->header('X-Livewire-Navigate')) {
+            return '';
+        }
+        $csp ="<meta http-equiv=\"Content-Security-Policy\" content=\"".self::getCspValue()."\">";
 
         return $csp;
     }

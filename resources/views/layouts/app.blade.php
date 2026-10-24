@@ -37,7 +37,9 @@
     @endphp
 
     @yield('stylesheets')
-    @livewireStyles
+    {{-- With the nonce: wire:navigate gives a new page's inline scripts this page's nonce (the one
+         the Content-Security-Policy allows), taken from this style. --}}
+    @livewireStyles(['nonce' => \Helper::cspNonce()])
     @action('layout.after_stylesheets')
 </head>
 <body class="fruit-ui locale-{{ app()->getLocale() }} @if (Helper::isLocaleRtl()) rtl @endif @if (!Auth::user()) user-is-guest @endif @if (Auth::user() && Auth::user()->isAdmin()) user-is-admin @endif @yield('body_class') @action('body.class')" @yield('body_attrs') @if (Auth::user()) data-auth_user_id="{{ Auth::user()->id }}" data-rendered-at="{{ time() }}" data-send-keys="{{ json_encode(App\Misc\KeyboardShortcuts::SEND) }}" data-inbox="{{ json_encode(App\Inbox\Sync::config(Auth::user())) }}" @endif @if (Auth::user() && Auth::user()->hasKeyboardShortcuts()) data-keyboard-shortcuts="1" @endif>
@@ -204,8 +206,7 @@
         }
     @endphp
     @yield('javascripts')
-    {{-- What modules add inline, only when they do: wire:navigate runs it again without its nonce,
-         which the Content-Security-Policy refuses (an error in the console, even when empty). --}}
+    {{-- What modules add inline, only when they do: no empty script on every page. --}}
     @php ob_start(); @endphp
     @yield('javascript')
     @action('javascript', $__env->yieldContent('javascripts'))

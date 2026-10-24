@@ -71,6 +71,21 @@ class PagesAndEndpointsTest extends FeatureTestCase
         $this->assertMatchesRegularExpression('#<script type="text/javascript"\s+nonce="[^"]+">\s*window\.moduleReady = true;\s*</script>#', $html);
     }
 
+    /**
+     * A page shown with wire:navigate adds no second Content-Security-Policy (the page keeps the
+     * one it was loaded with, whose nonce Livewire finds on its style and gives the new scripts).
+     */
+    public function testNavigatedPagesKeepTheFirstPagesPolicy()
+    {
+        $page = '/mailbox/settings/'.$this->mailbox->id.'/auto-reply';
+        $html = $this->actingAs($this->admin)->get($page)->assertOk()->assertSee('http-equiv="Content-Security-Policy"', false)->getContent();
+        $this->assertSame(1, preg_match("#'nonce-([^']+)'#", $html, $policy));
+        $this->assertMatchesRegularExpression('#<style nonce="'.$policy[1].'" data-livewire-style>#', $html);
+
+        $this->actingAs($this->admin)->get($page, ['X-Livewire-Navigate' => '1'])->assertOk()
+            ->assertDontSee('http-equiv="Content-Security-Policy"', false);
+    }
+
     public function testGuestPages()
     {
         $this->get('/password/reset')->assertStatus(200);
