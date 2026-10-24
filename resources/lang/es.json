@@ -1940,5 +1940,6 @@
     "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Se muestra a los clientes en el chat del sitio web, como un logotipo. JPG, GIF o PNG, recortada en cuadrado.",
     "Delete Mailbox…": "Borrar Correo…",
     "More for :name": "Más para :name",
-    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "La dirección, la firma, la conexión y las personas de un correo están en su propia configuración, dentro del correo."
+    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "La dirección, la firma, la conexión y las personas de un correo están en su propia configuración, dentro del correo.",
+    "Channels": "Canales"
 }

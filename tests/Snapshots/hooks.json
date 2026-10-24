@@ -1842,7 +1842,7 @@
         "name": "mailbox.update.after_signature",
         "arguments": 1,
         "files": [
-            "resources/views/mailboxes/update.blade.php"
+            "resources/views/mailboxes/email.blade.php"
         ]
     },
     {

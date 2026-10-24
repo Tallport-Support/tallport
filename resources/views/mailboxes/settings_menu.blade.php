@@ -1,16 +1,16 @@
 {{-- A mailbox's settings pages in the list column (mailboxes/sidebar_menu), the open one current: General,
-     then its further pages with their current values (App\Misc\MailboxSettings), the chat channels
-     together. Modules add theirs at the end with mailboxes.settings.menu (labels only). --}}
+     then its further pages with their current values (App\Misc\MailboxSettings), its channels (Email
+     too) together. Modules add theirs at the end with mailboxes.settings.menu (labels only). --}}
 @php
     $settings_route = (string) Route::currentRouteName();
     $settings_pages = array_values(App\Misc\MailboxSettings::pages($mailbox, Auth::user()));
-    // In their order, the chat channels as a group of their own where the first one is.
-    $settings_first_chat = collect($settings_pages)->search(fn ($page) => $page['chat']);
-    $settings_first_chat = $settings_first_chat === false ? count($settings_pages) : $settings_first_chat;
+    // In their order, the channels as a group of their own where the first one is.
+    $settings_first_channel = collect($settings_pages)->search(fn ($page) => $page['channel']);
+    $settings_first_channel = $settings_first_channel === false ? count($settings_pages) : $settings_first_channel;
     $settings_groups = [
-        [null, array_slice($settings_pages, 0, $settings_first_chat)],
-        [__('Chat'), array_filter($settings_pages, fn ($page) => $page['chat'])],
-        [null, array_filter(array_slice($settings_pages, $settings_first_chat), fn ($page) => !$page['chat'])],
+        [null, array_slice($settings_pages, 0, $settings_first_channel)],
+        [__('Channels'), array_filter($settings_pages, fn ($page) => $page['channel'])],
+        [null, array_filter(array_slice($settings_pages, $settings_first_channel), fn ($page) => !$page['channel'])],
     ];
     $settings_module_pages = trim(preg_replace('#<a (?![^>]*\bclass=)#', '<a class="f-form-row f-form-row--link" ', App\Misc\MailboxSettings::modulePages($mailbox)));
     // A module's page marks its own link (its route may start like one of ours).

@@ -2,10 +2,11 @@
 
 @section('page_width', 'narrow')
 
-@section('title_full', __('Auto Reply').' - '.$mailbox->name)
 
 @section('content')
     <div class="page-content">
+        @include('mailboxes/email_menu')
+
         @include('partials/flash_messages')
 
         {{-- Saved with its button, not as it changes: an auto reply isn't sent half-written. --}}

@@ -170,8 +170,8 @@ PHP;
     }
 
     /**
-     * The settings form refuses a user's email address, and saves the Chat option
-     * (a reply to a closed chat starts a new conversation).
+     * Email's form refuses a user's email address; General's saves the Chat option (a reply to a
+     * closed chat starts a new conversation).
      */
     public function testSettingsRefuseAUsersEmailAndSaveTheChatOption()
     {
@@ -184,8 +184,8 @@ PHP;
             'ticket_assignee' => Mailbox::TICKET_ASSIGNEE_ANYONE,
         ];
 
-        $this->postForm($this->admin, route('mailboxes.update.save', ['id' => $mailbox->id]), array_merge($fields, ['email' => $user->email]))
-            ->assertRedirect(route('mailboxes.general', ['id' => $mailbox->fresh()->getSlug()]))
+        $this->postForm($this->admin, route('mailboxes.email.save', ['id' => $mailbox->id]), array_merge($fields, ['email' => $user->email]))
+            ->assertRedirect(route('mailboxes.email', ['id' => $mailbox->fresh()->getSlug()]))
             ->assertSessionHasErrors('email');
         $this->assertSame($mailbox->email, $mailbox->fresh()->email);
 
@@ -312,7 +312,7 @@ PHP;
     {
         $mailbox = $this->createMailbox([], ['out_method' => Mailbox::OUT_METHOD_SMTP]);
 
-        $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertOk()
+        $this->actingAs($this->admin)->get(route('mailboxes.email', ['id' => $mailbox->id]))->assertOk()
             ->assertSee('This mailbox can&#039;t send email yet.', false)
             ->assertSee('href="'.route('mailboxes.connection', ['id' => $mailbox->getSlug()]).'">Set Up Sending', false);
         $this->actingAs($this->admin)->get(route('mailboxes.connection', ['id' => $mailbox->id]))->assertOk()

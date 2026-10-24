@@ -1940,5 +1940,6 @@
     "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Показывается клиентам в чате на сайте, например логотип. JPG, GIF или PNG, обрезается до квадрата.",
     "Delete Mailbox…": "Удалить Ящик…",
     "More for :name": "Ещё для :name",
-    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Адрес, подпись, подключение и люди ящика — в его собственных настройках, внутри ящика."
+    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "Адрес, подпись, подключение и люди ящика — в его собственных настройках, внутри ящика.",
+    "Channels": "Каналы"
 }

@@ -1947,5 +1947,6 @@
     "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Affichée aux clients dans le tchat du site web, par exemple un logo. JPG, GIF ou PNG, recadrée en carré.",
     "Delete Mailbox…": "Supprimer la Boîte aux Lettres…",
     "More for :name": "Plus pour :name",
-    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "L’adresse, la signature, la connexion et les personnes d’une boîte de réception se trouvent dans ses propres paramètres, dans la boîte."
+    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "L’adresse, la signature, la connexion et les personnes d’une boîte de réception se trouvent dans ses propres paramètres, dans la boîte.",
+    "Channels": "Canaux"
 }

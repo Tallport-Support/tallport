@@ -130,7 +130,7 @@ class Mailbox extends Model
         self::ACCESS_PERM_EDIT => 'mailboxes.update',
         self::ACCESS_PERM_PERMISSIONS => 'mailboxes.permissions',
         self::ACCESS_PERM_AUTO_REPLIES => 'mailboxes.auto_reply',
-        self::ACCESS_PERM_SIGNATURE => 'mailboxes.update',
+        self::ACCESS_PERM_SIGNATURE => 'mailboxes.email',
     ];
 
     /**

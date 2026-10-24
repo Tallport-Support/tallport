@@ -99,9 +99,9 @@ class MarkdownTextsTest extends FeatureTestCase
         $this->mailbox->users()->attach($this->admin->id, ['access' => json_encode([Mailbox::ACCESS_PERM_SIGNATURE])]);
         // A new mailbox's signature is Markdown.
         $this->assertSame(Mailbox::DEFAULT_SIGNATURE, Markdown::toHtml(Mailbox::DEFAULT_SIGNATURE_MARKDOWN));
-        $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $this->mailbox->id]))->assertSee('name="signature_markdown"', false);
+        $this->actingAs($this->admin)->get(route('mailboxes.email', ['id' => $this->mailbox->id]))->assertSee('name="signature_markdown"', false);
 
-        $this->postForm(route('mailboxes.update.save', ['id' => $this->mailbox->id]), [
+        $this->postForm(route('mailboxes.email.save', ['id' => $this->mailbox->id]), [
             'signature_markdown' => "Best,\n[{%mailbox.name%}](https://example.com/{%mailbox.name%})",
         ], ['X-Requested-With' => 'XMLHttpRequest'])->assertOk();
         $mailbox = $this->mailbox->fresh();
@@ -109,7 +109,7 @@ class MarkdownTextsTest extends FeatureTestCase
         $this->assertStringContainsString('href="https://example.com/{%mailbox.name%}"', $mailbox->signature);
 
         // Rich text, as before.
-        $this->postForm(route('mailboxes.update.save', ['id' => $this->mailbox->id]), [
+        $this->postForm(route('mailboxes.email.save', ['id' => $this->mailbox->id]), [
             'signature' => '<p><b>Old</b></p>',
         ], ['X-Requested-With' => 'XMLHttpRequest'])->assertOk();
         $this->assertNull($this->mailbox->fresh()->signature_markdown);

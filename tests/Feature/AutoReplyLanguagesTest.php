@@ -176,28 +176,28 @@ class AutoReplyLanguagesTest extends FeatureTestCase
 
     public function testPageAddsSavesAndRemovesLanguages()
     {
-        $this->actingAs($this->admin)->get('/mailbox/'.$this->mailbox->id.'/settings/auto-reply')
+        $this->actingAs($this->admin)->get('/mailbox/'.$this->mailbox->id.'/settings/email/auto-reply')
             ->assertStatus(200)->assertSee('Add Language')->assertSee('日本語');
 
-        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/auto-reply', $this->form([], ['add_language' => 1, 'add_language_code' => 'ja']))
+        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/email/auto-reply', $this->form([], ['add_language' => 1, 'add_language_code' => 'ja']))
             ->assertSessionHas('auto_reply_language', 'ja');
         $version = MailboxAutoReply::where('mailbox_id', $this->mailbox->id)->where('language', 'ja')->first();
         $this->assertFalse($version->enabled);
-        $this->actingAs($this->admin)->get('/mailbox/'.$this->mailbox->id.'/settings/auto-reply')->assertSee('auto_reply_ja_message', false);
+        $this->actingAs($this->admin)->get('/mailbox/'.$this->mailbox->id.'/settings/email/auto-reply')->assertSee('auto_reply_ja_message', false);
 
         // An enabled version needs a subject and message.
-        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/auto-reply', $this->form(['ja' => ['enabled' => 1, 'subject' => '', 'message' => '']]))
+        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/email/auto-reply', $this->form(['ja' => ['enabled' => 1, 'subject' => '', 'message' => '']]))
             ->assertSessionHasErrors(['versions.ja.subject', 'versions.ja.message'])
             ->assertSessionHas('auto_reply_language', 'ja');
 
-        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/auto-reply', $this->form(['ja' => ['enabled' => 1, 'subject' => 'ありがとう', 'message' => '<p>すぐに返信します。</p><script>alert(1)</script>']]))
+        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/email/auto-reply', $this->form(['ja' => ['enabled' => 1, 'subject' => 'ありがとう', 'message' => '<p>すぐに返信します。</p><script>alert(1)</script>']]))
             ->assertSessionHasNoErrors();
         $version = $version->fresh();
         $this->assertTrue($version->enabled);
         $this->assertSame('ありがとう', $version->subject);
         $this->assertStringNotContainsString('script', $version->message);
 
-        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/auto-reply', $this->form(['ja' => ['enabled' => 1, 'subject' => 'ありがとう', 'message' => '<p>x</p>']], ['remove_language' => 'ja']));
+        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/email/auto-reply', $this->form(['ja' => ['enabled' => 1, 'subject' => 'ありがとう', 'message' => '<p>x</p>']], ['remove_language' => 'ja']));
         $this->assertSame(0, MailboxAutoReply::where('mailbox_id', $this->mailbox->id)->count());
     }
 
@@ -206,18 +206,18 @@ class AutoReplyLanguagesTest extends FeatureTestCase
         $this->version('ko', '문의해 주셔서 감사합니다');
         $this->version('zh-Hant', '感謝您的來信');
 
-        $this->actingAs($this->admin)->get('/mailbox/'.$this->mailbox->id.'/settings/auto-reply')
+        $this->actingAs($this->admin)->get('/mailbox/'.$this->mailbox->id.'/settings/email/auto-reply')
             ->assertSee('aria-selected="false">Korean', false)
             ->assertSee('aria-selected="false">Chinese (Traditional)', false)
             ->assertSee('Japanese (日本語)');
 
         $dutch = $this->createAdmin(['locale' => 'nl']);
-        $this->actingAs($dutch)->withSession(['user_locale' => 'nl'])->get('/mailbox/'.$this->mailbox->id.'/settings/auto-reply')
+        $this->actingAs($dutch)->withSession(['user_locale' => 'nl'])->get('/mailbox/'.$this->mailbox->id.'/settings/email/auto-reply')
             ->assertSee('aria-selected="false">Koreaans', false)
             ->assertSee('Japans (日本語)');
 
         // Korean can be edited.
-        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/auto-reply', $this->form(['ko' => ['enabled' => 1, 'subject' => '감사합니다', 'message' => '<p>곧 답변드리겠습니다.</p>']]))
+        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/email/auto-reply', $this->form(['ko' => ['enabled' => 1, 'subject' => '감사합니다', 'message' => '<p>곧 답변드리겠습니다.</p>']]))
             ->assertSessionHasNoErrors();
         $this->assertSame('감사합니다', AutoReplies::versions($this->mailbox)['ko']->subject);
     }

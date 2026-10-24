@@ -2,13 +2,12 @@
 
 @section('page_width', 'narrow')
 
-@section('title_full', __('Connection Settings').' - '.$mailbox->name)
 
 @section('body_attrs')@parent data-mailbox_id="{{ $mailbox->id }}"@endsection
 
 @section('content')
     <div class="page-content">
-        @include('mailboxes/connection_menu')
+        @include('mailboxes/email_menu')
 
         @include('partials/flash_messages')
 

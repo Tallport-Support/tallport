@@ -1940,5 +1940,6 @@
     "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Az ügyfelek a weboldal chatben látják, például egy logó. JPG, GIF vagy PNG, négyzetre vágva.",
     "Delete Mailbox…": "Postafiók Törlése…",
     "More for :name": "Továbbiak: :name",
-    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "A postafiók címe, aláírása, kapcsolata és személyei a saját beállításaiban vannak, a postafiókban."
+    "A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.": "A postafiók címe, aláírása, kapcsolata és személyei a saját beállításaiban vannak, a postafiókban.",
+    "Channels": "Csatornák"
 }

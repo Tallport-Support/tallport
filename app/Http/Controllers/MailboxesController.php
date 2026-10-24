@@ -122,7 +122,7 @@ class MailboxesController extends Controller
         $user = auth()->user();
 
         // Redirect to the accessible page.
-        if (!$user->can('updateSettings', $mailbox) && !$user->can('updateEmailSignature', $mailbox)) {
+        if (!$user->can('updateSettings', $mailbox)) {
             $accessible_route = '';
 
             $mailbox_settings = $user->mailboxSettings($mailbox->id);
@@ -157,7 +157,23 @@ class MailboxesController extends Controller
 
         //$mailboxes = Mailbox::all()->except($id);
 
-        return view('mailboxes/update', ['mailbox' => $mailbox, 'mailbox_user' => $mailbox_user, 'flashes' => $this->mailboxActiveWarning($mailbox)]);
+        return view('mailboxes/update', ['mailbox' => $mailbox, 'mailbox_user' => $mailbox_user]);
+    }
+
+    /**
+     * A mailbox's Email, a channel like the others: its address and aliases, and what its emails to
+     * customers say (From name, header, signature), saved with its button (updateSave). Its other
+     * tabs: sending, fetching, auto reply (mailboxes/email_menu).
+     */
+    public function email($id)
+    {
+        $mailbox = Mailbox::findOrFail($id);
+        $user = auth()->user();
+        if (!$user->can('updateSettings', $mailbox) && !$user->can('updateEmailSignature', $mailbox)) {
+            \Helper::denyAccess();
+        }
+
+        return view('mailboxes/email', ['mailbox' => $mailbox, 'flashes' => $this->mailboxActiveWarning($mailbox)]);
     }
 
     /**
@@ -173,9 +189,12 @@ class MailboxesController extends Controller
 
         $user = auth()->user();
 
+        // General's form, or Email's (its address and what its emails say).
+        $email_form = $request->route()->getName() == 'mailboxes.email.save';
+        $page = $email_form ? 'mailboxes.email' : 'mailboxes.general';
         $can_update_settings = $user->can('updateSettings', $mailbox);
-        $can_update_signature = $user->can('updateEmailSignature', $mailbox);
-        
+        $can_update_signature = $email_form && $user->can('updateEmailSignature', $mailbox);
+
         if (!$can_update_settings && !$can_update_signature) {
             \Helper::denyAccess();
         }
@@ -184,32 +203,32 @@ class MailboxesController extends Controller
 
         if ($can_update_settings) {
 
-            // Checkboxes
-            $request->merge([
-                'aliases_reply' => ($request->filled('aliases_reply') ?? false),
-            ]);
-
-            // if not admin, the text only fields don't pass so spike them into the request.
-            if (!$user->isAdmin()) {
+            if ($email_form) {
+                // Checkboxes
                 $request->merge([
-                    'name' => $mailbox->name,
-                    'email' => $mailbox->email,
+                    'aliases_reply' => ($request->filled('aliases_reply') ?? false),
                 ]);
             }
 
-            $validator = Validator::make($request->all(), [
-                'name'             => 'required|string|max:40',
+            // if not admin, the text only fields don't pass so spike them into the request.
+            if (!$user->isAdmin()) {
+                $request->merge($email_form ? ['email' => $mailbox->email] : ['name' => $mailbox->name]);
+            }
+
+            $validator = Validator::make($request->all(), $email_form ? [
                 'email'            => 'required|string|email|max:128|unique:mailboxes,email,'.$id,
                 'aliases'          => 'nullable|string',
                 'from_name'        => 'required|integer',
                 'from_name_custom' => 'nullable|string|max:128',
+            ] : [
+                'name'             => 'required|string|max:40',
                 'ticket_assignee'  => 'required|integer',
                 'chat_reopen_days' => 'sometimes|required|integer|min:1|max:3650',
                 'accent'           => ['nullable', \Illuminate\Validation\Rule::in(\FruitUI\Fruit::ACCENTS)],
                 'photo'            => 'nullable|image|mimes:jpeg,png,jpg,gif',
             ], [], ['chat_reopen_days' => __('Reopen Window'), 'photo' => __('Image')]);
 
-            if (Mailbox::userEmailExists($request->email)) {
+            if ($email_form && Mailbox::userEmailExists($request->email)) {
                 $invalid = true;
                 $validator->errors()->add('email', __('There is a user with such email. Users and mailboxes can not have the same email addresses.'));
             }
@@ -217,23 +236,14 @@ class MailboxesController extends Controller
             $validator = \Eventy::filter('mailbox.settings_validator', $validator, $mailbox, $request);
 
             if ($invalid || count($validator->errors()) || $validator->fails()) {
-                return $this->savedResponse(redirect()->route('mailboxes.general', ['id' => $mailbox->getSlug()])
+                return $this->savedResponse(redirect()->route($page, ['id' => $mailbox->getSlug()])
                             ->withErrors($validator)
                             ->withInput(), $validator);
             }
 
-            $allowed_fields = [
-                'name',
-                'email',
-                'aliases',
-                'aliases_reply',
-                'auto_bcc',
-                'from_name',
-                'from_name_custom',
-                'ticket_assignee',
-                'before_reply',
-                'accent',
-            ];
+            $allowed_fields = $email_form
+                ? ['email', 'aliases', 'aliases_reply', 'auto_bcc', 'from_name', 'from_name_custom', 'before_reply']
+                : ['name', 'ticket_assignee', 'accent'];
         }
 
         if ($can_update_signature) {
@@ -243,7 +253,7 @@ class MailboxesController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return $this->savedResponse(redirect()->route('mailboxes.general', ['id' => $mailbox->getSlug()])
+                return $this->savedResponse(redirect()->route($page, ['id' => $mailbox->getSlug()])
                     ->withErrors($validator)
                     ->withInput(), $validator);
             }
@@ -263,7 +273,7 @@ class MailboxesController extends Controller
         $mailbox->fill($fields);
 
         // Save state.
-        if ($user->isAdmin()) {
+        if ($user->isAdmin() && !$email_form) {
             if ($request->filled('state')) {
                 $mailbox->state = Mailbox::STATE_ARCHIVED;
             } else {
@@ -272,7 +282,7 @@ class MailboxesController extends Controller
         }
 
         // Shared conversation policy for all chat channels.
-        if ($can_update_settings) {
+        if ($can_update_settings && !$email_form) {
             if (!empty($request->chat_start_new)) {
                 $mailbox->setMetaParam('chat_start_new', true);
             } else {
@@ -288,7 +298,7 @@ class MailboxesController extends Controller
                     $validator = Validator::make([], []);
                     $validator->errors()->add('photo', __('Error occurred processing the image. Make sure that PHP GD extension is enabled.'));
 
-                    return $this->savedResponse(redirect()->route('mailboxes.general', ['id' => $mailbox->getSlug()])
+                    return $this->savedResponse(redirect()->route($page, ['id' => $mailbox->getSlug()])
                         ->withErrors($validator)
                         ->withInput(), $validator);
                 }
@@ -311,7 +321,7 @@ class MailboxesController extends Controller
             \Session::flash('flash_success_floating', __('Mailbox settings saved'));
         }
 
-        return $this->savedResponse(redirect()->route('mailboxes.general', ['id' => $mailbox->getSlug()]));
+        return $this->savedResponse(redirect()->route($page, ['id' => $mailbox->getSlug()]));
     }
 
     /**

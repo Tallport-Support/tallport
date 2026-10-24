@@ -16,7 +16,8 @@ class MailboxSettings
 {
     /**
      * The further pages the user may open, in order: label, url, value (or null), whether
-     * the value is a problem, and the routes that are the page (for the header's title).
+     * the value is a problem, the routes that are the page (for the header's title), and whether
+     * it's a channel's (Email, Website Chat, Telegram…).
      */
     public static function pages(Mailbox $mailbox, User $user)
     {
@@ -25,24 +26,23 @@ class MailboxSettings
         // Their addresses by the mailbox's short name.
         $key = $mailbox->getSlug();
         if ($user->can('update', $mailbox)) {
-            if ($user->isAdmin()) {
-                $pages[] = self::page(__('Connection Settings'), route('mailboxes.connection', ['id' => $key]), ...self::connection($mailbox), routes: ['mailboxes.connection', 'mailboxes.connection.incoming']);
-            }
             if ($user->isAdmin() || $user->hasManageMailboxPermission($id, Mailbox::ACCESS_PERM_PERMISSIONS)) {
                 $people = count($mailbox->usersHavingAccess(true));
                 $pages[] = self::page(__('Permissions'), route('mailboxes.permissions', ['id' => $key]), trans_choice(':count person|:count people', $people), routes: ['mailboxes.permissions']);
             }
-            if ($user->isAdmin() || $user->hasManageMailboxPermission($id, Mailbox::ACCESS_PERM_AUTO_REPLIES)) {
-                $pages[] = self::page(__('Auto Reply'), route('mailboxes.auto_reply', ['id' => $key]), $mailbox->auto_reply_enabled ? __('On') : __('Off'), routes: ['mailboxes.auto_reply']);
+            // Email, a channel like the others: the first of its tabs the user may open (mailboxes/email_menu).
+            if ($email_tab = array_key_first(self::emailTabs($mailbox, $user))) {
+                [$email_value, $email_problem] = $mailbox->isConnected() ? [$mailbox->email, false] : self::connection($mailbox);
+                $pages[] = self::page(__('Email'), route($email_tab, ['id' => $key]), $email_value, $email_problem, routes: ['mailboxes.email', 'mailboxes.connection', 'mailboxes.auto_reply'], channel: true);
             }
             if ($user->isAdmin()) {
-                $pages[] = self::page(__('Website Chat'), route('mailboxes.web_chat', ['id' => $key]), \App\WebChat\WebChat::settings($mailbox)['enabled'] ? __('On') : __('Off'), routes: ['mailboxes.web_chat'], chat: true);
-                $pages[] = self::page(__('Telegram'), route('mailboxes.telegram', ['id' => $key]), \App\Telegram\Telegram::isEnabled($mailbox) ? __('Connected') : __('Not set up'), routes: ['mailboxes.telegram'], chat: true);
+                $pages[] = self::page(__('Website Chat'), route('mailboxes.web_chat', ['id' => $key]), \App\WebChat\WebChat::settings($mailbox)['enabled'] ? __('On') : __('Off'), routes: ['mailboxes.web_chat'], channel: true);
+                $pages[] = self::page(__('Telegram'), route('mailboxes.telegram', ['id' => $key]), \App\Telegram\Telegram::isEnabled($mailbox) ? __('Connected') : __('Not set up'), routes: ['mailboxes.telegram'], channel: true);
             }
             $matrix = \App\Matrix\MatrixMailbox::forMailbox($id);
-            $pages[] = self::page('Matrix', route('mailboxes.matrix', ['id' => $key]), $matrix && $matrix->isReady() ? __('Connected') : __('Not set up'), routes: ['mailboxes.matrix'], chat: true);
+            $pages[] = self::page('Matrix', route('mailboxes.matrix', ['id' => $key]), $matrix && $matrix->isReady() ? __('Connected') : __('Not set up'), routes: ['mailboxes.matrix'], channel: true);
             $nostr = \App\Nostr\NostrMailbox::where('mailbox_id', $id)->where('enabled', true)->whereNotNull('pubkey')->exists();
-            $pages[] = self::page('Nostr', route('mailboxes.nostr', ['id' => $key]), $nostr ? __('Connected') : __('Not set up'), routes: ['mailboxes.nostr'], chat: true);
+            $pages[] = self::page('Nostr', route('mailboxes.nostr', ['id' => $key]), $nostr ? __('Connected') : __('Not set up'), routes: ['mailboxes.nostr'], channel: true);
         }
         if ($user->isAdmin()) {
             $pages[] = self::page(__('AI'), route('mailboxes.ai', ['id' => $key]), \App\Ai\Settings::mailboxSummary($mailbox), routes: ['mailboxes.ai']);
@@ -76,7 +76,20 @@ class MailboxSettings
      */
     public static function canOpenMailbox(Mailbox $mailbox, User $user)
     {
-        return $user->can('updateSettings', $mailbox) || $user->can('updateEmailSignature', $mailbox);
+        return $user->can('updateSettings', $mailbox);
+    }
+
+    /**
+     * The tabs of the mailbox's Email the user may open, in order (route => label).
+     */
+    public static function emailTabs(Mailbox $mailbox, User $user)
+    {
+        return array_filter([
+            'mailboxes.email'               => $user->can('updateSettings', $mailbox) || $user->can('updateEmailSignature', $mailbox) ? __('Address') : null,
+            'mailboxes.connection'          => $user->isAdmin() ? __('Sending Emails') : null,
+            'mailboxes.connection.incoming' => $user->isAdmin() ? __('Fetching Emails') : null,
+            'mailboxes.auto_reply'          => $user->isAdmin() || $user->hasManageMailboxPermission($mailbox->id, Mailbox::ACCESS_PERM_AUTO_REPLIES) ? __('Auto Reply') : null,
+        ]);
     }
 
     /**
@@ -156,8 +169,8 @@ class MailboxSettings
         return (string) ob_get_clean();
     }
 
-    protected static function page($label, $url, $value = null, $problem = false, array $routes = [], $chat = false)
+    protected static function page($label, $url, $value = null, $problem = false, array $routes = [], $channel = false)
     {
-        return ['label' => $label, 'url' => $url, 'value' => $value, 'problem' => $problem, 'routes' => $routes, 'chat' => $chat];
+        return ['label' => $label, 'url' => $url, 'value' => $value, 'problem' => $problem, 'routes' => $routes, 'channel' => $channel];
     }
 }

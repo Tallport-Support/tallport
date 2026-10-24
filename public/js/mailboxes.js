@@ -14,7 +14,7 @@ document.addEventListener('alpine:init', function () {
 			fromNameChanged: function (event) {
 				var container = document.getElementById('from_name_custom_container');
 				if (container) {
-					container.classList.toggle('hidden', event.target.value != from_name_custom);
+					container.hidden = event.target.value != from_name_custom;
 				}
 			},
 			beforeReplyToggled: function (event) {
