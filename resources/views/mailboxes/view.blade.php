@@ -12,8 +12,11 @@
 
 @section('main_class', 'fruit-ui')
 
+{{-- Beside the list, the open conversation's parts without one (an empty folder, a later page of
+     the list): a folder or a conversation opens in them in place (public/js/conversations.js). --}}
+@section('split_class', 'app-workspace--empty')
 @section('list_toolbar')
-    @include('mailboxes/partials/list_toolbar')
+    <livewire:conversation-list-toolbar :folder="$folder" />
 @endsection
 
 @section('list')
@@ -27,10 +30,20 @@
     <livewire:conversation-list :conversations="$conversations" :folder="$folder" :mailbox="$mailbox" :params="$params ?? []" page-param="page" />
 @endsection
 
+@section('toolbar')
+    <livewire:conversation-toolbar :folder="$folder" />
+@endsection
+
+@section('inspector_label', __('Customer'))
+@section('inspector_toolbar')
+    <button type="button" class="f-button f-button--ghost f-button--icon app-inspector-back" x-data x-on:click="$el.closest('.app-workspace').dataset.view = ''" aria-label="{{ __('Back') }}" title="{{ __('Back') }}"><x-icon.chevron-left class="f-icon" aria-hidden="true" /></button>
+    <h2 class="app-inspector-title">{{ __('Customer') }}</h2>
+@endsection
+
+@section('inspector')
+    <livewire:conversation-inspector :folder="$folder" />
+@endsection
+
 @section('content')
-    <x-fruit::empty-state class="split-view__empty">
-        <x-slot:icon><x-icon.mail-open /></x-slot:icon>
-        <x-slot:title>{{ __('No conversation selected') }}</x-slot:title>
-        {{ __('Choose a conversation from the list.') }}
-    </x-fruit::empty-state>
+    <livewire:conversation-pane :folder="$folder" />
 @endsection

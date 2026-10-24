@@ -28,9 +28,9 @@ class ConversationToolbar extends Component
     #[Locked]
     public $x_embed;
 
-    public function mount($conversation, $folder = null)
+    public function mount($conversation = null, $folder = null)
     {
-        $this->conversation_id = $conversation->id;
+        $this->conversation_id = $conversation ? $conversation->id : null;
         // The folder it's shown beside (where Delete goes on), as the page's.
         $this->folder_id = $folder ? $folder->id : self::openedFolderId($conversation, null);
         $this->x_embed = request()->x_embed;
@@ -200,6 +200,9 @@ class ConversationToolbar extends Component
 
     public function render()
     {
+        if (!$this->conversation_id) {
+            return view('livewire.conversation-toolbar-none');
+        }
         $conversation = $this->conversation();
         $user = auth()->user();
         $mailbox = $conversation->mailbox;

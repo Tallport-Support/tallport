@@ -17,9 +17,9 @@ class ConversationPane extends Component
 {
     use ConversationOpens;
 
-    public function mount($conversation, $folder = null)
+    public function mount($conversation = null, $folder = null)
     {
-        $this->conversation_id = $conversation->id;
+        $this->conversation_id = $conversation ? $conversation->id : null;
         $this->folder_id = $folder ? $folder->id : $conversation->folder_id;
     }
 
@@ -30,22 +30,40 @@ class ConversationPane extends Component
     }
 
     /**
-     * Another folder, at its conversation; one without conversations (or a narrow
-     * window, where the list goes first) loads its page.
+     * Another folder, at its conversation, or without one when it has none; a narrow
+     * window (where the list goes first) loads its page.
      */
     #[\Livewire\Attributes\On('folder-open')]
     public function openFolder($folder_id, $conversation_id = null)
     {
         $folder = self::findFolder($folder_id);
-        $conversation = request()->cookie('tallport_narrow') ? null : $this->switchToFolder($folder_id, $conversation_id);
-        if (!$conversation) {
-            if ($folder) {
-                $this->redirect($folder->id < 0 ? route('mailboxes.all', ['folder_id' => $folder->id]) : $folder->url($folder->mailbox_id), navigate: true);
-            }
+        if ($folder && request()->cookie('tallport_narrow')) {
+            $this->redirect($folder->id < 0 ? route('mailboxes.all', ['folder_id' => $folder->id]) : $folder->url($folder->mailbox_id), navigate: true);
 
             return;
         }
-        $this->opened($conversation);
+        if ($conversation = $this->switchToFolder($folder_id, $conversation_id)) {
+            $this->opened($conversation);
+        } elseif ($folder && $this->conversation_id === null) {
+            $this->openedNone($folder);
+        }
+    }
+
+    /**
+     * What showing a folder without a conversation does, as its page: the page around it follows
+     * (public/js/conversations.js).
+     */
+    protected function openedNone($folder)
+    {
+        $mailbox = $folder->id < 0 ? \App\Misc\AllMailboxes::mailbox() : $folder->mailbox;
+        $this->dispatch('conversation-opened',
+            id: null,
+            mailbox_id: $mailbox->id,
+            folder_id: $folder->id,
+            url: \App\Misc\Addresses::folderUrl($folder),
+            // As layouts/app titles the folder's page (mailboxes/view); the unread count is the page's.
+            title: $folder->getTypeName().' - '.$mailbox->name.' - '.\Eventy::filter('layout.title.name', config('app.name', 'Tallport')),
+        );
     }
 
     /**
@@ -112,6 +130,9 @@ class ConversationPane extends Component
 
     public function render()
     {
+        if (!$this->conversation_id) {
+            return view('livewire.conversation-pane-none');
+        }
         $conversation = $this->shownConversation();
         $user = auth()->user();
 

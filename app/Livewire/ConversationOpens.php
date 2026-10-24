@@ -14,7 +14,8 @@ use Livewire\Attributes\On;
  * another conversation opens in them in place (conversation-open, sent by
  * public/js/conversations.js when a row of the list is clicked), or another
  * folder's (folder-open, public/js/tallport.js: the conversation it opens at),
- * without loading the page.
+ * without loading the page. Without a conversation (an empty folder, and its
+ * page) conversation_id is null.
  */
 trait ConversationOpens
 {
@@ -41,7 +42,8 @@ trait ConversationOpens
 
     /**
      * Shows the conversation a folder opens at (or the one given); the conversation,
-     * or null when there's none or the user can't see the folder.
+     * or null when there's none (shown without one, conversation_id null) or the user
+     * can't see the folder.
      */
     protected function switchToFolder($folder_id, $conversation_id = null)
     {
@@ -55,7 +57,9 @@ trait ConversationOpens
         \App\Misc\Sidebar::select($folder);
         $conversation_id = $conversation_id ?: app(ConversationListQuery::class)->folderConversationId($folder, auth()->user());
         if (!$conversation_id) {
-            $this->skipRender();
+            $this->shown_conversation = null;
+            $this->conversation_id = null;
+            $this->folder_id = $folder->id;
 
             return null;
         }

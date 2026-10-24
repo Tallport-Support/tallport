@@ -145,9 +145,18 @@ class ConversationOpenInPlaceTest extends FeatureTestCase
         Livewire::actingAs($this->agent)->test(ConversationPane::class, ['conversation' => $unassigned, 'folder' => $unassigned->folder])
             ->dispatch('folder-open', folder_id: $mine_folder->id)
             ->assertSee('Lost parcel')->assertDispatched('conversation-opened', id: $mine->id, folder_id: $mine_folder->id)
-            // An empty folder: its page.
+            // An empty folder: without a conversation, in place too.
             ->dispatch('folder-open', folder_id: $closed_folder->id)
-            ->assertRedirect($closed_folder->url($this->mailbox->id));
+            ->assertNoRedirect()->assertSet('conversation_id', null)->assertSee('No conversation selected')->assertDontSee('Lost parcel')
+            ->assertDispatched('conversation-opened', id: null, folder_id: $closed_folder->id, mailbox_id: $this->mailbox->id, url: \App\Misc\Addresses::folderUrl($closed_folder))
+            // And from there another folder again.
+            ->dispatch('folder-open', folder_id: $mine_folder->id)
+            ->assertSee('Lost parcel')->assertDispatched('conversation-opened', id: $mine->id);
+
+        // A narrow window, where the list goes first: the folder's page.
+        Livewire::withCookie('tallport_narrow', '1')->actingAs($this->agent)->test(ConversationPane::class, ['conversation' => $unassigned, 'folder' => $unassigned->folder])
+            ->dispatch('folder-open', folder_id: $mine_folder->id)
+            ->assertRedirect($mine_folder->url($this->mailbox->id));
 
         // Someone else's folder: nothing.
         Livewire::actingAs($this->agent)->test(ConversationList::class, ['folder' => $unassigned->folder, 'mailbox' => $this->mailbox])
@@ -156,8 +165,34 @@ class ConversationOpenInPlaceTest extends FeatureTestCase
     }
 
     /**
-     * The toolbar follows a folder opened in place; a folder the user can't
-     * see, or an empty one, leaves it as it is. All Mailboxes' folders count too.
+     * An empty folder's page has the conversation's parts without one (and without their
+     * columns), so another folder or a conversation opens in them in place.
+     */
+    public function testAnEmptyFoldersPageOpensInPlace()
+    {
+        $unassigned = $this->conversation('Broken zipper', 'casey@customer.example.org');
+        $closed_folder = $this->mailbox->folders()->where('type', Folder::TYPE_CLOSED)->first();
+
+        $this->actingAs($this->agent)->get($closed_folder->url($this->mailbox->id))->assertOk()
+            ->assertSee('app-workspace--empty', false)->assertSee('conv-pane conv-pane--none', false)->assertSee('No conversation selected')
+            ->assertSee('id="conv-toolbar"', false)->assertSee('id="conv-layout-customer"', false);
+
+        Livewire::actingAs($this->agent)->test(ConversationPane::class, ['folder' => $closed_folder])
+            ->assertSee('No conversation selected')
+            ->dispatch('folder-open', folder_id: $unassigned->folder_id)
+            ->assertSee('Broken zipper')->assertDispatched('conversation-opened', id: $unassigned->id);
+        Livewire::actingAs($this->agent)->test(ConversationPane::class, ['folder' => $closed_folder])
+            ->dispatch('conversation-open', id: $unassigned->id, folder_id: $unassigned->folder_id)
+            ->assertSee('Broken zipper')->assertDispatched('conversation-opened', id: $unassigned->id);
+        Livewire::actingAs($this->agent)->test(ConversationToolbar::class, ['folder' => $closed_folder])
+            ->assertDontSeeHtml('conv-actions')
+            ->dispatch('conversation-open', id: $unassigned->id, folder_id: $unassigned->folder_id)->assertSeeHtml('conv-actions');
+    }
+
+    /**
+     * The toolbar and the customer follow a folder opened in place, without a conversation
+     * for an empty one; a folder the user can't see leaves them as they are. All Mailboxes'
+     * folders count too.
      */
     public function testTheToolbarFollowsAnotherFolder()
     {
@@ -172,8 +207,13 @@ class ConversationOpenInPlaceTest extends FeatureTestCase
         $toolbar = Livewire::actingAs($this->agent)->test(ConversationToolbar::class, ['conversation' => $unassigned, 'folder' => $unassigned->folder])
             ->dispatch('folder-open', folder_id: $mine_folder->id)
             ->assertSet('conversation_id', $mine->id)->assertSet('folder_id', $mine_folder->id);
-        $toolbar->dispatch('folder-open', folder_id: $closed_folder->id)->assertSet('conversation_id', $mine->id);
-        $toolbar->dispatch('folder-open', folder_id: $this->createMailbox()->folders()->first()->id)->assertSet('folder_id', $mine_folder->id);
+        $toolbar->dispatch('folder-open', folder_id: $closed_folder->id)->assertSet('conversation_id', null)->assertSet('folder_id', $closed_folder->id)
+            ->assertDontSeeHtml('conv-actions');
+        $toolbar->dispatch('folder-open', folder_id: $this->createMailbox()->folders()->first()->id)->assertSet('folder_id', $closed_folder->id);
+        $toolbar->dispatch('folder-open', folder_id: $mine_folder->id)->assertSet('conversation_id', $mine->id)->assertSeeHtml('conv-actions');
+        Livewire::actingAs($this->agent)->test(ConversationInspector::class, ['conversation' => $unassigned, 'folder' => $unassigned->folder])
+            ->assertSee('casey@customer.example.org')
+            ->dispatch('folder-open', folder_id: $closed_folder->id)->assertSet('conversation_id', null)->assertDontSee('casey@customer.example.org');
 
         // All Mailboxes' Mine (with a second mailbox).
         $this->createMailbox([$this->agent], ['name' => 'Sales']);

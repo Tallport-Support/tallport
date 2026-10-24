@@ -17,5 +17,9 @@
             <x-slot:icon><x-icon.inbox /></x-slot:icon>
             {{ __('There are no conversations here') }}
         </x-fruit::empty-state>
+        {{-- Beside an empty list: no conversation (as livewire/conversation-pane-none). --}}
+        <div class="conv-pane conv-pane--none" data-part="pane-none">
+            @include('conversations/partials/no_conversation')
+        </div>
     </template>
 </div>

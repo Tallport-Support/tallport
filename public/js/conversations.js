@@ -126,7 +126,9 @@ document.addEventListener('click', function (e) {
 }, true);
 document.addEventListener('click', function (e) {
 	var link = e.target.closest && e.target.closest('a.conv-row__link, .conv-next-prev a');
-	if (!link || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || link.target == '_blank' || !document.querySelector('.conv-pane')) {
+	// In place where the conversation's column shows (a narrow window's list: its page).
+	var content = document.getElementById('app-content');
+	if (!link || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || link.target == '_blank' || !document.querySelector('.conv-pane') || !content || !content.getClientRects().length) {
 		return;
 	}
 	var open = conversationOpenLink(link);
@@ -155,11 +157,11 @@ document.addEventListener('click', function (e) {
  * Another folder opens in place beside an open conversation (its sidebar link, a
  * wire:navigate link): the list, its toolbar and the conversation it opens at
  * (App\Livewire\ConversationList, ConversationListToolbar, ConversationPane…).
- * The sidebar stays, with the folder marked; an empty folder loads its page.
+ * The sidebar stays, with the folder marked; an empty folder shows without a
+ * conversation.
  */
 var folderOpen = function (folder_id, conversation_id) {
 	folderMark(folder_id);
-	document.getElementById('app-content').setAttribute('aria-busy', 'true');
 	var drawn = listFromCopy(folder_id, conversation_id);
 	// Offline: the browser's copy alone (or nothing to show).
 	if (offline()) {
@@ -179,7 +181,8 @@ var folderOpen = function (folder_id, conversation_id) {
 /**
  * Asked of the server: at once when no copy could be shown, else after a moment without another
  * click (switching quickly asks only for the last one). An answer for one left since is set aside
- * (openStale): the copy of the one now wanted stays.
+ * (openStale): the copy of the one now wanted stays. Busy (the loading bar) only when the copy
+ * showed nothing: what it shows doesn't wait, also when the answer replaces it.
  */
 var openSeq = 0;
 var openTimer = null;
@@ -191,6 +194,11 @@ var openLater = function (drawn, event, params) {
 	drawn.then(function (shown) {
 		if (seq !== openSeq) {
 			return;
+		}
+		if (shown) {
+			document.getElementById('app-content').removeAttribute('aria-busy');
+		} else {
+			document.getElementById('app-content').setAttribute('aria-busy', 'true');
 		}
 		openTimer = setTimeout(function () {
 			openAsked.push(seq);
@@ -295,15 +303,13 @@ var listFromCopy = function (folder_id, conversation_id) {
 		list.header = found[1];
 		var opened_id = listDraw(folder_id, list, conversation_id || listOpened(folder_id));
 		listDrawing = folder_id;
-		// Offline and empty: no conversation beside it (as its page has none).
-		if (!list.rows.length && offline()) {
-			paneUndraw();
-			PANE_PARTS.forEach(function (selector) {
-				var real = document.querySelector(selector);
-				if (real) {
-					real.style.display = 'none';
-				}
-			});
+		// Empty: no conversation beside it (as the server shows it, App\Livewire\ConversationPane).
+		if (!list.rows.length) {
+			var parts = document.getElementById('conv-row-parts');
+			var none = parts && parts.content.querySelector('[data-part="pane-none"]');
+			if (document.querySelector('.conv-pane') && none) {
+				paneDraw({'.conv-pane': none.outerHTML});
+			}
 			return true;
 		}
 		// Beside it, the conversation it opens at (offline: at its address).
@@ -644,8 +650,16 @@ document.addEventListener('livewire:init', function () {
 		}
 	});
 });
-// The sidebar's folders: in place beside an open conversation, else the folder's page
-// (wire:navigate, with its progress bar).
+// The sidebar's folders: in place beside the list, else (a narrow window, a page without a list)
+// the folder's page (wire:navigate), marked at once and keeping the focus.
+var folderFocus = null;
+document.addEventListener('livewire:navigated', function () {
+	var link = folderFocus && document.querySelector('.app-sidebar a[data-folder_id="'+folderFocus+'"]');
+	folderFocus = null;
+	if (link) {
+		link.focus({preventScroll: true});
+	}
+});
 document.addEventListener('click', function (e) {
 	var link = e.target.closest && e.target.closest('a.app-folder-link');
 	if (!link || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
@@ -665,8 +679,10 @@ document.addEventListener('click', function (e) {
 		});
 		return;
 	}
-	if (!document.querySelector('.conv-pane') || !document.querySelector('.conv-list-host')) {
-		// A page without a conversation (an empty folder's, a narrow one): the list at once too.
+	if (!document.querySelector('.conv-pane') || !document.querySelector('.conv-list-host') || window.matchMedia('(max-width: 900px)').matches) {
+		// The list at once too.
+		folderMark(link.getAttribute('data-folder_id'));
+		folderFocus = document.activeElement === link ? link.getAttribute('data-folder_id') : null;
 		listFromCopy(link.getAttribute('data-folder_id'));
 		Livewire.navigate(link.href);
 		return;
@@ -693,7 +709,6 @@ var conversationMark = function (id) {
 };
 var conversationOpen = function (open) {
 	conversationMark(open.id);
-	document.getElementById('app-content').setAttribute('aria-busy', 'true');
 	var drawn = paneFromCopy(open.id);
 	if (offline()) {
 		drawn.then(function (shown) {
@@ -1140,6 +1155,18 @@ var paneDraw = function (parts) {
 	}, 15000);
 	offlineDisable();
 	navRefocus();
+	paneEmpty();
+};
+/**
+ * Without a conversation beside the list (an empty folder: ConversationPane's, or the copy's): the
+ * page without the toolbar and customer columns (style.css).
+ */
+var paneEmpty = function () {
+	var workspace = document.querySelector('.app-workspace');
+	var pane = document.querySelector('.conv-pane.pane-local') || document.querySelector('.conv-pane');
+	if (workspace && pane) {
+		workspace.classList.toggle('app-workspace--empty', pane.classList.contains('conv-pane--none'));
+	}
 };
 var paneUndraw = function () {
 	paneDrawing = null;
@@ -1159,6 +1186,7 @@ var paneUndraw = function () {
 		}
 	});
 	copyGone();
+	paneEmpty();
 };
 // Back and Forward between conversations and folders opened in place.
 window.addEventListener('popstate', function (e) {
@@ -1182,6 +1210,24 @@ document.addEventListener('livewire:init', function () {
 			return;
 		}
 		document.getElementById('app-content').removeAttribute('aria-busy');
+		// None (an empty folder): as the folder's page (mailboxes/view), with its unread count.
+		if (!data.id) {
+			var count = parseInt((document.querySelector('.app-folder-link[data-folder_id="'+data.folder_id+'"]') || document.body).getAttribute('data-unread-count') || 0);
+			document.title = (count ? '('+count+') ' : '')+data.title;
+			document.body.removeAttribute('data-conversation_id');
+			document.body.removeAttribute('data-pane-version');
+			document.body.setAttribute('data-mailbox_id', data.mailbox_id);
+			document.body.setAttribute('data-folder_id', data.folder_id);
+			document.body.setAttribute('data-page-url', data.url);
+			conversationMarked = null;
+			paneDrawing = null;
+			paneWanted = null;
+			paneUndraw();
+			var state = Object.assign({}, window.history.state || {}, {tallport_folder: {folder_id: data.folder_id}});
+			delete state.tallport_conversation;
+			window.history.replaceState(state, '', data.url);
+			return;
+		}
 		document.title = data.title;
 		document.body.setAttribute('data-conversation_id', data.id);
 		document.body.setAttribute('data-mailbox_id', data.mailbox_id);
@@ -1213,6 +1259,10 @@ document.addEventListener('livewire:navigated', function () {
 	var first_page = conversation_first_page;
 	conversation_first_page = false;
 	if (!document.body.getAttribute('data-conversation_id')) {
+		// A folder's page without a conversation: Back here after folders opened in place opens it again.
+		if (document.querySelector('.conv-pane--none')) {
+			window.history.replaceState(Object.assign({}, window.history.state || {}, {tallport_folder: {folder_id: document.body.getAttribute('data-folder_id')}}), '');
+		}
 		return;
 	}
 	listOpened(document.body.getAttribute('data-folder_id'), parseInt(document.body.getAttribute('data-conversation_id')));

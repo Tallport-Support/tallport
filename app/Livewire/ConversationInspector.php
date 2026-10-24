@@ -14,14 +14,17 @@ class ConversationInspector extends Component
 {
     use ConversationOpens;
 
-    public function mount($conversation, $folder = null)
+    public function mount($conversation = null, $folder = null)
     {
-        $this->conversation_id = $conversation->id;
+        $this->conversation_id = $conversation ? $conversation->id : null;
         $this->folder_id = $folder ? $folder->id : $conversation->folder_id;
     }
 
     public function render()
     {
+        if (!$this->conversation_id) {
+            return view('livewire.conversation-inspector-none');
+        }
         $conversation = $this->shownConversation();
         $data = ConversationsController::pageData($conversation, $this->openedFolder(), auth()->user());
 

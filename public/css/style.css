@@ -1525,6 +1525,20 @@ a.disabled:focus {
 .app-workspace[data-list][data-inspector] {
     --f-workspace-columns: var(--f-sidebar-width, 240px) var(--f-list-width, 360px) minmax(0, 1fr) var(--f-inspector-width, 280px);
 }
+/* No conversation beside the list (an empty folder, public/js/conversations.js): without the
+   conversation's toolbar and customer, the page taking their place. */
+.app-workspace--empty[data-inspector] {
+    --f-workspace-columns: var(--f-sidebar-width, 240px) minmax(0, 1fr);
+}
+.app-workspace--empty[data-list][data-inspector] {
+    --f-workspace-columns: var(--f-sidebar-width, 240px) var(--f-list-width, 360px) minmax(0, 1fr);
+}
+.app-workspace--empty .app-workspace__toolbar,
+.app-workspace--empty .app-workspace__inspector-toolbar,
+.app-workspace--empty .app-workspace__inspector,
+.app-workspace--empty .app-workspace__splitter--inspector {
+    display: none;
+}
 .app-workspace > .f-toolbar {
     min-height: 0;
     padding: 12px 16px;
@@ -1563,7 +1577,8 @@ a.disabled:focus {
 .app-workspace__content {
     grid-row: 2;
 }
-.app-workspace__pane--full {
+.app-workspace__pane--full,
+.app-workspace--empty .app-workspace__content {
     grid-row: 1 / span 2;
 }
 .app-workspace__inspector-toolbar,
@@ -1665,7 +1680,8 @@ a.disabled:focus {
     .app-workspace__content {
         grid-row: 3;
     }
-    .app-workspace__pane--full {
+    .app-workspace__pane--full,
+    .app-workspace--empty .app-workspace__content {
         grid-row: 2 / span 2;
     }
     .app-workspace[data-list].split-view--open .app-workspace__list-toolbar,
@@ -2611,11 +2627,11 @@ h1.settings-toolbar__title {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-/* A list with nothing open: the empty state in the middle of the page pane. */
-.app-workspace[data-list]:not(.split-view--open) #app-content-scroll {
+/* A list with nothing open (an empty folder): the empty state in the middle of the page pane. */
+.app-workspace--empty #app-content-scroll {
     display: grid;
 }
-.app-workspace[data-list]:not(.split-view--open) #app-content-scroll > .content {
+.app-workspace--empty #app-content-scroll > .content {
     display: grid;
     place-items: center;
     margin: 0;
