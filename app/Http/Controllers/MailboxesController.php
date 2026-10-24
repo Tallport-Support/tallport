@@ -183,7 +183,8 @@ class MailboxesController extends Controller
                 'ticket_assignee'  => 'required|integer',
                 'chat_reopen_days' => 'sometimes|required|integer|min:1|max:3650',
                 'accent'           => ['nullable', \Illuminate\Validation\Rule::in(\FruitUI\Fruit::ACCENTS)],
-            ], [], ['chat_reopen_days' => __('Reopen Window')]);
+                'photo'            => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            ], [], ['chat_reopen_days' => __('Reopen Window'), 'photo' => __('Image')]);
 
             if (Mailbox::userEmailExists($request->email)) {
                 $invalid = true;
@@ -256,6 +257,20 @@ class MailboxesController extends Controller
             }
             if ($request->has('chat_reopen_days')) {
                 $mailbox->setMetaParam('chat_reopen_days', (int) $request->input('chat_reopen_days'));
+            }
+
+            // Its image, once everything else is valid.
+            if ($request->hasFile('photo')) {
+                if (!$mailbox->savePhoto($request->file('photo'))) {
+                    $validator = Validator::make([], []);
+                    $validator->errors()->add('photo', __('Error occurred processing the image. Make sure that PHP GD extension is enabled.'));
+
+                    return $this->savedResponse(redirect()->route('mailboxes.update', ['id' => $id])
+                        ->withErrors($validator)
+                        ->withInput(), $validator);
+                }
+            } elseif ($request->filled('photo_remove')) {
+                $mailbox->removePhoto();
             }
         }
 

@@ -1935,5 +1935,7 @@
     "The AI failed (:error). It tries again when the conversation is opened.": "AIでエラーが発生しました（:error）。会話を開くと再試行します。",
     "Offline: showing the copy saved in this browser.": "オフライン：このブラウザーに保存されたコピーを表示しています。",
     "You're offline. The change wasn't saved.": "オフラインです。変更は保存されませんでした。",
-    "Not available offline.": "オフラインでは利用できません。"
+    "Not available offline.": "オフラインでは利用できません。",
+    "Replace Image": "画像を置き換える",
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "ウェブサイトチャットで顧客に表示されます（ロゴなど）。JPG、GIF、PNG に対応し、正方形に切り抜かれます。"
 }

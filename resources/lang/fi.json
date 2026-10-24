@@ -1951,5 +1951,7 @@
     "The AI failed (:error). It tries again when the conversation is opened.": "Tekoäly epäonnistui (:error). Se yrittää uudelleen, kun keskustelu avataan.",
     "Offline: showing the copy saved in this browser.": "Offline-tila: näytetään tähän selaimeen tallennettu kopio.",
     "You're offline. The change wasn't saved.": "Olet offline-tilassa. Muutosta ei tallennettu.",
-    "Not available offline.": "Ei käytettävissä offline-tilassa."
+    "Not available offline.": "Ei käytettävissä offline-tilassa.",
+    "Replace Image": "Vaihda Kuva",
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Näytetään asiakkaille verkkosivun chatissa, esimerkiksi logo. JPG, GIF tai PNG, rajattuna neliöksi."
 }

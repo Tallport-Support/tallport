@@ -184,6 +184,46 @@ PHP;
         $this->assertArrayNotHasKey('chat_start_new', (array) $mailbox->fresh()->meta);
     }
 
+    /**
+     * A mailbox's image: uploaded as a square JPEG with the settings, replaced (the old file
+     * goes), refused when it isn't an image, removed, and gone with the mailbox.
+     */
+    public function testTheMailboxsImage()
+    {
+        $mailbox = $this->createMailbox([], ['name' => 'Support']);
+        $fields = [
+            'name'            => 'Support',
+            'email'           => $mailbox->email,
+            'from_name'       => Mailbox::FROM_NAME_MAILBOX,
+            'ticket_assignee' => Mailbox::TICKET_ASSIGNEE_ANYONE,
+        ];
+        $save = fn (array $data) => $this->postForm($this->admin, route('mailboxes.update.save', ['id' => $mailbox->id]), array_merge($fields, $data));
+
+        $save(['photo' => \Illuminate\Http\UploadedFile::fake()->image('logo.png', 600, 400)])->assertSessionHasNoErrors();
+        $first = $mailbox->fresh()->photo_url;
+        \Storage::disk('local')->assertExists(Mailbox::PHOTO_DIRECTORY.'/'.$first);
+        $this->assertSame([Mailbox::PHOTO_SIZE, Mailbox::PHOTO_SIZE, IMAGETYPE_JPEG], array_slice(getimagesize(\Storage::disk('local')->path(Mailbox::PHOTO_DIRECTORY.'/'.$first)), 0, 3));
+        $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertSee($mailbox->fresh()->getPhotoUrl())->assertSee('Replace Image');
+
+        $save(['photo' => \Illuminate\Http\UploadedFile::fake()->image('logo.jpg', 300, 300)])->assertSessionHasNoErrors();
+        $second = $mailbox->fresh()->photo_url;
+        $this->assertNotSame($first, $second);
+        \Storage::disk('local')->assertMissing(Mailbox::PHOTO_DIRECTORY.'/'.$first);
+
+        $save(['photo' => \Illuminate\Http\UploadedFile::fake()->createWithContent('logo.txt', 'not an image')])->assertSessionHasErrors('photo');
+        $save(['photo' => \Illuminate\Http\UploadedFile::fake()->createWithContent('logo.gif', 'GIF89a')])->assertSessionHasErrors('photo');
+        $this->assertSame($second, $mailbox->fresh()->photo_url);
+
+        $save(['photo_remove' => 1])->assertSessionHasNoErrors();
+        $this->assertNull($mailbox->fresh()->photo_url);
+        \Storage::disk('local')->assertMissing(Mailbox::PHOTO_DIRECTORY.'/'.$second);
+
+        $save(['photo' => \Illuminate\Http\UploadedFile::fake()->image('logo.gif', 100, 100)]);
+        $third = $mailbox->fresh()->photo_url;
+        $mailbox->fresh()->deleteMailbox();
+        \Storage::disk('local')->assertMissing(Mailbox::PHOTO_DIRECTORY.'/'.$third);
+    }
+
     public function testOnlyAdminsSaveAMailboxsAiSettings()
     {
         $agent = $this->createUser();

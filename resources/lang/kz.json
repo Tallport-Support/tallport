@@ -2328,5 +2328,7 @@
     "The AI failed (:error). It tries again when the conversation is opened.": "ЖИ-де қате орын алды (:error). Тикет ашылғанда қайта әрекет етеді.",
     "Offline: showing the copy saved in this browser.": "Желіден тыс: осы браузерде сақталған көшірме көрсетілуде.",
     "You're offline. The change wasn't saved.": "Желіден тыссыз. Өзгеріс сақталмады.",
-    "Not available offline.": "Желіден тыс қолжетімсіз."
+    "Not available offline.": "Желіден тыс қолжетімсіз.",
+    "Replace Image": "Суретті Ауыстыру",
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Сайттағы чатта клиенттерге көрсетіледі, мысалы, логотип. JPG, GIF немесе PNG, шаршы пішінге қиылады."
 }

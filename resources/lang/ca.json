@@ -2026,5 +2026,7 @@
     "The AI failed (:error). It tries again when the conversation is opened.": "La IA ha fallat (:error). Ho torna a provar quan s'obre la conversa.",
     "Offline: showing the copy saved in this browser.": "Sense connexió: es mostra la còpia desada en aquest navegador.",
     "You're offline. The change wasn't saved.": "No teniu connexió. El canvi no s'ha desat.",
-    "Not available offline.": "No disponible sense connexió."
+    "Not available offline.": "No disponible sense connexió.",
+    "Replace Image": "Substitueix la Imatge",
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Es mostra als clients al xat del lloc web, com ara un logotip. JPG, GIF o PNG, retallada en un quadrat."
 }

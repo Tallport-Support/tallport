@@ -1935,5 +1935,7 @@
     "The AI failed (:error). It tries again when the conversation is opened.": "AI selhala (:error). Zkusí to znovu při otevření konverzace.",
     "Offline: showing the copy saved in this browser.": "Offline: zobrazuje se kopie uložená v tomto prohlížeči.",
     "You're offline. The change wasn't saved.": "Jste offline. Změna nebyla uložena.",
-    "Not available offline.": "Offline není k dispozici."
+    "Not available offline.": "Offline není k dispozici.",
+    "Replace Image": "Nahradit Obrázek",
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Zobrazuje se zákazníkům v chatu na webu, například logo. JPG, GIF nebo PNG, oříznuté na čtverec."
 }

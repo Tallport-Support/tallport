@@ -1935,5 +1935,7 @@
     "The AI failed (:error). It tries again when the conversation is opened.": "AI ni uspela (:error). Znova poskusi, ko se pogovor odpre.",
     "Offline: showing the copy saved in this browser.": "Brez povezave: prikazana je kopija, shranjena v tem brskalniku.",
     "You're offline. The change wasn't saved.": "Niste povezani. Sprememba ni bila shranjena.",
-    "Not available offline.": "Brez povezave ni na voljo."
+    "Not available offline.": "Brez povezave ni na voljo.",
+    "Replace Image": "Zamenjaj Sliko",
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Prikazana strankam v klepetu na spletnem mestu, na primer logotip. JPG, GIF ali PNG, obrezana na kvadrat."
 }

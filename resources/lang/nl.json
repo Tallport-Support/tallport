@@ -1935,5 +1935,7 @@
     "The AI failed (:error). It tries again when the conversation is opened.": "De AI gaf een fout (:error). Het wordt opnieuw geprobeerd wanneer het gesprek wordt geopend.",
     "Offline: showing the copy saved in this browser.": "Offline: de kopie die in deze browser is bewaard wordt getoond.",
     "You're offline. The change wasn't saved.": "U bent offline. De wijziging is niet opgeslagen.",
-    "Not available offline.": "Offline niet beschikbaar."
+    "Not available offline.": "Offline niet beschikbaar.",
+    "Replace Image": "Afbeelding Vervangen",
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Wordt aan klanten getoond in de websitechat, zoals een logo. JPG, GIF of PNG, vierkant bijgesneden."
 }

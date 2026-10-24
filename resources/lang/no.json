@@ -1938,5 +1938,7 @@
     "The AI failed (:error). It tries again when the conversation is opened.": "AI-en mislyktes (:error). Den prøver igjen når samtalen åpnes.",
     "Offline: showing the copy saved in this browser.": "Frakoblet: viser kopien som er lagret i denne nettleseren.",
     "You're offline. The change wasn't saved.": "Du er frakoblet. Endringen ble ikke lagret.",
-    "Not available offline.": "Ikke tilgjengelig frakoblet."
+    "Not available offline.": "Ikke tilgjengelig frakoblet.",
+    "Replace Image": "Erstatt Bilde",
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Vises for kunder i nettstedchatten, for eksempel en logo. JPG, GIF eller PNG, beskåret til et kvadrat."
 }

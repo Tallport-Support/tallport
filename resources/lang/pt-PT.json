@@ -1935,5 +1935,7 @@
     "The AI failed (:error). It tries again when the conversation is opened.": "A IA falhou (:error). Volta a tentar quando a conversa é aberta.",
     "Offline: showing the copy saved in this browser.": "Offline: a mostrar a cópia guardada neste navegador.",
     "You're offline. The change wasn't saved.": "Está offline. A alteração não foi guardada.",
-    "Not available offline.": "Indisponível offline."
+    "Not available offline.": "Indisponível offline.",
+    "Replace Image": "Substituir Imagem",
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Mostrada aos clientes no chat do site, como um logótipo. JPG, GIF ou PNG, recortada em quadrado."
 }

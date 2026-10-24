@@ -7,6 +7,7 @@ use App\Thread;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Watson\Rememberable\Rememberable;
 
 class Mailbox extends Model
@@ -140,6 +141,13 @@ class Mailbox extends Model
      */
     const DEFAULT_SIGNATURE_MARKDOWN = "--\n{%mailbox.name%}";
     const DEFAULT_SIGNATURE = "<p>--<br />\n{%mailbox.name%}</p>";
+
+    /**
+     * Its image (savePhoto()): in this folder of the local disk, square, large enough for chat
+     * apps' profiles.
+     */
+    const PHOTO_DIRECTORY = 'mailboxes';
+    const PHOTO_SIZE = 256;
 
     /**
      * Default values.
@@ -1229,9 +1237,50 @@ class Mailbox extends Model
         $this->users()->sync([]);
         $this->folders()->delete();
         TeamMessage::deleteForMailbox($this->id);
+        $this->removePhoto();
         // Maybe remove notifications on events in this mailbox?
 
         $this->delete();
+    }
+
+    /**
+     * Its image's address, or '' without one.
+     */
+    public function getPhotoUrl()
+    {
+        return $this->photo_url ? Storage::disk('local')->url(self::PHOTO_DIRECTORY.'/'.$this->photo_url) : '';
+    }
+
+    /**
+     * An uploaded image as its own (not saved yet): cropped to a square, resized and stored as
+     * JPEG under a new name, so its address can be cached for good. False if it can't be read.
+     */
+    public function savePhoto($uploaded_file)
+    {
+        $image = \App\Misc\Helper::resizeImage($uploaded_file->getRealPath() ?: $uploaded_file->getPathname(), $uploaded_file->getMimeType(), self::PHOTO_SIZE, self::PHOTO_SIZE);
+        if (!$image) {
+            return false;
+        }
+        ob_start();
+        imagejpeg($image, null, 90);
+        $file_name = \Str::random(32).'.jpg';
+        Storage::disk('local')->put(self::PHOTO_DIRECTORY.'/'.$file_name, ob_get_clean());
+
+        $this->removePhoto();
+        $this->photo_url = $file_name;
+
+        return true;
+    }
+
+    /**
+     * Without its image (not saved yet).
+     */
+    public function removePhoto()
+    {
+        if ($this->photo_url) {
+            Storage::disk('local')->delete(self::PHOTO_DIRECTORY.'/'.$this->photo_url);
+        }
+        $this->photo_url = null;
     }
 
     // Purify signature HTML to avoid sending unsafe HTML to customers by email.

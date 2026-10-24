@@ -1935,5 +1935,7 @@
     "The AI failed (:error). It tries again when the conversation is opened.": "Помилка ШІ (:error). Він спробує знову, коли розмову буде відкрито.",
     "Offline: showing the copy saved in this browser.": "Немає мережі: показано копію, збережену в цьому браузері.",
     "You're offline. The change wasn't saved.": "Немає підключення до мережі. Зміну не збережено.",
-    "Not available offline.": "Недоступно без мережі."
+    "Not available offline.": "Недоступно без мережі.",
+    "Replace Image": "Замінити Зображення",
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Показується клієнтам у чаті на сайті, наприклад логотип. JPG, GIF або PNG, обрізається до квадрата."
 }

@@ -1935,5 +1935,7 @@
     "The AI failed (:error). It tries again when the conversation is opened.": "AI misslyckades (:error). Den försöker igen när konversationen öppnas.",
     "Offline: showing the copy saved in this browser.": "Offline: visar kopian som sparats i den här webbläsaren.",
     "You're offline. The change wasn't saved.": "Du är offline. Ändringen sparades inte.",
-    "Not available offline.": "Inte tillgängligt offline."
+    "Not available offline.": "Inte tillgängligt offline.",
+    "Replace Image": "Ersätt Bild",
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Visas för kunder i webbplatschatten, till exempel en logotyp. JPG, GIF eller PNG, beskuren till en kvadrat."
 }

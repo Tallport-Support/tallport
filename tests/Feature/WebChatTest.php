@@ -339,6 +339,49 @@ class WebChatTest extends FeatureTestCase
     }
 
     /**
+     * The mailbox's image beside its name and on its own messages (the greeting too), an agent's
+     * photo on theirs, both from beside the window; their initials without them.
+     */
+    public function testTeamImages()
+    {
+        $token = $this->visitorToken();
+        $this->api('POST', '/t/m', ['body' => 'Is the shop open today?'], $token)->assertOk();
+        $conversation = Visitor::firstOrFail()->conversation;
+        $this->reply($conversation);
+        // Without an agent (a workflow's, say): the mailbox's own.
+        \DB::table('threads')->where('id', $this->reply($conversation, 'Closed on Sundays.')->id)->update(['created_by_user_id' => null]);
+        $this->travel(Conversation::UNDO_TIMOUT + 1)->seconds();
+        $team = function () use ($token) {
+            return array_map(fn ($message) => [$message['team'], $message['author'], $message['initials'], $message['photo']], array_slice($this->api('GET', '/t/m?after=0', [], $token)->json('messages'), 1));
+        };
+
+        $this->get('/t/w?widget=forma')->assertSee('<span class="f-avatar widget-team-mark" aria-hidden="true">F</span>', false);
+        $this->assertSame([[false, 'Alex', 'A', null], [true, 'Forma', 'F', null]], $team());
+
+        $this->mailbox->savePhoto(UploadedFile::fake()->image('forma.png', 300, 300));
+        $this->mailbox->save();
+        $this->agent->photo_url = $this->agent->savePhoto(UploadedFile::fake()->image('alex.jpg', 100, 100));
+        $this->agent->save();
+        $mailbox_photo = 'a?m='.$this->mailbox->photo_url;
+        $agent_photo = 'a?u='.$this->agent->photo_url;
+
+        $this->get('/t/w?widget=forma')->assertSee('<span class="f-avatar widget-team-mark" aria-hidden="true"><img src="'.$mailbox_photo.'" alt=""></span>', false)
+            ->assertSee('teamPhoto', false);
+        $this->assertSame([[false, 'Alex', 'A', $agent_photo], [true, 'Forma', 'F', $mailbox_photo]], $team());
+        foreach ([$mailbox_photo, $agent_photo] as $photo) {
+            $this->get('/t/'.$photo)->assertOk()->assertHeader('Content-Type', 'image/jpeg')->assertHeader('X-Content-Type-Options', 'nosniff')
+                ->assertHeader('Cache-Control', 'immutable, max-age=31536000, public');
+        }
+        $this->get('/t/a?m=../users/'.$this->agent->photo_url)->assertNotFound();
+        $this->get('/t/a?u=missing.jpg')->assertNotFound();
+        $this->get('/t/a')->assertNotFound();
+
+        // Set with the mailbox; its Website Chat settings show it and link there.
+        $this->actingAs($this->admin)->get(route('mailboxes.web_chat', ['id' => $this->mailbox->id]))
+            ->assertSee($this->mailbox->getPhotoUrl())->assertSee(route('mailboxes.update', ['id' => $this->mailbox->id]));
+    }
+
+    /**
      * Nothing is stored until someone writes, and a new chat needs its proof of work.
      */
     public function testNothingStoredUntilAProvenFirstMessage()

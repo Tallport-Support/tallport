@@ -2462,6 +2462,13 @@
                 "default": "NULL",
                 "charset": "utf8mb4",
                 "collation": "utf8mb4_unicode_ci"
+            },
+            "photo_url": {
+                "type": "varchar(255)",
+                "nullable": true,
+                "default": "NULL",
+                "charset": "utf8mb4",
+                "collation": "utf8mb4_unicode_ci"
             }
         },
         "indexes": {

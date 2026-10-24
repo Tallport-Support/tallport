@@ -1935,5 +1935,7 @@
     "The AI failed (:error). It tries again when the conversation is opened.": "Ошибка ИИ (:error). Он попробует снова, когда тикет будет открыт.",
     "Offline: showing the copy saved in this browser.": "Нет сети: показана копия, сохранённая в этом браузере.",
     "You're offline. The change wasn't saved.": "Нет подключения к сети. Изменение не сохранено.",
-    "Not available offline.": "Недоступно без сети."
+    "Not available offline.": "Недоступно без сети.",
+    "Replace Image": "Заменить Изображение",
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Показывается клиентам в чате на сайте, например логотип. JPG, GIF или PNG, обрезается до квадрата."
 }

@@ -306,4 +306,21 @@ class WebChat
     {
         return $mailbox->name;
     }
+
+    /**
+     * The team's image in the window: the mailbox's (beside /t/, WebChatController::photo()), or
+     * null for its initial.
+     */
+    public static function teamPhoto(Mailbox $mailbox)
+    {
+        return $mailbox->photo_url ? 'a?m='.urlencode($mailbox->photo_url) : null;
+    }
+
+    /**
+     * An agent's photo in the window, or null for their initial.
+     */
+    public static function userPhoto($user)
+    {
+        return $user && $user->photo_url ? 'a?u='.urlencode($user->photo_url) : null;
+    }
 }

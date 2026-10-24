@@ -154,7 +154,7 @@ document.addEventListener('alpine:init', function () {
                 var entries = this.entries.slice();
                 // Not to a new visitor while new chats aren't taken.
                 if (this.greeting && (this.available || this.hasConversation)) {
-                    entries.unshift({ id: 'greeting', kind: 'team', team: true, author: config.team, initials: config.team.charAt(0).toUpperCase(), body: this.greeting, files: [] });
+                    entries.unshift({ id: 'greeting', kind: 'team', team: true, author: config.team, initials: config.team.charAt(0).toUpperCase(), photo: config.teamPhoto, body: this.greeting, files: [] });
                 }
                 // Where replies also go, after the greeting; or, after their first message, the offer.
                 if (this.email) {
@@ -252,8 +252,10 @@ document.addEventListener('alpine:init', function () {
                     id: 'm' + message.id,
                     serverId: message.id,
                     kind: message.kind,
+                    team: message.team,
                     author: message.kind === 'visitor' ? this.text.you : message.author,
                     initials: message.initials,
+                    photo: message.photo,
                     body: message.body,
                     files: message.files,
                     time: clock.format(new Date(message.time)),

@@ -18,6 +18,7 @@
             'widget'   => $settings['widget'],
             'origin'   => $origin,
             'team'     => $team,
+            'teamPhoto' => $team_photo,
             'greeting' => \App\WebChat\WebChat::greeting($mailbox),
             'poll'     => $poll,
             'available' => $available,
@@ -53,7 +54,7 @@
     @endphp
     <div class="widget" x-data="tallportWebChat(@js($web_chat_config))" :data-embedded="embedded" @keydown.escape="escape($event)">
         <header class="widget-header">
-            <span class="f-avatar widget-team-mark" aria-hidden="true">{{ mb_strtoupper(mb_substr($team, 0, 1)) }}</span>
+            <span class="f-avatar widget-team-mark" aria-hidden="true">@if ($team_photo)<img src="{{ $team_photo }}" alt="">@else{{ mb_strtoupper(mb_substr($team, 0, 1)) }}@endif</span>
             <div class="widget-heading">
                 <h1 id="widget-title" x-ref="title" tabindex="-1">{{ $team }}</h1>
                 @if ($settings['reply_time'] !== '')
@@ -95,7 +96,7 @@
                             </section>
                         </template>
                         <div class="widget-message" :data-state="entry.state" x-show="entry.kind === 'team' || entry.kind === 'visitor'">
-                            <span class="f-avatar widget-avatar" :class="{ 'widget-team-mark': entry.team }" aria-hidden="true" x-show="entry.kind === 'team' && entry.first" x-text="entry.initials"></span>
+                            <span class="f-avatar widget-avatar" :class="{ 'widget-team-mark': entry.team }" aria-hidden="true" x-show="entry.kind === 'team' && entry.first"><template x-if="entry.photo"><img :src="entry.photo" alt=""></template><template x-if="!entry.photo"><span x-text="entry.initials"></span></template></span>
                             <p class="widget-author" :class="{ 'f-sr-only': entry.kind === 'visitor' || !entry.first }" x-text="entry.kind === 'visitor' ? text.you : entry.author"></p>
                             <p class="widget-bubble" x-show="entry.body" x-text="entry.body"></p>
                             {{-- An image shows as a thumbnail and opens in a new tab; other files download. --}}

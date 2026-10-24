@@ -1935,5 +1935,7 @@
     "The AI failed (:error). It tries again when the conversation is opened.": "ה-AI נכשל (:error). הוא ינסה שוב כשהשיחה תיפתח.",
     "Offline: showing the copy saved in this browser.": "לא מקוון: מוצג העותק השמור בדפדפן זה.",
     "You're offline. The change wasn't saved.": "אין חיבור. השינוי לא נשמר.",
-    "Not available offline.": "לא זמין במצב לא מקוון."
+    "Not available offline.": "לא זמין במצב לא מקוון.",
+    "Replace Image": "החלפת תמונה",
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "מוצגת ללקוחות בצ'אט לאתר, למשל לוגו. JPG, GIF או PNG, חתוכה לריבוע."
 }

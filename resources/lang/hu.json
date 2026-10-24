@@ -1935,5 +1935,7 @@
     "The AI failed (:error). It tries again when the conversation is opened.": "Az MI hibát adott (:error). Újra megpróbálja, amikor megnyitják a beszélgetést.",
     "Offline: showing the copy saved in this browser.": "Offline: a böngészőben mentett másolat látható.",
     "You're offline. The change wasn't saved.": "Offline vagy. A módosítás nem lett mentve.",
-    "Not available offline.": "Offline nem érhető el."
+    "Not available offline.": "Offline nem érhető el.",
+    "Replace Image": "Kép Cseréje",
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Az ügyfelek a weboldal chatben látják, például egy logó. JPG, GIF vagy PNG, négyzetre vágva."
 }

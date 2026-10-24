@@ -42,6 +42,7 @@ class WebChatController extends Controller
             'mailbox'  => $mailbox,
             'settings' => $settings,
             'team'     => WebChat::teamName($mailbox),
+            'team_photo' => WebChat::teamPhoto($mailbox),
             'origin'   => $origin !== '' ? WebChat::origin($origin) : '',
             'nonce'    => \Helper::cspNonce(),
             'poll'     => ['active' => WebChat::POLL_ACTIVE, 'idle' => WebChat::POLL_IDLE, 'closed' => WebChat::POLL_CLOSED],
@@ -357,6 +358,24 @@ class WebChatController extends Controller
     }
 
     /**
+     * The mailbox's image (m) or an agent's photo (u), from beside the window (/t/), so a proxied
+     * website serves them too. By file name: new with each upload, and as hard to guess as their
+     * /storage addresses.
+     */
+    public function photo(Request $request)
+    {
+        $directory = $request->filled('m') ? \App\Mailbox::PHOTO_DIRECTORY : \App\User::PHOTO_DIRECTORY;
+        $file_name = (string) ($request->filled('m') ? $request->m : $request->u);
+        if (!preg_match('/^[A-Za-z0-9_-]+\.jpg$/', $file_name) || !\Storage::disk('local')->exists($directory.'/'.$file_name)) {
+            abort(404);
+        }
+
+        return \Storage::disk('local')->response($directory.'/'.$file_name, $file_name, [
+            'Content-Type' => 'image/jpeg', 'Cache-Control' => 'public, max-age=31536000, immutable', 'X-Content-Type-Options' => 'nosniff',
+        ], 'inline');
+    }
+
+    /**
      * The window's styles (s) and script (j), from beside it (/t/), so a proxied website serves them
      * too: FruitUI, Alpine (FruitUI's standalone build: the window has no Livewire) and its own.
      */
@@ -444,13 +463,17 @@ class WebChatController extends Controller
     protected function message(Thread $thread)
     {
         $team = $thread->type == Thread::TYPE_MESSAGE;
-        $author = $team ? ($thread->created_by_user ? $thread->created_by_user->getFirstName() : WebChat::teamName($thread->conversation->mailbox)) : '';
+        // Without an agent: the mailbox's own message, with its name and image.
+        $mailbox = $team && !$thread->created_by_user;
+        $author = $team ? ($mailbox ? WebChat::teamName($thread->conversation->mailbox) : $thread->created_by_user->getFirstName()) : '';
 
         return [
             'id'       => $thread->id,
             'kind'     => $team ? 'team' : 'visitor',
+            'team'     => $mailbox,
             'author'   => $author,
             'initials' => $team ? mb_strtoupper(mb_substr($author, 0, 1)) : '',
+            'photo'    => $team ? ($mailbox ? WebChat::teamPhoto($thread->conversation->mailbox) : WebChat::userPhoto($thread->created_by_user)) : null,
             'body'     => \App\Misc\ChatDelivery::plainText($thread),
             // The team's: when the visitor could see it, once Undo had passed.
             'time'     => ($team ? $thread->created_at->copy()->addSeconds(Conversation::UNDO_TIMOUT) : $thread->created_at)->toIso8601String(),

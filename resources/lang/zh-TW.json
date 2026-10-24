@@ -1979,5 +1979,7 @@
     "The AI failed (:error). It tries again when the conversation is opened.": "AI 發生錯誤（:error）。開啟對話時會再試一次。",
     "Offline: showing the copy saved in this browser.": "離線：顯示此瀏覽器中儲存的副本。",
     "You're offline. The change wasn't saved.": "已離線，變更未儲存。",
-    "Not available offline.": "離線時無法使用。"
+    "Not available offline.": "離線時無法使用。",
+    "Replace Image": "更換圖片",
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "在網站聊天中向客戶顯示，例如標誌。支援 JPG、GIF 或 PNG，裁切為正方形。"
 }

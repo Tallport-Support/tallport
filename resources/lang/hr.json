@@ -1935,5 +1935,7 @@
     "The AI failed (:error). It tries again when the conversation is opened.": "AI nije uspjela (:error). Pokušat će ponovno kad se razgovor otvori.",
     "Offline: showing the copy saved in this browser.": "Izvan mreže: prikazuje se kopija spremljena u ovom pregledniku.",
     "You're offline. The change wasn't saved.": "Niste povezani. Promjena nije spremljena.",
-    "Not available offline.": "Nije dostupno izvan mreže."
+    "Not available offline.": "Nije dostupno izvan mreže.",
+    "Replace Image": "Zamijeni Sliku",
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Prikazuje se kupcima u chatu na web-stranici, primjerice logotip. JPG, GIF ili PNG, izrezano na kvadrat."
 }

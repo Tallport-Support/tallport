@@ -51,6 +51,20 @@
                     <x-fruit::accent-picker name="accent" :value="in_array(old('accent'), FruitUI\Fruit::ACCENTS) ? old('accent') : ($mailbox->accent ?: 'blue')" :label="__('Color')" />
                 </div>
 
+                {{-- Its image: what customers see beside its name and its own messages in chats. --}}
+                @if ($mailbox->photo_url)
+                    <div class="f-form-row">
+                        <span>{{ __('Image') }}</span>
+                        <span class="f-row">
+                            <x-fruit::avatar :src="$mailbox->getPhotoUrl()" :label="__('Image')" />
+                            <x-fruit::checkbox id="photo_remove" name="photo_remove" value="1">{{ __('Remove') }}</x-fruit::checkbox>
+                        </span>
+                    </div>
+                @endif
+                <x-fruit::field :label="$mailbox->photo_url ? __('Replace Image') : __('Image')" :description="__('Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.')" layout="row">
+                    <x-fruit::file id="photo" name="photo" accept="image/jpeg,image/png,image/gif" />
+                </x-fruit::field>
+
                 <x-fruit::field :label="__('Aliases')" :description="__('Aliases are other email addresses that also forward to your mailbox address. Separate each email with a comma.')" layout="row">
                     <x-fruit::input id="aliases" name="aliases" :value="old('aliases', $mailbox->aliases)" :placeholder="'alias1@example.org, alias2@example.org('.__('Mailbox Name').')'" />
                 </x-fruit::field>

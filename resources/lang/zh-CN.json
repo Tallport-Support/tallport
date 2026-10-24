@@ -1936,5 +1936,7 @@
     "The AI failed (:error). It tries again when the conversation is opened.": "AI 出错（:error）。打开对话时会重试。",
     "Offline: showing the copy saved in this browser.": "离线：显示此浏览器中保存的副本。",
     "You're offline. The change wasn't saved.": "已离线，更改未保存。",
-    "Not available offline.": "离线时不可用。"
+    "Not available offline.": "离线时不可用。",
+    "Replace Image": "更换图片",
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "在网站聊天中向客户显示，例如徽标。支持 JPG、GIF 或 PNG，裁剪为正方形。"
 }

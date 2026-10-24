@@ -2610,6 +2610,20 @@
     },
     {
         "methods": [
+            "GET"
+        ],
+        "uri": "t/a",
+        "name": "web_chat.photo",
+        "action": "WebChatController@photo",
+        "middleware": [
+            "open"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
             "POST"
         ],
         "uri": "t/c",

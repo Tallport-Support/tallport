@@ -1935,5 +1935,7 @@
     "The AI failed (:error). It tries again when the conversation is opened.": "Yapay zekâ başarısız oldu (:error). Konuşma açıldığında yeniden dener.",
     "Offline: showing the copy saved in this browser.": "Çevrimdışı: bu tarayıcıda kayıtlı kopya gösteriliyor.",
     "You're offline. The change wasn't saved.": "Çevrimdışısınız. Değişiklik kaydedilmedi.",
-    "Not available offline.": "Çevrimdışıyken kullanılamaz."
+    "Not available offline.": "Çevrimdışıyken kullanılamaz.",
+    "Replace Image": "Görseli Değiştir",
+    "Shown to customers in the website chat, such as your logo. JPG, GIF or PNG, cropped to a square.": "Web sitesi sohbetinde müşterilere gösterilir, örneğin bir logo. JPG, GIF veya PNG, kare olarak kırpılır."
 }
