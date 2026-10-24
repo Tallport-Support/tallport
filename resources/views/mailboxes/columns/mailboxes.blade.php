@@ -3,11 +3,11 @@
      New Mailbox asks for its name and address, and opens its General settings. --}}
 <x-fruit::drilldown-column :title="__('Mailboxes')" id="mailboxes">
     <x-slot:back><x-fruit::back-link :href="route('settings')" wire:navigate>{{ __('Settings') }}</x-fruit::back-link></x-slot:back>
-    <x-slot:actions><x-fruit::button size="small" x-data x-on:click="$dispatch('fruit-dialog-open', { name: 'new-mailbox' })">{{ __('New Mailbox') }}</x-fruit::button></x-slot:actions>
+    <x-slot:actions><x-fruit::button size="small" id="mailboxes-new" x-data x-on:click="$dispatch('fruit-dialog-open', { name: 'new-mailbox' })">{{ __('New Mailbox') }}</x-fruit::button></x-slot:actions>
     <x-fruit::page width="narrow">
         <x-fruit::form-section class="mailboxes-list" :aria-label="__('Mailboxes')" :footer="__('A mailbox’s address, signature, connection and people are in its own settings, in the mailbox.')">
             @foreach (App\Misc\MailboxSettings::listFor(Auth::user()) as $mailbox_item)
-                <div class="f-form-row mailbox-row">
+                <div class="f-form-row mailbox-row" data-mailbox_id="{{ $mailbox_item->id }}">
                     <a wire:navigate href="{{ route('mailboxes.update', ['id' => $mailbox_item->getSlug()]) }}" class="mailbox-row__main mailbox-row__link">
                         {{-- A module's image of the mailbox (mailbox_card.before_name) instead of its colour. --}}
                         @if (!Eventy::filter('mailbox.has_img', false, $mailbox_item))

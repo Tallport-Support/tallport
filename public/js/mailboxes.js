@@ -35,9 +35,26 @@ document.addEventListener('alpine:init', function () {
 	});
 
 	// The Delete Mailbox dialog: asks for the password, then goes to the mailboxes.
+	// Delete Mailbox… from a row's menu (Settings › Mailboxes): closed, the focus goes back to that
+	// menu's button, as FruitUI's confirmer does; deleted, to the next row (or New Mailbox) on the
+	// list as it loads again.
 	window.Alpine.data('tallportDeleteMailbox', function (mailbox_id) {
+		var row = function () {
+			return document.querySelector('.mailbox-row[data-mailbox_id="'+mailbox_id+'"]');
+		};
 		return {
+			deleted: false,
+			init: function () {
+				var self = this;
+				this.$el.closest('dialog').addEventListener('close', function () {
+					var trigger = row() && row().querySelector('summary');
+					if (!self.deleted && trigger) {
+						trigger.focus();
+					}
+				});
+			},
 			remove: function (event) {
+				var self = this;
 				var button = event.submitter || this.$el.querySelector('[type="submit"]');
 				var password = this.$el.querySelector('input[type="password"]');
 				Tallport.busy(button, true);
@@ -47,6 +64,9 @@ document.addEventListener('alpine:init', function () {
 					password: password ? password.value : undefined
 				}).then(function (response) {
 					if (Tallport.isSuccess(response)) {
+						var next = row() && (row().nextElementSibling || row().previousElementSibling);
+						sessionStorageSet('tallport_mailboxes_focus', next && next.matches('.mailbox-row') ? next.getAttribute('data-mailbox_id') : 'new');
+						self.deleted = true;
 						window.location.href = laroute.route('mailboxes');
 						return;
 					}
@@ -280,5 +300,16 @@ document.addEventListener('livewire:navigated', function () {
 			target.setAttribute('tabindex', '-1');
 		}
 		target.focus({preventScroll: true});
+	}
+});
+document.addEventListener('livewire:navigated', function () {
+	var focus = sessionStorageGet('tallport_mailboxes_focus');
+	if (!focus) {
+		return;
+	}
+	sessionStorageSet('tallport_mailboxes_focus', '');
+	var target = focus == 'new' ? document.getElementById('mailboxes-new') : document.querySelector('.mailbox-row[data-mailbox_id="'+focus+'"] .mailbox-row__link');
+	if (target) {
+		target.focus();
 	}
 });
