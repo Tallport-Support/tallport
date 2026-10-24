@@ -4881,20 +4881,24 @@
     background: var(--f-hover);
   }
   /* The row whose page is open beside it (aria-current): selected, and in the accent while its
-     Drill-Down level has focus, as the sidebar's current item. */
+     level has focus, as the sidebar's current item. Its level is its Drill-Down level, or the pane
+     it lists pages in (a list column beside the open page); a pane holding a Drill-Down leaves it
+     to the levels, so only the focused one shows the accent. */
   .f-form-row--link:is([aria-current='page'], [aria-current='true']) {
     background: var(--f-selection-inactive);
   }
-  .f-drilldown__column:focus-within .f-form-row--link:is([aria-current='page'], [aria-current='true']) {
+  :is(.f-drilldown__column, .f-pane:not(:has(.f-drilldown))):focus-within
+    .f-form-row--link:is([aria-current='page'], [aria-current='true']) {
     background: var(--f-accent-fill);
     color: var(--f-on-accent);
   }
-  .f-drilldown__column:focus-within
+  :is(.f-drilldown__column, .f-pane:not(:has(.f-drilldown))):focus-within
     .f-form-row--link:is([aria-current='page'], [aria-current='true'])
     :is(.f-form-row__value, .f-help, .f-icon) {
     color: inherit;
   }
-  .f-drilldown__column:focus-within .f-form-row--link:is([aria-current='page'], [aria-current='true'])::after {
+  :is(.f-drilldown__column, .f-pane:not(:has(.f-drilldown))):focus-within
+    .f-form-row--link:is([aria-current='page'], [aria-current='true'])::after {
     background: currentColor;
   }
   .f-form-row--link:focus-visible {
