@@ -993,6 +993,7 @@ class ComposerStaticInitfc9b7b2ca15b4d1aba40fc18ae3b6e13
         'App\\Http\\Middleware\\HttpsRedirect' => __DIR__ . '/../..' . '/app/Http/Middleware/HttpsRedirect.php',
         'App\\Http\\Middleware\\Localize' => __DIR__ . '/../..' . '/app/Http/Middleware/Localize.php',
         'App\\Http\\Middleware\\LogoutIfDeleted' => __DIR__ . '/../..' . '/app/Http/Middleware/LogoutIfDeleted.php',
+        'App\\Http\\Middleware\\MailboxAddress' => __DIR__ . '/../..' . '/app/Http/Middleware/MailboxAddress.php',
         'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
         'App\\Http\\Middleware\\RequirePasswordInline' => __DIR__ . '/../..' . '/app/Http/Middleware/RequirePasswordInline.php',
         'App\\Http\\Middleware\\RequireTwoFactor' => __DIR__ . '/../..' . '/app/Http/Middleware/RequireTwoFactor.php',

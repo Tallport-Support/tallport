@@ -42,9 +42,9 @@
                         <p class="f-help">{{ __('Administrator has not configured mailbox connection settings yet.') }}</p>
                         @if (Auth::user()->can('update', $dash_mailbox))
                             @if (!$dash_mailbox->isOutActive())
-                                <div><a href="{{ route('mailboxes.connection', ['id' => $dash_mailbox->id]) }}" class="f-button f-button--small">{{ __('Configure') }}</a></div>
+                                <div><a href="{{ route('mailboxes.connection', ['id' => $dash_mailbox->getSlug()]) }}" class="f-button f-button--small">{{ __('Configure') }}</a></div>
                             @elseif (!$dash_mailbox->isInActive())
-                                <div><a href="{{ route('mailboxes.connection.incoming', ['id' => $dash_mailbox->id]) }}" class="f-button f-button--small">{{ __('Configure') }}</a></div>
+                                <div><a href="{{ route('mailboxes.connection.incoming', ['id' => $dash_mailbox->getSlug()]) }}" class="f-button f-button--small">{{ __('Configure') }}</a></div>
                             @endif
                         @endif
                     @endif
@@ -55,7 +55,7 @@
                             <a href="{{ route('conversations.create', ['mailbox_id' => $dash_mailbox->id]) }}" class="f-button f-button--small f-button--ghost">{{ __('New Conversation') }}</a>
                         @endif
                         @if (\Eventy::filter('mailbox.show_buttons', true, $dash_mailbox) && Auth::user()->can('viewMailboxMenu', Auth::user()) && Auth::user()->can('update', $dash_mailbox))
-                            <a href="{{ route('mailboxes.update', ['id' => $dash_mailbox->id]) }}" class="f-button f-button--small f-button--ghost f-button--icon dash-card__settings" title="{{ __('Mailbox Settings') }}" aria-label="{{ __('Mailbox Settings') }}"><x-icon.settings class="f-icon" aria-hidden="true" /></a>
+                            <a href="{{ route('mailboxes.update', ['id' => $dash_mailbox->getSlug()]) }}" class="f-button f-button--small f-button--ghost f-button--icon dash-card__settings" title="{{ __('Mailbox Settings') }}" aria-label="{{ __('Mailbox Settings') }}"><x-icon.settings class="f-icon" aria-hidden="true" /></a>
                         @endif
                     </div>
                 </x-fruit::card>

@@ -56,10 +56,10 @@
         $sidebar_reply_mailbox = collect($sidebar_mailboxes)->pluck(0)->first(fn ($mailbox) => App\SavedReply::canManage($sidebar_user, $mailbox));
     @endphp
     @if ($sidebar_user->isAdmin() || $sidebar_workflow_mailbox)
-        <x-fruit::menu-link wire:navigate :href="$sidebar_user->isAdmin() ? route('workflows') : route('mailboxes.workflows', ['mailbox_id' => $sidebar_workflow_mailbox->id])">{{ __('Workflows') }}</x-fruit::menu-link>
+        <x-fruit::menu-link wire:navigate :href="$sidebar_user->isAdmin() ? route('workflows') : route('mailboxes.workflows', ['mailbox_id' => $sidebar_workflow_mailbox->getSlug()])">{{ __('Workflows') }}</x-fruit::menu-link>
     @endif
     @if ($sidebar_reply_mailbox)
-        <x-fruit::menu-link wire:navigate :href="route('mailboxes.saved_replies', ['id' => $sidebar_reply_mailbox->id])">{{ __('Saved Replies') }}</x-fruit::menu-link>
+        <x-fruit::menu-link wire:navigate :href="route('mailboxes.saved_replies', ['id' => $sidebar_reply_mailbox->getSlug()])">{{ __('Saved Replies') }}</x-fruit::menu-link>
     @endif
     {{-- Settings: the sidebar then lists them (partials/app_sidebar_settings). --}}
     @php

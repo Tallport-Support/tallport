@@ -172,7 +172,7 @@ PHP;
         ];
 
         $this->postForm($this->admin, route('mailboxes.update.save', ['id' => $mailbox->id]), array_merge($fields, ['email' => $user->email]))
-            ->assertRedirect(route('mailboxes.update', ['id' => $mailbox->id]))
+            ->assertRedirect(route('mailboxes.general', ['id' => $mailbox->fresh()->getSlug()]))
             ->assertSessionHasErrors('email');
         $this->assertSame($mailbox->email, $mailbox->fresh()->email);
 
@@ -301,7 +301,7 @@ PHP;
 
         $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertOk()
             ->assertSee('This mailbox can&#039;t send email yet.', false)
-            ->assertSee('href="'.route('mailboxes.connection', ['id' => $mailbox->id]).'">Set Up Sending', false);
+            ->assertSee('href="'.route('mailboxes.connection', ['id' => $mailbox->getSlug()]).'">Set Up Sending', false);
         $this->actingAs($this->admin)->get(route('mailboxes.connection', ['id' => $mailbox->id]))->assertOk()
             ->assertDontSee('Set Up Sending');
     }

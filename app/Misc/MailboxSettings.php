@@ -8,9 +8,9 @@ use App\User;
 use App\Workflow;
 
 /**
- * A mailbox's settings in Settings › Mailboxes: its page (mailboxes/update) and the further
- * pages it leads to, each with its current value (mailboxes/settings_menu), and the header
- * they share (mailboxes/sidebar_menu).
+ * A mailbox's settings, in the mailbox (/mailbox/support/settings): General (mailboxes/update) and its
+ * further pages, listed beside the open one with their current values (mailboxes/settings_menu,
+ * mailboxes/sidebar_menu).
  */
 class MailboxSettings
 {
@@ -22,35 +22,37 @@ class MailboxSettings
     {
         $pages = [];
         $id = $mailbox->id;
+        // Their addresses by the mailbox's short name.
+        $key = $mailbox->getSlug();
         if ($user->can('update', $mailbox)) {
             if ($user->isAdmin()) {
-                $pages[] = self::page(__('Connection Settings'), route('mailboxes.connection', ['id' => $id]), ...self::connection($mailbox), routes: ['mailboxes.connection', 'mailboxes.connection.incoming']);
+                $pages[] = self::page(__('Connection Settings'), route('mailboxes.connection', ['id' => $key]), ...self::connection($mailbox), routes: ['mailboxes.connection', 'mailboxes.connection.incoming']);
             }
             if ($user->isAdmin() || $user->hasManageMailboxPermission($id, Mailbox::ACCESS_PERM_PERMISSIONS)) {
                 $people = count($mailbox->usersHavingAccess(true));
-                $pages[] = self::page(__('Permissions'), route('mailboxes.permissions', ['id' => $id]), trans_choice(':count person|:count people', $people), routes: ['mailboxes.permissions']);
+                $pages[] = self::page(__('Permissions'), route('mailboxes.permissions', ['id' => $key]), trans_choice(':count person|:count people', $people), routes: ['mailboxes.permissions']);
             }
             if ($user->isAdmin() || $user->hasManageMailboxPermission($id, Mailbox::ACCESS_PERM_AUTO_REPLIES)) {
-                $pages[] = self::page(__('Auto Reply'), route('mailboxes.auto_reply', ['id' => $id]), $mailbox->auto_reply_enabled ? __('On') : __('Off'), routes: ['mailboxes.auto_reply']);
+                $pages[] = self::page(__('Auto Reply'), route('mailboxes.auto_reply', ['id' => $key]), $mailbox->auto_reply_enabled ? __('On') : __('Off'), routes: ['mailboxes.auto_reply']);
             }
             if ($user->isAdmin()) {
-                $pages[] = self::page(__('Website Chat'), route('mailboxes.web_chat', ['id' => $id]), \App\WebChat\WebChat::settings($mailbox)['enabled'] ? __('On') : __('Off'), routes: ['mailboxes.web_chat'], chat: true);
-                $pages[] = self::page(__('Telegram'), route('mailboxes.telegram', ['id' => $id]), \App\Telegram\Telegram::isEnabled($mailbox) ? __('Connected') : __('Not set up'), routes: ['mailboxes.telegram'], chat: true);
+                $pages[] = self::page(__('Website Chat'), route('mailboxes.web_chat', ['id' => $key]), \App\WebChat\WebChat::settings($mailbox)['enabled'] ? __('On') : __('Off'), routes: ['mailboxes.web_chat'], chat: true);
+                $pages[] = self::page(__('Telegram'), route('mailboxes.telegram', ['id' => $key]), \App\Telegram\Telegram::isEnabled($mailbox) ? __('Connected') : __('Not set up'), routes: ['mailboxes.telegram'], chat: true);
             }
             $matrix = \App\Matrix\MatrixMailbox::forMailbox($id);
-            $pages[] = self::page('Matrix', route('mailboxes.matrix', ['id' => $id]), $matrix && $matrix->isReady() ? __('Connected') : __('Not set up'), routes: ['mailboxes.matrix'], chat: true);
+            $pages[] = self::page('Matrix', route('mailboxes.matrix', ['id' => $key]), $matrix && $matrix->isReady() ? __('Connected') : __('Not set up'), routes: ['mailboxes.matrix'], chat: true);
             $nostr = \App\Nostr\NostrMailbox::where('mailbox_id', $id)->where('enabled', true)->whereNotNull('pubkey')->exists();
-            $pages[] = self::page('Nostr', route('mailboxes.nostr', ['id' => $id]), $nostr ? __('Connected') : __('Not set up'), routes: ['mailboxes.nostr'], chat: true);
+            $pages[] = self::page('Nostr', route('mailboxes.nostr', ['id' => $key]), $nostr ? __('Connected') : __('Not set up'), routes: ['mailboxes.nostr'], chat: true);
         }
         if ($user->isAdmin()) {
-            $pages[] = self::page(__('AI'), route('mailboxes.ai', ['id' => $id]), \App\Ai\Settings::mailboxSummary($mailbox), routes: ['mailboxes.ai']);
-            $pages[] = self::page(__('Documentation'), route('mailboxes.documentation', ['id' => $id]), trans_choice('1 page|:count pages', \App\Ai\Document::where('mailbox_id', $id)->where('source_type', '!=', \App\Ai\Document::SOURCE_TYPE_FOLDER)->count()), routes: ['mailboxes.documentation']);
+            $pages[] = self::page(__('AI'), route('mailboxes.ai', ['id' => $key]), \App\Ai\Settings::mailboxSummary($mailbox), routes: ['mailboxes.ai']);
+            $pages[] = self::page(__('Documentation'), route('mailboxes.documentation', ['id' => $key]), trans_choice('1 page|:count pages', \App\Ai\Document::where('mailbox_id', $id)->where('source_type', '!=', \App\Ai\Document::SOURCE_TYPE_FOLDER)->count()), routes: ['mailboxes.documentation']);
         }
         if (Workflow::canEdit($user, $mailbox)) {
-            $pages[] = self::page(__('Workflows'), route('mailboxes.workflows', ['mailbox_id' => $id, 'from' => 'mailbox']), (string) Workflow::where('mailbox_id', $id)->count(), routes: ['mailboxes.workflows']);
+            $pages[] = self::page(__('Workflows'), route('mailboxes.workflows', ['mailbox_id' => $key]), (string) Workflow::where('mailbox_id', $id)->count(), routes: ['mailboxes.workflows']);
         }
         if (SavedReply::canManage($user, $mailbox)) {
-            $pages[] = self::page(__('Saved Replies'), route('mailboxes.saved_replies', ['id' => $id, 'from' => 'mailbox']), (string) SavedReply::where('mailbox_id', $id)->count(), routes: ['mailboxes.saved_replies']);
+            $pages[] = self::page(__('Saved Replies'), route('mailboxes.saved_replies', ['id' => $key]), (string) SavedReply::where('mailbox_id', $id)->count(), routes: ['mailboxes.saved_replies']);
         }
 
         return $pages;
@@ -70,7 +72,7 @@ class MailboxSettings
     }
 
     /**
-     * Whether the user may open the mailbox's own page (mailboxes/update).
+     * Whether the user may open the mailbox's General settings (mailboxes/update).
      */
     public static function canOpenMailbox(Mailbox $mailbox, User $user)
     {
@@ -78,16 +80,33 @@ class MailboxSettings
     }
 
     /**
-     * Where the mailbox's settings start for the user: its page, else the first further page
+     * Where the mailbox's settings start for the user: General, else the first further page
      * they may open (someone who may only manage its permissions, say).
      */
     public static function url(Mailbox $mailbox, User $user)
     {
         if (self::canOpenMailbox($mailbox, $user)) {
-            return route('mailboxes.update', ['id' => $mailbox->id]);
+            return route('mailboxes.update', ['id' => $mailbox->getSlug()]);
         }
 
-        return self::pages($mailbox, $user)[0]['url'] ?? route('mailboxes.update', ['id' => $mailbox->id]);
+        return self::pages($mailbox, $user)[0]['url'] ?? route('mailboxes.update', ['id' => $mailbox->getSlug()]);
+    }
+
+    /**
+     * The open settings page's own address, by the mailbox's short name (opened by its ID, an older
+     * link: the page says it, layouts/app's data-page-url); null for a module's page.
+     */
+    public static function pageUrl(Mailbox $mailbox)
+    {
+        $route = request()->route();
+        if (!$route || !in_array('mailbox.address', $route->gatherMiddleware())) {
+            return null;
+        }
+        $parameters = $route->parameters();
+        $parameters[array_key_exists('mailbox_id', $parameters) ? 'mailbox_id' : 'id'] = $mailbox->getSlug();
+        $query = request()->getQueryString();
+
+        return route($route->getName(), $parameters).($query ? '?'.$query : '');
     }
 
     /**
@@ -106,21 +125,21 @@ class MailboxSettings
     }
 
     /**
-     * A page's title in the header: the further page that is the current route, else null
-     * (the mailbox's own page, or a module's: its link in mailboxes.settings.menu).
+     * A page's title in the header: the further page that is the current route, or a module's
+     * (its link in mailboxes.settings.menu), else null (General).
      */
     public static function currentTitle(Mailbox $mailbox, User $user, $route)
     {
+        // A module's page: its link marked current (its route may start like one of ours).
+        if (preg_match('#<a\b[^>]*aria-current="page"[^>]*>(.*?)</a>#s', self::modulePages($mailbox), $match)) {
+            return trim(html_entity_decode(strip_tags($match[1])));
+        }
         foreach (self::pages($mailbox, $user) as $page) {
             foreach ($page['routes'] as $page_route) {
                 if ($route == $page_route || str_starts_with((string) $route, $page_route.'.')) {
                     return $page['label'];
                 }
             }
-        }
-        // A module's page: its link marked current.
-        if (preg_match('#<a\b[^>]*aria-current="page"[^>]*>(.*?)</a>#s', self::modulePages($mailbox), $match)) {
-            return trim(html_entity_decode(strip_tags($match[1])));
         }
 
         return null;

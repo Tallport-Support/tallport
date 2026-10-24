@@ -2627,6 +2627,13 @@ h1.settings-toolbar__title {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+/* A mailbox's settings (mailboxes/sidebar_menu): Back to the list of its pages only while they take
+   turns with the page, in a narrow window. */
+@container app (min-width: 901px) {
+    .mailbox-settings-nav .page-nav__back {
+        display: none;
+    }
+}
 /* A list with nothing open (an empty folder): the empty state in the middle of the page pane. */
 .app-workspace--empty #app-content-scroll {
     display: grid;

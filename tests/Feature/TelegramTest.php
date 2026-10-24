@@ -145,11 +145,11 @@ class TelegramTest extends FeatureTestCase
 
     public function testSettingsConnectTheBot()
     {
-        $this->actingAs($this->admin)->get('/mailbox/'.$this->mailbox->id.'/telegram')
+        $this->actingAs($this->admin)->get('/mailbox/'.$this->mailbox->id.'/settings/telegram')
             ->assertStatus(200)->assertSee('@help_bot')->assertSee('Receiving messages')->assertDontSee(self::TOKEN);
-        $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id.'/telegram')->assertStatus(403);
+        $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id.'/settings/telegram')->assertStatus(403);
 
-        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/telegram', [
+        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/telegram', [
             'enabled' => 1, 'token' => '******', 'auto_reply' => ' Welcome! ', 'ignore_start' => 1,
         ])->assertRedirect(route('mailboxes.telegram', ['id' => $this->mailbox->id]));
 
@@ -160,7 +160,7 @@ class TelegramTest extends FeatureTestCase
         $this->assertSame(route('telegram.webhook', ['mailbox_id' => $mailbox->id]), $set['url']);
         $this->assertSame(Telegram::webhookSecret($mailbox), $set['secret_token']);
 
-        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/telegram', ['token' => '******']);
+        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/telegram', ['token' => '******']);
         $this->assertCount(1, $this->sentTo('deleteWebhook'));
         $this->assertFalse(Telegram::settings($this->mailbox->fresh())['enabled']);
     }
@@ -169,9 +169,9 @@ class TelegramTest extends FeatureTestCase
     {
         $this->fakeTelegram(['getMe' => $this->error(401, 'Unauthorized')]);
 
-        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/telegram', ['enabled' => 1, 'token' => 'wrong'])
+        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/telegram', ['enabled' => 1, 'token' => 'wrong'])
             ->assertSessionHas('flash_error_floating', 'Telegram: Unauthorized');
-        $this->actingAs($this->admin)->get('/mailbox/'.$this->mailbox->id.'/telegram')->assertSee('Unauthorized');
+        $this->actingAs($this->admin)->get('/mailbox/'.$this->mailbox->id.'/settings/telegram')->assertSee('Unauthorized');
         $entry = \App\ActivityLog::where('log_name', 'telegram')->where('properties->status', 'failed')->firstOrFail();
         $this->assertSame('connection', $entry->properties['type']);
     }

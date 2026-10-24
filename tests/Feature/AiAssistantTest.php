@@ -151,13 +151,13 @@ class AiAssistantTest extends FeatureTestCase
         $page = route('mailboxes.ai', ['id' => $this->mailbox->id]);
 
         $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $this->mailbox->id]))->assertSeeInOrder(['AI', 'On · Dutch']);
-        // Only under Mailboxes: the AI page doesn't lead to a mailbox's.
+        // Only in the mailbox's settings: the AI page doesn't lead to a mailbox's.
         $this->actingAs($this->admin)->get('/app-settings/ai')->assertDontSee('href="'.$page.'"', false);
         $this->actingAs($this->admin)->get($page)->assertOk()
-            ->assertSee('app-sidebar__back', false)
+            ->assertDontSee('app-sidebar__back', false)
             ->assertSee('aria-current="page"', false)
             ->assertSee('ai-context-test-status', false)
-            ->assertSeeInOrder(['>AI</h2>', 'Features', 'Summaries', 'Language', 'Default (Dutch)', 'Glossary', 'Translation', 'Translate Chats', 'Translate Emails', 'Mark Translated Replies', 'Customer Context'], false);
+            ->assertSeeInOrder(['>AI</h1>', 'Features', 'Summaries', 'Language', 'Default (Dutch)', 'Glossary', 'Translation', 'Translate Chats', 'Translate Emails', 'Mark Translated Replies', 'Customer Context'], false);
         $this->actingAs($this->agent)->get($page)->assertForbidden();
 
         $this->postForm($this->admin, route('mailboxes.ai.save', ['id' => $this->mailbox->id]), [

@@ -70,22 +70,11 @@ Route::post('/app-settings/ajax', ['uses' => 'SettingsController@ajax', 'middlew
 Route::get('/app-settings/{section?}', ['uses' => 'SettingsController@view', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('settings');
 Route::post('/app-settings/{section?}', ['uses' => 'SettingsController@save', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('settings.save');
 
-// Telegram
-Route::get('/mailbox/{id}/telegram', ['uses' => 'TelegramController@settings', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.telegram');
-Route::post('/mailbox/{id}/telegram', ['uses' => 'TelegramController@settingsSave', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.telegram.save');
-
 // Nostr
-Route::get('/mailbox/settings/{id}/website-chat', ['uses' => 'WebChatSettingsController@settings', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.web_chat');
-Route::post('/mailbox/settings/{id}/website-chat', ['uses' => 'WebChatSettingsController@settingsSave', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.web_chat.save');
-Route::get('/mailbox/settings/{id}/matrix', ['uses' => 'MatrixController@mailboxSettings', 'middleware' => ['auth']])->name('mailboxes.matrix');
-Route::get('/mailbox/settings/{id}/nostr', ['uses' => 'NostrController@mailboxSettings', 'middleware' => ['auth']])->name('mailboxes.nostr');
-Route::post('/mailbox/settings/{id}/nostr', ['uses' => 'NostrController@mailboxSettingsSave', 'middleware' => ['auth']])->name('mailboxes.nostr.save');
 Route::get('/customers/{id}/nostr', ['uses' => 'NostrController@customerKeys', 'middleware' => ['auth']])->name('customers.nostr');
 Route::post('/customers/{id}/nostr', ['uses' => 'NostrController@customerKeysSave', 'middleware' => ['auth']])->name('customers.nostr.save');
 
-// AI Assistant documentation
-Route::get('/mailbox/settings/{id}/documentation', ['uses' => 'AiDocumentsController@index', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.documentation');
-Route::post('/mailbox/settings/{id}/documentation', ['uses' => 'AiDocumentsController@action', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.documentation.action');
+// AI Assistant
 Route::post('/ai-assistant/customer-context/test', ['uses' => 'AiDraftsController@testCustomerContext', 'middleware' => ['auth', 'roles'], 'roles' => ['admin'], 'laroute' => true])->name('ai.customer_context.test');
 // AI Assistant reply drafts
 Route::post('/ai-assistant/conversations/{id}/draft-reply', 'AiDraftsController@store')->middleware(['auth', 'throttle:30,1'])->name('ai.drafts.store');
@@ -141,10 +130,63 @@ Route::post('/conversation/undo-reply/{thread_id}', 'ConversationsController@und
 Route::get('/mailboxes', ['uses' => 'MailboxesController@mailboxes', 'laroute' => true])->name('mailboxes');
 Route::get('/mailbox/new', 'MailboxesController@create')->name('mailboxes.create');
 Route::post('/mailbox/new', 'MailboxesController@createSave');
-Route::get('/mailbox/settings/{id}', 'MailboxesController@update')->name('mailboxes.update');
-Route::post('/mailbox/settings/{id}', 'MailboxesController@updateSave')->name('mailboxes.update.save');
-Route::get('/mailbox/permissions/{id}', 'MailboxesController@permissions')->name('mailboxes.permissions');
-Route::post('/mailbox/permissions/{id}', 'MailboxesController@permissionsSave')->name('mailboxes.permissions.save');
+// A mailbox's settings, in the mailbox: by its short name or its ID (MailboxAddress). /settings is
+// where they start: General, or in a narrow window the list of pages (MailboxesController::update()).
+Route::group(['middleware' => 'mailbox.address', 'where' => ['id' => '[a-z0-9-]+', 'mailbox_id' => '[a-z0-9-]+']], function () {
+    Route::get('/mailbox/{id}/settings', 'MailboxesController@update')->name('mailboxes.update');
+    Route::get('/mailbox/{id}/settings/general', 'MailboxesController@update')->name('mailboxes.general');
+    Route::post('/mailbox/{id}/settings/general', 'MailboxesController@updateSave')->name('mailboxes.update.save');
+    Route::get('/mailbox/{id}/settings/connection', 'MailboxesController@connectionOutgoing')->name('mailboxes.connection');
+    Route::post('/mailbox/{id}/settings/connection', 'MailboxesController@connectionOutgoingSave')->name('mailboxes.connection.save');
+    Route::get('/mailbox/{id}/settings/connection/incoming', 'MailboxesController@connectionIncoming')->name('mailboxes.connection.incoming');
+    Route::post('/mailbox/{id}/settings/connection/incoming', 'MailboxesController@connectionIncomingSave')->name('mailboxes.connection.incoming.save');
+    Route::get('/mailbox/{id}/settings/permissions', 'MailboxesController@permissions')->name('mailboxes.permissions');
+    Route::post('/mailbox/{id}/settings/permissions', 'MailboxesController@permissionsSave')->name('mailboxes.permissions.save');
+    Route::get('/mailbox/{id}/settings/auto-reply', 'MailboxesController@autoReply')->name('mailboxes.auto_reply');
+    Route::post('/mailbox/{id}/settings/auto-reply', 'MailboxesController@autoReplySave')->name('mailboxes.auto_reply.save');
+    Route::get('/mailbox/{id}/settings/website-chat', ['uses' => 'WebChatSettingsController@settings', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.web_chat');
+    Route::post('/mailbox/{id}/settings/website-chat', ['uses' => 'WebChatSettingsController@settingsSave', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.web_chat.save');
+    Route::get('/mailbox/{id}/settings/telegram', ['uses' => 'TelegramController@settings', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.telegram');
+    Route::post('/mailbox/{id}/settings/telegram', ['uses' => 'TelegramController@settingsSave', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.telegram.save');
+    Route::get('/mailbox/{id}/settings/matrix', ['uses' => 'MatrixController@mailboxSettings', 'middleware' => ['auth']])->name('mailboxes.matrix');
+    Route::get('/mailbox/{id}/settings/nostr', ['uses' => 'NostrController@mailboxSettings', 'middleware' => ['auth']])->name('mailboxes.nostr');
+    Route::post('/mailbox/{id}/settings/nostr', ['uses' => 'NostrController@mailboxSettingsSave', 'middleware' => ['auth']])->name('mailboxes.nostr.save');
+    Route::get('/mailbox/{id}/settings/ai', 'MailboxesController@ai')->name('mailboxes.ai');
+    Route::post('/mailbox/{id}/settings/ai', 'MailboxesController@aiSave')->name('mailboxes.ai.save');
+    Route::get('/mailbox/{id}/settings/documentation', ['uses' => 'AiDocumentsController@index', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.documentation');
+    Route::post('/mailbox/{id}/settings/documentation', ['uses' => 'AiDocumentsController@action', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.documentation.action');
+    Route::get('/mailbox/{mailbox_id}/settings/workflows', 'WorkflowsController@index')->name('mailboxes.workflows');
+    Route::get('/mailbox/{mailbox_id}/settings/workflows/new', 'WorkflowsController@edit')->name('mailboxes.workflows.create');
+    Route::post('/mailbox/{mailbox_id}/settings/workflows/save', 'WorkflowsController@save')->name('mailboxes.workflows.save');
+    Route::get('/mailbox/{mailbox_id}/settings/workflows/{id}', 'WorkflowsController@edit')->where('id', '\d+')->name('mailboxes.workflows.update');
+    Route::get('/mailbox/{id}/settings/saved-replies', 'SavedRepliesController@index')->name('mailboxes.saved_replies');
+    Route::get('/mailbox/{id}/settings/saved-replies/new', 'SavedRepliesController@edit')->name('mailboxes.saved_replies.create');
+    Route::post('/mailbox/{id}/settings/saved-replies/save', 'SavedRepliesController@save')->name('mailboxes.saved_replies.save');
+    Route::get('/mailbox/{id}/settings/saved-replies/{saved_reply_id}', 'SavedRepliesController@edit')->where('saved_reply_id', '\d+')->name('mailboxes.saved_replies.edit');
+    Route::post('/mailbox/{id}/settings/saved-replies/{saved_reply_id}/delete', 'SavedRepliesController@delete')->where('saved_reply_id', '\d+')->name('mailboxes.saved_replies.delete');
+});
+// Their older addresses: to these.
+foreach ([
+    '/mailbox/settings/{id}'                       => 'mailboxes.update',
+    '/mailbox/connection-settings/{id}/outgoing'   => 'mailboxes.connection',
+    '/mailbox/connection-settings/{id}/incoming'   => 'mailboxes.connection.incoming',
+    '/mailbox/permissions/{id}'                    => 'mailboxes.permissions',
+    '/mailbox/settings/{id}/auto-reply'            => 'mailboxes.auto_reply',
+    '/mailbox/settings/{id}/website-chat'          => 'mailboxes.web_chat',
+    '/mailbox/{id}/telegram'                       => 'mailboxes.telegram',
+    '/mailbox/settings/{id}/matrix'                => 'mailboxes.matrix',
+    '/mailbox/settings/{id}/nostr'                 => 'mailboxes.nostr',
+    '/mailbox/settings/{id}/ai'                    => 'mailboxes.ai',
+    '/mailbox/settings/{id}/documentation'         => 'mailboxes.documentation',
+    '/mailbox/workflows/{mailbox_id}'              => 'mailboxes.workflows',
+    '/mailbox/workflows/{mailbox_id}/new'          => 'mailboxes.workflows.create',
+    '/mailbox/workflows/{mailbox_id}/{id}'         => 'mailboxes.workflows.update',
+    '/mailbox/saved-replies/{id}'                  => 'mailboxes.saved_replies',
+    '/mailbox/saved-replies/{id}/new'              => 'mailboxes.saved_replies.create',
+    '/mailbox/saved-replies/{id}/{saved_reply_id}/edit' => 'mailboxes.saved_replies.edit',
+] as $moved_uri => $moved_to) {
+    Route::get($moved_uri, 'MailboxesController@settingsMoved')->where(['id' => '\d+', 'mailbox_id' => '\d+', 'saved_reply_id' => '\d+'])->defaults('to', $moved_to);
+}
 // Knowledge base
 Route::get('/kb', 'KnowledgeBaseController@index')->name('kb');
 Route::get('/kb/new', 'KnowledgeBaseController@edit')->name('kb.create');
@@ -154,11 +196,7 @@ Route::post('/kb/save', 'KnowledgeBaseController@save')->name('kb.save');
 Route::post('/kb/{id}/delete', 'KnowledgeBaseController@delete')->name('kb.delete');
 Route::post('/kb/ajax', ['uses' => 'KnowledgeBaseController@ajax', 'laroute' => true])->name('kb.ajax');
 
-// Workflows: of a mailbox, and of all mailboxes.
-Route::get('/mailbox/workflows/{mailbox_id}', 'WorkflowsController@index')->name('mailboxes.workflows');
-Route::get('/mailbox/workflows/{mailbox_id}/new', 'WorkflowsController@edit')->name('mailboxes.workflows.create');
-Route::get('/mailbox/workflows/{mailbox_id}/{id}', 'WorkflowsController@edit')->name('mailboxes.workflows.update');
-Route::post('/mailbox/workflows/{mailbox_id}/save', 'WorkflowsController@save')->name('mailboxes.workflows.save');
+// Workflows of all mailboxes (a mailbox's: in its settings).
 Route::get('/workflows', 'WorkflowsController@globalIndex')->name('workflows');
 Route::get('/workflows/new', 'WorkflowsController@globalEdit')->name('workflows.create');
 Route::get('/workflows/{id}', 'WorkflowsController@globalEdit')->name('workflows.update');
@@ -174,20 +212,7 @@ Route::get('/mailbox/all/{folder_id?}', 'AllMailboxesController@view')->where('f
 Route::get('/mailbox/all/{folder_id}/{number}/{thread_id?}', 'AllMailboxesController@view')->where(['folder_id' => '[a-z]+|-?\d+', 'number' => '\d+', 'thread_id' => '\d+'])->name('mailboxes.all.conversation');
 Route::get('/chat', 'MailboxesController@teamChatOpen')->name('team_chat');
 Route::get('/chat/{id}', 'MailboxesController@teamChat')->name('mailboxes.team_chat');
-Route::get('/mailbox/connection-settings/{id}/outgoing', 'MailboxesController@connectionOutgoing')->name('mailboxes.connection');
-Route::post('/mailbox/connection-settings/{id}/outgoing', 'MailboxesController@connectionOutgoingSave')->name('mailboxes.connection.save');
-Route::get('/mailbox/connection-settings/{id}/incoming', 'MailboxesController@connectionIncoming')->name('mailboxes.connection.incoming');
-Route::post('/mailbox/connection-settings/{id}/incoming', 'MailboxesController@connectionIncomingSave')->name('mailboxes.connection.incoming.save');
-Route::get('/mailbox/saved-replies/{id}', 'SavedRepliesController@index')->name('mailboxes.saved_replies');
-Route::get('/mailbox/saved-replies/{id}/new', 'SavedRepliesController@edit')->name('mailboxes.saved_replies.create');
-Route::get('/mailbox/saved-replies/{id}/{saved_reply_id}/edit', 'SavedRepliesController@edit')->name('mailboxes.saved_replies.edit');
-Route::post('/mailbox/saved-replies/{id}/save', 'SavedRepliesController@save')->name('mailboxes.saved_replies.save');
-Route::post('/mailbox/saved-replies/{id}/{saved_reply_id}/delete', 'SavedRepliesController@delete')->name('mailboxes.saved_replies.delete');
 Route::post('/saved-replies/ajax', ['uses' => 'SavedRepliesController@ajax', 'laroute' => true])->name('saved_replies.ajax');
-Route::get('/mailbox/settings/{id}/ai', 'MailboxesController@ai')->name('mailboxes.ai');
-Route::post('/mailbox/settings/{id}/ai', 'MailboxesController@aiSave')->name('mailboxes.ai.save');
-Route::get('/mailbox/settings/{id}/auto-reply', 'MailboxesController@autoReply')->name('mailboxes.auto_reply');
-Route::post('/mailbox/settings/{id}/auto-reply', 'MailboxesController@autoReplySave')->name('mailboxes.auto_reply.save');
 Route::post('/mailbox/ajax', ['uses' => 'MailboxesController@ajax', 'laroute' => true])->name('mailboxes.ajax');
 Route::get('/mailbox/oauth/{id}/{in_out}/{provider}', ['uses' => 'MailboxesController@oauth'])->name('mailboxes.oauth');
 Route::get('/mailbox/oauth', ['uses' => 'MailboxesController@oauth'])->name('mailboxes.oauth_callback');

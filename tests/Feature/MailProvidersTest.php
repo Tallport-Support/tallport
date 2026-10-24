@@ -261,7 +261,7 @@ class MailProvidersTest extends FeatureTestCase
 
     public function testOutgoingSettingsKeepSecretsEncrypted()
     {
-        $this->actingAs($this->agent)->post('/mailbox/connection-settings/'.$this->mailbox->id.'/outgoing', [
+        $this->actingAs($this->agent)->post('/mailbox/'.$this->mailbox->id.'/settings/connection', [
             'out_method' => Mailbox::OUT_METHOD_SES,
             'out_api'    => ['ses_key' => 'AKIATEST', 'ses_secret' => 'ses-secret', 'ses_region' => 'eu-west-1'],
         ])->assertRedirect()->assertSessionHasNoErrors();
@@ -272,12 +272,12 @@ class MailProvidersTest extends FeatureTestCase
         $this->assertSame('ses-secret', MailProviders::mailboxSettings($this->mailbox)['ses_secret']);
         $this->assertTrue($this->mailbox->isOutActive());
 
-        $page = $this->actingAs($this->agent)->get('/mailbox/connection-settings/'.$this->mailbox->id.'/outgoing')->assertOk()
+        $page = $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id.'/settings/connection')->assertOk()
             ->assertSee('Amazon SES')->assertSee('AKIATEST')->assertDontSee('ses-secret')
             ->assertSee($this->mailbox->getOutWebhookUrl(MailProviders::SES), false);
 
         // Saved again as shown: the secret is kept.
-        $this->actingAs($this->agent)->post('/mailbox/connection-settings/'.$this->mailbox->id.'/outgoing', [
+        $this->actingAs($this->agent)->post('/mailbox/'.$this->mailbox->id.'/settings/connection', [
             'out_method' => Mailbox::OUT_METHOD_SES,
             'out_api'    => ['ses_key' => 'AKIATEST', 'ses_secret' => '**********', 'ses_region' => 'us-east-1'],
         ])->assertSessionHasNoErrors();
@@ -287,7 +287,7 @@ class MailProvidersTest extends FeatureTestCase
 
     public function testOutgoingSettingsAreValidated()
     {
-        $this->actingAs($this->agent)->post('/mailbox/connection-settings/'.$this->mailbox->id.'/outgoing', [
+        $this->actingAs($this->agent)->post('/mailbox/'.$this->mailbox->id.'/settings/connection', [
             'out_method' => Mailbox::OUT_METHOD_MAILGUN,
             'out_api'    => ['mailgun_domain' => 'not a domain', 'mailgun_secret' => '', 'mailgun_region' => 'asia'],
         ])->assertSessionHasErrors(['out_api.mailgun_domain', 'out_api.mailgun_secret', 'out_api.mailgun_region']);

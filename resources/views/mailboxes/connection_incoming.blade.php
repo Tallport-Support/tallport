@@ -28,7 +28,7 @@
                 <x-fruit::field :label="__('Fetch From')" control-id="email" layout="row">
                     <div class="f-row">
                         <input id="email" type="email" class="f-input connection-fetch-from" name="email" value="{{ $mailbox->email }}" disabled="disabled">
-                        <a href="{{ route('mailboxes.update', ['id'=>$mailbox->id]) }}#email" class="f-button f-button--ghost f-button--small" title="{{ __('Change address in mailbox settings') }}">{{ __('Change') }}</a>
+                        <a href="{{ route('mailboxes.general', ['id' => $mailbox->getSlug()]) }}#email" class="f-button f-button--ghost f-button--small" title="{{ __('Change address in mailbox settings') }}">{{ __('Change') }}</a>
                     </div>
                 </x-fruit::field>
 

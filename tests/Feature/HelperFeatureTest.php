@@ -51,13 +51,8 @@ class HelperFeatureTest extends FeatureTestCase
         // The current item's link, its attributes in any order.
         $current = fn ($href, $value = 'page') => '#<a (?=[^>]*href="'.preg_quote($href, '#').'")[^>]*aria-current="'.$value.'"#';
 
-        foreach ([
-            route('mailboxes.matrix', ['id' => $mailbox->id]) => route('mailboxes'),
-            route('mailboxes.documentation', ['id' => $mailbox->id]) => route('mailboxes'),
-        ] as $page => $item) {
-            $html = $this->actingAs($admin)->get($page)->assertOk()->getContent();
-            $this->assertMatchesRegularExpression($current($item), $html, $page);
-        }
+        // A mailbox's settings aren't: they're in the mailbox, beside its folders.
+        $this->assertStringNotContainsString('app-sidebar__back', $this->actingAs($admin)->get(route('mailboxes.matrix', ['id' => $mailbox->id]))->assertOk()->getContent());
         // A log beside the Logs: Logs leads there, current but not the page.
         $html = $this->actingAs($admin)->get(route('logs.telegram'))->assertOk()->getContent();
         $this->assertMatchesRegularExpression($current(route('logs'), 'true'), $html);

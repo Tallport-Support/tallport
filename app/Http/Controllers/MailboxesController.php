@@ -87,11 +87,30 @@ class MailboxesController extends Controller
 
         \Session::flash('flash_success_floating', __('Mailbox created successfully'));
 
-        return redirect()->route('mailboxes.update', ['id' => $mailbox->id]);
+        return redirect()->route('mailboxes.general', ['id' => $mailbox->getSlug()]);
     }
 
     /**
-     * Edit mailbox.
+     * An older address of a mailbox's settings page (routes/web.php): its address in the mailbox.
+     */
+    public function settingsMoved(Request $request)
+    {
+        $parameters = $request->route()->parameters();
+        $to = $parameters['to'];
+        unset($parameters['to']);
+        $key = isset($parameters['mailbox_id']) ? 'mailbox_id' : 'id';
+        $mailbox = Mailbox::find($parameters[$key]);
+        if ($mailbox) {
+            $parameters[$key] = $mailbox->getSlug();
+        }
+        $query = $request->getQueryString();
+
+        return redirect()->to(route($to, $parameters).($query ? '?'.$query : ''), 301);
+    }
+
+    /**
+     * A mailbox's General settings; where its settings start (/settings), which in a narrow window
+     * is the list of its pages (mailboxes/sidebar_menu).
      */
     public function update($id)
     {
@@ -194,7 +213,7 @@ class MailboxesController extends Controller
             $validator = \Eventy::filter('mailbox.settings_validator', $validator, $mailbox, $request);
 
             if ($invalid || count($validator->errors()) || $validator->fails()) {
-                return $this->savedResponse(redirect()->route('mailboxes.update', ['id' => $id])
+                return $this->savedResponse(redirect()->route('mailboxes.general', ['id' => $mailbox->getSlug()])
                             ->withErrors($validator)
                             ->withInput(), $validator);
             }
@@ -220,7 +239,7 @@ class MailboxesController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return $this->savedResponse(redirect()->route('mailboxes.update', ['id' => $id])
+                return $this->savedResponse(redirect()->route('mailboxes.general', ['id' => $mailbox->getSlug()])
                     ->withErrors($validator)
                     ->withInput(), $validator);
             }
@@ -265,7 +284,7 @@ class MailboxesController extends Controller
                     $validator = Validator::make([], []);
                     $validator->errors()->add('photo', __('Error occurred processing the image. Make sure that PHP GD extension is enabled.'));
 
-                    return $this->savedResponse(redirect()->route('mailboxes.update', ['id' => $id])
+                    return $this->savedResponse(redirect()->route('mailboxes.general', ['id' => $mailbox->getSlug()])
                         ->withErrors($validator)
                         ->withInput(), $validator);
                 }
@@ -288,7 +307,7 @@ class MailboxesController extends Controller
             \Session::flash('flash_success_floating', __('Mailbox settings saved'));
         }
 
-        return $this->savedResponse(redirect()->route('mailboxes.update', ['id' => $id]));
+        return $this->savedResponse(redirect()->route('mailboxes.general', ['id' => $mailbox->getSlug()]));
     }
 
     /**
@@ -815,7 +834,7 @@ class MailboxesController extends Controller
                     'type'   => 'warning',
                     'title'  => __('This mailbox can\'t send email yet.'),
                     'text'   => __('Set up Sending Emails so replies reach customers and agents.'),
-                    'action' => ['label' => __('Set Up Sending'), 'url' => route('mailboxes.connection', ['id' => $mailbox->id])],
+                    'action' => ['label' => __('Set Up Sending'), 'url' => route('mailboxes.connection', ['id' => $mailbox->getSlug()])],
                 ];
             }
             if (Route::currentRouteName() != 'mailboxes.connection.incoming' && !$mailbox->isInActive()) {
@@ -823,7 +842,7 @@ class MailboxesController extends Controller
                     'type'   => 'warning',
                     'title'  => __('This mailbox can\'t receive email yet.'),
                     'text'   => __('Set up Fetching Emails so messages sent to :email arrive here.', ['email' => $mailbox->email]),
-                    'action' => ['label' => __('Set Up Fetching'), 'url' => route('mailboxes.connection.incoming', ['id' => $mailbox->id])],
+                    'action' => ['label' => __('Set Up Fetching'), 'url' => route('mailboxes.connection.incoming', ['id' => $mailbox->getSlug()])],
                 ];
             }
         }

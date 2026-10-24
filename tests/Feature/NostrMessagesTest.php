@@ -184,7 +184,7 @@ class NostrMessagesTest extends FeatureTestCase
         $this->assertStringContainsString('retired key', $thread->fresh()->headers);
         $admin = $this->createAdmin();
 
-        $html = $this->actingAs($admin)->get('/mailbox/settings/'.$this->cfg->mailbox_id.'/nostr')->assertStatus(200)->getContent();
+        $html = $this->actingAs($admin)->get('/mailbox/'.$this->cfg->mailbox_id.'/settings/nostr')->assertStatus(200)->getContent();
 
         $this->assertStringContainsString(Keys::npub($old).'</code>', $html);
         $this->assertMatchesRegularExpression('#<td data-label="Messages">1 <small class="f-muted">\(last [A-Z][a-z]{2} \d{1,2}, \d{4}\)</small></td>#', $html);

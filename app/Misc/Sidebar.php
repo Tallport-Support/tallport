@@ -24,7 +24,8 @@ class Sidebar
     public static function isSettings()
     {
         $route = (string) \Route::currentRouteName();
-        $is_settings = (bool) preg_match('#^(settings|mailboxes$|mailboxes\.(create|update|connection|permissions|auto_reply|telegram|nostr|matrix|customapp|ai|documentation)|users|own\.|modules|logs|system)#', $route);
+        // A mailbox's settings are in the mailbox, beside its folders (MailboxSettings).
+        $is_settings = (bool) preg_match('#^(settings|mailboxes$|mailboxes\.create|users|own\.|modules|logs|system)#', $route);
 
         return (bool) \Eventy::filter('sidebar.is_settings', $is_settings, $route);
     }
@@ -342,7 +343,10 @@ class Sidebar
         $mailbox = $view_data['mailbox'] ?? null;
         $folder = $view_data['folder'] ?? null;
         $folder_mailbox_id = $folder && $folder->id < 0 ? AllMailboxes::MAILBOX_ID : ($folder && $folder->id ? $folder->mailbox_id : ($mailbox instanceof Mailbox ? $mailbox->id : null));
-        $scope = self::scope() ?: $folder_mailbox_id;
+        // A mailbox's settings page (MailboxAddress): that mailbox, whichever the user works in.
+        $route = request()->route();
+        $settings = $mailbox instanceof Mailbox && $route && in_array('mailbox.address', $route->gatherMiddleware());
+        $scope = $settings ? $mailbox->id : (self::scope() ?: $folder_mailbox_id);
 
         return [$scope, $folder && $folder->id && $folder_mailbox_id == $scope ? $folder->id : null];
     }

@@ -44,7 +44,7 @@ class NostrControllerTest extends FeatureTestCase
     {
         $mailbox = $mailbox ?: $this->mailbox;
 
-        return $this->postForm($this->admin, '/mailbox/settings/'.$mailbox->id.'/nostr', $data);
+        return $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/nostr', $data);
     }
 
     protected function config($mailbox = null)

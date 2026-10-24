@@ -81,7 +81,7 @@
                     </div>
 
                     {{-- The mailbox's own image, set in its settings. --}}
-                    <a class="f-form-row f-form-row--link" href="{{ route('mailboxes.update', ['id' => $mailbox->id]) }}" wire:navigate><span>{{ __('Image') }}</span><span class="f-form-row__value">@if ($mailbox->photo_url)<x-fruit::avatar :src="$mailbox->getPhotoUrl()" />@else{{ __('None') }}@endif</span></a>
+                    <a class="f-form-row f-form-row--link" href="{{ route('mailboxes.general', ['id' => $mailbox->getSlug()]) }}" wire:navigate><span>{{ __('Image') }}</span><span class="f-form-row__value">@if ($mailbox->photo_url)<x-fruit::avatar :src="$mailbox->getPhotoUrl()" />@else{{ __('None') }}@endif</span></a>
                 </x-fruit::form-section>
 
                 {{-- Hourly limits for the widget (App\WebChat\Spam). --}}

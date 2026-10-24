@@ -1,34 +1,32 @@
-{{-- A mailbox's settings pages' header (App\Misc\MailboxSettings), in Settings' bar. Its own page: Back to
-     the Mailboxes, its name and a link to it. A further page: Back to the mailbox, and the page's name. --}}
+{{-- A mailbox's settings page, in the mailbox (layouts/app): the list column holds its pages
+     (mailboxes/settings_menu), and the page shows beside it under its title, with Back to the list in a
+     narrow window. Its own pages include this through mailboxes/layout_page, modules' pages in their
+     'sidebar' section. --}}
 @php
-    $menu_route = Route::currentRouteName();
-    $menu_page_title = $menu_route == 'mailboxes.update' ? null : App\Misc\MailboxSettings::currentTitle($mailbox, Auth::user(), $menu_route);
+    $menu_route = (string) Route::currentRouteName();
+    $menu_page_title = in_array($menu_route, ['mailboxes.update', 'mailboxes.general']) ? __('General') : App\Misc\MailboxSettings::currentTitle($mailbox, Auth::user(), $menu_route);
+    // Where the settings start, in a narrow window: the list first (MailboxesController::update()).
+    $menu_list_first = $menu_route == 'mailboxes.update' && request()->cookie('tallport_narrow');
+    $menu_page_url = App\Misc\MailboxSettings::pageUrl($mailbox);
 @endphp
-<x-page-nav :label="__('Mailbox Settings')">
-    <x-slot:back>
-        @if ($menu_page_title === null)
-            <x-fruit::back-link wire:navigate :href="route('mailboxes')">{{ __('Mailboxes') }}</x-fruit::back-link>
-        @else
-            {{-- Up a level: the mailbox, or the Mailboxes for someone who can't open its page. --}}
-            @if (App\Misc\MailboxSettings::canOpenMailbox($mailbox, Auth::user()))
-                <x-fruit::back-link wire:navigate :href="route('mailboxes.update', ['id' => $mailbox->id])">{{ $mailbox->name }}</x-fruit::back-link>
-            @else
-                <x-fruit::back-link wire:navigate :href="route('mailboxes')">{{ __('Mailboxes') }}</x-fruit::back-link>
-            @endif
-        @endif
-    </x-slot:back>
-    <x-slot:title>
-        @if ($menu_page_title !== null)
-            <h1>{{ $menu_page_title }}</h1>
-        @else
-            @action('mailbox.update.before_mailbox_name', $mailbox)
-            <h1>{{ $mailbox->name }}</h1>
-        @endif
-    </x-slot:title>
-    @if ($menu_page_title === null)
-        <x-slot:actions>
-            {{-- On a phone just its icon (named, with a tooltip). --}}
-            <a wire:navigate href="{{ route('mailboxes.view', ['id' => $mailbox->id]) }}" class="f-button settings-toolbar__open" title="{{ __('Open Mailbox') }}" aria-label="{{ __('Open Mailbox') }}"><x-icon.inbox class="f-icon" aria-hidden="true" /><span>{{ __('Open Mailbox') }}</span></a>
-        </x-slot:actions>
+@section('list_toolbar')
+    <div class="app-list-title">
+        <h1>{{ __('Settings') }}</h1>
+        <p>{{ $mailbox->name }}</p>
+    </div>
+@endsection
+@section('list')
+    @include('mailboxes/settings_menu')
+@endsection
+@if (!$menu_list_first)
+    @section('split_class', 'split-view--open')
+@endif
+@if ($menu_page_url)
+    @section('body_attrs')@parent data-page-url="{{ $menu_page_url }}"@endsection
+@endif
+<x-page-nav class="mailbox-settings-nav" :label="__('Mailbox Settings')">
+    <x-slot:back><x-fruit::back-link wire:navigate :href="route('mailboxes.update', ['id' => $mailbox->getSlug()])">{{ __('Settings') }}</x-fruit::back-link></x-slot:back>
+    @if ($menu_page_title !== null)
+        <x-slot:title><h1>{{ $menu_page_title }}</h1></x-slot:title>
     @endif
 </x-page-nav>

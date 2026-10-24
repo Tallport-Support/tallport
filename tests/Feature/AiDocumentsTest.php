@@ -200,9 +200,9 @@ class AiDocumentsTest extends FeatureTestCase
 
     public function testPageRendersForAdminsOnly()
     {
-        // A level beside the mailbox, its row there current; Settings › AI doesn't list pages.
+        // A page of the mailbox's settings, its row in the list; Settings › AI doesn't list pages.
         $this->actingAs($this->admin)->get($this->pageUrl())->assertStatus(200)->assertSee('Documentation API')
-            ->assertSeeInOrder(['>'.$this->mailbox->name.'</h2>', $this->pageUrl(), '0 pages', '>Documentation</h2>'], false);
+            ->assertSeeInOrder(['>Settings</h1>', $this->mailbox->name, route('mailboxes.documentation', ['id' => $this->mailbox->getSlug()]), '0 pages', '>Documentation</h1>'], false);
         $this->actingAs($this->createUser())->get($this->pageUrl())->assertStatus(403);
         $this->actingAs($this->admin)->get('/app-settings/ai')->assertDontSee($this->pageUrl())->assertDontSee('Manage Documentation');
     }

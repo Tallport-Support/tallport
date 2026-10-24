@@ -56,7 +56,7 @@ class MailboxesTest extends FeatureTestCase
 
         $mailbox = Mailbox::where('email', 'billing@example.org')->first();
         $this->assertNotNull($mailbox, 'The mailbox was not created (or the email not lowercased).');
-        $response->assertRedirect(route('mailboxes.update', ['id' => $mailbox->id]));
+        $response->assertRedirect(route('mailboxes.general', ['id' => $mailbox->fresh()->getSlug()]));
         $this->assertSame('Billing', $mailbox->name);
         $this->assertEquals([$agent->id], $mailbox->users()->pluck('users.id')->all());
         $this->assertEqualsCanonicalizing(
@@ -95,7 +95,7 @@ class MailboxesTest extends FeatureTestCase
     {
         $mailbox = $this->createMailbox([], ['name' => 'Support']);
 
-        $response = $this->postForm($this->admin, '/mailbox/settings/'.$mailbox->id, $this->settingsFields($mailbox, [
+        $response = $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/general', $this->settingsFields($mailbox, [
             'name'             => 'Customer Support',
             'aliases'          => 'help@example.org',
             'from_name'        => Mailbox::FROM_NAME_CUSTOM,
@@ -103,7 +103,7 @@ class MailboxesTest extends FeatureTestCase
             'signature'        => '<p>Kind regards</p>',
         ]));
 
-        $response->assertRedirect(route('mailboxes.update', ['id' => $mailbox->id]));
+        $response->assertRedirect(route('mailboxes.general', ['id' => $mailbox->fresh()->getSlug()]));
         $mailbox->refresh();
         $this->assertSame('Customer Support', $mailbox->name);
         $this->assertSame('help@example.org', $mailbox->aliases);
@@ -112,24 +112,27 @@ class MailboxesTest extends FeatureTestCase
         $this->assertStringContainsString('Kind regards', $mailbox->signature);
     }
 
+    /**
+     * The chat options are in General; the chat channels' pages together in the list beside it.
+     */
     public function testChatSettingsAndChannelLinksAreTogether()
     {
         $mailbox = $this->createMailbox();
-        $this->postForm($this->admin, route('mailboxes.update', ['id' => $mailbox->id]), $this->settingsFields($mailbox, [
+        $this->postForm($this->admin, route('mailboxes.update.save', ['id' => $mailbox->id]), $this->settingsFields($mailbox, [
             'chat_reopen_days' => '14', 'chat_start_new' => '1',
         ]))->assertSessionHasNoErrors()->assertRedirect();
         $this->assertSame(14, $mailbox->fresh()->getMeta('chat_reopen_days'));
         $this->assertTrue($mailbox->fresh()->getMeta('chat_start_new'));
 
-        $response = $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertOk();
+        $response = $this->actingAs($this->admin)->get(route('mailboxes.general', ['id' => $mailbox->getSlug()]))->assertOk();
         $document = new \DOMDocument();
         $document->loadHTML($response->getContent(), LIBXML_NOERROR | LIBXML_NOWARNING);
         $xpath = new \DOMXPath($document);
         $this->assertSame('14', $xpath->evaluate('string(//*[@id="chat"]//input[@name="chat_reopen_days"]/@value)'));
         $this->assertSame(1, $xpath->query('//*[@id="chat"]//input[@name="chat_start_new"]')->length);
-        foreach (['mailboxes.telegram', 'mailboxes.nostr'] as $route) {
-            $links = $xpath->query('//*[@id="chat"]//a[@href="'.route($route, ['id' => $mailbox->id]).'"]');
-            $this->assertSame(1, $links->length);
+        $chat = $xpath->query('//*[contains(@class, "mailbox-settings")]//*[contains(@class, "f-form-section")][.//*[normalize-space()="Chat"]]')->item(0);
+        foreach (['mailboxes.web_chat', 'mailboxes.telegram', 'mailboxes.matrix', 'mailboxes.nostr'] as $route) {
+            $this->assertSame(1, $xpath->query('.//a[@href="'.route($route, ['id' => $mailbox->getSlug()]).'"]', $chat)->length, $route);
         }
     }
 
@@ -140,7 +143,7 @@ class MailboxesTest extends FeatureTestCase
     {
         $mailbox = $this->createMailbox();
         $mailbox->setMetaParam('chat_reopen_days', 14, true);
-        $this->postForm($this->admin, route('mailboxes.update', ['id' => $mailbox->id]), $this->settingsFields($mailbox, [
+        $this->postForm($this->admin, route('mailboxes.update.save', ['id' => $mailbox->id]), $this->settingsFields($mailbox, [
             'chat_reopen_days' => $value,
         ]))->assertSessionHasErrors('chat_reopen_days');
         $this->assertSame(14, $mailbox->fresh()->getMeta('chat_reopen_days'));
@@ -165,10 +168,10 @@ class MailboxesTest extends FeatureTestCase
         $mailbox = $this->createMailbox([$this->admin]);
         $this->assertSame(collect(\FruitUI\Fruit::ACCENTS)->first(fn ($accent) => !in_array($accent, $taken)) ?? \FruitUI\Fruit::ACCENTS[0], $mailbox->fresh()->accent);
 
-        $this->postForm($this->admin, '/mailbox/settings/'.$mailbox->id, $this->settingsFields($mailbox, ['accent' => 'green']))
-            ->assertRedirect(route('mailboxes.update', ['id' => $mailbox->id]));
+        $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/general', $this->settingsFields($mailbox, ['accent' => 'green']))
+            ->assertRedirect(route('mailboxes.general', ['id' => $mailbox->fresh()->getSlug()]));
         $this->assertSame('green', $mailbox->fresh()->accent);
-        $this->postForm($this->admin, '/mailbox/settings/'.$mailbox->id, $this->settingsFields($mailbox, ['accent' => 'chartreuse']))
+        $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/general', $this->settingsFields($mailbox, ['accent' => 'chartreuse']))
             ->assertSessionHasErrors('accent');
         $this->assertSame('green', $mailbox->fresh()->accent);
 
@@ -179,8 +182,8 @@ class MailboxesTest extends FeatureTestCase
     }
 
     /**
-     * The sidebar's mailbox menu leads to the mailbox's page in Settings › Mailboxes; someone
-     * who may only edit the signature gets there too, and changes only that.
+     * The sidebar's mailbox menu leads to the mailbox's settings; someone who may only edit the
+     * signature gets there too, and changes only that.
      */
     public function testMailboxSettingsFromTheSidebar()
     {
@@ -190,13 +193,13 @@ class MailboxesTest extends FeatureTestCase
         $mailbox->users()->updateExistingPivot($signer->id, ['access' => json_encode([Mailbox::ACCESS_PERM_SIGNATURE])]);
 
         $this->actingAs($this->admin)->get(route('mailboxes.view', ['id' => $mailbox->id]))
-            ->assertSee('href="'.route('mailboxes.update', ['id' => $mailbox->id]).'"', false)->assertSee('Mailbox Settings');
+            ->assertSee('href="'.route('mailboxes.update', ['id' => 'support']).'"', false)->assertSee('Mailbox Settings');
         $this->actingAs($agent)->get(route('mailboxes.view', ['id' => $mailbox->id]))->assertOk()->assertDontSee('Mailbox Settings');
 
         $this->actingAs($signer)->get(route('mailboxes.view', ['id' => $mailbox->id]))->assertOk()->assertSee('Mailbox Settings');
         $this->actingAs($signer)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertOk()->assertSee('name="signature_markdown"', false)->assertDontSee('id="name"', false)
             ->assertDontSee('name="chat_reopen_days"', false);
-        $this->postForm($signer, route('mailboxes.update', ['id' => $mailbox->id]), ['name' => 'Hijacked', 'signature' => '<p>Agent</p>', 'chat_reopen_days' => 7, 'chat_start_new' => 1]);
+        $this->postForm($signer, route('mailboxes.update.save', ['id' => $mailbox->id]), ['name' => 'Hijacked', 'signature' => '<p>Agent</p>', 'chat_reopen_days' => 7, 'chat_start_new' => 1]);
         $this->assertSame('Support', $mailbox->fresh()->name);
         $this->assertStringContainsString('Agent', $mailbox->fresh()->signature);
         $this->assertNull($mailbox->fresh()->getMeta('chat_reopen_days'));
@@ -204,11 +207,12 @@ class MailboxesTest extends FeatureTestCase
     }
 
     /**
-     * Settings › Mailboxes is the one place for a mailbox's settings: the list, the mailbox's page
-     * with a row (and its value) for each further page the user may open, and those pages, each
-     * with Back up a level. Nothing is added to the sidebar; Mailboxes stays current.
+     * A mailbox's settings are in the mailbox, beside its folders: the list column holds its pages
+     * (General, then each further page the user may open with its value, the chat channels together),
+     * the open one current, and the page shows beside it under its title. Settings › Mailboxes leads
+     * there; an ID in the address works too, and the page says its address by the short name.
      */
-    public function testMailboxSettingsInOnePlace()
+    public function testMailboxSettingsInTheMailbox()
     {
         $manager = $this->createUser();
         $mailbox = $this->createMailbox([$manager], ['name' => 'Support']);
@@ -216,46 +220,102 @@ class MailboxesTest extends FeatureTestCase
         $mailbox->save();
         $mailbox->users()->updateExistingPivot($manager->id, ['access' => json_encode([Mailbox::ACCESS_PERM_PERMISSIONS])]);
 
-        $current = fn ($href, $value) => '#<a (?=[^>]*href="'.preg_quote($href, '#').'")[^>]*aria-current="'.$value.'"#';
+        $current = fn ($href) => '#<a (?=[^>]*href="'.preg_quote($href, '#').'")[^>]*aria-current="page"#';
         $this->actingAs($this->admin)->get(route('mailboxes'))->assertOk()
-            ->assertSee('href="'.route('mailboxes.update', ['id' => $mailbox->id]).'"', false)->assertSee('Not set up');
-        // Levels: the Mailboxes, then the mailbox (Open Mailbox, its settings, a row for each further page).
-        $html = $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertOk()
-            ->assertSeeInOrder(['>Mailboxes</h2>', '>Support</h2>', 'Open Mailbox'], false)
-            ->assertDontSee('page-nav__switcher', false)
-            ->assertSeeInOrder(['Reopen Window', 'Telegram', 'Nostr', 'Connection Settings', 'Not set up', 'Permissions', '2 people', 'Auto Reply', 'On', 'Workflows', 'Saved Replies'])
-            ->assertDontSee('app-sidebar__mailbox-pages', false)->assertDontSee('form="page-form"', false)
+            ->assertSee('href="'.route('mailboxes.update', ['id' => 'support']).'"', false)->assertSee('Not set up');
+        $html = $this->actingAs($this->admin)->get('/mailbox/support/settings')->assertOk()
+            ->assertSeeInOrder(['>Settings</h1>', 'Support', 'General', 'Connection Settings', 'Not set up', 'Permissions', '2 people', 'Auto Reply', 'On',
+                'Chat', 'Website Chat', 'Telegram', 'Matrix', 'Nostr', 'AI', 'Documentation', 'Workflows', 'Saved Replies', '>General</h1>'], false)
+            // The inbox sidebar, not Settings'.
+            ->assertSee('app-sidebar__mailbox', false)->assertDontSee('id="settings-search"', false)
             // Saved with its button: the signature and From name go to customers.
-            ->assertSeeInOrder(['id="mailbox-form"', 'Save', 'Danger Zone'], false)->getContent();
+            ->assertSeeInOrder(['id="mailbox-form"', 'Reopen Window', 'Save', 'Danger Zone'], false)->getContent();
         $this->assertDoesNotMatchRegularExpression('/<form id="mailbox-form"[^>]*autoSave/', $html);
-        $this->assertMatchesRegularExpression($current(route('mailboxes.update', ['id' => $mailbox->id]), 'page'), $html);
-        // A further page: a level beside the mailbox, its row there current.
+        $this->assertMatchesRegularExpression($current(route('mailboxes.general', ['id' => 'support'])), $html);
+
+        // A further page, by its ID too (an older link): its row current, its title, its address.
         $html = $this->actingAs($this->admin)->get(route('mailboxes.auto_reply', ['id' => $mailbox->id]))->assertOk()
-            ->assertSeeInOrder(['>Mailboxes</h2>', '>Support</h2>', '>Auto Reply</h2>'], false)->getContent();
-        $this->assertMatchesRegularExpression($current(route('mailboxes.update', ['id' => $mailbox->id]), 'true'), $html);
-        $this->assertMatchesRegularExpression($current(route('mailboxes.auto_reply', ['id' => $mailbox->id]), 'page'), $html);
+            ->assertSee('>Auto Reply</h1>', false)->assertSee('data-page-url="'.route('mailboxes.auto_reply', ['id' => 'support']).'"', false)->getContent();
+        $this->assertMatchesRegularExpression($current(route('mailboxes.auto_reply', ['id' => 'support'])), $html);
+        $this->actingAs($this->admin)->get('/mailbox/elsewhere/settings/auto-reply')->assertNotFound();
+
+        // In a narrow window the settings start with the list (the page under it, out of sight);
+        // a page shows with Back to it.
+        $this->withUnencryptedCookie('tallport_narrow', '1');
+        $this->actingAs($this->admin)->get('/mailbox/support/settings')->assertOk()->assertDontSee('split-view--open', false);
+        $this->actingAs($this->admin)->get('/mailbox/support/settings/general')->assertOk()->assertSee('split-view--open', false)
+            ->assertSee('href="'.route('mailboxes.update', ['id' => 'support']).'"', false);
+        $this->withUnencryptedCookie('tallport_narrow', '0');
 
         // Not connected: what it can't do yet, with a way to set it up (not on that very page); the
         // tab that needs it says so in words too.
-        $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $mailbox->id]))
+        $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => 'support']))
             ->assertSee('This mailbox can&#039;t receive email yet.', false)
             ->assertSee('Set up Fetching Emails so messages sent to '.$mailbox->email.' arrive here.')
-            ->assertSee('href="'.route('mailboxes.connection.incoming', ['id' => $mailbox->id]).'">Set Up Fetching', false);
-        $this->actingAs($this->admin)->get(route('mailboxes.connection.incoming', ['id' => $mailbox->id]))->assertDontSee('Set Up Fetching');
-        $this->actingAs($this->admin)->get(route('mailboxes.connection', ['id' => $mailbox->id]))
+            ->assertSee('href="'.route('mailboxes.connection.incoming', ['id' => 'support']).'">Set Up Fetching', false);
+        $this->actingAs($this->admin)->get(route('mailboxes.connection.incoming', ['id' => 'support']))->assertDontSee('Set Up Fetching');
+        $this->actingAs($this->admin)->get(route('mailboxes.connection', ['id' => 'support']))
             ->assertSee('Fetching Emails<span class="f-sr-only">, needs attention</span>', false);
 
-        // Workflows and Saved Replies from its row: Back to the mailbox; from the main sidebar, none.
-        $this->actingAs($this->admin)->get(route('mailboxes.workflows', ['mailbox_id' => $mailbox->id, 'from' => 'mailbox']))->assertOk()
-            ->assertSee('f-back', false)->assertSee('href="'.route('mailboxes.update', ['id' => $mailbox->id]).'"', false);
-        $this->actingAs($this->admin)->get(route('mailboxes.saved_replies', ['id' => $mailbox->id, 'from' => 'mailbox']))->assertOk()->assertSee('f-back', false);
-        $this->actingAs($this->admin)->get(route('mailboxes.workflows', ['mailbox_id' => $mailbox->id]))->assertOk()->assertDontSee('f-back', false);
+        // Workflows and Saved Replies: pages of its settings too.
+        $this->assertMatchesRegularExpression($current(route('mailboxes.workflows', ['mailbox_id' => 'support'])),
+            $this->actingAs($this->admin)->get(route('mailboxes.workflows', ['mailbox_id' => 'support']))->assertOk()->assertSee('>Workflows</h1>', false)->getContent());
+        $this->assertMatchesRegularExpression($current(route('mailboxes.saved_replies', ['id' => 'support'])),
+            $this->actingAs($this->admin)->get(route('mailboxes.saved_replies', ['id' => 'support']))->assertOk()->assertSee('>Saved Replies</h1>', false)->getContent());
 
-        // Only its permissions: the list leads there, Back to the Mailboxes, no other rows.
-        $this->actingAs($manager)->get(route('mailboxes'))->assertOk()->assertSee('href="'.route('mailboxes.permissions', ['id' => $mailbox->id]).'"', false);
-        $this->actingAs($manager)->get(route('mailboxes.permissions', ['id' => $mailbox->id]))->assertOk()
-            ->assertSeeInOrder(['>Mailboxes</h2>', '>Permissions</h2>'], false)->assertDontSee('>Support</h2>', false);
-        $this->actingAs($manager)->get(route('mailboxes.update', ['id' => $mailbox->id]))->assertRedirect();
+        // Only its permissions: the list leads there, and holds no other row.
+        $this->actingAs($manager)->get(route('mailboxes'))->assertOk()->assertSee('href="'.route('mailboxes.permissions', ['id' => 'support']).'"', false);
+        $this->actingAs($manager)->get(route('mailboxes.permissions', ['id' => 'support']))->assertOk()
+            ->assertSee('>Permissions</h1>', false)->assertDontSee('>General<', false)->assertDontSee('Auto Reply');
+        $this->actingAs($manager)->get(route('mailboxes.update', ['id' => 'support']))->assertRedirect();
+    }
+
+    /**
+     * Modules' pages are in the list too (mailboxes.settings.menu), at its end; an open one marks its
+     * own row and gives the title, also when its route starts like one of ours (Nostr's announcements).
+     */
+    public function testModulePagesInTheList()
+    {
+        $this->createMailbox([], ['name' => 'Support']);
+        \Eventy::addAction('mailboxes.settings.menu', function () {
+            echo '<a href="https://tallport.test/mailbox/settings/1/nostr/announcements" aria-current="page">Announcements</a>';
+        });
+
+        $html = $this->actingAs($this->admin)->get(route('mailboxes.nostr', ['id' => 'support']))->assertOk()
+            ->assertSee('>Announcements</h1>', false)
+            ->assertSeeInOrder(['Saved Replies', '<a class="f-form-row f-form-row--link" href="https://tallport.test/mailbox/settings/1/nostr/announcements" aria-current="page">Announcements</a>'], false)->getContent();
+        $this->assertDoesNotMatchRegularExpression('#<a [^>]*href="'.preg_quote(route('mailboxes.nostr', ['id' => 'support']), '#').'"[^>]*aria-current#', $html);
+    }
+
+    /**
+     * The older addresses of a mailbox's settings pages lead to theirs in the mailbox.
+     */
+    public function testOlderSettingsAddressesLeadToTheMailbox()
+    {
+        $mailbox = $this->createMailbox([], ['name' => 'Support']);
+        $workflow = new \App\Workflow();
+        $workflow->id = 7;
+        foreach ([
+            '/mailbox/settings/'.$mailbox->id                          => '/mailbox/support/settings',
+            '/mailbox/connection-settings/'.$mailbox->id.'/outgoing'   => '/mailbox/support/settings/connection',
+            '/mailbox/connection-settings/'.$mailbox->id.'/incoming'   => '/mailbox/support/settings/connection/incoming',
+            '/mailbox/permissions/'.$mailbox->id                       => '/mailbox/support/settings/permissions',
+            '/mailbox/settings/'.$mailbox->id.'/auto-reply'            => '/mailbox/support/settings/auto-reply',
+            '/mailbox/settings/'.$mailbox->id.'/website-chat'          => '/mailbox/support/settings/website-chat',
+            '/mailbox/'.$mailbox->id.'/telegram'                       => '/mailbox/support/settings/telegram',
+            '/mailbox/settings/'.$mailbox->id.'/matrix'                => '/mailbox/support/settings/matrix',
+            '/mailbox/settings/'.$mailbox->id.'/nostr'                 => '/mailbox/support/settings/nostr',
+            '/mailbox/settings/'.$mailbox->id.'/ai'                    => '/mailbox/support/settings/ai',
+            '/mailbox/settings/'.$mailbox->id.'/documentation'         => '/mailbox/support/settings/documentation',
+            '/mailbox/workflows/'.$mailbox->id                         => '/mailbox/support/settings/workflows',
+            '/mailbox/workflows/'.$mailbox->id.'/new'                  => '/mailbox/support/settings/workflows/new',
+            '/mailbox/workflows/'.$mailbox->id.'/7'                    => '/mailbox/support/settings/workflows/7',
+            '/mailbox/saved-replies/'.$mailbox->id.'?from=mailbox'     => '/mailbox/support/settings/saved-replies?from=mailbox',
+            '/mailbox/saved-replies/'.$mailbox->id.'/new'              => '/mailbox/support/settings/saved-replies/new',
+            '/mailbox/saved-replies/'.$mailbox->id.'/12/edit'          => '/mailbox/support/settings/saved-replies/12',
+        ] as $old => $new) {
+            $this->actingAs($this->admin)->get($old)->assertStatus(301)->assertRedirect(url($new));
+        }
     }
 
     /**
@@ -266,10 +326,10 @@ class MailboxesTest extends FeatureTestCase
     {
         $mailbox = $this->createMailbox([], ['name' => 'Support']);
 
-        $this->postAjax($this->admin, '/mailbox/settings/'.$mailbox->id, $this->settingsFields($mailbox, ['name' => 'Help']))
+        $this->postAjax($this->admin, '/mailbox/'.$mailbox->id.'/settings/general', $this->settingsFields($mailbox, ['name' => 'Help']))
             ->assertOk()->assertJson(['status' => 'success']);
         $this->assertSame('Help', $mailbox->fresh()->name);
-        $this->postAjax($this->admin, '/mailbox/settings/'.$mailbox->id, $this->settingsFields($mailbox->fresh(), ['email' => 'not an address']))
+        $this->postAjax($this->admin, '/mailbox/'.$mailbox->id.'/settings/general', $this->settingsFields($mailbox->fresh(), ['email' => 'not an address']))
             ->assertStatus(422)->assertJsonValidationErrors('email');
         $this->assertNotSame('not an address', $mailbox->fresh()->email);
         $this->assertNull(session('flash_success_floating'));
@@ -288,12 +348,12 @@ class MailboxesTest extends FeatureTestCase
     {
         $mailbox = $this->createMailbox([], ['signature' => '<p>Old</p>']);
 
-        $this->postForm($this->admin, '/mailbox/settings/'.$mailbox->id, $this->settingsFields($mailbox, ['signature' => ['not', 'a', 'string']]))
-            ->assertRedirect(route('mailboxes.update', ['id' => $mailbox->id]))
+        $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/general', $this->settingsFields($mailbox, ['signature' => ['not', 'a', 'string']]))
+            ->assertRedirect(route('mailboxes.general', ['id' => $mailbox->fresh()->getSlug()]))
             ->assertSessionHasErrors('signature');
 
-        $this->postForm($this->admin, '/mailbox/settings/'.$mailbox->id, $this->settingsFields($mailbox, ['signature' => '']))
-            ->assertRedirect(route('mailboxes.update', ['id' => $mailbox->id]));
+        $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/general', $this->settingsFields($mailbox, ['signature' => '']))
+            ->assertRedirect(route('mailboxes.general', ['id' => $mailbox->fresh()->getSlug()]));
         $this->assertSame('', (string)$mailbox->fresh()->signature);
     }
 
@@ -302,8 +362,8 @@ class MailboxesTest extends FeatureTestCase
         $agent = $this->createUser();
         $mailbox = $this->createMailbox([$agent], ['name' => 'Support']);
 
-        $this->actingAs($agent)->get('/mailbox/settings/'.$mailbox->id)->assertStatus(403);
-        $this->postForm($agent, '/mailbox/settings/'.$mailbox->id, $this->settingsFields($mailbox, ['name' => 'Hijacked']))->assertStatus(403);
+        $this->actingAs($agent)->get('/mailbox/'.$mailbox->id.'/settings/general')->assertStatus(403);
+        $this->postForm($agent, '/mailbox/'.$mailbox->id.'/settings/general', $this->settingsFields($mailbox, ['name' => 'Hijacked']))->assertStatus(403);
         $this->assertSame('Support', $mailbox->fresh()->name);
     }
 
@@ -313,11 +373,11 @@ class MailboxesTest extends FeatureTestCase
         $mailbox = $this->createMailbox([$agent], ['name' => 'Support']);
         $mailbox->users()->updateExistingPivot($agent->id, ['access' => json_encode([Mailbox::ACCESS_PERM_EDIT])]);
 
-        $this->postForm($agent, '/mailbox/settings/'.$mailbox->id, $this->settingsFields($mailbox, [
+        $this->postForm($agent, '/mailbox/'.$mailbox->id.'/settings/general', $this->settingsFields($mailbox, [
             'name'    => 'Renamed by manager',
             'email'   => 'other@example.org',
             'aliases' => 'help@example.org',
-        ]))->assertRedirect(route('mailboxes.update', ['id' => $mailbox->id]));
+        ]))->assertRedirect(route('mailboxes.general', ['id' => $mailbox->fresh()->getSlug()]));
 
         $mailbox->refresh();
         $this->assertSame('Support', $mailbox->name);
@@ -330,7 +390,7 @@ class MailboxesTest extends FeatureTestCase
         $agent = $this->createUser();
         $mailbox = $this->createMailbox([$agent], ['name' => 'Old mailbox']);
 
-        $this->postForm($this->admin, '/mailbox/settings/'.$mailbox->id, $this->settingsFields($mailbox, ['state' => 1]));
+        $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/general', $this->settingsFields($mailbox, ['state' => 1]));
 
         $this->assertEquals(Mailbox::STATE_ARCHIVED, $mailbox->fresh()->state);
         $this->actingAs($agent)->get('/mailbox/'.$mailbox->id)->assertStatus(403);
@@ -345,7 +405,7 @@ class MailboxesTest extends FeatureTestCase
         $leaving = $this->createUser();
         $mailbox = $this->createMailbox([$leaving]);
 
-        $response = $this->postForm($this->admin, '/mailbox/permissions/'.$mailbox->id, [
+        $response = $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/permissions', [
             'users'    => [$staying->id],
             'managers' => [$staying->id => ['access' => [Mailbox::ACCESS_PERM_AUTO_REPLIES => Mailbox::ACCESS_PERM_AUTO_REPLIES]]],
         ]);
@@ -363,11 +423,11 @@ class MailboxesTest extends FeatureTestCase
         $agent = $this->createUser();
         $mailbox = $this->createMailbox([$agent]);
 
-        $this->actingAs($agent)->get('/mailbox/permissions/'.$mailbox->id)->assertStatus(403);
+        $this->actingAs($agent)->get('/mailbox/'.$mailbox->id.'/settings/permissions')->assertStatus(403);
 
         $mailbox->users()->updateExistingPivot($agent->id, ['access' => json_encode([Mailbox::ACCESS_PERM_PERMISSIONS])]);
         \Cache::flush();
-        $this->actingAs($agent)->get('/mailbox/permissions/'.$mailbox->id)->assertStatus(200);
+        $this->actingAs($agent)->get('/mailbox/'.$mailbox->id.'/settings/permissions')->assertStatus(200);
     }
 
     // Auto reply.
@@ -376,19 +436,19 @@ class MailboxesTest extends FeatureTestCase
     {
         $mailbox = $this->createMailbox();
 
-        $this->postForm($this->admin, '/mailbox/settings/'.$mailbox->id.'/auto-reply', [
+        $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/auto-reply', [
             'auto_reply_enabled' => 1,
             'auto_reply_message' => '<p>Thanks!</p>',
         ])->assertSessionHasErrors('auto_reply_subject');
         $this->assertFalse((bool)$mailbox->fresh()->auto_reply_enabled);
 
         // Without a message: a validation error, not a 500 (M5).
-        $this->postForm($this->admin, '/mailbox/settings/'.$mailbox->id.'/auto-reply', [
+        $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/auto-reply', [
             'auto_reply_enabled' => 1,
             'auto_reply_subject' => 'We got it',
         ])->assertSessionHasErrors('auto_reply_message');
 
-        $this->postForm($this->admin, '/mailbox/settings/'.$mailbox->id.'/auto-reply', [
+        $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/auto-reply', [
             'auto_reply_enabled' => 1,
             'auto_reply_subject' => 'We got it',
             'auto_reply_message' => '<p>Thanks!</p>',
@@ -407,7 +467,7 @@ class MailboxesTest extends FeatureTestCase
         config(['app.remote_host_white_list' => '127.0.0.1']);
         $mailbox = $this->createMailbox();
 
-        $this->postForm($this->admin, '/mailbox/connection-settings/'.$mailbox->id.'/incoming', [
+        $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/connection/incoming', [
             'in_server'        => '127.0.0.1',
             'in_port'          => 993,
             'in_username'      => 'support@example.org',
@@ -424,7 +484,7 @@ class MailboxesTest extends FeatureTestCase
         $this->assertNotSame('imap-secret', \DB::table('mailboxes')->where('id', $mailbox->id)->value('in_password'), 'Stored encrypted.');
 
         // Saving the masked password again keeps the real one.
-        $this->postForm($this->admin, '/mailbox/connection-settings/'.$mailbox->id.'/incoming', [
+        $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/connection/incoming', [
             'in_server' => '127.0.0.1', 'in_port' => 993, 'in_username' => 'support@example.org',
             'in_password' => '*****', 'in_protocol' => Mailbox::IN_PROTOCOL_IMAP, 'in_encryption' => Mailbox::IN_ENCRYPTION_SSL,
         ]);
@@ -436,7 +496,7 @@ class MailboxesTest extends FeatureTestCase
         $mailbox = $this->createMailbox();
         $this->assertFalse($mailbox->isInActive());
 
-        $this->postForm($this->admin, '/mailbox/connection-settings/'.$mailbox->id.'/incoming', [
+        $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/connection/incoming', [
             'in_protocol' => Mailbox::IN_PROTOCOL_MAIL_SERVER,
         ])->assertRedirect(route('mailboxes.connection.incoming', ['id' => $mailbox->id]))->assertSessionHasNoErrors();
 
@@ -455,7 +515,7 @@ class MailboxesTest extends FeatureTestCase
     {
         $mailbox = $this->createMailbox();
 
-        $this->postForm($this->admin, '/mailbox/connection-settings/'.$mailbox->id.'/incoming', [
+        $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/connection/incoming', [
             'in_server' => '10.0.0.1', 'in_port' => 993, 'in_username' => 'u', 'in_password' => 'p',
         ])->assertSessionHasErrors('in_server');
 
@@ -466,7 +526,7 @@ class MailboxesTest extends FeatureTestCase
     {
         $mailbox = $this->createMailbox();
 
-        $this->postForm($this->admin, '/mailbox/connection-settings/'.$mailbox->id.'/outgoing', [
+        $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/connection', [
             'out_method' => Mailbox::OUT_METHOD_SENDMAIL,
         ])->assertRedirect(route('mailboxes.connection', ['id' => $mailbox->id]));
 
@@ -479,8 +539,8 @@ class MailboxesTest extends FeatureTestCase
         $mailbox = $this->createMailbox([$agent]);
         $mailbox->users()->updateExistingPivot($agent->id, ['access' => json_encode([Mailbox::ACCESS_PERM_EDIT])]);
 
-        $this->actingAs($agent)->get('/mailbox/connection-settings/'.$mailbox->id.'/outgoing')->assertStatus(403);
-        $this->actingAs($agent)->get('/mailbox/connection-settings/'.$mailbox->id.'/incoming')->assertStatus(403);
+        $this->actingAs($agent)->get('/mailbox/'.$mailbox->id.'/settings/connection')->assertStatus(403);
+        $this->actingAs($agent)->get('/mailbox/'.$mailbox->id.'/settings/connection/incoming')->assertStatus(403);
     }
 
     // Ajax actions.

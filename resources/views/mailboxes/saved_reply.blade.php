@@ -73,6 +73,6 @@
 @endsection
 
 @section('page_footer')
-    <a href="{{ route('mailboxes.saved_replies', ['id' => $mailbox->id]) }}" class="f-button f-button--ghost">{{ __('Cancel') }}</a>
+    <a href="{{ route('mailboxes.saved_replies', ['id' => $mailbox->getSlug()]) }}" class="f-button f-button--ghost">{{ __('Cancel') }}</a>
     <x-fruit::button type="submit" form="page-form" variant="primary">{{ __('Save') }}</x-fruit::button>
 @endsection

@@ -86,5 +86,6 @@ class Kernel extends HttpKernel
         'password.confirm' => \App\Http\Middleware\RequirePasswordInline::class,
         'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'roles'      => \App\Http\Middleware\CheckRole::class,
+        'mailbox.address' => \App\Http\Middleware\MailboxAddress::class,
     ];
 }

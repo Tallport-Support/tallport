@@ -230,10 +230,11 @@ class AllMailboxesTest extends FeatureTestCase
         $this->assertStringContainsString(route('own.preferences'), substr($sidebar, 0, strpos($sidebar, 'app-sidebar__footer')));
         $this->assertStringNotContainsString('app-sidebar__mailbox', $sidebar);
 
-        // A mailbox's settings are under Manage > Mailboxes (rows on its page, not in the sidebar); an agent sees only the account.
+        // A mailbox's settings are in the mailbox, beside its folders (its pages in the list, not in the
+        // sidebar); an agent sees only the account.
         $html = $this->get(route('mailboxes.update', ['id' => $this->support->id]))->getContent();
-        $this->assertStringContainsString('app-sidebar__back', $html);
-        $this->assertStringContainsString('<a wire:navigate class="f-form-row f-form-row--link" href="'.route('mailboxes.permissions', ['id' => $this->support->id]).'"', $html);
+        $this->assertStringNotContainsString('app-sidebar__back', $html);
+        $this->assertStringContainsString('<a wire:navigate class="f-form-row f-form-row--link" href="'.route('mailboxes.permissions', ['id' => $this->support->getSlug()]).'"', $html);
         $this->assertStringNotContainsString('<a class="f-sidebar__item" wire:navigate href="'.route('mailboxes.permissions', ['id' => $this->support->id]).'"', $html);
         $html = $this->actingAs($this->agent)->get(route('own.preferences'))->assertOk()->getContent();
         $this->assertStringContainsString('app-sidebar__back', $html);
@@ -244,7 +245,7 @@ class AllMailboxesTest extends FeatureTestCase
         $this->assertStringContainsString(route('logs'), $sidebar);
         $html = $this->actingAs($admin)->get(route('mailboxes.view', ['id' => $this->support->id]))->getContent();
         $this->assertStringContainsString('href="'.route('workflows').'"', $html);
-        $this->assertMatchesRegularExpression('#href="'.preg_quote(url('/mailbox/saved-replies'), '#').'/\d+"#', $html);
+        $this->assertMatchesRegularExpression('#href="'.preg_quote(url('/mailbox'), '#').'/[a-z0-9-]+/settings/saved-replies"#', $html);
         $this->assertStringNotContainsString('app-sidebar__back', $this->get(route('workflows'))->getContent());
         $this->assertMatchesRegularExpression('#<a (?=[^>]*href="'.preg_quote(route('logs'), '#').'")[^>]*aria-current="true"#', $this->get(route('logs'))->getContent());
         // An agent without the permission sees neither.
@@ -261,7 +262,7 @@ class AllMailboxesTest extends FeatureTestCase
 
         foreach ([$this->support, $this->sales] as $mailbox) {
             $this->assertStringContainsString(route('conversations.create', ['mailbox_id' => $mailbox->id]), $html);
-            $this->assertStringContainsString(route('mailboxes.update', ['id' => $mailbox->id]), $html);
+            $this->assertStringContainsString(route('mailboxes.update', ['id' => $mailbox->getSlug()]), $html);
         }
         // The keyboard shortcut's New Conversation: the open mailbox's.
         $this->assertMatchesRegularExpression('#href="'.preg_quote(route('conversations.create', ['mailbox_id' => $this->support->id]), '#').'" class="[^"]*new-conversation-link#', $html);

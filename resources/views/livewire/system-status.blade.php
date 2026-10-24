@@ -323,7 +323,7 @@
             @foreach ($matrix_mailboxes as $identity)
                 <div class="f-form-row">
                     <div>
-                        <a href="{{ route('mailboxes.matrix', ['id' => $identity->mailbox_id]) }}">{{ $identity->mailbox->name }}</a>
+                        <a href="{{ route('mailboxes.matrix', ['id' => $identity->mailbox->getSlug()]) }}">{{ $identity->mailbox->name }}</a>
                         <p class="f-help">{{ $identity->user_id }}</p>
                         <p class="f-help">{{ __('Last successful sync') }}: {{ $identity->last_synced_at ? $identity->last_synced_at->diffForHumans() : __('Never') }}</p>
                         @if ($identity->status === 'verification')<p class="f-help">{{ __('This device is unverified. You can still send and receive messages.') }}</p>@endif

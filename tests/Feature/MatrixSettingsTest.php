@@ -106,14 +106,14 @@ class MatrixSettingsTest extends FeatureTestCase
         $admin = $this->createAdmin();
         $user = $this->createUser();
         $mailbox = $this->createMailbox();
-        $url = '/mailbox/settings/'.$mailbox->id.'/matrix';
+        $url = '/mailbox/'.$mailbox->id.'/settings/matrix';
         $this->get($url)->assertRedirect();
         $this->actingAs($user)->get($url)->assertForbidden();
         $this->actingAs($admin)->get($url)->assertOk()->assertSee('Homeserver URL')->assertSeeLivewire(MatrixSettings::class);
         $pages = \App\Misc\MailboxSettings::pages($mailbox, $admin);
         $matrix = collect($pages)->firstWhere('label', 'Matrix');
         $this->assertTrue($matrix['chat']);
-        $this->assertSame(route('mailboxes.matrix', ['id' => $mailbox->id]), $matrix['url']);
+        $this->assertSame(route('mailboxes.matrix', ['id' => $mailbox->getSlug()]), $matrix['url']);
         Livewire::actingAs($user)->test(MatrixSettings::class, ['mailbox_id' => $mailbox->id])->assertForbidden();
     }
 

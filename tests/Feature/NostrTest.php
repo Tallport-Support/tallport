@@ -54,7 +54,7 @@ class NostrTest extends FeatureTestCase
 
     protected function settingsUrl()
     {
-        return '/mailbox/settings/'.$this->mailbox->id.'/nostr';
+        return '/mailbox/'.$this->mailbox->id.'/settings/nostr';
     }
 
     /**

@@ -14,7 +14,7 @@
 
         <div class="page-toolbar f-row">
             <h2 class="f-title-3">{{ __('Saved Replies') }}</h2>
-            <a href="{{ route('mailboxes.saved_replies.create', ['id' => $mailbox->id]) }}" class="f-button">{{ __('New Saved Reply') }}</a>
+            <a href="{{ route('mailboxes.saved_replies.create', ['id' => $mailbox->getSlug()]) }}" class="f-button">{{ __('New Saved Reply') }}</a>
         </div>
 
         @if (!count($tree))
@@ -29,7 +29,7 @@
                     <li class="saved-reply-item" data-saved-reply-id="{{ $saved_reply->id }}" data-parent-id="{{ (int) $saved_reply->parent_saved_reply_id }}" style="margin-inline-start: {{ $depth * 24 }}px">
                         <x-icon.menu class="f-icon saved-reply-handle" aria-hidden="true" title="{{ __('Drag to change the order') }}" />
                         @if ($has_children)<x-icon.folder-open class="f-icon" aria-hidden="true" />@endif
-                        <a href="{{ route('mailboxes.saved_replies.edit', ['id' => $mailbox->id, 'saved_reply_id' => $saved_reply->id]) }}">{{ $saved_reply->name }}</a>
+                        <a href="{{ route('mailboxes.saved_replies.edit', ['id' => $mailbox->getSlug(), 'saved_reply_id' => $saved_reply->id]) }}">{{ $saved_reply->name }}</a>
                         @if ($saved_reply->global)<x-fruit::badge title="{{ __('Available in every mailbox') }}">{{ __('Global') }}</x-fruit::badge>@endif
                         @if ($saved_reply->auto_load)<x-fruit::badge tone="accent">{{ __('Default reply') }}</x-fruit::badge>@endif
                         @if ($saved_reply->attachments)<x-icon.paperclip class="f-icon" aria-hidden="true" />@endif

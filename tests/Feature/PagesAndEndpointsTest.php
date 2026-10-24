@@ -35,7 +35,7 @@ class PagesAndEndpointsTest extends FeatureTestCase
         $pages = [
             '/mailboxes',
             '/mailbox/'.$this->mailbox->id.'/'.$closed->id,
-            '/mailbox/settings/'.$this->mailbox->id.'/auto-reply',
+            '/mailbox/'.$this->mailbox->id.'/settings/auto-reply',
             '/users/wizard',
             '/notifications',
             '/profile',
@@ -61,7 +61,7 @@ class PagesAndEndpointsTest extends FeatureTestCase
      */
     public function testInlineJavascriptOnlyWhenAdded()
     {
-        $page = '/mailbox/settings/'.$this->mailbox->id.'/auto-reply';
+        $page = '/mailbox/'.$this->mailbox->id.'/settings/auto-reply';
         $this->assertDoesNotMatchRegularExpression('#<script type="text/javascript"\s+nonce="[^"]+">\s*</script>#', $this->actingAs($this->admin)->get($page)->assertOk()->getContent());
 
         \Eventy::addAction('javascript', function () {
@@ -77,7 +77,7 @@ class PagesAndEndpointsTest extends FeatureTestCase
      */
     public function testNavigatedPagesKeepTheFirstPagesPolicy()
     {
-        $page = '/mailbox/settings/'.$this->mailbox->id.'/auto-reply';
+        $page = '/mailbox/'.$this->mailbox->id.'/settings/auto-reply';
         $html = $this->actingAs($this->admin)->get($page)->assertOk()->assertSee('http-equiv="Content-Security-Policy"', false)->getContent();
         $this->assertSame(1, preg_match("#'nonce-([^']+)'#", $html, $policy));
         $this->assertMatchesRegularExpression('#<style nonce="'.$policy[1].'" data-livewire-style>#', $html);

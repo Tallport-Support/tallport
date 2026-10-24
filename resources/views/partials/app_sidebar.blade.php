@@ -83,9 +83,9 @@
                 <a href="{{ route('conversations.create', ['mailbox_id' => $sidebar_mailbox->id]) }}" class="f-button f-button--ghost f-button--small @if ($sidebar_mailbox->id == $sidebar_new_mailbox_id) new-conversation-link @endif"><x-icon.square-pen class="f-icon" aria-hidden="true" /> {{ __('New Conversation') }}</a>
                 <x-fruit::menu :title="__('Mailbox')" class="app-sidebar__mailbox-menu">
                     <x-slot:trigger class="f-button--ghost f-button--icon f-button--small" :aria-label="__('More')"><x-icon.ellipsis class="f-icon" aria-hidden="true" /></x-slot:trigger>
-                    {{-- The mailbox's page in Settings › Mailboxes (its settings in one place). --}}
+                    {{-- Its settings, in the mailbox (MailboxSettings). --}}
                     @if ($sidebar_user->can('updateSettings', $sidebar_mailbox) || $sidebar_user->can('updateEmailSignature', $sidebar_mailbox) || $sidebar_user->can('update', $sidebar_mailbox))
-                        <x-fruit::menu-link wire:navigate :href="route('mailboxes.update', ['id' => $sidebar_mailbox->id])">{{ __('Mailbox Settings') }}</x-fruit::menu-link>
+                        <x-fruit::menu-link wire:navigate :href="route('mailboxes.update', ['id' => $sidebar_mailbox->getSlug()])">{{ __('Mailbox Settings') }}</x-fruit::menu-link>
                     @endif
                     <x-fruit::menu-item x-data="tallportMuteMailbox({{ $sidebar_mailbox->id }}, {{ $sidebar_muted ? 'true' : 'false' }})" x-on:click="toggle"><span x-text="muted ? @js(__('Unmute Notifications')) : @js(__('Mute Notifications'))">{{ $sidebar_muted ? __('Unmute Notifications') : __('Mute Notifications') }}</span></x-fruit::menu-item>
                     <ul class="app-sidebar__module-items">@action('mailbox.sidebar.buttons', $sidebar_mailbox)</ul>

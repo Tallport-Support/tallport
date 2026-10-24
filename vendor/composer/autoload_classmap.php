@@ -177,6 +177,7 @@ return array(
     'App\\Http\\Middleware\\HttpsRedirect' => $baseDir . '/app/Http/Middleware/HttpsRedirect.php',
     'App\\Http\\Middleware\\Localize' => $baseDir . '/app/Http/Middleware/Localize.php',
     'App\\Http\\Middleware\\LogoutIfDeleted' => $baseDir . '/app/Http/Middleware/LogoutIfDeleted.php',
+    'App\\Http\\Middleware\\MailboxAddress' => $baseDir . '/app/Http/Middleware/MailboxAddress.php',
     'App\\Http\\Middleware\\RedirectIfAuthenticated' => $baseDir . '/app/Http/Middleware/RedirectIfAuthenticated.php',
     'App\\Http\\Middleware\\RequirePasswordInline' => $baseDir . '/app/Http/Middleware/RequirePasswordInline.php',
     'App\\Http\\Middleware\\RequireTwoFactor' => $baseDir . '/app/Http/Middleware/RequireTwoFactor.php',

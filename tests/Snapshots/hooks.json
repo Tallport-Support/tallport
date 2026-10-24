@@ -1842,7 +1842,7 @@
         "name": "mailbox.update.after_signature",
         "arguments": 1,
         "files": [
-            "resources/views/mailboxes/columns/mailbox.blade.php"
+            "resources/views/mailboxes/update.blade.php"
         ]
     },
     {
@@ -1850,8 +1850,7 @@
         "name": "mailbox.update.before_mailbox_name",
         "arguments": 1,
         "files": [
-            "resources/views/mailboxes/columns/mailbox.blade.php",
-            "resources/views/mailboxes/sidebar_menu.blade.php"
+            "resources/views/mailboxes/update.blade.php"
         ]
     },
     {
@@ -1859,7 +1858,7 @@
         "name": "mailbox.update.before_name",
         "arguments": 2,
         "files": [
-            "resources/views/mailboxes/columns/mailbox.blade.php"
+            "resources/views/mailboxes/update.blade.php"
         ]
     },
     {

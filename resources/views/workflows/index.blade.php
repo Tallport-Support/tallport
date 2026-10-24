@@ -14,7 +14,7 @@
 
         <div class="page-toolbar f-row">
             <h2 class="f-title-3 workflow-section-title">{{ $mailbox ? $mailbox->name : __('All Mailboxes') }}</h2>
-            <a href="{{ $mailbox ? route('mailboxes.workflows.create', ['mailbox_id' => $mailbox->id]) : route('workflows.create') }}" class="f-button">{{ __('New Workflow') }}</a>
+            <a href="{{ $mailbox ? route('mailboxes.workflows.create', ['mailbox_id' => $mailbox->getSlug()]) : route('workflows.create') }}" class="f-button">{{ __('New Workflow') }}</a>
         </div>
 
         @if ($mailbox && $global)

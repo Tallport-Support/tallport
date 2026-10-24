@@ -12,7 +12,7 @@
 
 @section('content')
     @php
-        $index_url = $mailbox ? route('mailboxes.workflows', ['mailbox_id' => $mailbox->id]) : route('workflows');
+        $index_url = $mailbox ? route('mailboxes.workflows', ['mailbox_id' => $mailbox->getSlug()]) : route('workflows');
         $type = (int) old('type', $workflow->type);
         $conditions = old('conditions') ? App\Workflow::groups(old('conditions')) : $workflow->getConditions();
         $actions = old('actions') ? App\Workflow::groups(old('actions')) : $workflow->getActions();

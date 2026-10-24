@@ -1551,29 +1551,16 @@
             "GET"
         ],
         "uri": "mailbox/connection-settings/{id}/incoming",
-        "name": "mailboxes.connection.incoming",
-        "action": "MailboxesController@connectionIncoming",
+        "name": null,
+        "action": "MailboxesController@settingsMoved",
         "middleware": [
             "web",
             "auth"
         ],
         "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "POST"
-        ],
-        "uri": "mailbox/connection-settings/{id}/incoming",
-        "name": "mailboxes.connection.incoming.save",
-        "action": "MailboxesController@connectionIncomingSave",
-        "middleware": [
-            "web",
-            "auth"
-        ],
-        "where": {
-            "id": "[0-9]+"
+            "id": "\\d+",
+            "mailbox_id": "\\d+",
+            "saved_reply_id": "\\d+"
         }
     },
     {
@@ -1581,29 +1568,16 @@
             "GET"
         ],
         "uri": "mailbox/connection-settings/{id}/outgoing",
-        "name": "mailboxes.connection",
-        "action": "MailboxesController@connectionOutgoing",
+        "name": null,
+        "action": "MailboxesController@settingsMoved",
         "middleware": [
             "web",
             "auth"
         ],
         "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "POST"
-        ],
-        "uri": "mailbox/connection-settings/{id}/outgoing",
-        "name": "mailboxes.connection.save",
-        "action": "MailboxesController@connectionOutgoingSave",
-        "middleware": [
-            "web",
-            "auth"
-        ],
-        "where": {
-            "id": "[0-9]+"
+            "id": "\\d+",
+            "mailbox_id": "\\d+",
+            "saved_reply_id": "\\d+"
         }
     },
     {
@@ -1686,29 +1660,16 @@
             "GET"
         ],
         "uri": "mailbox/permissions/{id}",
-        "name": "mailboxes.permissions",
-        "action": "MailboxesController@permissions",
+        "name": null,
+        "action": "MailboxesController@settingsMoved",
         "middleware": [
             "web",
             "auth"
         ],
         "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "POST"
-        ],
-        "uri": "mailbox/permissions/{id}",
-        "name": "mailboxes.permissions.save",
-        "action": "MailboxesController@permissionsSave",
-        "middleware": [
-            "web",
-            "auth"
-        ],
-        "where": {
-            "id": "[0-9]+"
+            "id": "\\d+",
+            "mailbox_id": "\\d+",
+            "saved_reply_id": "\\d+"
         }
     },
     {
@@ -1716,14 +1677,16 @@
             "GET"
         ],
         "uri": "mailbox/saved-replies/{id}",
-        "name": "mailboxes.saved_replies",
-        "action": "SavedRepliesController@index",
+        "name": null,
+        "action": "MailboxesController@settingsMoved",
         "middleware": [
             "web",
             "auth"
         ],
         "where": {
-            "id": "[0-9]+"
+            "id": "\\d+",
+            "mailbox_id": "\\d+",
+            "saved_reply_id": "\\d+"
         }
     },
     {
@@ -1731,44 +1694,16 @@
             "GET"
         ],
         "uri": "mailbox/saved-replies/{id}/new",
-        "name": "mailboxes.saved_replies.create",
-        "action": "SavedRepliesController@edit",
+        "name": null,
+        "action": "MailboxesController@settingsMoved",
         "middleware": [
             "web",
             "auth"
         ],
         "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "POST"
-        ],
-        "uri": "mailbox/saved-replies/{id}/save",
-        "name": "mailboxes.saved_replies.save",
-        "action": "SavedRepliesController@save",
-        "middleware": [
-            "web",
-            "auth"
-        ],
-        "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "POST"
-        ],
-        "uri": "mailbox/saved-replies/{id}/{saved_reply_id}/delete",
-        "name": "mailboxes.saved_replies.delete",
-        "action": "SavedRepliesController@delete",
-        "middleware": [
-            "web",
-            "auth"
-        ],
-        "where": {
-            "id": "[0-9]+"
+            "id": "\\d+",
+            "mailbox_id": "\\d+",
+            "saved_reply_id": "\\d+"
         }
     },
     {
@@ -1776,14 +1711,16 @@
             "GET"
         ],
         "uri": "mailbox/saved-replies/{id}/{saved_reply_id}/edit",
-        "name": "mailboxes.saved_replies.edit",
-        "action": "SavedRepliesController@edit",
+        "name": null,
+        "action": "MailboxesController@settingsMoved",
         "middleware": [
             "web",
             "auth"
         ],
         "where": {
-            "id": "[0-9]+"
+            "id": "\\d+",
+            "mailbox_id": "\\d+",
+            "saved_reply_id": "\\d+"
         }
     },
     {
@@ -1791,29 +1728,16 @@
             "GET"
         ],
         "uri": "mailbox/settings/{id}",
-        "name": "mailboxes.update",
-        "action": "MailboxesController@update",
+        "name": null,
+        "action": "MailboxesController@settingsMoved",
         "middleware": [
             "web",
             "auth"
         ],
         "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "POST"
-        ],
-        "uri": "mailbox/settings/{id}",
-        "name": "mailboxes.update.save",
-        "action": "MailboxesController@updateSave",
-        "middleware": [
-            "web",
-            "auth"
-        ],
-        "where": {
-            "id": "[0-9]+"
+            "id": "\\d+",
+            "mailbox_id": "\\d+",
+            "saved_reply_id": "\\d+"
         }
     },
     {
@@ -1821,29 +1745,16 @@
             "GET"
         ],
         "uri": "mailbox/settings/{id}/ai",
-        "name": "mailboxes.ai",
-        "action": "MailboxesController@ai",
+        "name": null,
+        "action": "MailboxesController@settingsMoved",
         "middleware": [
             "web",
             "auth"
         ],
         "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "POST"
-        ],
-        "uri": "mailbox/settings/{id}/ai",
-        "name": "mailboxes.ai.save",
-        "action": "MailboxesController@aiSave",
-        "middleware": [
-            "web",
-            "auth"
-        ],
-        "where": {
-            "id": "[0-9]+"
+            "id": "\\d+",
+            "mailbox_id": "\\d+",
+            "saved_reply_id": "\\d+"
         }
     },
     {
@@ -1851,29 +1762,16 @@
             "GET"
         ],
         "uri": "mailbox/settings/{id}/auto-reply",
-        "name": "mailboxes.auto_reply",
-        "action": "MailboxesController@autoReply",
+        "name": null,
+        "action": "MailboxesController@settingsMoved",
         "middleware": [
             "web",
             "auth"
         ],
         "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "POST"
-        ],
-        "uri": "mailbox/settings/{id}/auto-reply",
-        "name": "mailboxes.auto_reply.save",
-        "action": "MailboxesController@autoReplySave",
-        "middleware": [
-            "web",
-            "auth"
-        ],
-        "where": {
-            "id": "[0-9]+"
+            "id": "\\d+",
+            "mailbox_id": "\\d+",
+            "saved_reply_id": "\\d+"
         }
     },
     {
@@ -1881,31 +1779,16 @@
             "GET"
         ],
         "uri": "mailbox/settings/{id}/documentation",
-        "name": "mailboxes.documentation",
-        "action": "AiDocumentsController@index",
+        "name": null,
+        "action": "MailboxesController@settingsMoved",
         "middleware": [
             "web",
-            "auth",
-            "roles"
+            "auth"
         ],
         "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "POST"
-        ],
-        "uri": "mailbox/settings/{id}/documentation",
-        "name": "mailboxes.documentation.action",
-        "action": "AiDocumentsController@action",
-        "middleware": [
-            "web",
-            "auth",
-            "roles"
-        ],
-        "where": {
-            "id": "[0-9]+"
+            "id": "\\d+",
+            "mailbox_id": "\\d+",
+            "saved_reply_id": "\\d+"
         }
     },
     {
@@ -1913,14 +1796,16 @@
             "GET"
         ],
         "uri": "mailbox/settings/{id}/matrix",
-        "name": "mailboxes.matrix",
-        "action": "MatrixController@mailboxSettings",
+        "name": null,
+        "action": "MailboxesController@settingsMoved",
         "middleware": [
             "web",
             "auth"
         ],
         "where": {
-            "id": "[0-9]+"
+            "id": "\\d+",
+            "mailbox_id": "\\d+",
+            "saved_reply_id": "\\d+"
         }
     },
     {
@@ -1928,29 +1813,16 @@
             "GET"
         ],
         "uri": "mailbox/settings/{id}/nostr",
-        "name": "mailboxes.nostr",
-        "action": "NostrController@mailboxSettings",
+        "name": null,
+        "action": "MailboxesController@settingsMoved",
         "middleware": [
             "web",
             "auth"
         ],
         "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "POST"
-        ],
-        "uri": "mailbox/settings/{id}/nostr",
-        "name": "mailboxes.nostr.save",
-        "action": "NostrController@mailboxSettingsSave",
-        "middleware": [
-            "web",
-            "auth"
-        ],
-        "where": {
-            "id": "[0-9]+"
+            "id": "\\d+",
+            "mailbox_id": "\\d+",
+            "saved_reply_id": "\\d+"
         }
     },
     {
@@ -1958,31 +1830,16 @@
             "GET"
         ],
         "uri": "mailbox/settings/{id}/website-chat",
-        "name": "mailboxes.web_chat",
-        "action": "WebChatSettingsController@settings",
+        "name": null,
+        "action": "MailboxesController@settingsMoved",
         "middleware": [
             "web",
-            "auth",
-            "roles"
+            "auth"
         ],
         "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "POST"
-        ],
-        "uri": "mailbox/settings/{id}/website-chat",
-        "name": "mailboxes.web_chat.save",
-        "action": "WebChatSettingsController@settingsSave",
-        "middleware": [
-            "web",
-            "auth",
-            "roles"
-        ],
-        "where": {
-            "id": "[0-9]+"
+            "id": "\\d+",
+            "mailbox_id": "\\d+",
+            "saved_reply_id": "\\d+"
         }
     },
     {
@@ -1990,14 +1847,16 @@
             "GET"
         ],
         "uri": "mailbox/workflows/{mailbox_id}",
-        "name": "mailboxes.workflows",
-        "action": "WorkflowsController@index",
+        "name": null,
+        "action": "MailboxesController@settingsMoved",
         "middleware": [
             "web",
             "auth"
         ],
         "where": {
-            "id": "[0-9]+"
+            "id": "\\d+",
+            "mailbox_id": "\\d+",
+            "saved_reply_id": "\\d+"
         }
     },
     {
@@ -2005,29 +1864,16 @@
             "GET"
         ],
         "uri": "mailbox/workflows/{mailbox_id}/new",
-        "name": "mailboxes.workflows.create",
-        "action": "WorkflowsController@edit",
+        "name": null,
+        "action": "MailboxesController@settingsMoved",
         "middleware": [
             "web",
             "auth"
         ],
         "where": {
-            "id": "[0-9]+"
-        }
-    },
-    {
-        "methods": [
-            "POST"
-        ],
-        "uri": "mailbox/workflows/{mailbox_id}/save",
-        "name": "mailboxes.workflows.save",
-        "action": "WorkflowsController@save",
-        "middleware": [
-            "web",
-            "auth"
-        ],
-        "where": {
-            "id": "[0-9]+"
+            "id": "\\d+",
+            "mailbox_id": "\\d+",
+            "saved_reply_id": "\\d+"
         }
     },
     {
@@ -2035,14 +1881,16 @@
             "GET"
         ],
         "uri": "mailbox/workflows/{mailbox_id}/{id}",
-        "name": "mailboxes.workflows.update",
-        "action": "WorkflowsController@edit",
+        "name": null,
+        "action": "MailboxesController@settingsMoved",
         "middleware": [
             "web",
             "auth"
         ],
         "where": {
-            "id": "[0-9]+"
+            "id": "\\d+",
+            "mailbox_id": "\\d+",
+            "saved_reply_id": "\\d+"
         }
     },
     {
@@ -2064,32 +1912,484 @@
         "methods": [
             "GET"
         ],
-        "uri": "mailbox/{id}/telegram",
-        "name": "mailboxes.telegram",
-        "action": "TelegramController@settings",
+        "uri": "mailbox/{id}/settings",
+        "name": "mailboxes.update",
+        "action": "MailboxesController@update",
         "middleware": [
             "web",
-            "auth",
-            "roles"
+            "mailbox.address",
+            "auth"
         ],
         "where": {
-            "id": "[0-9]+"
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{id}/settings/ai",
+        "name": "mailboxes.ai",
+        "action": "MailboxesController@ai",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
         }
     },
     {
         "methods": [
             "POST"
         ],
-        "uri": "mailbox/{id}/telegram",
-        "name": "mailboxes.telegram.save",
-        "action": "TelegramController@settingsSave",
+        "uri": "mailbox/{id}/settings/ai",
+        "name": "mailboxes.ai.save",
+        "action": "MailboxesController@aiSave",
         "middleware": [
             "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{id}/settings/auto-reply",
+        "name": "mailboxes.auto_reply",
+        "action": "MailboxesController@autoReply",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/{id}/settings/auto-reply",
+        "name": "mailboxes.auto_reply.save",
+        "action": "MailboxesController@autoReplySave",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{id}/settings/connection",
+        "name": "mailboxes.connection",
+        "action": "MailboxesController@connectionOutgoing",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/{id}/settings/connection",
+        "name": "mailboxes.connection.save",
+        "action": "MailboxesController@connectionOutgoingSave",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{id}/settings/connection/incoming",
+        "name": "mailboxes.connection.incoming",
+        "action": "MailboxesController@connectionIncoming",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/{id}/settings/connection/incoming",
+        "name": "mailboxes.connection.incoming.save",
+        "action": "MailboxesController@connectionIncomingSave",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{id}/settings/documentation",
+        "name": "mailboxes.documentation",
+        "action": "AiDocumentsController@index",
+        "middleware": [
+            "web",
+            "mailbox.address",
             "auth",
             "roles"
         ],
         "where": {
-            "id": "[0-9]+"
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/{id}/settings/documentation",
+        "name": "mailboxes.documentation.action",
+        "action": "AiDocumentsController@action",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{id}/settings/general",
+        "name": "mailboxes.general",
+        "action": "MailboxesController@update",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/{id}/settings/general",
+        "name": "mailboxes.update.save",
+        "action": "MailboxesController@updateSave",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{id}/settings/matrix",
+        "name": "mailboxes.matrix",
+        "action": "MatrixController@mailboxSettings",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{id}/settings/nostr",
+        "name": "mailboxes.nostr",
+        "action": "NostrController@mailboxSettings",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/{id}/settings/nostr",
+        "name": "mailboxes.nostr.save",
+        "action": "NostrController@mailboxSettingsSave",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{id}/settings/permissions",
+        "name": "mailboxes.permissions",
+        "action": "MailboxesController@permissions",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/{id}/settings/permissions",
+        "name": "mailboxes.permissions.save",
+        "action": "MailboxesController@permissionsSave",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{id}/settings/saved-replies",
+        "name": "mailboxes.saved_replies",
+        "action": "SavedRepliesController@index",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{id}/settings/saved-replies/new",
+        "name": "mailboxes.saved_replies.create",
+        "action": "SavedRepliesController@edit",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/{id}/settings/saved-replies/save",
+        "name": "mailboxes.saved_replies.save",
+        "action": "SavedRepliesController@save",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{id}/settings/saved-replies/{saved_reply_id}",
+        "name": "mailboxes.saved_replies.edit",
+        "action": "SavedRepliesController@edit",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+",
+            "saved_reply_id": "\\d+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/{id}/settings/saved-replies/{saved_reply_id}/delete",
+        "name": "mailboxes.saved_replies.delete",
+        "action": "SavedRepliesController@delete",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+",
+            "saved_reply_id": "\\d+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{id}/settings/telegram",
+        "name": "mailboxes.telegram",
+        "action": "TelegramController@settings",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/{id}/settings/telegram",
+        "name": "mailboxes.telegram.save",
+        "action": "TelegramController@settingsSave",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{id}/settings/website-chat",
+        "name": "mailboxes.web_chat",
+        "action": "WebChatSettingsController@settings",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/{id}/settings/website-chat",
+        "name": "mailboxes.web_chat.save",
+        "action": "WebChatSettingsController@settingsSave",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth",
+            "roles"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{id}/telegram",
+        "name": null,
+        "action": "MailboxesController@settingsMoved",
+        "middleware": [
+            "web",
+            "auth"
+        ],
+        "where": {
+            "id": "\\d+",
+            "mailbox_id": "\\d+",
+            "saved_reply_id": "\\d+"
         }
     },
     {
@@ -2154,6 +2454,74 @@
         ],
         "where": {
             "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{mailbox_id}/settings/workflows",
+        "name": "mailboxes.workflows",
+        "action": "WorkflowsController@index",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{mailbox_id}/settings/workflows/new",
+        "name": "mailboxes.workflows.create",
+        "action": "WorkflowsController@edit",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/{mailbox_id}/settings/workflows/save",
+        "name": "mailboxes.workflows.save",
+        "action": "WorkflowsController@save",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{mailbox_id}/settings/workflows/{id}",
+        "name": "mailboxes.workflows.update",
+        "action": "WorkflowsController@edit",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "\\d+",
+            "mailbox_id": "[a-z0-9-]+"
         }
     },
     {
