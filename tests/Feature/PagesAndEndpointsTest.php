@@ -55,6 +55,22 @@ class PagesAndEndpointsTest extends FeatureTestCase
         $this->actingAs($this->admin)->get('/modules/list')->assertSee('f-drilldown', false)->assertSee('>Modules</h2>', false);
     }
 
+    /**
+     * What modules add inline (the javascript hook) is in a script with the page's nonce; without
+     * any, there's no empty one for wire:navigate to run again without its nonce.
+     */
+    public function testInlineJavascriptOnlyWhenAdded()
+    {
+        $page = '/mailbox/settings/'.$this->mailbox->id.'/auto-reply';
+        $this->assertDoesNotMatchRegularExpression('#<script type="text/javascript"\s+nonce="[^"]+">\s*</script>#', $this->actingAs($this->admin)->get($page)->assertOk()->getContent());
+
+        \Eventy::addAction('javascript', function () {
+            echo 'window.moduleReady = true;';
+        });
+        $html = $this->actingAs($this->admin)->get($page)->assertOk()->getContent();
+        $this->assertMatchesRegularExpression('#<script type="text/javascript"\s+nonce="[^"]+">\s*window\.moduleReady = true;\s*</script>#', $html);
+    }
+
     public function testGuestPages()
     {
         $this->get('/password/reset')->assertStatus(200);

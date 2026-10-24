@@ -204,10 +204,17 @@
         }
     @endphp
     @yield('javascripts')
-    <script type="text/javascript" {!! \Helper::cspNonceAttr() !!}>
-        @yield('javascript')
-        @action('javascript', $__env->yieldContent('javascripts'))
-    </script>
+    {{-- What modules add inline, only when they do: wire:navigate runs it again without its nonce,
+         which the Content-Security-Policy refuses (an error in the console, even when empty). --}}
+    @php ob_start(); @endphp
+    @yield('javascript')
+    @action('javascript', $__env->yieldContent('javascripts'))
+    @php $inline_javascript = trim(ob_get_clean()); @endphp
+    @if ($inline_javascript !== '')
+        <script type="text/javascript" {!! \Helper::cspNonceAttr() !!}>
+            {!! $inline_javascript !!}
+        </script>
+    @endif
     @if (Auth::user() && Auth::user()->hasKeyboardShortcuts())
         @include('partials/keyboard_shortcuts')
     @endif
