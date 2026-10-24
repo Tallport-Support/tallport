@@ -56,6 +56,27 @@ class AddressesTest extends FeatureTestCase
     }
 
     /**
+     * The short names' migration runs again after a run that stopped half way (the column there
+     * already): short names a mailbox has already stay, missing or broken ones are made. (Without
+     * changing the table: on MariaDB that would end the test's transaction.)
+     */
+    public function testShortNamesMigrationRunsAgain()
+    {
+        $sales = $this->createMailbox([], ['name' => 'Sales']);
+        $billing = $this->createMailbox([], ['name' => 'Billing']);
+        \DB::table('mailboxes')->where('id', $this->mailbox->id)->update(['slug' => null]);
+        \DB::table('mailboxes')->where('id', $sales->id)->update(['slug' => 'sales-team']);
+        \DB::table('mailboxes')->where('id', $billing->id)->update(['slug' => 'Not A Slug!']);
+
+        require_once base_path('database/migrations/2026_11_28_010101_add_mailboxes_slug.php');
+        (new \AddMailboxesSlug())->up();
+        (new \AddMailboxesSlug())->up();
+
+        $this->assertSame(['support', 'sales-team', 'billing'], [$this->mailbox->fresh()->slug, $sales->fresh()->slug, $billing->fresh()->slug]);
+        $this->assertTrue(collect(\Schema::getIndexes('mailboxes'))->contains(fn ($index) => $index['unique'] && $index['columns'] === ['slug']));
+    }
+
+    /**
      * A folder, and a conversation beside its list (not its own folder's), perhaps at a message.
      */
     public function testFolderConversationAndMessage()
