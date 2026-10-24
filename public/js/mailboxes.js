@@ -276,25 +276,34 @@ document.addEventListener('alpine:init', function () {
 
 // A mailbox's settings pages (mailboxes/settings_menu): opened from the list, the focus stays there,
 // on the page's row (current now); in a narrow window, where the page takes the list's place, on
-// the page's title.
-var settingsListFocus = false;
+// the page's title. Opened from a page's tabs (Email's, mailboxes/email_menu): on the tab.
+var settingsFocusFrom = null;
+var settingsFocusSource = function (target) {
+	if (!target.closest) {
+		return null;
+	}
+	return target.closest('.mailbox-settings a.f-form-row--link') ? 'row' : (target.closest('#connection-settings a') ? 'tab' : null);
+};
 document.addEventListener('click', function (e) {
-	settingsListFocus = !!(e.target.closest && e.target.closest('.mailbox-settings a.f-form-row--link'));
+	settingsFocusFrom = settingsFocusSource(e.target);
 });
-// Enter on a row: wire:navigate takes it at keydown (no click follows).
+// Enter on a row or tab: wire:navigate takes it at keydown (no click follows).
 document.addEventListener('keydown', function (e) {
-	if (e.key === 'Enter' && e.target.closest && e.target.closest('.mailbox-settings a.f-form-row--link')) {
-		settingsListFocus = true;
+	if (e.key === 'Enter' && settingsFocusSource(e.target)) {
+		settingsFocusFrom = settingsFocusSource(e.target);
 	}
 });
 document.addEventListener('livewire:navigated', function () {
-	if (!settingsListFocus) {
+	var from = settingsFocusFrom;
+	settingsFocusFrom = null;
+	if (!from) {
 		return;
 	}
-	settingsListFocus = false;
-	var target = window.matchMedia('(max-width: 900px)').matches
-		? document.querySelector('.mailbox-settings-nav h1')
-		: document.querySelector('.mailbox-settings a[aria-current="page"]');
+	var target = from == 'tab'
+		? document.querySelector('#connection-settings a[aria-current="page"]')
+		: (window.matchMedia('(max-width: 900px)').matches
+			? document.querySelector('.mailbox-settings-nav h1')
+			: document.querySelector('.mailbox-settings a[aria-current="page"]'));
 	if (target) {
 		if (target.tagName == 'H1') {
 			target.setAttribute('tabindex', '-1');
