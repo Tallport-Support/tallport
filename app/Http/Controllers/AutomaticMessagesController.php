@@ -225,6 +225,7 @@ class AutomaticMessagesController extends Controller
             'groups'        => $groups,
             'languages'     => \App\Ai\Settings::displayNames(),
             'open'          => session('automatic_messages_open'),
+            'focus'         => session('automatic_messages_focus'),
             'can_translate' => self::canTranslate($mailbox),
             // Translate from Default's questions and answers (tallportAutomaticMessages).
             'texts'         => [
@@ -261,7 +262,12 @@ class AutomaticMessagesController extends Controller
         $texts = [];
         foreach ((array) $request->input('messages.'.$group.'.texts', []) as $language => $text) {
             $language = $language === 'default' ? '' : (string) $language;
-            if ($language !== '' && (!isset($languages[$language]) || $request->remove_language === $group.':'.$language)) {
+            if ($language !== '' && $request->remove_language === $group.':'.$language) {
+                // The focus goes to the group's Default.
+                \Session::flash('automatic_messages_focus', $group.':default');
+                continue;
+            }
+            if ($language !== '' && !isset($languages[$language])) {
                 continue;
             }
             if ($email) {

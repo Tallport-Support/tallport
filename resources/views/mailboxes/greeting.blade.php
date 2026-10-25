@@ -7,7 +7,7 @@
 @section('content')
     @php
         $greeting_mode = old('messages.mailbox.mode', $groups['mailbox']['mode']);
-        $texts_view = ['languages' => $languages, 'open' => $open, 'can_translate' => $can_translate, 'subject' => false, 'editor' => false, 'disabled' => null];
+        $texts_view = ['languages' => $languages, 'open' => $open, 'focus' => $focus, 'can_translate' => $can_translate, 'subject' => false, 'editor' => false, 'disabled' => null];
     @endphp
     <div class="page-content">
         @include('partials/flash_messages')
@@ -35,12 +35,13 @@
                 @php $channel_mode = old('messages.'.$key.'.mode', $group['mode']); @endphp
                 <x-fruit::form-section id="greeting-{{ $key }}" :title="$group['label']" :level="3" x-data="{ mode: {{ \Illuminate\Support\Js::from($channel_mode) }} }" :footer="['webchat' => __('Shown when a visitor opens the chat.'), 'telegram' => __('Sent when the customer taps Start, and shown in the empty chat.'), 'matrix' => __('Sent when the bot joins a direct chat.')][$key] ?? null">
                     <x-fruit::field :label="__('Greeting')" layout="row">
-                        <x-fruit::select id="greeting-{{ $key }}-mode" name="messages[{{ $key }}][mode]" x-model="mode" x-on:change="chooseMode($el, {{ \Illuminate\Support\Js::from($key) }})">
+                        <x-fruit::select id="greeting-{{ $key }}-mode" name="messages[{{ $key }}][mode]" x-model="mode" x-on:change="chooseMode($el, {{ \Illuminate\Support\Js::from($key) }})" ::aria-describedby="mode === 'mailbox' && greeting === 'off' ? 'greeting-{{ $key }}-mode-note' : null">
                             <option value="mailbox" @selected($channel_mode == 'mailbox')>{{ __('The Mailbox’s') }}</option>
                             <option value="own" @selected($channel_mode == 'own')>{{ __('Its Own') }}</option>
                             <option value="off" @selected($channel_mode == 'off')>{{ __('None') }}</option>
                         </x-fruit::select>
-                        <x-slot:description><span x-show="mode === 'mailbox' && greeting === 'off'">{{ __('Off for now: the mailbox has no greeting.') }}</span></x-slot:description>
+                        {{-- Only while it applies, as on the screen (the switch, the radios, the select). --}}
+                        <p class="f-help" id="greeting-{{ $key }}-mode-note" x-show="mode === 'mailbox' && greeting === 'off'" x-cloak>{{ __('Off for now: the mailbox has no greeting.') }}</p>
                     </x-fruit::field>
                     @include('mailboxes/partials/message_texts', $texts_view + ['group' => $key, 'base' => 'greeting-'.$key, 'texts' => $group['texts'], 'show' => "mode === 'own'"])
                 </x-fruit::form-section>

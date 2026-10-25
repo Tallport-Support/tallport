@@ -17,9 +17,11 @@
         $text_value = $editor ? ($text_markdown ? old($texts_old.'.'.$language.'.message_markdown', $text['message_markdown']) : old($texts_old.'.'.$language.'.message', $text['message'])) : old($texts_old.'.'.$language, $text);
         $text_preview = trim(strtok(trim(html_entity_decode(strip_tags(preg_replace('#<br\s*/?>|</p>#i', "\n", (string) $text_value)))), "\n") ?: '');
         $text_added = $open == $group.':'.$language;
+        // A version just added: open, with the focus; after one was removed, the focus on Default.
+        $text_focus = $text_added || $focus == $group.':'.$language;
     @endphp
     <details class="f-disclosure settings-version" id="{{ $text_id }}" data-group="{{ $group }}" data-language="{{ $language }}" @if ($show) x-show="{{ $show }}" @endif @if ($text_added || count($texts) == 1 || $errors->has($texts_old.'.'.$language) || $errors->has($texts_old.'.'.$language.'.*')) open @endif>
-        <summary @if ($text_added) x-init="$el.focus()" @endif><span>{{ $text_label }}</span><span class="f-form-row__value">{{ $text_preview }}</span></summary>
+        <summary @if ($text_focus) x-init="$el.focus()" @endif><span>{{ $text_label }}</span><span class="f-form-row__value">{{ $text_preview }}</span></summary>
         <div class="settings-version__fields">
             @if ($subject)
                 <x-fruit::field :label="__('Subject')" :description="__('For email.')">

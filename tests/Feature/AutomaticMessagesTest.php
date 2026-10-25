@@ -95,7 +95,18 @@ class AutomaticMessagesTest extends FeatureTestCase
         $this->assertSame('Welcome to the shop.', ChannelMessages::greeting($this->mailbox->fresh(), 'webchat', 'nl'));
         $this->actingAs($this->admin)->get(route('mailboxes.web_chat', ['id' => $this->mailbox->id]))->assertSeeInOrder(['Automatic Messages', 'Greeting', 'Its Own']);
 
-        $this->postForm($this->url('greeting.save'), $form(['mode' => 'off', 'texts' => ['default' => 'Hi there.', 'nl' => 'Hallo daar.']]) + ['remove_language' => 'mailbox:nl']);
+        // A channel's own: a language added before its Default has a text stays (unused until it has one).
+        $this->postForm($this->url('greeting.save'), $form(['mode' => 'tallport', 'texts' => ['default' => 'Hi there.', 'nl' => 'Hallo daar.']], ['mode' => 'own', 'texts' => ['default' => '']]) + ['add_language' => 'webchat:de'])
+            ->assertSessionHas('automatic_messages_open', 'webchat:de');
+        $this->assertSame(['' => '', 'de' => ''], ChannelMessages::settings($this->mailbox->fresh())['channels']['webchat']['greeting']['texts']);
+        $this->actingAs($this->admin)->get($this->url('greeting'))->assertSee('id="greeting-webchat--de"', false);
+        $this->assertSame('', ChannelMessages::greeting($this->mailbox->fresh(), 'webchat', 'de'));
+
+        // Removed: the focus on its group's Default.
+        $this->postForm($this->url('greeting.save'), $form(['mode' => 'off', 'texts' => ['default' => 'Hi there.', 'nl' => 'Hallo daar.']]) + ['remove_language' => 'mailbox:nl'])
+            ->assertSessionHas('automatic_messages_focus', 'mailbox:default');
+        $this->actingAs($this->admin)->withSession(['automatic_messages_focus' => 'mailbox:default'])->get($this->url('greeting'))
+            ->assertSee('id="greeting--default" data-group="mailbox" data-language="default"', false)->assertSee('<summary  x-init="$el.focus()"', false);
         $settings = ChannelMessages::settings($this->mailbox->fresh());
         $this->assertSame(['mode' => 'off', 'texts' => ['' => 'Hi there.']], $settings['greeting']);
         $this->assertSame('mailbox', $settings['channels']['webchat']['greeting']['mode']);

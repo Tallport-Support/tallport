@@ -77,7 +77,8 @@ class ChannelMessages
 
     /**
      * Its settings: the mailbox's greeting, and the channels' own (or none): texts by language
-     * ('' the default; an auto reply's with a subject for email).
+     * ('' the default; an auto reply's with a subject for email), one just added maybe without
+     * a text yet (filled()).
      */
     public static function settings(Mailbox $mailbox)
     {
@@ -88,7 +89,7 @@ class ChannelMessages
             foreach ([self::AUTO_REPLY, self::GREETING] as $kind) {
                 $channels[$key][$kind] = [
                     'mode'  => in_array($kinds[$kind]['mode'] ?? null, [self::OWN, self::OFF], true) ? $kinds[$kind]['mode'] : self::MAILBOX,
-                    'texts' => array_filter((array) ($kinds[$kind]['texts'] ?? []), fn ($text) => self::message($text) !== ''),
+                    'texts' => (array) ($kinds[$kind]['texts'] ?? []),
                 ];
             }
         }
@@ -96,10 +97,18 @@ class ChannelMessages
         return [
             'greeting' => [
                 'mode'  => in_array($greeting['mode'] ?? null, [self::OWN, self::OFF], true) ? $greeting['mode'] : self::TALLPORT,
-                'texts' => array_filter(array_map('strval', (array) ($greeting['texts'] ?? [])), fn ($text) => trim($text) !== ''),
+                'texts' => array_map('strval', (array) ($greeting['texts'] ?? [])),
             ],
             'channels' => $channels,
         ];
+    }
+
+    /**
+     * The versions that have a text: those a message is chosen from.
+     */
+    public static function filled(array $texts)
+    {
+        return array_filter($texts, fn ($text) => self::message($text) !== '');
     }
 
     public static function saveSettings(Mailbox $mailbox, array $settings)
@@ -123,7 +132,7 @@ class ChannelMessages
     {
         $mode = self::mode($mailbox, $key, self::AUTO_REPLY);
 
-        return $mailbox->auto_reply_enabled && ($mode == self::MAILBOX || ($mode == self::OWN && self::settings($mailbox)['channels'][$key][self::AUTO_REPLY]['texts']));
+        return $mailbox->auto_reply_enabled && ($mode == self::MAILBOX || ($mode == self::OWN && self::filled(self::settings($mailbox)['channels'][$key][self::AUTO_REPLY]['texts'])));
     }
 
     /**
@@ -140,7 +149,7 @@ class ChannelMessages
         if ($mode == self::OFF) {
             return null;
         }
-        $texts = self::settings($mailbox)['channels'][$key][self::AUTO_REPLY]['texts'];
+        $texts = self::filled(self::settings($mailbox)['channels'][$key][self::AUTO_REPLY]['texts']);
         $languages = array_values(array_filter(array_keys($texts), fn ($language) => $language !== ''));
         $language = $languages ? AutoReplies::language($conversation, $mailbox, $languages) : null;
         $text = $texts[$language ?? ''] ?? null;
@@ -173,7 +182,7 @@ class ChannelMessages
         } else {
             return '';
         }
-        $texts = array_map(fn ($text) => self::message($text), $texts);
+        $texts = array_map(fn ($text) => self::message($text), self::filled($texts));
         $language = AutoReplies::fromLanguageTag($language_tag, array_values(array_filter(array_keys($texts), fn ($language) => $language !== '')));
         $text = $texts[$language ?? ''] ?? '';
         $first_name = $customer ? trim((string) $customer->first_name) : '';

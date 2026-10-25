@@ -7,7 +7,7 @@
 @section('content')
     @php
         $auto_reply_enabled = (bool) old('auto_reply_enabled', $mailbox->auto_reply_enabled);
-        $texts_view = ['languages' => $languages, 'open' => $open, 'can_translate' => $can_translate];
+        $texts_view = ['languages' => $languages, 'open' => $open, 'focus' => $focus, 'can_translate' => $can_translate];
     @endphp
     <div class="page-content">
         @include('partials/flash_messages')
@@ -30,12 +30,13 @@
                 @php $channel_mode = old('messages.'.$key.'.mode', $group['mode']); @endphp
                 <x-fruit::form-section id="auto-reply-{{ $key }}" :title="$group['label']" :level="3" x-data="{ mode: {{ \Illuminate\Support\Js::from($channel_mode) }} }">
                     <x-fruit::field :label="__('Auto Reply')" layout="row">
-                        <x-fruit::select id="auto-reply-{{ $key }}-mode" name="messages[{{ $key }}][mode]" x-model="mode" x-on:change="chooseMode($el, {{ \Illuminate\Support\Js::from($key) }})">
+                        <x-fruit::select id="auto-reply-{{ $key }}-mode" name="messages[{{ $key }}][mode]" x-model="mode" x-on:change="chooseMode($el, {{ \Illuminate\Support\Js::from($key) }})" ::aria-describedby="mode === 'mailbox' && !enabled ? 'auto-reply-{{ $key }}-mode-note' : null">
                             <option value="mailbox" @selected($channel_mode == 'mailbox')>{{ __('The Mailbox’s') }}</option>
                             <option value="own" @selected($channel_mode == 'own')>{{ __('Its Own') }}</option>
                             <option value="off" @selected($channel_mode == 'off')>{{ __('None') }}</option>
                         </x-fruit::select>
-                        <x-slot:description><span x-show="mode === 'mailbox' && !enabled">{{ __('Off for now: the mailbox’s auto reply is off.') }}</span></x-slot:description>
+                        {{-- Only while it applies, as on the screen (the switch, the radios, the select). --}}
+                        <p class="f-help" id="auto-reply-{{ $key }}-mode-note" x-show="mode === 'mailbox' && !enabled" x-cloak>{{ __('Off for now: the mailbox’s auto reply is off.') }}</p>
                     </x-fruit::field>
                     @include('mailboxes/partials/message_texts', $texts_view + ['group' => $key, 'base' => 'auto-reply-'.$key, 'texts' => $group['texts'], 'subject' => $group['email'], 'editor' => $group['email'], 'show' => "mode === 'own'", 'disabled' => null])
                 </x-fruit::form-section>

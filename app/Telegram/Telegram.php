@@ -87,7 +87,7 @@ class Telegram
         $messages = \App\AutoReply\ChannelMessages::settings($mailbox);
         $own = $messages['channels']['telegram'][\App\AutoReply\ChannelMessages::GREETING] ?? ['mode' => \App\AutoReply\ChannelMessages::MAILBOX];
         // Its languages: the texts', or Tallport's own (the app's).
-        $texts = $own['mode'] == \App\AutoReply\ChannelMessages::OWN ? $own['texts'] : ($messages['greeting']['mode'] == \App\AutoReply\ChannelMessages::OWN ? $messages['greeting']['texts'] : []);
+        $texts = \App\AutoReply\ChannelMessages::filled($own['mode'] == \App\AutoReply\ChannelMessages::OWN ? $own['texts'] : ($messages['greeting']['mode'] == \App\AutoReply\ChannelMessages::OWN ? $messages['greeting']['texts'] : []));
         $languages = $own['mode'] == \App\AutoReply\ChannelMessages::MAILBOX && $messages['greeting']['mode'] == \App\AutoReply\ChannelMessages::TALLPORT
             ? array_map(fn ($locale) => \App\Ai\Settings::fromLocale($locale), config('app.locales')) : array_filter(array_keys($texts), fn ($language) => $language !== '');
         $descriptions = ['' => \App\AutoReply\ChannelMessages::greeting($mailbox, 'telegram')];
