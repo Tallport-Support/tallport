@@ -97,7 +97,9 @@ class WebChatTest extends FeatureTestCase
         // An answer the visitor may miss: its words for the launcher (the tab's title, the card), in their
         // language, and the chime's Sound button in the header.
         $response->assertSee('\u0022replied\u0022:\u0022:name heeft geantwoord\u0022', false)->assertSee('\u0022dismiss\u0022:\u0022Verbergen\u0022', false)
-            ->assertSeeInOrder(['widget-sound', 'aria-label="Geluid"', 'title="Geluid Aan"', 'widget-close'], false);
+            ->assertSeeInOrder(['widget-sound', 'aria-label="Geluid"', 'title="Geluid Aan"', 'widget-close'], false)
+            // Asked often enough for the card while closed, slowly from a tab in the background.
+            ->assertSee('\u0022closed\u0022:15,\u0022hidden\u0022:60', false);
 
         // Opened on its own (the website's link).
         $this->get('/t/w?widget=forma')->assertOk();
@@ -683,8 +685,10 @@ class WebChatTest extends FeatureTestCase
         $reply = $this->reply($conversation, 'It ships tomorrow.');
         $this->assertCount(0, $this->sentEmailsTo('lena@example.org'));
 
-        // Gone from the website: by email.
+        // Gone from the website: by email. Their tab in the background still asks, but that isn't being there.
         Visitor::query()->update(['last_seen_at' => now()->subMinutes(10)]);
+        $this->api('GET', '/t/m?hidden=1', [], $token)->assertOk();
+        $this->assertTrue(Visitor::firstOrFail()->last_seen_at->lt(now()->subMinutes(5)));
         (new \App\Jobs\EmailWebChatReply($reply->id))->handle();
         $emails = $this->sentEmailsTo('lena@example.org');
         $this->assertCount(1, $emails);

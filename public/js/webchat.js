@@ -66,6 +66,8 @@ document.addEventListener('alpine:init', function () {
 
             init: function () {
                 var self = this;
+                // A new visitor has no earlier messages: everything that arrives is news.
+                this.settled = !this.token();
                 try {
                     var chosen = localStorage.getItem(soundKey);
                     if (chosen) this.sound = chosen === 'on';
@@ -214,9 +216,9 @@ document.addEventListener('alpine:init', function () {
             },
 
             /**
-             * Asking for new messages: every few seconds while open and in use, slower while open and idle,
-             * slowly while closed or while the website's tab is hidden (only with a conversation: for the
-             * unread count, and so an answer can say so in the tab's title and with a chime).
+             * Asking for new messages: every few seconds while open and in use, slower while open and idle;
+             * only with a conversation, more slowly while closed (for the unread count and an answer's card),
+             * and slowest while the website's tab is hidden (for its title and the chime).
              */
             schedule: function (delay) {
                 var self = this;
@@ -226,14 +228,15 @@ document.addEventListener('alpine:init', function () {
                     var seen = this.shown && !document.hidden;
                     var active = seen && Date.now() - this.activeAt < 120000;
                     if (!seen && !this.hasConversation) return;
-                    delay = (active ? config.poll.active : seen ? config.poll.idle : config.poll.closed) * 1000;
+                    delay = (active ? config.poll.active : seen ? config.poll.idle : document.hidden ? config.poll.hidden : config.poll.closed) * 1000;
                 }
                 timer = setTimeout(function () { self.poll(); }, delay);
             },
 
             poll: function () {
                 var self = this;
-                return this.api('GET', 'm?after=' + this.cursor).then(function (data) {
+                // From a tab in the background: not the visitor being on the website (a reply they don't see goes by email too).
+                return this.api('GET', 'm?after=' + this.cursor + (document.hidden ? '&hidden=1' : '')).then(function (data) {
                     self.hasConversation = data.messages.length > 0 || self.hasConversation;
                     // The team's newest answer since the last poll (on a new page, earlier ones aren't news).
                     var news = null;
@@ -346,14 +349,9 @@ document.addEventListener('alpine:init', function () {
                 var match;
                 text = String(text || '');
                 while ((match = pattern.exec(text))) {
-                    var address = match[0];
-                    var trimmed = null;
-                    while (trimmed !== address) {
-                        trimmed = address;
-                        address = address.replace(/[.,;:!?'"]+$/, '');
-                        [['(', ')'], ['[', ']']].forEach(function (pair) {
-                            if (address.slice(-1) === pair[1] && address.split(pair[0]).length < address.split(pair[1]).length) address = address.slice(0, -1);
-                        });
+                    var address = match[0].replace(/[.,:;!?'’]+$/, '');
+                    while (/[)\]}]$/.test(address) && (address.match(/[([{]/g) || []).length < (address.match(/[)\]}]/g) || []).length) {
+                        address = address.slice(0, -1).replace(/[.,:;!?'’]+$/, '');
                     }
                     if (match.index > last) parts.push({ text: text.slice(last, match.index) });
                     parts.push({ text: address, url: /^www\./i.test(address) ? 'https://' + address : address });

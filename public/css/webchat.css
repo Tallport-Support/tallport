@@ -115,11 +115,23 @@ body {
 .widget-entry[data-kind='team']:not([data-last]) .widget-bubble {
   border-end-start-radius: 6px;
 }
-/* A web address in a message: a link in the bubble's own colour, underlined. */
+/* A web address in a message: underlined (not by colour alone), in the link colour; in the visitor's
+   accent bubble in its own colour, with a focus ring in it too (the accent's would vanish there). As
+   FruitUI's Widget example. */
 .widget-bubble a {
-  color: inherit;
+  color: var(--f-accent-text);
   text-decoration: underline;
-  text-underline-offset: 0.15em;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+.widget-bubble a:hover {
+  text-decoration-thickness: 2px;
+}
+.widget-entry[data-kind='visitor'] .widget-bubble a {
+  color: inherit;
+}
+.widget-entry[data-kind='visitor'] .widget-bubble a:focus-visible {
+  outline-color: currentColor;
 }
 /* The visitor's own messages: the end side, in the accent, without a name or avatar. */
 .widget-entry[data-kind='visitor'] .widget-message {

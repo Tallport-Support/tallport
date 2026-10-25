@@ -45,7 +45,7 @@ class WebChatController extends Controller
             'team_photo' => WebChat::teamPhoto($mailbox),
             'origin'   => $origin !== '' ? WebChat::origin($origin) : '',
             'nonce'    => \Helper::cspNonce(),
-            'poll'     => ['active' => WebChat::POLL_ACTIVE, 'idle' => WebChat::POLL_IDLE, 'closed' => WebChat::POLL_CLOSED],
+            'poll'     => ['active' => WebChat::POLL_ACTIVE, 'idle' => WebChat::POLL_IDLE, 'closed' => WebChat::POLL_CLOSED, 'hidden' => WebChat::POLL_HIDDEN],
         ]);
 
         // Only the widget's websites may frame it (frame-ancestors makes browsers ignore X-Frame-Options).
@@ -75,14 +75,15 @@ class WebChatController extends Controller
 
     /**
      * The conversation so far (messages after `after`), how many of the team's are unread, and how
-     * soon to ask again.
+     * soon to ask again. Asked from a tab in the background (`hidden`), it doesn't count as the
+     * visitor being on the website: a reply they don't see still goes by email (EmailWebChatReply).
      */
     public function messages(Request $request)
     {
         $visitor = $this->visitor($request);
         $this->limit('poll:'.$visitor->token, 60, 60);
         $this->locale($request);
-        if ($visitor->exists && (!$visitor->last_seen_at || $visitor->last_seen_at->lt(now()->subSeconds(30)))) {
+        if ($visitor->exists && !$request->boolean('hidden') && (!$visitor->last_seen_at || $visitor->last_seen_at->lt(now()->subSeconds(30)))) {
             $visitor->last_seen_at = now();
             $visitor->save();
         }

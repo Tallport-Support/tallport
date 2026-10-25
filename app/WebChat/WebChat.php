@@ -35,11 +35,13 @@ class WebChat
 
     /**
      * Polling, in seconds, as the window does it: while open and active, then slower; closed (for the
-     * unread count, only with a conversation).
+     * unread count and an answer's card, only with a conversation); the website's tab in the
+     * background (for its title and the chime, only with a conversation).
      */
     const POLL_ACTIVE = 3;
     const POLL_IDLE = 20;
-    const POLL_CLOSED = 60;
+    const POLL_CLOSED = 15;
+    const POLL_HIDDEN = 60;
 
     /**
      * A reply the visitor hasn't seen this many seconds after it showed (and who hasn't been on the
