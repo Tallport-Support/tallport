@@ -2686,11 +2686,16 @@ a.f-menu-item {
     text-decoration: none;
   }
 
-/* Checkbox and radio items reserve a leading column for their checkmark. */
+/* Checkbox and radio items reserve a leading column for their checkmark, and in a menu that has
+     them every item does, so all the names line up. */
+
+.f-menu-item[aria-checked],
+  .f-menu__items:has(> .f-menu-item[aria-checked], > [role='group'] > .f-menu-item[aria-checked]) .f-menu-item {
+    padding-inline-start: 28px;
+  }
 
 .f-menu-item[aria-checked] {
     position: relative;
-    padding-inline-start: 28px;
   }
 
 .f-menu-item[aria-checked='true']::before {

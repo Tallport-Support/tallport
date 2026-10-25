@@ -20,6 +20,7 @@
         <h1 id="widget-title" x-ref="title" tabindex="-1">Forma</h1>
         <p>We usually reply within an hour</p>
       </div>
+      <button class="f-button f-button--ghost f-button--icon widget-sound" type="button" @click="toggleSound" :aria-pressed="String(sound)" aria-pressed="true" aria-label="Sound" :title="sound ? 'Sound On' : 'Sound Off'" title="Sound On"><svg class="f-icon" aria-hidden="true"><use :href="sound ? '#i-volume' : '#i-volume-off'" href="#i-volume"/></svg></button>
       <button class="f-button f-button--ghost f-button--icon widget-close" type="button" x-show="embedded" x-cloak @click="close" aria-label="Close Chat" title="Close Chat"><svg class="f-icon" aria-hidden="true"><use href="#i-close"/></svg></button>
     </header>
     <div class="f-alert f-alert--warning widget-offline" role="status" x-show="!online" x-cloak><svg class="f-icon f-alert__icon" aria-hidden="true"><use href="#i-alert"/></svg><div class="f-alert__body">You’re offline. Your messages will be sent when you’re back.</div></div>
@@ -31,7 +32,7 @@
               <div class="widget-message" :data-state="entry.state">
                 <span class="f-avatar widget-avatar" :class="{ 'widget-team-mark': entry.team }" aria-hidden="true" x-show="entry.kind === 'team' && entry.first" x-text="entry.initials"></span>
                 <p class="widget-author" :class="{ 'f-sr-only': entry.kind === 'visitor' || !entry.first }" x-text="entry.kind === 'visitor' ? 'You' : entry.author"></p>
-                <p class="widget-bubble" x-show="entry.body" x-text="entry.body"></p>
+                <p class="widget-bubble" x-show="entry.body"><template x-for="(part, index) in parts(entry.body ?? '')" :key="index"><span><template x-if="part.href"><a :href="part.href" target="_blank" rel="noopener noreferrer" x-text="part.text"></a></template><template x-if="!part.href"><span x-text="part.text"></span></template></span></template></p>
                 <!-- An image shows as a thumbnail and opens in a new tab; other files download. -->
                 <template x-for="file in entry.files" :key="file.id"><div class="widget-attachment"><template x-if="file.image"><a class="f-attachment f-attachment--thumbnail" :href="file.url" target="_blank" rel="noopener"><span class="f-attachment__thumbnail"><img :src="file.url" alt="" loading="lazy"></span><span class="f-attachment__body"><span x-text="file.name"></span><small class="f-attachment__detail" x-text="file.size"></small></span></a></template><template x-if="!file.image"><a class="f-attachment" :href="file.url" :download="file.name"><span class="f-attachment__leading"><svg class="f-icon" aria-hidden="true"><use href="#i-file"/></svg></span><span class="f-attachment__body"><span x-text="file.name"></span><small class="f-attachment__detail" x-text="file.size"></small></span><span class="f-attachment__trailing"><svg class="f-icon" aria-hidden="true"><use href="#i-download"/></svg></span></a></template></div></template>
                 <p class="widget-meta" x-show="entry.time && (entry.last || entry.state === 'sending' || entry.state === 'waiting')"><time x-text="entry.time"></time><span x-text="{ sending: ' · Sending…', waiting: ' · Waiting to send' }[entry.state] ?? ''"></span></p>
