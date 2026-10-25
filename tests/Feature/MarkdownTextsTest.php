@@ -121,12 +121,14 @@ class MarkdownTextsTest extends FeatureTestCase
         $url = route('mailboxes.auto_reply.save', ['id' => $this->mailbox->id]);
         // An empty message is refused on its own field.
         $this->postForm($url, [
-            'auto_reply_enabled' => 1, 'auto_reply_subject' => 'Thanks', 'auto_reply_message_markdown' => " \n",
-        ], ['X-Requested-With' => 'XMLHttpRequest'])->assertStatus(422)->assertJsonValidationErrors('auto_reply_message_markdown');
+            'auto_reply_enabled' => 1, 'messages' => ['mailbox' => ['texts' => ['default' => ['subject' => 'Thanks', 'message_markdown' => " \n"]]]],
+        ], ['X-Requested-With' => 'XMLHttpRequest'])->assertStatus(422)->assertJsonValidationErrors('messages.mailbox.texts.default.message');
 
         $this->postForm($url, [
-            'auto_reply_enabled' => 1, 'auto_reply_subject' => 'Thanks', 'auto_reply_message_markdown' => "We got it.\n\n- Mon to Fri",
-            'versions' => ['de' => ['enabled' => 1, 'subject' => 'Danke', 'message_markdown' => '**Danke**']],
+            'auto_reply_enabled' => 1, 'messages' => ['mailbox' => ['texts' => [
+                'default' => ['subject' => 'Thanks', 'message_markdown' => "We got it.\n\n- Mon to Fri"],
+                'de'      => ['subject' => 'Danke', 'message_markdown' => '**Danke**'],
+            ]]],
         ])->assertSessionHasNoErrors();
         $mailbox = $this->mailbox->fresh();
         $this->assertSame("We got it.\n\n- Mon to Fri", $mailbox->auto_reply_message_markdown);
@@ -136,7 +138,7 @@ class MarkdownTextsTest extends FeatureTestCase
         $this->assertSame('<p><strong>Danke</strong></p>', $version->message);
         // Saved with its button, not as it changes: no auto reply goes out half-written.
         $html = $this->actingAs($this->admin)->get(route('mailboxes.auto_reply', ['id' => $this->mailbox->id]))
-            ->assertSee('name="auto_reply_message_markdown"', false)->assertSee('name="versions[de][message_markdown]"', false)
+            ->assertSee('name="messages[mailbox][texts][default][message_markdown]"', false)->assertSee('name="messages[mailbox][texts][de][message_markdown]"', false)
             ->assertSee('form="page-form"', false)->getContent();
         $this->assertDoesNotMatchRegularExpression('/<form id="page-form"[^>]*autoSave/', $html);
     }

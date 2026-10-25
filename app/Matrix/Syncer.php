@@ -95,6 +95,8 @@ class Syncer
             RoomState::refresh($identity, $room);
             if (!($room->state['supported'] ?? false)) {
                 $identity->client()->call('POST', 'v3/rooms/'.rawurlencode($id).'/leave');
+            } else {
+                $this->greet($identity, $room);
             }
         }
         DB::transaction(function () use ($identity, $batch) {
@@ -105,6 +107,23 @@ class Syncer
                 ]);
             }
         });
+    }
+
+    /**
+     * The mailbox's greeting (App\AutoReply\ChannelMessages) in a chat the bot just joined, before
+     * the customer writes; none when it can't go (no devices of theirs to encrypt for yet).
+     */
+    private function greet(MatrixMailbox $identity, MatrixRoom $room)
+    {
+        $text = $identity->mailbox ? \App\AutoReply\ChannelMessages::greeting($identity->mailbox, 'matrix') : '';
+        if ($text === '') {
+            return;
+        }
+        try {
+            (new Outgoing())->notice($identity, $room, 'greeting:'.$room->room_id, $text);
+        } catch (MatrixException $e) {
+            \App\Misc\ChatLog::failure('matrix', $identity->mailbox_id, 'send', $e, ['message' => 'greeting']);
+        }
     }
 
     private function toDevice(MatrixMailbox $identity, CryptoManager $crypto)

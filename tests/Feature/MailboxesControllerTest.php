@@ -371,12 +371,11 @@ PHP;
 
         $this->postForm($this->admin, route('mailboxes.auto_reply.save', ['id' => $mailbox->id]), [
             'auto_reply_enabled' => 1,
-            'auto_reply_subject' => 'We got it',
-            'auto_reply_message' => '<p>Thanks!</p>',
-            'versions'           => [
-                'tlh' => ['enabled' => 1, 'subject' => 'Qapla', 'message' => 'Qapla'],
-                'de'  => ['enabled' => 1, 'subject' => 'Danke', 'message' => '<p>Danke!</p>'],
-            ],
+            'messages'           => ['mailbox' => ['texts' => [
+                'default' => ['subject' => 'We got it', 'message' => '<p>Thanks!</p>'],
+                'tlh'     => ['subject' => 'Qapla', 'message' => 'Qapla'],
+                'de'      => ['subject' => 'Danke', 'message' => '<p>Danke!</p>'],
+            ]]],
         ])->assertSessionHasNoErrors();
 
         $this->assertSame(['de'], MailboxAutoReply::where('mailbox_id', $mailbox->id)->pluck('language')->all());

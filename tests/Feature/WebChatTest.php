@@ -257,40 +257,57 @@ class WebChatTest extends FeatureTestCase
     }
 
     /**
-     * The greeting: Tallport's, in the visitor's language and by name once signed in; the
-     * mailbox's own, by language, with its variables; or none.
+     * The greeting: the mailbox's (Tallport's, in the visitor's language and by name once signed
+     * in; its own, by language, with its variables; or none), or the website chat's own or none.
      */
     public function testGreetings()
     {
-        WebChat::saveSettings($this->mailbox, ['greeting_mode' => 'tallport']);
         $this->get('/t/w?widget=forma')->assertSee('Hi, how can we help?');
         $token = $this->visitorToken();
         $this->api('POST', '/t/i', ['identity' => $this->signed(['sub' => 'acct-42', 'name' => 'Lena Novak'])], $token)->assertOk();
         $this->assertSame('Hi Lena, how can we help?', $this->api('GET', '/t/m', [], $token)->json('greeting'));
 
-        WebChat::saveSettings($this->mailbox, ['greeting_mode' => 'custom', 'greeting' => 'Hello {%customer.firstName,fallback=there%}, welcome to {%mailbox.name%}.', 'greetings' => ['nl' => 'Hallo {%customer.firstName,fallback=daar%}!']]);
+        // The mailbox's own (App\AutoReply\ChannelMessages), in languages.
+        $greeting = fn (array $mailbox, array $webchat = ['mode' => 'mailbox', 'texts' => []]) => \App\AutoReply\ChannelMessages::saveSettings($this->mailbox, ['greeting' => $mailbox, 'channels' => ['webchat' => ['greeting' => $webchat]]]);
+        $greeting(['mode' => 'own', 'texts' => ['' => 'Hello {%customer.firstName,fallback=there%}, welcome to {%mailbox.name%}.', 'nl' => 'Hallo {%customer.firstName,fallback=daar%}!']]);
         $this->assertSame('Hello Lena, welcome to Forma.', $this->api('GET', '/t/m', [], $token)->json('greeting'));
         $this->assertSame('Hallo Lena!', $this->api('GET', '/t/m', [], $token, ['Accept-Language' => 'nl-NL'])->json('greeting'));
         $this->get('/t/w?widget=forma')->assertSee('Hello there, welcome to Forma.');
         $this->get('/t/w?widget=forma', ['Accept-Language' => 'nl'])->assertSee('Hallo daar!');
 
-        WebChat::saveSettings($this->mailbox, ['greeting_mode' => 'none']);
+        // The website chat's own.
+        $greeting(['mode' => 'tallport', 'texts' => []], ['mode' => 'own', 'texts' => ['' => 'Welcome to the shop.']]);
+        $this->assertSame('Welcome to the shop.', $this->api('GET', '/t/m', [], $token)->json('greeting'));
+
+        // None: the mailbox has none, or the chat doesn't take it.
+        $greeting(['mode' => 'off', 'texts' => []]);
+        $this->assertSame('', $this->api('GET', '/t/m', [], $token)->json('greeting'));
+        $greeting(['mode' => 'tallport', 'texts' => []], ['mode' => 'off', 'texts' => []]);
         $this->assertSame('', $this->api('GET', '/t/m', [], $token)->json('greeting'));
 
-        // Before there was a choice: a written greeting is the own one, none is Tallport's.
-        WebChat::saveSettings($this->mailbox, ['greeting_mode' => null, 'greeting' => '']);
-        $this->assertSame('tallport', WebChat::settings($this->mailbox->fresh())['greeting_mode']);
+        // Its page links to its part of the Greeting page.
+        $this->actingAs($this->admin)->get(route('mailboxes.web_chat', ['id' => $this->mailbox->id]))->assertOk()
+            ->assertSee(route('mailboxes.greeting', ['id' => $this->mailbox->getSlug()]).'#greeting-webchat', false)->assertSee('None');
+    }
 
-        // Versions by language on the settings page.
-        \Session::start();
-        $save = fn (array $data) => $this->actingAs($this->admin)->post(route('mailboxes.web_chat.save', ['id' => $this->mailbox->id]), ['_token' => csrf_token(), 'origins' => self::SITE] + $data);
-        $save(['greeting_mode' => 'custom', 'greeting' => 'Hi!', 'add_language' => 1, 'add_language_code' => 'de'])->assertRedirect();
-        $this->assertSame(['de' => ''], WebChat::settings($this->mailbox->fresh())['greetings']);
-        $save(['greeting_mode' => 'custom', 'greeting' => 'Hi!', 'greetings' => ['de' => 'Hallo!']]);
-        $this->assertSame(['de' => 'Hallo!'], WebChat::settings($this->mailbox->fresh())['greetings']);
-        $save(['greeting_mode' => 'custom', 'greeting' => 'Hi!', 'greetings' => ['de' => 'Hallo!'], 'remove_language' => 'de']);
-        $this->assertSame([], WebChat::settings($this->mailbox->fresh())['greetings']);
-        $this->actingAs($this->admin)->get(route('mailboxes.web_chat', ['id' => $this->mailbox->id]))->assertOk()->assertSee('Your Own Greeting');
+    /**
+     * The mailbox's auto reply on the website chat (when the chat takes it): after the visitor's
+     * first message, the window shows it as the team's, once.
+     */
+    public function testAutoReply()
+    {
+        $this->mailbox->auto_reply_enabled = true;
+        $this->mailbox->auto_reply_subject = 'Thanks';
+        $this->mailbox->auto_reply_message = '<p>We got it.</p>';
+        $this->mailbox->save();
+        $token = $this->visitorToken();
+        $this->api('POST', '/t/m', ['body' => 'Hello'], $token)->assertOk();
+        $this->api('POST', '/t/m', ['body' => 'Are you there?'], $token)->assertOk();
+
+        $team = collect($this->api('GET', '/t/m', [], $token)->json('messages'))->where('kind', 'team')->values();
+        $this->assertCount(1, $team);
+        $this->assertSame('We got it.', $team[0]['body']);
+        $this->assertSame('Forma', $team[0]['author']);
     }
 
     /**
@@ -493,13 +510,13 @@ class WebChatTest extends FeatureTestCase
 
         \Session::start();
         $this->actingAs($this->admin)->post(route('mailboxes.web_chat.save', ['id' => $mailbox->id]), [
-            '_token' => csrf_token(), 'enabled' => 1, 'origins' => "studio.example\nhttps://www.studio.example:443/shop\nhttp://localhost:8080", 'greeting' => ' Hello! ', 'accent' => 'purple',
+            '_token' => csrf_token(), 'enabled' => 1, 'origins' => "studio.example\nhttps://www.studio.example:443/shop\nhttp://localhost:8080", 'accent' => 'purple',
         ])->assertRedirect();
         $settings = WebChat::settings($mailbox->fresh());
         $this->assertTrue($settings['enabled']);
         $this->assertMatchesRegularExpression('/^[a-z0-9]{12}$/', $settings['widget']);
         $this->assertSame(['https://studio.example', 'https://www.studio.example', 'http://localhost:8080'], $settings['origins']);
-        $this->assertSame(['Hello!', 'purple'], [$settings['greeting'], $settings['accent']]);
+        $this->assertSame('purple', $settings['accent']);
         $this->actingAs($this->admin)->get(route('mailboxes.web_chat', ['id' => $mailbox->id]))->assertSee("tallport('init', { widget: '".$settings['widget']."' });");
 
         $this->actingAs($this->admin)->post(route('mailboxes.web_chat.save', ['id' => $mailbox->id]), ['_token' => csrf_token(), 'origins' => 'not a website'])->assertSessionHasErrors('origins');

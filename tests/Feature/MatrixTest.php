@@ -293,6 +293,52 @@ class MatrixTest extends FeatureTestCase
         $this->assertCount(1, $uploads);
     }
 
+    /**
+     * Invited to a private chat, the bot joins and greets with the mailbox's greeting before the
+     * customer writes (App\AutoReply\ChannelMessages): once, as a notice the sync doesn't bring
+     * back as a reply. After the customer's first message its auto reply goes the same way, and
+     * the conversation says so.
+     */
+    public function testTheBotGreetsAChatItJoinsAndSendsTheAutoReply()
+    {
+        [$identity] = $this->identity();
+        $mailbox = $identity->mailbox;
+        $mailbox->auto_reply_enabled = true;
+        $mailbox->auto_reply_subject = 'Thanks';
+        $mailbox->auto_reply_message = '<p>We got it.</p>';
+        $mailbox->save();
+        $invite = ['next_batch' => 'one', 'device_one_time_keys_count' => ['signed_curve25519' => 50], 'rooms' => ['invite' => [self::ROOM => ['invite_state' => ['events' => [
+            ['type' => 'm.room.member', 'state_key' => self::USER, 'sender' => self::PEER, 'content' => ['membership' => 'invite', 'is_direct' => true]],
+        ]]]]]];
+        $batches = [$invite, $this->batch('two', [$this->message('$first', 'Hello there')])];
+        $sent = [];
+        Http::fake(function ($request) use (&$batches, &$sent) {
+            $path = parse_url($request->url(), PHP_URL_PATH);
+            if (str_contains($path, '/send/m.room.message/')) {
+                $sent[] = $request->data();
+
+                return Http::response(['event_id' => '$sent'.count($sent)]);
+            }
+
+            return Http::response(str_ends_with($path, '/state') ? $this->state(false) : (str_ends_with($path, '/join') ? ['room_id' => self::ROOM] : array_shift($batches)));
+        });
+
+        (new Syncer())->run($identity);
+        $this->assertSame([['msgtype' => 'm.notice', 'body' => 'Hi, how can we help?']], $sent);
+
+        // The first message: its conversation, then (from the queue) the auto reply, once.
+        \Illuminate\Support\Facades\Bus::fake([\App\Jobs\SendChatAutoReply::class]);
+        (new Syncer())->run($identity);
+        $conversation = Conversation::where('channel', Matrix::CHANNEL)->firstOrFail();
+        \Illuminate\Support\Facades\Bus::assertDispatched(\App\Jobs\SendChatAutoReply::class, fn ($job) => $job->conversation_id == $conversation->id);
+        (new \App\Jobs\SendChatAutoReply($conversation->id))->handle();
+        (new \App\Jobs\SendChatAutoReply($conversation->id))->handle();
+        $this->assertSame(['msgtype' => 'm.notice', 'body' => 'We got it.'], $sent[1]);
+        $this->assertCount(2, $sent);
+        $this->assertSame(1, $conversation->threads()->where('type', Thread::TYPE_LINEITEM)->where('action_type', Thread::ACTION_TYPE_AUTO_REPLY)->count());
+        $this->assertSame(0, MatrixEvent::where('kind', 'outgoing')->whereNotNull('payload')->count());
+    }
+
     public function testRoomStopsBeingSupportedWhenAnotherUserIsInvitedAndNeverChangesCustomer()
     {
         [$identity] = $this->identity();

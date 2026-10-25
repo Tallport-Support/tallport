@@ -96,6 +96,75 @@ class Outgoing
         });
     }
 
+    /**
+     * A notice (see notice()) in a conversation's room: its auto reply.
+     */
+    public function conversationNotice(\App\Conversation $conversation, $key, $text)
+    {
+        $binding = $conversation->getMeta('matrix', []);
+        $identity = MatrixMailbox::find($binding['identity'] ?? 0);
+        if (!$identity || (int) $identity->mailbox_id !== (int) $conversation->mailbox_id) {
+            throw new MatrixException('Matrix conversation account is unavailable.');
+        }
+        $identity->locked(function () use ($identity, $binding, $conversation, $key, $text) {
+            if (!$identity->isReady()) {
+                throw new MatrixException('Matrix account is not connected.');
+            }
+            (new Connection())->refresh($identity);
+            $room = MatrixRoom::forRoom($identity->id, $binding['room'] ?? '');
+            if (!$room->exists) {
+                throw new MatrixException('Matrix conversation room is unavailable.');
+            }
+            $this->notice($identity, $room, $key, $text, $conversation->id);
+        });
+    }
+
+    /**
+     * A message from the mailbox that isn't a reply (the greeting when the bot joins a chat, an auto
+     * reply), as a notice (a bot's): sent now or not at all, once per key. The caller holds the
+     * identity's lock.
+     */
+    public function notice(MatrixMailbox $identity, MatrixRoom $room, $key, $text, $conversation_id = null)
+    {
+        if (MatrixEvent::where('matrix_mailbox_id', $identity->id)->where('local_key', hash('sha256', $key))->exists()) {
+            return;
+        }
+        RoomState::refresh($identity, $room);
+        if (!($room->state['supported'] ?? false)) {
+            throw new MatrixException('Matrix room is no longer a private conversation.');
+        }
+        $crypto = new CryptoManager($identity);
+        $encrypted = isset($room->state['encryption']);
+        if ($encrypted) {
+            $crypto->trusted($identity->user_id);
+            if (!$crypto->trusted($room->customer_user_id)) {
+                throw new MatrixException('Matrix customer has no available encryption devices.');
+            }
+        }
+        $content = ['msgtype' => 'm.notice', 'body' => $text];
+        $event = DB::transaction(function () use ($identity, $room, $key, $content, $crypto, $encrypted, $conversation_id) {
+            $event = MatrixEvent::outgoing($identity->id, $key, 'outgoing', ['type' => $encrypted ? 'm.room.encrypted' : 'm.room.message',
+                'content' => $encrypted ? $crypto->encrypt($room, 'm.room.message', $content) : $content,], $room->room_id);
+            $event->conversation_id = $conversation_id;
+            $event->save();
+
+            return $event;
+        });
+        try {
+            Outbox::flush($identity);
+            if (MatrixEvent::where('matrix_mailbox_id', $identity->id)->where('kind', 'to_device')->where('status', 'pending')->exists()) {
+                throw new MatrixException('Matrix room keys are still being delivered.');
+            }
+            Outbox::deliver($identity, $event);
+        } catch (MatrixException $e) {
+            $event->status = 'cancelled';
+            throw $e;
+        } finally {
+            $event->payload = null;
+            $event->save();
+        }
+    }
+
     private function upload(MatrixMailbox $identity, Thread $thread, $attachment, $encrypted)
     {
         $key = 'upload:'.$thread->id.':'.$attachment->id.':'.(int) $encrypted;

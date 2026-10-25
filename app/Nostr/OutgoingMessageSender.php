@@ -16,7 +16,7 @@ use App\Nostr\NostrMailbox;
 class OutgoingMessageSender
 {
     // Line item shown in the conversation when the auto reply went out.
-    const ACTION_TYPE_AUTO_REPLY = Thread::ACTION_TYPE_NOSTR_AUTO_REPLY;
+    const ACTION_TYPE_AUTO_REPLY = Thread::ACTION_TYPE_AUTO_REPLY;
 
     /**
      * Logs what happens (optional).
@@ -198,14 +198,18 @@ class OutgoingMessageSender
     }
 
     /**
-     * Background action "nostr.auto_reply": one-time greeting on a new conversation.
+     * The auto reply on a new conversation (App\Jobs\SendChatAutoReply: the mailbox's, or Nostr's
+     * own); without a text, the Nostr settings' of before (a job queued then).
      */
-    public function sendAutoReply($conversationId, $cfgId, $pubkey)
+    public function sendAutoReply($conversationId, $cfgId, $pubkey, $text = null)
     {
         $conversation = Conversation::find($conversationId);
         $cfg = NostrMailbox::find($cfgId);
-        $text = $cfg ? trim((string) $cfg->auto_reply_text) : '';
-        if (!$conversation || !$cfg || !$cfg->auto_reply_enabled || $text === '' || !$cfg->getPrivateKey()) {
+        if ($text === null) {
+            $text = $cfg && $cfg->auto_reply_enabled ? (string) $cfg->auto_reply_text : '';
+        }
+        $text = trim((string) $text);
+        if (!$conversation || !$cfg || $text === '' || !$cfg->getPrivateKey()) {
             return false;
         }
 
@@ -228,7 +232,7 @@ class OutgoingMessageSender
             $thread->state = Thread::STATE_PUBLISHED;
             $thread->source_via = Thread::PERSON_USER;
             $thread->source_type = Thread::SOURCE_TYPE_API;
-            // No person: the line item reads "System sent the Nostr auto reply".
+            // No person: the line item reads "System sent the auto reply".
             $thread->customer_id = null;
             $thread->created_by_user_id = null;
             $thread->headers = $this->headersFor($result, $cfg, $pubkey, $last);

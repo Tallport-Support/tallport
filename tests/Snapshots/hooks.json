@@ -182,6 +182,14 @@
     },
     {
         "type": "filter",
+        "name": "auto_reply.channels",
+        "arguments": 1,
+        "files": [
+            "app/AutoReply/ChannelMessages.php"
+        ]
+    },
+    {
+        "type": "filter",
         "name": "auto_reply_email.css",
         "arguments": 1,
         "files": [

@@ -1,7 +1,7 @@
 /**
  * Mailbox settings: the settings form, deleting a mailbox, the connection
  * pages (sending method, test email, protocol, IMAP folders, test connection),
- * muting a mailbox from the sidebar, emptying its Deleted or Spam folder,
+ * translating its greeting and auto reply, muting a mailbox from the sidebar, emptying its Deleted or Spam folder,
  * and the focus in the list of its settings pages.
  */
 document.addEventListener('alpine:init', function () {
@@ -242,6 +242,127 @@ document.addEventListener('alpine:init', function () {
 				});
 			}
 		};
+	});
+
+	// A mailbox's Greeting and Auto Reply (mailboxes/partials/message_texts). state: whether the
+	// mailbox's auto reply is on (enabled), or its greeting (greeting). Add Language saves what was
+	// typed and comes back with the new version open; a channel set to Its Own without a text of its
+	// own starts from the mailbox's Default; Translate from Default fills a group's other versions
+	// with Default translated, one request per language, after asking. Nothing is kept until the
+	// page is saved. Opened from a channel's page (#auto-reply-telegram), that channel's choice has
+	// the focus.
+	window.Alpine.data('tallportAutomaticMessages', function (translate_url, texts, state) {
+		return Object.assign({
+			init: function () {
+				// The form: called from a channel's section, $root is that section.
+				this.page = this.$el;
+				var section = window.location.hash ? document.getElementById(window.location.hash.slice(1)) : null;
+				var select = section && this.page.contains(section) ? section.querySelector('select') : null;
+				if (select) {
+					// Once the page shows (Alpine has started all of it).
+					setTimeout(function () {
+						select.focus();
+					});
+				}
+			},
+			version: function (group, language) {
+				return this.page.querySelector('details.settings-version[data-group="' + CSS.escape(group) + '"][data-language="' + CSS.escape(language) + '"]');
+			},
+			// A version's text, and whether it's in the editor (Markdown or HTML) or plain.
+			text: function (version) {
+				var message = version ? version.querySelector('[data-message]') : null;
+				var editor = message ? message.closest('.f-editor') : null;
+				return {
+					message: message,
+					subject: version ? version.querySelector('[data-subject]') : null,
+					format: editor ? (editor.getAttribute('data-fruit-mode') == 'markdown' ? 'markdown' : 'html') : 'text'
+				};
+			},
+			fill: function (version, format, message, subject) {
+				var target = this.text(version);
+				if (target.subject && subject !== undefined && subject !== null) {
+					target.subject.value = subject;
+					target.subject.dispatchEvent(new Event('input', {bubbles: true}));
+				}
+				if (target.format != 'text') {
+					var detail = {target: target.message.id};
+					detail[format == 'markdown' ? 'markdown' : 'html'] = message;
+					window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: detail}));
+				} else {
+					if (format == 'html') {
+						message = (new DOMParser()).parseFromString(message.replace(/<br\s*\/?>|<\/p>/gi, '\n'), 'text/html').body.textContent.trim();
+					}
+					target.message.value = message;
+					target.message.dispatchEvent(new Event('input', {bubbles: true}));
+				}
+				var preview = version.querySelector('summary .f-form-row__value');
+				var lines = (new DOMParser()).parseFromString(message.replace(/<br\s*\/?>|<\/p>/gi, '\n'), 'text/html').body.textContent.trim().split('\n');
+				if (preview) {
+					preview.textContent = lines[0] || '';
+				}
+			},
+			addLanguage: function (item, value) {
+				var form = item.closest('form');
+				var input = document.createElement('input');
+				input.type = 'hidden';
+				input.name = 'add_language';
+				input.value = value;
+				form.appendChild(input);
+				form.requestSubmit();
+			},
+			chooseMode: function (select, group) {
+				var own = this.text(this.version(group, 'default'));
+				var mailbox = this.text(this.version('mailbox', 'default'));
+				if (select.value != 'own' || !own.message || own.message.value.trim() || !mailbox.message || !mailbox.message.value.trim()) {
+					return;
+				}
+				this.fill(this.version(group, 'default'), mailbox.format, mailbox.message.value, mailbox.subject ? mailbox.subject.value : null);
+			},
+			translate: function (button, group) {
+				var self = this;
+				var source = self.text(self.version(group, 'default'));
+				var targets = Array.prototype.filter.call(self.page.querySelectorAll('details.settings-version[data-group="' + CSS.escape(group) + '"]'), function (version) {
+					return version.getAttribute('data-language') != 'default';
+				});
+				if (!source.message || !source.message.value.trim()) {
+					Tallport.toast(texts.empty, 'danger');
+					return;
+				}
+				var names = new Intl.ListFormat(document.documentElement.lang || undefined, {type: 'conjunction'}).format(targets.map(function (version) {
+					return version.querySelector('summary > span').textContent.trim();
+				}));
+				Tallport.confirm({message: texts.translate.replace(':languages', names), detail: texts.replaced, confirm: texts.confirm}).then(function (ok) {
+					if (!ok) {
+						return;
+					}
+					var failed = null;
+					Tallport.busy(button, true);
+					Promise.all(targets.map(function (version) {
+						var language = version.getAttribute('data-language');
+						return Tallport.post(translate_url, {
+							message: source.message.value,
+							subject: source.subject ? source.subject.value : null,
+							format: source.format,
+							languages: [language]
+						}).then(function (response) {
+							var translation = Tallport.isSuccess(response) ? response.translations[language] : null;
+							if (translation) {
+								self.fill(version, source.format, translation.message, translation.subject);
+							} else {
+								failed = failed || response;
+							}
+						});
+					})).then(function () {
+						Tallport.busy(button, false);
+						if (failed) {
+							Tallport.result(failed);
+						} else {
+							Tallport.toast(texts.translated.replace(':languages', names));
+						}
+					});
+				});
+			}
+		}, state);
 	});
 
 	// Mute or unmute a mailbox's notifications (the sidebar's mailbox menu).

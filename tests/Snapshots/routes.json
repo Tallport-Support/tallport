@@ -1964,14 +1964,33 @@
             "GET"
         ],
         "uri": "mailbox/{id}/settings/auto-reply",
-        "name": null,
-        "action": "MailboxesController@settingsMoved",
+        "name": "mailboxes.auto_reply",
+        "action": "AutomaticMessagesController@autoReply",
         "middleware": [
             "web",
+            "mailbox.address",
             "auth"
         ],
         "where": {
-            "id": "[a-z0-9-]+"
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/{id}/settings/auto-reply",
+        "name": "mailboxes.auto_reply.save",
+        "action": "AutomaticMessagesController@autoReplySave",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
         }
     },
     {
@@ -2079,33 +2098,14 @@
             "GET"
         ],
         "uri": "mailbox/{id}/settings/email/auto-reply",
-        "name": "mailboxes.auto_reply",
-        "action": "MailboxesController@autoReply",
+        "name": null,
+        "action": "MailboxesController@settingsMoved",
         "middleware": [
             "web",
-            "mailbox.address",
             "auth"
         ],
         "where": {
-            "id": "[a-z0-9-]+",
-            "mailbox_id": "[a-z0-9-]+"
-        }
-    },
-    {
-        "methods": [
-            "POST"
-        ],
-        "uri": "mailbox/{id}/settings/email/auto-reply",
-        "name": "mailboxes.auto_reply.save",
-        "action": "MailboxesController@autoReplySave",
-        "middleware": [
-            "web",
-            "mailbox.address",
-            "auth"
-        ],
-        "where": {
-            "id": "[a-z0-9-]+",
-            "mailbox_id": "[a-z0-9-]+"
+            "id": "[a-z0-9-]+"
         }
     },
     {
@@ -2200,6 +2200,40 @@
         "uri": "mailbox/{id}/settings/general",
         "name": "mailboxes.update.save",
         "action": "MailboxesController@updateSave",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "GET"
+        ],
+        "uri": "mailbox/{id}/settings/greeting",
+        "name": "mailboxes.greeting",
+        "action": "AutomaticMessagesController@greeting",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/{id}/settings/greeting",
+        "name": "mailboxes.greeting.save",
+        "action": "AutomaticMessagesController@greetingSave",
         "middleware": [
             "web",
             "mailbox.address",
@@ -2412,6 +2446,23 @@
             "mailbox.address",
             "auth",
             "roles"
+        ],
+        "where": {
+            "id": "[a-z0-9-]+",
+            "mailbox_id": "[a-z0-9-]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
+        "uri": "mailbox/{id}/settings/translate",
+        "name": "mailboxes.automatic_messages.translate",
+        "action": "AutomaticMessagesController@translate",
+        "middleware": [
+            "web",
+            "mailbox.address",
+            "auth"
         ],
         "where": {
             "id": "[a-z0-9-]+",

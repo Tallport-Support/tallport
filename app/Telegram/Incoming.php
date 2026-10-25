@@ -37,7 +37,7 @@ class Incoming
 
         $is_start = !$edited && preg_match('#^/start(\s|$)#', $text);
         if ($is_start && $settings['ignore_start']) {
-            self::autoReply($client, $chat_id, Telegram::autoReply($settings, $message['from']['language_code'] ?? ''), $mailbox);
+            self::greet($client, $chat_id, \App\AutoReply\ChannelMessages::greeting($mailbox, 'telegram', $message['from']['language_code'] ?? ''), $mailbox);
 
             return;
         }
@@ -88,8 +88,9 @@ class Incoming
             \App\Misc\ChatLog::record('telegram', $mailbox->id, 'receive', 'succeeded', '', ['event_id' => $message['message_id'] ?? null, 'thread_id' => $received['thread']->id]);
         }
 
+        // Start: the greeting (App\AutoReply\ChannelMessages), in their app's language.
         if ($is_start) {
-            self::autoReply($client, $chat_id, Telegram::autoReply($settings, $message['from']['language_code'] ?? ''), $mailbox);
+            self::greet($client, $chat_id, \App\AutoReply\ChannelMessages::greeting($mailbox, 'telegram', $message['from']['language_code'] ?? '', $customer), $mailbox);
         }
     }
 
@@ -219,7 +220,7 @@ class Incoming
         }
     }
 
-    protected static function autoReply(Client $client, $chat_id, $text, Mailbox $mailbox)
+    protected static function greet(Client $client, $chat_id, $text, Mailbox $mailbox)
     {
         if (trim($text) === '') {
             return;
@@ -227,7 +228,7 @@ class Incoming
         try {
             $client->sendMessage($chat_id, $text);
         } catch (TelegramException $e) {
-            Telegram::log('Auto reply to /start not sent: '.$e->getMessage(), $mailbox, 'failed', 'send');
+            Telegram::log('Greeting at /start not sent: '.$e->getMessage(), $mailbox, 'failed', 'send');
         }
     }
 }

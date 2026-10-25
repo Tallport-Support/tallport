@@ -7,8 +7,8 @@ use App\WebChat\WebChat;
 use Illuminate\Http\Request;
 
 /**
- * A mailbox's Website Chat (App\WebChat): on or off, the websites allowed, and what visitors see.
- * Saved with its button: the greeting goes to visitors, never half-written.
+ * A mailbox's Website Chat (App\WebChat): on or off, the websites allowed, and what visitors see
+ * (its greeting and auto reply: App\AutoReply\ChannelMessages). Saved with its button.
  */
 class WebChatSettingsController extends Controller
 {
@@ -35,9 +35,7 @@ class WebChatSettingsController extends Controller
             ]),
             'link'     => $settings['widget'] === '' ? '' : url('/t/w').'?widget='.$settings['widget'],
             'secret'   => \App\WebChat\Identity::hasSecret($mailbox) ? \App\WebChat\Identity::secret($mailbox) : '',
-            'languages'       => \App\Ai\Settings::displayNames(),
             'limits'          => \App\WebChat\Spam::limits($mailbox),
-            'active_language' => session('web_chat_language'),
             'proxy_secret' => WebChat::hasSecret($mailbox, 'proxy_secret') ? WebChat::secret($mailbox, 'proxy_secret') : '',
         ]);
     }
@@ -54,9 +52,6 @@ class WebChatSettingsController extends Controller
         }
         $request->validate([
             'origins'    => 'nullable|string|max:5000',
-            'greeting_mode' => 'nullable|in:'.implode(',', WebChat::GREETING_MODES),
-            'greeting'   => 'nullable|string|max:1000',
-            'greetings.*' => 'nullable|string|max:1000',
             'limit_new_chats'  => 'nullable|integer|min:1|max:100000',
             'limit_messages'   => 'nullable|integer|min:1|max:1000000',
             'limit_uploads_mb' => 'nullable|integer|min:1|max:1000000',
@@ -73,28 +68,13 @@ class WebChatSettingsController extends Controller
             $origins[] = $origin;
         }
         $settings = WebChat::settings($mailbox);
-        // The greeting's versions by language (as Telegram's auto replies): one added or removed.
-        $languages = \App\Ai\Settings::LANGUAGES;
-        $greetings = [];
-        foreach ((array) $request->input('greetings', []) as $language => $text) {
-            if (isset($languages[$language]) && $language != $request->remove_language) {
-                $greetings[$language] = trim((string) $text);
-            }
-        }
-        if ($request->filled('add_language') && isset($languages[$request->add_language_code])) {
-            $greetings += [$request->add_language_code => ''];
-            \Session::flash('web_chat_language', $request->add_language_code);
-        }
         WebChat::saveSettings($mailbox, [
             'limit_new_chats'  => (int) ($request->limit_new_chats ?: \App\WebChat\Spam::LIMITS['new_chats']),
             'limit_messages'   => (int) ($request->limit_messages ?: \App\WebChat\Spam::LIMITS['messages']),
             'limit_uploads_mb' => (int) ($request->limit_uploads_mb ?: \App\WebChat\Spam::LIMITS['uploads_mb']),
-            'greeting_mode' => $request->greeting_mode ?: 'tallport',
-            'greetings'  => $greetings,
             'enabled'    => (bool) $request->enabled,
             'widget'     => $settings['widget'] !== '' ? $settings['widget'] : WebChat::newWidgetId(),
             'origins'    => array_values(array_unique($origins)),
-            'greeting'   => trim((string) $request->greeting),
             'reply_time' => trim((string) $request->reply_time),
             'accent'     => $request->accent ?: 'blue',
         ]);

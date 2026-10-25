@@ -70,4 +70,9 @@
             <x-fruit::button type="submit" variant="primary">{{ __('Save') }}</x-fruit::button>
         </footer>
     </form>
+
+    {{-- Its auto reply: the mailbox's, or its own. --}}
+    @if ($mailbox->hasEmail())
+        @include('mailboxes/partials/message_links', ['key' => 'email'])
+    @endif
 @endsection

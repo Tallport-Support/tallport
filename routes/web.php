@@ -136,15 +136,19 @@ Route::group(['middleware' => 'mailbox.address', 'where' => ['id' => '[a-z0-9-]+
     Route::get('/mailbox/{id}/settings', 'MailboxesController@update')->name('mailboxes.update');
     Route::get('/mailbox/{id}/settings/general', 'MailboxesController@update')->name('mailboxes.general');
     Route::post('/mailbox/{id}/settings/general', 'MailboxesController@updateSave')->name('mailboxes.update.save');
-    // Email, a channel like the others: its address, sending, fetching and auto reply.
+    // Email, a channel like the others: its address, sending and fetching.
     Route::get('/mailbox/{id}/settings/email', 'MailboxesController@email')->name('mailboxes.email');
     Route::post('/mailbox/{id}/settings/email', 'MailboxesController@updateSave')->name('mailboxes.email.save');
     Route::get('/mailbox/{id}/settings/email/sending', 'MailboxesController@connectionOutgoing')->name('mailboxes.connection');
     Route::post('/mailbox/{id}/settings/email/sending', 'MailboxesController@connectionOutgoingSave')->name('mailboxes.connection.save');
     Route::get('/mailbox/{id}/settings/email/fetching', 'MailboxesController@connectionIncoming')->name('mailboxes.connection.incoming');
     Route::post('/mailbox/{id}/settings/email/fetching', 'MailboxesController@connectionIncomingSave')->name('mailboxes.connection.incoming.save');
-    Route::get('/mailbox/{id}/settings/email/auto-reply', 'MailboxesController@autoReply')->name('mailboxes.auto_reply');
-    Route::post('/mailbox/{id}/settings/email/auto-reply', 'MailboxesController@autoReplySave')->name('mailboxes.auto_reply.save');
+    // Its automatic messages, for all its channels.
+    Route::get('/mailbox/{id}/settings/greeting', 'AutomaticMessagesController@greeting')->name('mailboxes.greeting');
+    Route::post('/mailbox/{id}/settings/greeting', 'AutomaticMessagesController@greetingSave')->name('mailboxes.greeting.save');
+    Route::get('/mailbox/{id}/settings/auto-reply', 'AutomaticMessagesController@autoReply')->name('mailboxes.auto_reply');
+    Route::post('/mailbox/{id}/settings/auto-reply', 'AutomaticMessagesController@autoReplySave')->name('mailboxes.auto_reply.save');
+    Route::post('/mailbox/{id}/settings/translate', 'AutomaticMessagesController@translate')->name('mailboxes.automatic_messages.translate');
     Route::get('/mailbox/{id}/settings/permissions', 'MailboxesController@permissions')->name('mailboxes.permissions');
     Route::post('/mailbox/{id}/settings/permissions', 'MailboxesController@permissionsSave')->name('mailboxes.permissions.save');
     Route::get('/mailbox/{id}/settings/website-chat', ['uses' => 'WebChatSettingsController@settings', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('mailboxes.web_chat');
@@ -190,11 +194,12 @@ foreach ([
 ] as $moved_uri => $moved_to) {
     Route::get($moved_uri, 'MailboxesController@settingsMoved')->where(['id' => '\d+', 'mailbox_id' => '\d+', 'saved_reply_id' => '\d+'])->defaults('to', $moved_to);
 }
-// And those of 2.53 (by short name), before Email had a page.
+// And those of 2.53 (by short name), before Email had a page; Email's auto reply of 2.55, all
+// channels' now.
 foreach ([
     '/mailbox/{id}/settings/connection'          => 'mailboxes.connection',
     '/mailbox/{id}/settings/connection/incoming' => 'mailboxes.connection.incoming',
-    '/mailbox/{id}/settings/auto-reply'          => 'mailboxes.auto_reply',
+    '/mailbox/{id}/settings/email/auto-reply'    => 'mailboxes.auto_reply',
 ] as $moved_uri => $moved_to) {
     Route::get($moved_uri, 'MailboxesController@settingsMoved')->where('id', '[a-z0-9-]+')->defaults('to', $moved_to);
 }

@@ -11,10 +11,8 @@
         <div class="settings-form">
             <p class="f-help">{{ __('A chat button on your websites. Visitors’ messages become conversations in this mailbox, and they see your replies in the chat.') }}</p>
 
-            {{-- Saved with its button: the greeting goes to visitors, never half-written. --}}
+            {{-- Saved with its button: what visitors see, never half-written. --}}
             <form id="page-form" class="settings-form" method="POST" action="{{ route('mailboxes.web_chat.save', ['id' => $mailbox->id]) }}">
-                {{-- Enter in a field saves (the form's first submit button), not Add Language. --}}
-                <button type="submit" hidden aria-hidden="true" tabindex="-1"></button>
                 {{ csrf_field() }}
 
                 <x-fruit::form-section>
@@ -28,49 +26,6 @@
                 </x-fruit::form-section>
 
                 <x-fruit::form-section :title="__('What Visitors See')" :level="3">
-                    {{-- The chat's first message (WebChat::greeting()): Tallport's, translated and by name; the mailbox's own, with versions by language; or none. --}}
-                    <div class="settings-form" x-data="{ greetingMode: @js(old('greeting_mode', $settings['greeting_mode'])) }">
-                        <x-fruit::fieldset>
-                            <legend>{{ __('Greeting') }}</legend>
-                            <x-fruit::radio name="greeting_mode" value="tallport" id="web_chat_greeting_tallport" x-model="greetingMode" :checked="old('greeting_mode', $settings['greeting_mode']) == 'tallport'" :description="__('“Hi, how can we help?” in the visitor’s language, with their first name when your website signs them in.')">{{ __('Tallport’s Greeting') }}</x-fruit::radio>
-                            <x-fruit::radio name="greeting_mode" value="custom" id="web_chat_greeting_custom" x-model="greetingMode" :checked="old('greeting_mode', $settings['greeting_mode']) == 'custom'">{{ __('Your Own Greeting') }}</x-fruit::radio>
-                            <x-fruit::radio name="greeting_mode" value="none" id="web_chat_greeting_none" x-model="greetingMode" :checked="old('greeting_mode', $settings['greeting_mode']) == 'none'">{{ __('No Greeting') }}</x-fruit::radio>
-                        </x-fruit::fieldset>
-
-                        <div x-show="greetingMode === 'custom'" x-cloak>
-                            <div x-data="fruitTabs">
-                                <x-fruit::tabs :aria-label="__('Language')">
-                                    <x-fruit::tab id="web_chat_greeting_default_tab" aria-controls="web_chat_greeting_default" :aria-selected="$active_language ? 'false' : 'true'">{{ __('Default') }}</x-fruit::tab>
-                                    @foreach ($settings['greetings'] as $language => $text)
-                                        <x-fruit::tab id="web_chat_greeting_{{ $language }}_tab" aria-controls="web_chat_greeting_{{ $language }}" :aria-selected="$active_language == $language ? 'true' : 'false'">{{ $languages[$language] ?? $language }}</x-fruit::tab>
-                                    @endforeach
-                                </x-fruit::tabs>
-                                <div role="tabpanel" id="web_chat_greeting_default" aria-labelledby="web_chat_greeting_default_tab" class="auto-reply-panel" @if ($active_language) hidden @endif>
-                                    <x-fruit::textarea id="web_chat_greeting" name="greeting" rows="2" maxlength="1000" :aria-label="__('Greeting')">{{ old('greeting', $settings['greeting']) }}</x-fruit::textarea>
-                                </div>
-                                @foreach ($settings['greetings'] as $language => $text)
-                                    <div role="tabpanel" id="web_chat_greeting_{{ $language }}" aria-labelledby="web_chat_greeting_{{ $language }}_tab" class="auto-reply-panel f-stack" @if ($active_language != $language) hidden @endif>
-                                        <x-fruit::textarea rows="2" maxlength="1000" name="greetings[{{ $language }}]" :aria-label="$languages[$language] ?? $language">{{ old('greetings.'.$language, $text) }}</x-fruit::textarea>
-                                        <div><x-fruit::button type="submit" variant="danger" size="small" name="remove_language" :value="$language">{{ __('Remove :language', ['language' => $languages[$language] ?? $language]) }}</x-fruit::button></div>
-                                    </div>
-                                @endforeach
-                            </div>
-                            <p class="f-help">{{ __('Visitors in a language without its own version get the default. The name goes in with {%customer.firstName,fallback=there%}; also {%customer.fullName%} and {%mailbox.name%}.') }}</p>
-                            @if (count($languages) > count($settings['greetings']))
-                                <div class="f-row">
-                                    <x-fruit::select name="add_language_code" :aria-label="__('Language')" class="auto-reply-add-language">
-                                        @foreach ($languages as $code => $name)
-                                            @if (!array_key_exists($code, $settings['greetings']))
-                                                <option value="{{ $code }}">{{ App\Ai\Settings::optionName($code) }}</option>
-                                            @endif
-                                        @endforeach
-                                    </x-fruit::select>
-                                    <x-fruit::button type="submit" size="small" name="add_language" value="1">{{ __('Add Language') }}</x-fruit::button>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-
                     <x-fruit::field :label="__('Reply Time')" :description="__('Below the mailbox’s name, such as “We usually reply within an hour”. Leave it empty for none.')" layout="row">
                         <x-fruit::input id="web_chat_reply_time" name="reply_time" maxlength="100" :value="old('reply_time', $settings['reply_time'])" />
                     </x-fruit::field>
@@ -83,6 +38,9 @@
                     {{-- The mailbox's own image, set in its settings. --}}
                     <a class="f-form-row f-form-row--link" href="{{ route('mailboxes.general', ['id' => $mailbox->getSlug()]) }}" wire:navigate><span>{{ __('Image') }}</span><span class="f-form-row__value">@if ($mailbox->photo_url)<x-fruit::avatar :src="$mailbox->getPhotoUrl()" />@else{{ __('None') }}@endif</span></a>
                 </x-fruit::form-section>
+
+                {{-- What the chat says by itself: the mailbox's greeting (the first thing visitors see) and auto reply, or its own. --}}
+                @include('mailboxes/partials/message_links', ['key' => 'webchat'])
 
                 {{-- Hourly limits for the widget (App\WebChat\Spam). --}}
                 <x-fruit::form-section :title="__('Limits Per Hour')" :level="3" :footer="__('So the chat can’t be used to fill your database or load your server. When new chats reach their limit, the chat button doesn’t show for new visitors until the hour is over; visitors who already write keep their chat.')">

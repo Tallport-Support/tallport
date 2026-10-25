@@ -170,19 +170,14 @@ class NostrControllerTest extends FeatureTestCase
         $this->assertNull($this->config());
 
         $this->settings(['action' => 'generate']);
-        $this->saveSettings(['enabled' => '0', 'auto_reply_enabled' => '1', 'auto_reply_text' => ' '])
-            ->assertSessionHasErrors('auto_reply_text');
-        $this->assertFalse((bool) $this->config()->auto_reply_enabled);
-
         Bus::fake([NostrTask::class]);
         $this->mailbox->setMetaParam('chat_reopen_days', 14, true);
-        $this->saveSettings(['enabled' => '0', 'auto_reply_enabled' => '1', 'auto_reply_text' => 'We will answer soon.', 'reopen_days' => '7'])
-            ->assertSessionHasNoErrors();
-        $cfg = $this->config();
-        $this->assertSame('We will answer soon.', $cfg->auto_reply_text);
+        $this->saveSettings(['enabled' => '0', 'reopen_days' => '7'])->assertSessionHasNoErrors();
         $this->assertSame(14, $this->mailbox->fresh()->getMeta('chat_reopen_days'));
+        // Its auto reply is on the Auto Reply page now (App\AutoReply\ChannelMessages).
         $this->actingAs($this->admin)->get(route('mailboxes.nostr', ['id' => $this->mailbox->id]))
-            ->assertOk()->assertDontSee('name="reopen_days"', false);
+            ->assertOk()->assertDontSee('name="reopen_days"', false)->assertDontSee('name="auto_reply_text"', false)
+            ->assertSee(route('mailboxes.auto_reply', ['id' => $this->mailbox->getSlug()]).'#auto-reply-nostr', false);
         Bus::assertNotDispatched(NostrTask::class, 'Disabled: nothing is announced.');
     }
 

@@ -68,14 +68,16 @@ class AutoReplies
     }
 
     /**
-     * The language of the version a conversation gets, or null.
+     * The language of the version a conversation gets, or null: of the mailbox's versions, or of
+     * the languages given (a channel's own auto reply, ChannelMessages).
      */
-    public static function language(Conversation $conversation, Mailbox $mailbox)
+    public static function language(Conversation $conversation, Mailbox $mailbox, ?array $languages = null)
     {
-        if (array_key_exists($conversation->id, self::$chosen)) {
-            return self::$chosen[$conversation->id];
+        $languages = $languages ?? self::versions($mailbox, true)->keys()->all();
+        $chosen_key = $conversation->id.':'.implode(',', $languages);
+        if (array_key_exists($chosen_key, self::$chosen)) {
+            return self::$chosen[$chosen_key];
         }
-        $languages = self::versions($mailbox, true)->keys()->all();
         $language = null;
         // The customer's language (their profile's) where there is a version in it.
         $customer_language = $conversation->customer->language ?? null;
@@ -99,7 +101,7 @@ class AutoReplies
             self::$chosen = [];
         }
 
-        return self::$chosen[$conversation->id] = $language;
+        return self::$chosen[$chosen_key] = $language;
     }
 
     /**

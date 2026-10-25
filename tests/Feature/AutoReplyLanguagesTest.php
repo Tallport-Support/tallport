@@ -13,7 +13,7 @@ use Tests\FeatureTestCase;
 /**
  * Auto replies in the customer's language: the versions on the Auto Reply
  * page, choosing one (from the characters, or with the AI faked), and the
- * Telegram /start auto reply.
+ * greeting in the language of a Telegram app.
  */
 class AutoReplyLanguagesTest extends FeatureTestCase
 {
@@ -68,9 +68,7 @@ class AutoReplyLanguagesTest extends FeatureTestCase
     {
         return array_merge([
             'auto_reply_enabled' => 1,
-            'auto_reply_subject' => 'We got your message',
-            'auto_reply_message' => '<p>We will answer soon.</p>',
-            'versions'           => $versions,
+            'messages'           => ['mailbox' => ['texts' => ['default' => ['subject' => 'We got your message', 'message' => '<p>We will answer soon.</p>']] + $versions]],
         ], $extra);
     }
 
@@ -176,28 +174,28 @@ class AutoReplyLanguagesTest extends FeatureTestCase
 
     public function testPageAddsSavesAndRemovesLanguages()
     {
-        $this->actingAs($this->admin)->get('/mailbox/'.$this->mailbox->id.'/settings/email/auto-reply')
-            ->assertStatus(200)->assertSee('Add Language')->assertSee('日本語');
+        $page = '/mailbox/'.$this->mailbox->id.'/settings/auto-reply';
+        $this->actingAs($this->admin)->get($page)->assertStatus(200)->assertSee('Add Language')->assertSee('日本語');
 
-        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/email/auto-reply', $this->form([], ['add_language' => 1, 'add_language_code' => 'ja']))
-            ->assertSessionHas('auto_reply_language', 'ja');
+        // Added: Default's text, to be translated.
+        $this->postForm($this->admin, $page, $this->form([], ['add_language' => 'mailbox:ja']))
+            ->assertSessionHas('automatic_messages_open', 'mailbox:ja');
         $version = MailboxAutoReply::where('mailbox_id', $this->mailbox->id)->where('language', 'ja')->first();
-        $this->assertFalse($version->enabled);
-        $this->actingAs($this->admin)->get('/mailbox/'.$this->mailbox->id.'/settings/email/auto-reply')->assertSee('auto_reply_ja_message', false);
+        $this->assertSame(['We got your message', '<p>We will answer soon.</p>'], [$version->subject, $version->message]);
+        $this->actingAs($this->admin)->get($page)->assertSee('id="auto-reply--ja-message"', false);
 
-        // An enabled version needs a subject and message.
-        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/email/auto-reply', $this->form(['ja' => ['enabled' => 1, 'subject' => '', 'message' => '']]))
-            ->assertSessionHasErrors(['versions.ja.subject', 'versions.ja.message'])
-            ->assertSessionHas('auto_reply_language', 'ja');
+        // Every version needs a subject and message.
+        $this->postForm($this->admin, $page, $this->form(['ja' => ['subject' => '', 'message' => '']]))
+            ->assertSessionHasErrors(['messages.mailbox.texts.ja.subject', 'messages.mailbox.texts.ja.message']);
 
-        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/email/auto-reply', $this->form(['ja' => ['enabled' => 1, 'subject' => 'ありがとう', 'message' => '<p>すぐに返信します。</p><script>alert(1)</script>']]))
+        $this->postForm($this->admin, $page, $this->form(['ja' => ['subject' => 'ありがとう', 'message' => '<p>すぐに返信します。</p><script>alert(1)</script>']]))
             ->assertSessionHasNoErrors();
         $version = $version->fresh();
         $this->assertTrue($version->enabled);
         $this->assertSame('ありがとう', $version->subject);
         $this->assertStringNotContainsString('script', $version->message);
 
-        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/email/auto-reply', $this->form(['ja' => ['enabled' => 1, 'subject' => 'ありがとう', 'message' => '<p>x</p>']], ['remove_language' => 'ja']));
+        $this->postForm($this->admin, $page, $this->form(['ja' => ['subject' => 'ありがとう', 'message' => '<p>x</p>']], ['remove_language' => 'mailbox:ja']));
         $this->assertSame(0, MailboxAutoReply::where('mailbox_id', $this->mailbox->id)->count());
     }
 
@@ -205,32 +203,33 @@ class AutoReplyLanguagesTest extends FeatureTestCase
     {
         $this->version('ko', '문의해 주셔서 감사합니다');
         $this->version('zh-Hant', '感謝您的來信');
+        $page = '/mailbox/'.$this->mailbox->id.'/settings/auto-reply';
 
-        $this->actingAs($this->admin)->get('/mailbox/'.$this->mailbox->id.'/settings/email/auto-reply')
-            ->assertSee('aria-selected="false">Korean', false)
-            ->assertSee('aria-selected="false">Chinese (Traditional)', false)
+        $this->actingAs($this->admin)->get($page)
+            ->assertSee('<span>Korean</span><span class="f-form-row__value"', false)
+            ->assertSee('<span>Chinese (Traditional)</span><span class="f-form-row__value"', false)
             ->assertSee('Japanese (日本語)');
 
         $dutch = $this->createAdmin(['locale' => 'nl']);
-        $this->actingAs($dutch)->withSession(['user_locale' => 'nl'])->get('/mailbox/'.$this->mailbox->id.'/settings/email/auto-reply')
-            ->assertSee('aria-selected="false">Koreaans', false)
+        $this->actingAs($dutch)->withSession(['user_locale' => 'nl'])->get($page)
+            ->assertSee('<span>Koreaans</span><span class="f-form-row__value"', false)
             ->assertSee('Japans (日本語)');
 
         // Korean can be edited.
-        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/email/auto-reply', $this->form(['ko' => ['enabled' => 1, 'subject' => '감사합니다', 'message' => '<p>곧 답변드리겠습니다.</p>']]))
+        $this->postForm($this->admin, $page, $this->form(['ko' => ['subject' => '감사합니다', 'message' => '<p>곧 답변드리겠습니다.</p>'], 'zh-Hant' => ['subject' => '謝謝', 'message' => '<p>謝謝</p>']]))
             ->assertSessionHasNoErrors();
         $this->assertSame('감사합니다', AutoReplies::versions($this->mailbox)['ko']->subject);
     }
 
     // Telegram.
 
-    public function testTelegramAutoReplyInTheAppsLanguage()
+    public function testTelegramGreetingInTheAppsLanguage()
     {
         Http::fake(['*' => Http::response(['ok' => true, 'result' => ['message_id' => 1]])]);
-        Telegram::saveSettings($this->mailbox, [
-            'enabled' => true, 'token' => '1:T', 'ignore_start' => true,
-            'auto_reply' => 'Welcome!', 'auto_replies' => ['ja' => 'ようこそ！', 'zh-Hans' => '欢迎！', 'de' => ''],
-        ]);
+        Telegram::saveSettings($this->mailbox, ['enabled' => true, 'token' => '1:T', 'ignore_start' => true]);
+        \App\AutoReply\ChannelMessages::saveSettings($this->mailbox, ['greeting' => ['mode' => 'tallport', 'texts' => []], 'channels' => [
+            'telegram' => ['greeting' => ['mode' => 'own', 'texts' => ['' => 'Welcome!', 'ja' => 'ようこそ！', 'zh-Hans' => '欢迎！', 'de' => '']]],
+        ]]);
         $sent = function ($language_code) {
             $this->withHeaders(['X-Telegram-Bot-Api-Secret-Token' => Telegram::webhookSecret($this->mailbox)])
                 ->postJson('/telegram/webhook/'.$this->mailbox->id, ['update_id' => rand(1, 1000000), 'message' => [
@@ -246,26 +245,6 @@ class AutoReplyLanguagesTest extends FeatureTestCase
         // Empty version: the default.
         $this->assertSame('Welcome!', $sent('de'));
         $this->assertSame('Welcome!', $sent('fr'));
-    }
-
-    public function testTelegramPageAddsLanguages()
-    {
-        Http::fake(['*' => Http::response(['ok' => true, 'result' => true])]);
-        Telegram::saveSettings($this->mailbox, ['enabled' => true, 'token' => '1:T', 'auto_reply' => 'Welcome!']);
-
-        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/telegram', [
-            'enabled' => 1, 'token' => '***', 'auto_reply' => 'Welcome!', 'add_language' => 1, 'add_language_code' => 'ja',
-        ])->assertSessionHas('telegram_language', 'ja');
-        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/telegram', [
-            'enabled' => 1, 'token' => '***', 'auto_reply' => 'Welcome!', 'auto_replies' => ['ja' => 'ようこそ！'],
-        ]);
-        $this->assertSame(['ja' => 'ようこそ！'], Telegram::settings($this->mailbox->fresh())['auto_replies']);
-        $this->actingAs($this->admin)->get('/mailbox/'.$this->mailbox->id.'/settings/telegram')->assertSee('ようこそ！');
-
-        $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/telegram', [
-            'enabled' => 1, 'token' => '***', 'auto_reply' => 'Welcome!', 'auto_replies' => ['ja' => 'ようこそ！'], 'remove_language' => 'ja',
-        ]);
-        $this->assertSame([], Telegram::settings($this->mailbox->fresh())['auto_replies']);
     }
 
     public function testLanguageTags()
@@ -368,6 +347,6 @@ class AutoReplyLanguagesTest extends FeatureTestCase
         $this->receiveEmail($this->mailbox, $this->makeEmail(['from' => 'casey@customer.example.org', 'to' => $this->mailbox->email, 'subject' => 'Help', 'body' => 'アプリが起動しません。']));
         $conversation = \App\Conversation::where('mailbox_id', $this->mailbox->id)->first();
 
-        $this->assertSame([$conversation->id => 'ja'], $chosen->getValue());
+        $this->assertSame([$conversation->id.':ja' => 'ja'], $chosen->getValue());
     }
 }

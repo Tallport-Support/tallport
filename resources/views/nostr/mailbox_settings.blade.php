@@ -313,14 +313,6 @@
                     </x-fruit::card>
                 @endif
 
-                <h2 class="settings-form__heading">{{ __('Conversations') }}</h2>
-
-                <x-fruit::switch name="auto_reply_enabled" value="1" id="nostr_auto_reply_enabled" :checked="(bool) old('auto_reply_enabled', $cfg->auto_reply_enabled)" :description="__('Sent once when a new conversation is started, not when an existing one is reopened.')">{{ __('Auto reply') }}</x-fruit::switch>
-
-                <x-fruit::field :label="__('Auto Reply Text')" :description="__('Plain text. Nostr messages have no formatting.')">
-                    <x-fruit::textarea id="nostr_auto_reply_text" name="auto_reply_text" rows="4">{{ old('auto_reply_text', $cfg->auto_reply_text ?? '') }}</x-fruit::textarea>
-                </x-fruit::field>
-
             </form>
 
             <h2 class="settings-form__heading">{{ __('How It Works') }}</h2>
@@ -329,6 +321,9 @@
                 <li>{{ __('Unknown senders become new customers; link additional public keys on the Nostr tab of a customer profile.') }}</li>
                 <li>{{ __('Replies are plain text. Attachments are sent as download links.') }}</li>
             </ul>
+
+            {{-- What it says by itself: the mailbox's auto reply, or its own. --}}
+            @include('mailboxes/partials/message_links', ['key' => 'nostr'])
         </div>
     </div>
 @endsection

@@ -54,9 +54,12 @@ class MailboxWithoutEmailTest extends FeatureTestCase
         $this->actingAs($this->admin)->get(route('mailboxes.email', ['id' => 'chats']))->assertOk()
             ->assertSee('Without one, this mailbox doesn’t send or receive email.')
             ->assertDontSee('Sending Emails')->assertDontSee('This mailbox can&#039;t receive email yet.', false);
-        foreach (['mailboxes.connection', 'mailboxes.connection.incoming', 'mailboxes.auto_reply'] as $tab) {
+        foreach (['mailboxes.connection', 'mailboxes.connection.incoming'] as $tab) {
             $this->actingAs($this->admin)->get(route($tab, ['id' => 'chats']))->assertRedirect(route('mailboxes.email', ['id' => 'chats']));
         }
+        // Its auto reply is for all its channels: without email, no subjects (and as yet no channels).
+        $this->actingAs($this->admin)->get(route('mailboxes.auto_reply', ['id' => 'chats']))->assertOk()
+            ->assertDontSee('For email.')->assertSee('This mailbox has no channels yet. Set one up under Channels.');
         $this->actingAs($this->admin)->get(route('mailboxes'))->assertSee('No email address');
 
         // An address: email, with its tabs; cleared: none again.

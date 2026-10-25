@@ -107,6 +107,15 @@ class Client
         return $this->call('sendMessage', $params);
     }
 
+    /**
+     * The bot's description: what Telegram shows in the empty chat, before Start (up to 512
+     * characters); for users of a language (ISO 639-1), or for everyone; '' removes it.
+     */
+    public function setMyDescription($description, $language_code = '')
+    {
+        return $this->call('setMyDescription', array_filter(['description' => $description, 'language_code' => $language_code], fn ($value) => $value !== '') + ['description' => '']);
+    }
+
     public function deleteMessage($chat_id, $message_id)
     {
         return $this->call('deleteMessage', ['chat_id' => $chat_id, 'message_id' => $message_id]);

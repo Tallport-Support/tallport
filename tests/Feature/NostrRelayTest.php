@@ -1132,19 +1132,20 @@ class NostrRelayTest extends FeatureTestCase
         // The customer has no DM relay list: replies go to the mailbox's inbox relays.
         $url = $this->storeRelay([]);
         $cfg->setInboxRelays([$url]);
-        $cfg->auto_reply_enabled = true;
-        $cfg->auto_reply_text = 'Thanks, we will answer soon.';
         $cfg->save();
+        // Nostr's own auto reply (App\AutoReply\ChannelMessages).
+        $mailbox = \App\Mailbox::find($cfg->mailbox_id);
+        $mailbox->auto_reply_enabled = true;
+        $mailbox->save();
+        \App\AutoReply\ChannelMessages::saveSettings($mailbox, ['greeting' => ['mode' => 'tallport', 'texts' => []], 'channels' => ['nostr' => ['auto_reply' => ['mode' => 'own', 'texts' => ['' => 'Thanks, we will answer soon.']]]]]);
         [$wrap, $rumor] = GiftWrap::wrap(['kind' => 14, 'content' => 'Hello', 'tags' => [['p', $cfg->pubkey], ['subject', 'Order 12']]], $customer_private, $cfg->pubkey);
-        \Bus::fake([\App\Jobs\NostrTask::class]);
+        \Bus::fake([\App\Jobs\SendChatAutoReply::class]);
         $thread = (new IncomingMessageHandler())->handleGiftWrap($cfg, $wrap, $url);
         $conversation = $thread->conversation;
-        \Bus::assertDispatched(\App\Jobs\NostrTask::class, function ($job) {
-            return $job->task === 'auto_reply';
-        });
+        \Bus::assertDispatched(\App\Jobs\SendChatAutoReply::class, fn ($job) => $job->conversation_id == $conversation->id);
 
         // The auto reply: delivered, so it shows as a line item.
-        $this->assertTrue((new \App\Nostr\OutgoingMessageSender())->sendAutoReply($conversation->id, $cfg->id, $customer_pubkey));
+        (new \App\Jobs\SendChatAutoReply($conversation->id))->handle();
         $sent = GiftWrap::unwrap($this->relayReport(), $customer_private, $customer_pubkey)['rumor'];
         $this->assertSame('Thanks, we will answer soon.', $sent['content']);
         $this->assertSame([['p', $customer_pubkey], ['subject', 'Order 12'], ['e', $rumor['id'], $url, 'reply']], $sent['tags']);

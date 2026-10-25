@@ -178,9 +178,6 @@ class IncomingMessageHandler
         $cfg->last_event_at = now();
         $cfg->save();
 
-        if ($new && $cfg->auto_reply_enabled && trim((string) $cfg->auto_reply_text) !== '') {
-            \App\Jobs\NostrTask::dispatch('auto_reply', [$conversation->id, $cfg->id, $pubkey]);
-        }
         if ($customerIsNew) {
             \App\Jobs\NostrTask::dispatch('fetch_profile', [$customer->id, $pubkey, $cfg->id]);
         }

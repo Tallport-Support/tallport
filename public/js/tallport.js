@@ -102,10 +102,10 @@ window.Tallport = (function () {
 
 	/**
 	 * Ask before an action, in FruitUI's confirm dialog: resolves true to go ahead.
-	 * options: {message, confirm (button label), tone ('danger' for destructive)}.
+	 * options: {message, detail (a line beneath it), confirm (button label), tone ('danger' for destructive)}.
 	 */
 	function confirm(options) {
-		return window.FruitUI.confirm({title: options.message, confirm: options.confirm, tone: options.tone});
+		return window.FruitUI.confirm({title: options.message, message: options.detail, confirm: options.confirm, tone: options.tone});
 	}
 
 	/**
@@ -223,10 +223,11 @@ document.addEventListener('fruit-dialog-error', function (event) {
 			window.tallportCatchUp();
 		}
 		first_page = false;
-		// A page shown at another URL (a folder showing its conversation) says its own.
+		// A page shown at another URL (a folder showing its conversation) says its own; a part of it
+		// the address named (#auto-reply-telegram) stays named.
 		var page_url = document.body.getAttribute('data-page-url');
-		if (page_url && page_url != window.location.href) {
-			history.replaceState(history.state, '', page_url);
+		if (page_url && page_url + window.location.hash != window.location.href) {
+			history.replaceState(history.state, '', page_url + window.location.hash);
 		}
 		if (sidebar_scroll && sidebar()) {
 			sidebar().scrollTop = sidebar_scroll;

@@ -150,11 +150,15 @@ class TelegramTest extends FeatureTestCase
         $this->actingAs($this->agent)->get('/mailbox/'.$this->mailbox->id.'/settings/telegram')->assertStatus(403);
 
         $this->postForm($this->admin, '/mailbox/'.$this->mailbox->id.'/settings/telegram', [
-            'enabled' => 1, 'token' => '******', 'auto_reply' => ' Welcome! ', 'ignore_start' => 1,
+            'enabled' => 1, 'token' => '******', 'ignore_start' => 1,
         ])->assertRedirect(route('mailboxes.telegram', ['id' => $this->mailbox->id]));
 
         $mailbox = $this->mailbox->fresh();
-        $this->assertSame(['enabled' => true, 'token' => self::TOKEN, 'auto_reply' => 'Welcome!', 'auto_replies' => [], 'ignore_start' => true], Telegram::settings($mailbox));
+        $this->assertSame(['enabled' => true, 'token' => self::TOKEN, 'auto_reply' => '', 'auto_replies' => [], 'ignore_start' => true], Telegram::settings($mailbox));
+        // Its description, in the empty chat: the greeting, in the app's languages (Tallport's).
+        $descriptions = $this->sentTo('setMyDescription')->pluck('description', 'language_code');
+        $this->assertSame('Hi, how can we help?', $descriptions['']);
+        $this->assertSame('Hallo, waarmee kunnen we u helpen?', $descriptions['nl']);
         $this->assertStringNotContainsString(self::TOKEN, json_encode($mailbox->meta));
         $set = $this->sentTo('setWebhook')->last();
         $this->assertSame(route('telegram.webhook', ['mailbox_id' => $mailbox->id]), $set['url']);
@@ -234,7 +238,8 @@ class TelegramTest extends FeatureTestCase
 
     public function testStartCommand()
     {
-        Telegram::saveSettings($this->mailbox, ['auto_reply' => 'Welcome to support!', 'ignore_start' => true]);
+        Telegram::saveSettings($this->mailbox, ['ignore_start' => true]);
+        \App\AutoReply\ChannelMessages::saveSettings($this->mailbox, ['greeting' => ['mode' => 'tallport', 'texts' => []], 'channels' => ['telegram' => ['greeting' => ['mode' => 'own', 'texts' => ['' => 'Welcome to support!']]]]]);
         $this->postUpdate($this->update(['text' => '/start']));
         $this->assertNull($this->conversation());
         $this->assertSame('Welcome to support!', $this->sentTo('sendMessage')->last()['text']);
@@ -243,6 +248,44 @@ class TelegramTest extends FeatureTestCase
         $this->postUpdate($this->update(['text' => '/start']));
         $this->assertSame('/start', $this->conversation()->threads()->first()->body);
         $this->assertCount(2, $this->sentTo('sendMessage'));
+    }
+
+    /**
+     * A new conversation's auto reply (App\AutoReply\ChannelMessages): the mailbox's, as plain
+     * text; Telegram's own, in the customer's language; none for None, nor while the mailbox's
+     * auto reply is off. The conversation says it was sent.
+     */
+    public function testAutoReply()
+    {
+        $this->mailbox->auto_reply_enabled = true;
+        $this->mailbox->auto_reply_subject = 'Thanks';
+        $this->mailbox->auto_reply_message = '<p>Thanks, <b>{%customer.firstName%}</b>.</p><p>We reply soon.</p>';
+        $this->mailbox->save();
+        $from = fn ($id, $text) => $this->update(['chat' => ['id' => $id, 'type' => 'private'], 'from' => ['id' => $id, 'is_bot' => false, 'first_name' => 'Casey'], 'text' => $text]);
+
+        $this->postUpdate($from(601, 'Hello'));
+        $text = $this->sentTo('sendMessage')->last()['text'];
+        $this->assertStringContainsString('Thanks, Casey.', $text);
+        $this->assertStringContainsString('We reply soon.', $text);
+        $this->assertStringNotContainsString('<', $text);
+        $line = $this->conversation()->threads()->where('type', Thread::TYPE_LINEITEM)->where('action_type', Thread::ACTION_TYPE_AUTO_REPLY)->firstOrFail();
+        $this->assertStringContainsString('sent the auto reply', $line->getActionText());
+
+        $own = fn ($mode, $texts = []) => \App\AutoReply\ChannelMessages::saveSettings($this->mailbox, ['greeting' => ['mode' => 'tallport', 'texts' => []], 'channels' => ['telegram' => ['auto_reply' => ['mode' => $mode, 'texts' => $texts]]]]);
+        $own('own', ['' => 'Hello {%customer.firstName%}!', 'ja' => 'こんにちは！']);
+        $this->postUpdate($from(602, 'アプリが起動しません。'));
+        $this->assertSame('こんにちは！', $this->sentTo('sendMessage')->last()['text']);
+        $this->postUpdate($from(603, 'It does not start.'));
+        $this->assertSame('Hello Casey!', $this->sentTo('sendMessage')->last()['text']);
+
+        $sent = $this->sentTo('sendMessage')->count();
+        $own('off');
+        $this->postUpdate($from(604, 'Hello'));
+        $own('own', ['' => 'Hello!']);
+        $this->mailbox->auto_reply_enabled = false;
+        $this->mailbox->save();
+        $this->postUpdate($from(605, 'Hello'));
+        $this->assertCount($sent, $this->sentTo('sendMessage'));
     }
 
     public function testMailboxChatWindowStartsANewConversationAfterInactivity()
@@ -559,14 +602,14 @@ class TelegramTest extends FeatureTestCase
         $this->assertSame('caseylee', $profiles[0]['value']);
     }
 
-    public function testStartAutoReplyThatFailsIsLogged()
+    public function testStartGreetingThatFailsIsLogged()
     {
-        Telegram::saveSettings($this->mailbox, ['auto_reply' => 'Welcome!', 'ignore_start' => true]);
+        Telegram::saveSettings($this->mailbox, ['ignore_start' => true]);
         $this->fakeTelegram(['sendMessage' => $this->error(403, 'Forbidden: bot was blocked by the user')]);
 
         $this->postUpdate($this->update(['text' => '/start']))->assertStatus(200);
 
-        $this->assertContains('('.$this->mailbox->name.') Auto reply to /start not sent: Forbidden: bot was blocked by the user', $this->telegramLog());
+        $this->assertContains('('.$this->mailbox->name.') Greeting at /start not sent: Forbidden: bot was blocked by the user', $this->telegramLog());
     }
 
     public function testClientNeedsATokenAndHidesIt()

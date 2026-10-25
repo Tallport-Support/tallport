@@ -237,7 +237,8 @@ class MailboxesTest extends FeatureTestCase
             ->assertSee('href="'.route('mailboxes.update', ['id' => 'support']).'"', false);
         $html = $this->actingAs($this->admin)->get('/mailbox/support/settings')->assertOk()
             ->assertSeeInOrder(['>Settings</h1>', 'Support', 'General', 'Permissions', '2 people',
-                'Channels', 'Email', 'mailbox-pages__problem', 'Needs Attention', 'Website Chat', 'Telegram', 'Matrix', 'Nostr', 'AI', 'Documentation', 'Workflows', 'Saved Replies', '>General</h1>'], false)
+                'Channels', 'Email', 'mailbox-pages__problem', 'Needs Attention', 'Website Chat', 'Telegram', 'Matrix', 'Nostr',
+                'Automatic Messages', 'Greeting', 'Tallport’s', 'Auto Reply', 'On', 'AI', 'Documentation', 'Workflows', 'Saved Replies', '>General</h1>'], false)
             ->assertDontSee('Connection Settings')->assertDontSee('id="email"', false)->assertDontSee('This mailbox can&#039;t receive email yet.', false)
             // The inbox sidebar, not Settings'.
             ->assertSee('app-sidebar__mailbox', false)->assertDontSee('id="settings-search"', false)
@@ -251,17 +252,21 @@ class MailboxesTest extends FeatureTestCase
             ->assertSee('>Permissions</h1>', false)->assertSee('data-page-url="'.route('mailboxes.permissions', ['id' => 'support']).'"', false)->getContent();
         $this->assertMatchesRegularExpression($current(route('mailboxes.permissions', ['id' => 'support'])), $html);
 
-        // Email, a channel like the others: its tabs (address, sending, fetching, auto reply), its row
-        // current on each.
+        // Email, a channel like the others: its tabs (address, sending, fetching), its row current on
+        // each; its auto reply is with the other channels'.
         $html = $this->actingAs($this->admin)->get(route('mailboxes.email', ['id' => 'support']))->assertOk()
-            ->assertSeeInOrder(['>Email</h1>', 'Address', 'Sending Emails', 'Fetching Emails', 'Auto Reply', 'id="email"', 'Aliases', 'Emails to Customers', 'From Name', 'Email Signature', 'Save'], false)->getContent();
+            ->assertSeeInOrder(['>Email</h1>', 'Address', 'Sending Emails', 'Fetching Emails', 'id="email"', 'Aliases', 'Emails to Customers', 'From Name', 'Email Signature', 'Save',
+                'Automatic Messages', 'href="'.route('mailboxes.auto_reply', ['id' => 'support']).'#auto-reply-email"', 'Auto Reply', 'The Mailbox’s'], false)->getContent();
         $this->assertMatchesRegularExpression($current(route('mailboxes.email', ['id' => 'support'])), $html);
-        foreach (['mailboxes.connection', 'mailboxes.connection.incoming', 'mailboxes.auto_reply'] as $tab) {
+        foreach (['mailboxes.greeting', 'mailboxes.auto_reply'] as $page) {
+            $this->assertMatchesRegularExpression($current(route($page, ['id' => 'support'])), $this->actingAs($this->admin)->get(route($page, ['id' => 'support']))->assertOk()->getContent(), $page);
+        }
+        foreach (['mailboxes.connection', 'mailboxes.connection.incoming'] as $tab) {
             $html = $this->actingAs($this->admin)->get(route($tab, ['id' => 'support']))->assertOk()->assertSee('>Email</h1>', false)->getContent();
             $this->assertMatchesRegularExpression('#<a (?=[^>]*href="'.preg_quote(route('mailboxes.email', ['id' => 'support']), '#').'")[^>]*aria-current="page"[^>]*>(?!Address)#', $html, $tab);
             $this->assertMatchesRegularExpression($current(route($tab, ['id' => 'support'])), $html, $tab);
         }
-        $this->actingAs($this->admin)->get('/mailbox/elsewhere/settings/email/auto-reply')->assertNotFound();
+        $this->actingAs($this->admin)->get('/mailbox/elsewhere/settings/auto-reply')->assertNotFound();
 
         // In a narrow window the settings start with the list (the page under it, out of sight);
         // a page shows with Back to it.
@@ -324,7 +329,7 @@ class MailboxesTest extends FeatureTestCase
             '/mailbox/connection-settings/'.$mailbox->id.'/outgoing'   => '/mailbox/support/settings/email/sending',
             '/mailbox/connection-settings/'.$mailbox->id.'/incoming'   => '/mailbox/support/settings/email/fetching',
             '/mailbox/permissions/'.$mailbox->id                       => '/mailbox/support/settings/permissions',
-            '/mailbox/settings/'.$mailbox->id.'/auto-reply'            => '/mailbox/support/settings/email/auto-reply',
+            '/mailbox/settings/'.$mailbox->id.'/auto-reply'            => '/mailbox/support/settings/auto-reply',
             '/mailbox/settings/'.$mailbox->id.'/website-chat'          => '/mailbox/support/settings/website-chat',
             '/mailbox/'.$mailbox->id.'/telegram'                       => '/mailbox/support/settings/telegram',
             '/mailbox/settings/'.$mailbox->id.'/matrix'                => '/mailbox/support/settings/matrix',
@@ -340,7 +345,8 @@ class MailboxesTest extends FeatureTestCase
             // 2.53's, before Email had a page.
             '/mailbox/support/settings/connection'                    => '/mailbox/support/settings/email/sending',
             '/mailbox/support/settings/connection/incoming'           => '/mailbox/support/settings/email/fetching',
-            '/mailbox/'.$mailbox->id.'/settings/auto-reply'            => '/mailbox/support/settings/email/auto-reply',
+            // 2.55's: Email's auto reply, all channels' now.
+            '/mailbox/support/settings/email/auto-reply'              => '/mailbox/support/settings/auto-reply',
         ] as $old => $new) {
             $this->actingAs($this->admin)->get($old)->assertStatus(301)->assertRedirect(url($new));
         }
@@ -462,27 +468,27 @@ class MailboxesTest extends FeatureTestCase
     public function testAutoReplySettings()
     {
         $mailbox = $this->createMailbox();
+        $url = '/mailbox/'.$mailbox->id.'/settings/auto-reply';
+        $default = fn (array $text) => ['auto_reply_enabled' => 1, 'messages' => ['mailbox' => ['texts' => ['default' => $text]]]];
 
-        $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/email/auto-reply', [
-            'auto_reply_enabled' => 1,
-            'auto_reply_message' => '<p>Thanks!</p>',
-        ])->assertSessionHasErrors('auto_reply_subject');
+        $this->postForm($this->admin, $url, $default(['message' => '<p>Thanks!</p>']))->assertSessionHasErrors('messages.mailbox.texts.default.subject');
         $this->assertFalse((bool)$mailbox->fresh()->auto_reply_enabled);
 
         // Without a message: a validation error, not a 500 (M5).
-        $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/email/auto-reply', [
-            'auto_reply_enabled' => 1,
-            'auto_reply_subject' => 'We got it',
-        ])->assertSessionHasErrors('auto_reply_message');
+        $this->postForm($this->admin, $url, $default(['subject' => 'We got it']))->assertSessionHasErrors('messages.mailbox.texts.default.message');
 
-        $this->postForm($this->admin, '/mailbox/'.$mailbox->id.'/settings/email/auto-reply', [
-            'auto_reply_enabled' => 1,
-            'auto_reply_subject' => 'We got it',
-            'auto_reply_message' => '<p>Thanks!</p>',
-        ])->assertRedirect(route('mailboxes.auto_reply', ['id' => $mailbox->id]));
+        $this->postForm($this->admin, $url, $default(['subject' => 'We got it', 'message' => '<p>Thanks!</p>']))
+            ->assertRedirect(route('mailboxes.auto_reply', ['id' => $mailbox->getSlug()]));
 
         $mailbox->refresh();
         $this->assertTrue((bool)$mailbox->auto_reply_enabled);
+        $this->assertSame('We got it', $mailbox->auto_reply_subject);
+        $this->assertStringContainsString('Thanks!', $mailbox->auto_reply_message);
+
+        // Off: the mailbox's texts stay as they are (the page sends none).
+        $this->postForm($this->admin, $url, [])->assertSessionHasNoErrors();
+        $mailbox->refresh();
+        $this->assertFalse((bool)$mailbox->auto_reply_enabled);
         $this->assertSame('We got it', $mailbox->auto_reply_subject);
         $this->assertStringContainsString('Thanks!', $mailbox->auto_reply_message);
     }

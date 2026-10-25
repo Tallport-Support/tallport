@@ -9,8 +9,8 @@ use App\Mailbox;
  * chat window (/t/w, WebChatController) in a frame; visitors' messages arrive in a mailbox
  * (conversations of the chat type), and the window fetches the team's replies. Settings are in the
  * mailbox's "web_chat" meta: enabled, widget (the ID websites name), origins (the websites allowed),
- * greeting_mode (tallport, custom or none), greeting and greetings (custom: the main text, and versions
- * by language), reply_time and accent.
+ * reply_time and accent; greeting_mode, greeting and greetings (the window's greeting before it was
+ * the mailbox's: App\AutoReply\ChannelMessages).
  */
 class WebChat
 {
@@ -24,7 +24,7 @@ class WebChat
     const META = 'web_chat';
 
     /**
-     * The chat's first message: Tallport's (translated, by name when known), the mailbox's own, or none.
+     * The chat's first message as it was chosen here: Tallport's, the mailbox's own, or none.
      */
     const GREETING_MODES = ['tallport', 'custom', 'none'];
 
@@ -250,25 +250,11 @@ class WebChat
 
     /**
      * The greeting in the current language, to a customer (by name, when they're signed in with
-     * one) or to anyone: Tallport's own, or the mailbox's (its version in that language, else the
-     * main text) with its variables ({%customer.firstName,fallback=there%}, {%mailbox.name%}…).
+     * one) or to anyone: the mailbox's, or the website chat's own (App\AutoReply\ChannelMessages).
      */
     public static function greeting(Mailbox $mailbox, $customer = null)
     {
-        $settings = self::settings($mailbox);
-        $first_name = $customer ? trim((string) $customer->first_name) : '';
-        if ($settings['greeting_mode'] == 'none') {
-            return '';
-        }
-        if ($settings['greeting_mode'] == 'tallport') {
-            return $first_name !== '' ? __('Hi :name, how can we help?', ['name' => $first_name]) : __('Hi, how can we help?');
-        }
-        $language = \App\Ai\Settings::fromLocale(app()->getLocale());
-        $text = trim((string) ($settings['greetings'][$language] ?? '')) ?: $settings['greeting'];
-        // Without a name, the variables' fallbacks show.
-        $data = ['mailbox' => $mailbox] + ($first_name !== '' ? ['customer' => $customer] : []);
-
-        return trim(str_replace(['<br />', '<br/>', '<br>'], '', \App\Misc\Mail::replaceMailVars($text, $data, false, true)));
+        return \App\AutoReply\ChannelMessages::greeting($mailbox, 'webchat', app()->getLocale(), $customer);
     }
 
     /**

@@ -8,8 +8,8 @@ use App\Mailbox;
  * Telegram bots as a channel: a mailbox's bot receives customers' messages
  * (conversations of the chat type), and agents' replies are sent back.
  * Settings are in the mailbox's "telegram" meta: enabled, token (encrypted),
- * auto_reply, auto_replies (in other languages: language => text),
- * ignore_start, webhook_secret (encrypted).
+ * ignore_start, webhook_secret (encrypted); auto_reply and auto_replies (the
+ * Start text by language, before the greeting: App\AutoReply\ChannelMessages).
  */
 class Telegram
 {
@@ -61,17 +61,54 @@ class Telegram
     }
 
     /**
-     * The /start auto reply in the language of the customer's Telegram app
-     * (an IETF language tag), else the default one.
+     * syncDescription() once the page has been answered: a call to Telegram for each language.
      */
-    public static function autoReply(array $settings, $language_tag)
+    public static function syncDescriptionLater(Mailbox $mailbox)
     {
-        $versions = array_filter($settings['auto_replies'], function ($text) {
-            return trim($text) !== '';
-        });
-        $language = \App\AutoReply\AutoReplies::fromLanguageTag($language_tag, array_keys($versions));
+        $id = $mailbox->id;
+        dispatch(function () use ($id) {
+            $mailbox = Mailbox::find($id);
+            if ($mailbox) {
+                self::syncDescription($mailbox);
+            }
+        })->afterResponse();
+    }
 
-        return $language ? $versions[$language] : $settings['auto_reply'];
+    /**
+     * The bot's description, what Telegram shows in the empty chat before Start: the greeting
+     * (App\AutoReply\ChannelMessages) for everyone, and in each language it has (Telegram's
+     * two-letter codes); languages it no longer has lose theirs.
+     */
+    public static function syncDescription(Mailbox $mailbox)
+    {
+        if (!self::isEnabled($mailbox)) {
+            return;
+        }
+        $messages = \App\AutoReply\ChannelMessages::settings($mailbox);
+        $own = $messages['channels']['telegram'][\App\AutoReply\ChannelMessages::GREETING] ?? ['mode' => \App\AutoReply\ChannelMessages::MAILBOX];
+        // Its languages: the texts', or Tallport's own (the app's).
+        $texts = $own['mode'] == \App\AutoReply\ChannelMessages::OWN ? $own['texts'] : ($messages['greeting']['mode'] == \App\AutoReply\ChannelMessages::OWN ? $messages['greeting']['texts'] : []);
+        $languages = $own['mode'] == \App\AutoReply\ChannelMessages::MAILBOX && $messages['greeting']['mode'] == \App\AutoReply\ChannelMessages::TALLPORT
+            ? array_map(fn ($locale) => \App\Ai\Settings::fromLocale($locale), config('app.locales')) : array_filter(array_keys($texts), fn ($language) => $language !== '');
+        $descriptions = ['' => \App\AutoReply\ChannelMessages::greeting($mailbox, 'telegram')];
+        foreach ($languages as $language) {
+            $code = strtolower(explode('-', $language)[0]);
+            $descriptions[$code] = $descriptions[$code] ?? \App\AutoReply\ChannelMessages::greeting($mailbox, 'telegram', $language);
+        }
+        $settings = (array) ($mailbox->meta[self::META] ?? []);
+        foreach (array_diff((array) ($settings['description_languages'] ?? []), array_keys($descriptions)) as $code) {
+            $descriptions[$code] = '';
+        }
+        try {
+            $client = self::client($mailbox);
+            foreach ($descriptions as $code => $description) {
+                $client->setMyDescription(mb_substr($description, 0, 512), (string) $code);
+            }
+            $settings['description_languages'] = array_values(array_filter(array_keys($descriptions), fn ($code) => $code !== '' && $descriptions[$code] !== ''));
+            $mailbox->setMetaParam(self::META, $settings, true);
+        } catch (TelegramException $e) {
+            self::log('Bot description not set: '.$e->getMessage(), $mailbox, 'failed', 'send');
+        }
     }
 
     public static function isEnabled(Mailbox $mailbox)

@@ -218,8 +218,6 @@ class NostrController extends Controller
             'profile_about' => trim((string) $request->input('profile_about', '')),
             'profile_picture' => trim((string) $request->input('profile_picture', '')),
             'nip05' => strtolower(trim((string) $request->input('nip05', ''))),
-            'auto_reply_enabled' => (bool) $request->input('auto_reply_enabled'),
-            'auto_reply_text' => trim((string) $request->input('auto_reply_text', '')),
         ];
 
         $validator = Validator::make($input, [
@@ -238,9 +236,6 @@ class NostrController extends Controller
             if ($input['enabled'] && !$input['inbox_relays']) {
                 $validator->errors()->add('inbox_relays', __('At least one inbox relay is required.'));
             }
-            if ($input['auto_reply_enabled'] && $input['auto_reply_text'] === '') {
-                $validator->errors()->add('auto_reply_text', __('Enter the auto reply text.'));
-            }
         });
 
         if ($validator->fails()) {
@@ -258,8 +253,6 @@ class NostrController extends Controller
         $cfg->profile_about = $input['profile_about'] ?: null;
         $cfg->profile_picture = $input['profile_picture'] ?: null;
         $cfg->nip05 = $input['nip05'] ?: null;
-        $cfg->auto_reply_enabled = $input['auto_reply_enabled'];
-        $cfg->auto_reply_text = $input['auto_reply_text'] ?: null;
         $cfg->save();
 
         \Session::flash('flash_success_floating', __('Settings updated'));

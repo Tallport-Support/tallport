@@ -132,6 +132,8 @@ class Thread extends Model
     const ACTION_TYPE_NOSTR_AUTO_REPLY = 90;
     // An attachment deleted (action_data: its file name).
     const ACTION_TYPE_ATTACHMENT_DELETED = 91;
+    // The auto reply was sent on a chat channel (App\AutoReply\ChannelMessages; body: its text).
+    const ACTION_TYPE_AUTO_REPLY = 92;
     // A workflow ran (meta workflow_id): automatic, or run by a user.
     const ACTION_TYPE_WORKFLOW_AUTOMATIC = 201;
     const ACTION_TYPE_WORKFLOW_MANUAL = 202;
@@ -147,6 +149,7 @@ class Thread extends Model
         self::ACTION_TYPE_RESTORE_TICKET          => 'restore-ticket',
         self::ACTION_TYPE_NOSTR_AUTO_REPLY        => 'nostr_auto_reply',
         self::ACTION_TYPE_ATTACHMENT_DELETED      => 'deleted-attachment',
+        self::ACTION_TYPE_AUTO_REPLY              => 'auto-reply',
     ];
 
     /**
@@ -667,6 +670,8 @@ class Thread extends Model
                 }
             } elseif ($this->action_type == self::ACTION_TYPE_NOSTR_AUTO_REPLY) {
                 $did_this = __(':person sent the Nostr auto reply').': "'.e(\Helper::textPreview($this->body, 200)).'"';
+            } elseif ($this->action_type == self::ACTION_TYPE_AUTO_REPLY) {
+                $did_this = __(':person sent the auto reply').': "'.e(\Helper::textPreview($this->body, 200)).'"';
             } elseif ($this->action_type == self::ACTION_TYPE_ATTACHMENT_DELETED) {
                 $did_this = __(':person deleted the attachment :file_name', ['file_name' => e((string) $this->action_data)]);
             } elseif ($this->action_type == self::ACTION_TYPE_DELETED_TICKET) {

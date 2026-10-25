@@ -447,8 +447,8 @@ class WebChatController extends Controller
     }
 
     /**
-     * What the visitor sees of the conversation: their messages and the team's replies (not notes,
-     * drafts or what the team can still undo).
+     * What the visitor sees of the conversation: their messages, the team's replies (not notes,
+     * drafts or what the team can still undo) and the auto reply (App\Jobs\SendChatAutoReply).
      */
     protected function threads(Conversation $conversation)
     {
@@ -458,6 +458,9 @@ class WebChatController extends Controller
                 $query->where('type', Thread::TYPE_CUSTOMER)
                     ->orWhere(function ($query) {
                         $query->where('type', Thread::TYPE_MESSAGE)->where('created_at', '<=', now()->subSeconds(Conversation::UNDO_TIMOUT));
+                    })
+                    ->orWhere(function ($query) {
+                        $query->where('type', Thread::TYPE_LINEITEM)->where('action_type', Thread::ACTION_TYPE_AUTO_REPLY);
                     });
             })
             ->orderBy('id');
@@ -465,6 +468,13 @@ class WebChatController extends Controller
 
     protected function message(Thread $thread)
     {
+        // The auto reply: the mailbox's own message, at once.
+        if ($thread->type == Thread::TYPE_LINEITEM) {
+            $mailbox = $thread->conversation->mailbox;
+
+            return ['id' => $thread->id, 'kind' => 'team', 'team' => true, 'author' => WebChat::teamName($mailbox), 'initials' => mb_strtoupper(mb_substr(WebChat::teamName($mailbox), 0, 1)),
+                'photo' => WebChat::teamPhoto($mailbox), 'body' => (string) $thread->body, 'time' => $thread->created_at->toIso8601String(), 'files' => []];
+        }
         $team = $thread->type == Thread::TYPE_MESSAGE;
         // Without an agent: the mailbox's own message, with its name and image.
         $mailbox = $team && !$thread->created_by_user;

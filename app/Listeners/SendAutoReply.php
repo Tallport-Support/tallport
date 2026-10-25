@@ -29,8 +29,10 @@ class SendAutoReply
 
         // no_autoreply meta value is checked in the SendAutoReply job.
 
-        if (!$conversation->imported 
-            && $conversation->mailbox->auto_reply_enabled
+        // On its channel: the mailbox's auto reply, or the channel's own (App\AutoReply\ChannelMessages).
+        $channel = \App\AutoReply\ChannelMessages::key($conversation);
+        if (!$conversation->imported
+            && $channel && \App\AutoReply\ChannelMessages::hasAutoReply($conversation->mailbox, $channel)
         ) {
             $thread = $conversation->threads()->first();
 
@@ -48,11 +50,14 @@ class SendAutoReply
                 return;
             }
 
-            // Chats have their own auto reply (or, on websites, the greeting), not by email; nor has a
-            // mailbox without email.
-            if (in_array((int) $conversation->channel, [\App\Telegram\Telegram::CHANNEL, \App\Nostr\Nostr::channel(), \App\Matrix\Matrix::CHANNEL, \App\WebChat\WebChat::CHANNEL])
-                || !$conversation->mailbox->hasEmail()
-            ) {
+            // A chat's: on its channel.
+            if ($channel != 'email') {
+                \App\Jobs\SendChatAutoReply::dispatch($conversation->id)->onQueue('emails');
+
+                return;
+            }
+            // By email: from a mailbox with email.
+            if (!$conversation->mailbox->hasEmail()) {
                 return;
             }
 

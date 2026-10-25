@@ -63,8 +63,9 @@ class AutoReply extends Mailable
             'customer'     => $this->customer,
         ];
 
-        // The auto reply in the customer's language, if the mailbox has it.
-        $auto_reply = \App\AutoReply\AutoReplies::forConversation($this->conversation, $this->mailbox);
+        // The auto reply in the customer's language (email's own, or the mailbox's for all channels).
+        $auto_reply = \App\AutoReply\ChannelMessages::autoReply($this->conversation, $this->mailbox)
+            ?: \App\AutoReply\AutoReplies::forConversation($this->conversation, $this->mailbox);
 
         // Set variables
         $subject = \MailHelper::replaceMailVars($auto_reply['subject'], $data);
