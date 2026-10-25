@@ -2030,5 +2030,6 @@
     "Dismiss": "隱藏",
     "Sound": "聲音",
     "Sound On": "聲音已開啟",
-    "Sound Off": "聲音已關閉"
+    "Sound Off": "聲音已關閉",
+    ":label, notifications muted": ":label，通知已靜音"
 }

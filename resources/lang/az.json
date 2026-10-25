@@ -1986,5 +1986,6 @@
     "Dismiss": "Gizlət",
     "Sound": "Səs",
     "Sound On": "Səs Açıq",
-    "Sound Off": "Səs Bağlı"
+    "Sound Off": "Səs Bağlı",
+    ":label, notifications muted": ":label, bildirişlər səssizdir"
 }

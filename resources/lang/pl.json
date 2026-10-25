@@ -1986,5 +1986,6 @@
     "Dismiss": "Ukryj",
     "Sound": "Dźwięk",
     "Sound On": "Dźwięk Włączony",
-    "Sound Off": "Dźwięk Wyłączony"
+    "Sound Off": "Dźwięk Wyłączony",
+    ":label, notifications muted": ":label, powiadomienia wyciszone"
 }

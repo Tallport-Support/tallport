@@ -1986,5 +1986,6 @@
     "Dismiss": "Скрыть",
     "Sound": "Звук",
     "Sound On": "Звук Включён",
-    "Sound Off": "Звук Выключен"
+    "Sound Off": "Звук Выключен",
+    ":label, notifications muted": ":label, уведомления отключены"
 }

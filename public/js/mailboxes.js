@@ -365,11 +365,26 @@ document.addEventListener('alpine:init', function () {
 		}, state);
 	});
 
-	// Mute or unmute a mailbox's notifications (the sidebar's mailbox menu).
+	// Mute or unmute the user's notifications for a mailbox (mailboxes/partials/mailbox_menu: the list's
+	// toolbar, its row's context menu): a menu checkbox. Done, it says so (tallport-mute), and every
+	// one of its checkboxes, bells and rows follows.
 	window.Alpine.data('tallportMuteMailbox', function (mailbox_id, muted) {
 		return {
 			muted: muted,
 			busy: false,
+			init: function () {
+				var self = this;
+				var follow = function (event) {
+					if (event.detail.mailbox_id == mailbox_id) {
+						self.muted = event.detail.muted;
+					}
+				};
+				window.addEventListener('tallport-mute', follow);
+				this.unfollow = function () { window.removeEventListener('tallport-mute', follow); };
+			},
+			destroy: function () {
+				this.unfollow && this.unfollow();
+			},
 			toggle: function () {
 				var self = this;
 				if (self.busy) {
@@ -383,7 +398,7 @@ document.addEventListener('alpine:init', function () {
 					mute: self.muted ? 0 : 1
 				}).then(function (response) {
 					if (Tallport.isSuccess(response)) {
-						self.muted = !self.muted;
+						window.dispatchEvent(new CustomEvent('tallport-mute', {detail: {mailbox_id: mailbox_id, muted: !self.muted}}));
 					} else {
 						Tallport.result(response);
 					}
@@ -392,6 +407,20 @@ document.addEventListener('alpine:init', function () {
 				});
 			}
 		};
+	});
+});
+
+// A mailbox's notifications muted or not (tallportMuteMailbox): its bells show or hide, and its sidebar row
+// says so to screen readers.
+window.addEventListener('tallport-mute', function (event) {
+	var id = CSS.escape(String(event.detail.mailbox_id));
+	document.querySelectorAll('[data-muted-mailbox="' + id + '"]').forEach(function (icon) {
+		// An SVG: the attribute, not a property.
+		icon.toggleAttribute('hidden', !event.detail.muted);
+	});
+	document.querySelectorAll('.app-sidebar__mailbox[data-mailbox_id="' + id + '"] > summary').forEach(function (row) {
+		row.setAttribute('data-muted', event.detail.muted ? 1 : 0);
+		window.tallportRowLabel(row);
 	});
 });
 

@@ -162,6 +162,43 @@ class NewConversation extends Component
     }
 
     /**
+     * The mailbox it's started in, chosen in its Mailbox field (one the user works in): its
+     * addresses, and a phone conversation in one without email. A draft already saved goes
+     * along; the page's address follows, and New Conversation starts there next time.
+     */
+    public function chooseMailbox($mailbox_id)
+    {
+        $user = auth()->user();
+        $mailbox = collect(\App\Misc\Sidebar::mailboxes($user))->pluck(0)->firstWhere('id', (int) $mailbox_id);
+        if (!$mailbox || $mailbox->id == $this->mailbox_id) {
+            return;
+        }
+        $previous = Mailbox::find($this->mailbox_id);
+        $conversation = $this->conversation_id ? Conversation::find($this->conversation_id) : null;
+        if ($conversation && $conversation->state == Conversation::STATE_DRAFT) {
+            // A draft, only in its mailbox's Drafts: not a move (no line in its history).
+            $conversation->mailbox_id = $mailbox->id;
+            $conversation->updateFolder($mailbox);
+            $conversation->save();
+            $previous?->updateFoldersCounters();
+            $mailbox->updateFoldersCounters();
+        }
+        $this->mailbox_id = $mailbox->id;
+        $this->from_aliases = $mailbox->getAliases(true, true);
+        $this->from_alias = '';
+        if (!$mailbox->hasEmail()) {
+            $this->type = Conversation::TYPE_PHONE;
+        }
+        if (in_array($mailbox->ticket_assignee, [Mailbox::TICKET_ASSIGNEE_REPLYING, Mailbox::TICKET_ASSIGNEE_REPLYING_UNASSIGNED])) {
+            $this->user_id = $user->id;
+        } elseif ($this->user_id > 0 && !in_array((int) $this->user_id, array_map('intval', $mailbox->userIdsHavingAccess()), true)) {
+            $this->user_id = -1;
+        }
+        \App\Misc\Sidebar::rememberNewConversationMailbox($mailbox->id);
+        $this->js('history.replaceState(history.state, "", '.json_encode(route('conversations.create', ['mailbox_id' => $mailbox->id])).')');
+    }
+
+    /**
      * A phone conversation's customer, chosen from the suggestions.
      */
     public function chooseCustomer($customer_id)
@@ -410,8 +447,15 @@ class NewConversation extends Component
             $delivery_problems = DeliveryReports::flagged(array_merge($recipients, Fruit::tokens($this->cc)));
         }
 
+        // The mailboxes it can be started in, by name and address (none: only the one).
+        $mailbox_choices = [];
+        foreach (\App\Misc\Sidebar::mailboxes($user) as [$choice]) {
+            $mailbox_choices[$choice->id] = $choice->hasEmail() ? $choice->name.' · '.$choice->email : $choice->name;
+        }
+
         return view('livewire.new-conversation', [
             'mailbox'            => $mailbox,
+            'mailbox_choices'    => $mailbox_choices,
             'conversation'       => $conversation,
             'customer'           => $customer,
             'prev_conversations' => $prev_conversations,

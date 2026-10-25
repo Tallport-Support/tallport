@@ -1986,5 +1986,6 @@
     "Dismiss": "Ocultar",
     "Sound": "Som",
     "Sound On": "Som Ligado",
-    "Sound Off": "Som Desligado"
+    "Sound Off": "Som Desligado",
+    ":label, notifications muted": ":label, notificações silenciadas"
 }

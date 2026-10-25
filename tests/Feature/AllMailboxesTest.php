@@ -255,18 +255,43 @@ class AllMailboxesTest extends FeatureTestCase
         $this->assertStringNotContainsString('app-sidebar__back', $this->get(route('mailboxes.view', ['id' => $this->support->id]))->getContent());
     }
 
-    public function testMailboxButtonsAreOnTheHeadings()
+    /**
+     * New Conversation is in the list's toolbar: in the mailbox being viewed; from All Mailboxes in the
+     * one the user used last, else their first. A mailbox's commands are in the toolbar while one of its
+     * folders is open, and on each mailbox's row in the sidebar (a context menu); the sidebar holds only
+     * mailboxes and folders. A muted mailbox's row shows a bell-slash and says so.
+     */
+    public function testNewConversationAndMailboxCommandsInTheToolbar()
     {
         $admin = $this->createAdmin();
         $html = $this->actingAs($admin)->get(route('mailboxes.view', ['id' => $this->support->id]))->assertOk()->getContent();
-
+        // The keyboard shortcut's New Conversation: the open mailbox's, once.
+        $this->assertMatchesRegularExpression('#href="'.preg_quote(route('conversations.create', ['mailbox_id' => $this->support->id]), '#').'" class="[^"]*new-conversation-link[^"]*" aria-label="New Conversation"#', $html);
+        $this->assertSame(1, substr_count($html, 'new-conversation-link'));
+        $this->assertStringContainsString('aria-label="More for '.$this->support->name.'"', $html);
         foreach ([$this->support, $this->sales] as $mailbox) {
-            $this->assertStringContainsString(route('conversations.create', ['mailbox_id' => $mailbox->id]), $html);
+            $this->assertStringContainsString('details.app-sidebar__mailbox[data-mailbox_id=&#039;'.$mailbox->id.'&#039;] &gt; summary', $html);
             $this->assertStringContainsString(route('mailboxes.update', ['id' => $mailbox->getSlug()]), $html);
         }
-        // The keyboard shortcut's New Conversation: the open mailbox's.
-        $this->assertMatchesRegularExpression('#href="'.preg_quote(route('conversations.create', ['mailbox_id' => $this->support->id]), '#').'" class="[^"]*new-conversation-link#', $html);
-        $this->assertSame(1, substr_count($html, 'new-conversation-link'));
+        $this->assertStringNotContainsString('app-sidebar__mailbox-actions', $html);
+
+        // From All Mailboxes: the first, then the one used last; no mailbox's commands in its toolbar.
+        $first = \App\Misc\Sidebar::mailboxes($admin)[0][0];
+        $other = $first->id == $this->support->id ? $this->sales : $this->support;
+        $all = $this->get(route('mailboxes.all'))->assertOk()->assertDontSee('aria-label="More for', false);
+        $all->assertSee('href="'.route('conversations.create', ['mailbox_id' => $first->id]).'" class="f-button f-button--ghost f-button--icon new-conversation-link"', false);
+        $this->get(route('conversations.create', ['mailbox_id' => $other->id]))->assertOk()
+            ->assertSee('id="new-mailbox"', false)->assertSee($this->support->name.' · '.$this->support->email)->assertSee($this->sales->name.' · '.$this->sales->email)
+            ->assertSee('<option value="'.$other->id.'" selected>', false);
+        $this->get(route('mailboxes.all'))->assertSee('href="'.route('conversations.create', ['mailbox_id' => $other->id]).'"', false);
+
+        // Muted: the row's bell-slash, and its name for screen readers.
+        $this->postAjax($admin, route('mailboxes.ajax'), ['action' => 'mute', 'mailbox_id' => $this->support->id, 'mute' => 1])->assertJson(['status' => 'success']);
+        // (Per-user mailbox settings are cached for the request: one app serves this test's requests.)
+        \Cache::store('array')->flush();
+        $this->get(route('mailboxes.view', ['id' => $this->support->id]))
+            ->assertSee('aria-label="'.$this->support->name.', notifications muted"', false)
+            ->assertSee('data-muted="1"', false);
     }
 
     public function testOneMailboxNoTree()

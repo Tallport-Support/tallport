@@ -269,6 +269,21 @@ document.addEventListener('submit', function (event) {
 		button.setAttribute('aria-busy', 'true');
 	}
 });
+// A sidebar row's name for screen readers, from its data: with its unread count, or its dot (all read),
+// and a mailbox's muted notifications (data-muted, partials/app_sidebar); its own text otherwise.
+window.tallportRowLabel = function (row) {
+	var count = parseInt(row.getAttribute('data-unread-count')) || 0;
+	var label = count ? row.getAttribute('data-label-unread').replace(':count', count)
+		: (row.getAttribute('data-for-you') == '1' ? row.getAttribute('data-label-read') : null);
+	if (row.getAttribute('data-muted') == '1') {
+		label = row.getAttribute('data-label-muted').replace(':label', label || row.getAttribute('data-label-name'));
+	}
+	if (label) {
+		row.setAttribute('aria-label', label);
+	} else {
+		row.removeAttribute('aria-label');
+	}
+};
 // Counts are per user: a new message, a read, or a star can change several folders. With nothing
 // unread, a dot where active conversations for the user are all read (counts.for_you).
 window.tallportSidebarCounts = function (counts) {
@@ -278,13 +293,7 @@ window.tallportSidebarCounts = function (counts) {
 		var element = row.querySelector(selector);
 		row.setAttribute('data-unread-count', count);
 		row.setAttribute('data-for-you', dot ? 1 : 0);
-		if (count) {
-			row.setAttribute('aria-label', row.getAttribute('data-label-unread').replace(':count', count));
-		} else if (dot) {
-			row.setAttribute('aria-label', row.getAttribute('data-label-read'));
-		} else {
-			row.removeAttribute('aria-label');
-		}
+		window.tallportRowLabel(row);
 		if (!count && !dot) {
 			element && element.remove();
 			return;

@@ -423,6 +423,8 @@ class ConversationsController extends Controller
     {
         $mailbox = Mailbox::findOrFail($mailbox_id);
         $this->authorize('view', $mailbox);
+        // New Conversation from All Mailboxes starts here next time.
+        \App\Misc\Sidebar::rememberNewConversationMailbox($mailbox->id);
 
         $subject = trim($request->get('subject') ?? '');
 

@@ -1986,5 +1986,6 @@
     "Dismiss": "Gizle",
     "Sound": "Ses",
     "Sound On": "Ses Açık",
-    "Sound Off": "Ses Kapalı"
+    "Sound Off": "Ses Kapalı",
+    ":label, notifications muted": ":label, bildirimler sessizde"
 }

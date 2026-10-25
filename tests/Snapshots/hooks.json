@@ -1842,7 +1842,7 @@
         "name": "mailbox.sidebar.buttons",
         "arguments": 1,
         "files": [
-            "resources/views/partials/app_sidebar.blade.php"
+            "resources/views/mailboxes/partials/mailbox_menu.blade.php"
         ]
     },
     {

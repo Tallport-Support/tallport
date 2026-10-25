@@ -1986,5 +1986,6 @@
     "Dismiss": "Skrij",
     "Sound": "Zvok",
     "Sound On": "Zvok Vklopljen",
-    "Sound Off": "Zvok Izklopljen"
+    "Sound Off": "Zvok Izklopljen",
+    ":label, notifications muted": ":label, obvestila utišana"
 }

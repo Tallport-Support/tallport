@@ -1986,5 +1986,6 @@
     "Dismiss": "Elrejtés",
     "Sound": "Hang",
     "Sound On": "Hang Bekapcsolva",
-    "Sound Off": "Hang Kikapcsolva"
+    "Sound Off": "Hang Kikapcsolva",
+    ":label, notifications muted": ":label, értesítések némítva"
 }

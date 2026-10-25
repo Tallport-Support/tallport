@@ -1986,5 +1986,6 @@
     "Dismiss": "Ascunde",
     "Sound": "Sunet",
     "Sound On": "Sunet Pornit",
-    "Sound Off": "Sunet Oprit"
+    "Sound Off": "Sunet Oprit",
+    ":label, notifications muted": ":label, notificări dezactivate"
 }

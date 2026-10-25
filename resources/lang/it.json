@@ -1986,5 +1986,6 @@
     "Dismiss": "Nascondi",
     "Sound": "Suono",
     "Sound On": "Suono Attivo",
-    "Sound Off": "Suono Disattivato"
+    "Sound Off": "Suono Disattivato",
+    ":label, notifications muted": ":label, notifiche silenziate"
 }

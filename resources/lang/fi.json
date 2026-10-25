@@ -2002,5 +2002,6 @@
     "Dismiss": "Piilota",
     "Sound": "Ääni",
     "Sound On": "Ääni Päällä",
-    "Sound Off": "Ääni Pois"
+    "Sound Off": "Ääni Pois",
+    ":label, notifications muted": ":label, ilmoitukset mykistetty"
 }

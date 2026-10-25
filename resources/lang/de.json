@@ -1982,5 +1982,6 @@
     "Dismiss": "Ausblenden",
     "Sound": "Ton",
     "Sound On": "Ton An",
-    "Sound Off": "Ton Aus"
+    "Sound Off": "Ton Aus",
+    ":label, notifications muted": ":label, Benachrichtigungen stumm"
 }

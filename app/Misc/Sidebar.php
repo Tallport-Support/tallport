@@ -313,6 +313,37 @@ class Sidebar
     }
 
     /**
+     * The session's key for the mailbox the user started a new conversation in last.
+     */
+    const NEW_CONVERSATION = 'new_conversation_mailbox_id';
+
+    /**
+     * The mailbox New Conversation starts in (the list's toolbar, its shortcut): the one being
+     * viewed; from All Mailboxes (or elsewhere), the one the user started a new conversation in
+     * last, else their first. Null without mailboxes.
+     */
+    public static function newConversationMailboxId(User $user, $mailbox = null)
+    {
+        $ids = array_map(fn ($entry) => (int) $entry[0]->id, self::mailboxes($user));
+        foreach ([$mailbox->id ?? null, session(self::NEW_CONVERSATION)] as $id) {
+            if ($id && in_array((int) $id, $ids, true)) {
+                return (int) $id;
+            }
+        }
+
+        return $ids[0] ?? null;
+    }
+
+    /**
+     * A new conversation started (or moved) in a mailbox: New Conversation starts there next time
+     * from All Mailboxes.
+     */
+    public static function rememberNewConversationMailbox($mailbox_id)
+    {
+        session()->put(self::NEW_CONVERSATION, (int) $mailbox_id);
+    }
+
+    /**
      * Where the user goes back to (after deleting a conversation, for example): this
      * folder (null: the mailbox's first) in the mailbox they work in. In All Mailboxes,
      * its folder of that kind; in another mailbox, that mailbox.

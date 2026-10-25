@@ -186,6 +186,35 @@ class NewConversationTest extends FeatureTestCase
         $form->set('name_query', 'Robin Other')->assertSet('customer_id', null)->assertSet('name', 'Robin Other');
     }
 
+    /**
+     * The Mailbox field (with more than one): the mailboxes the user works in, by name and address;
+     * choosing one moves a draft already saved (no line in its history), its addresses come along,
+     * one without email makes it a phone conversation, and New Conversation starts there next time.
+     */
+    public function testChoosingTheMailbox()
+    {
+        $this->form()->assertDontSee('id="new-mailbox"', false);
+        $chats = $this->createMailbox([$this->agent], ['name' => 'Chats', 'email' => '']);
+        $elsewhere = $this->createMailbox([], ['name' => 'Elsewhere']);
+        // (The user's mailboxes are cached for the request: one app serves this test's requests.)
+        \Cache::store('array')->flush();
+        $this->agent = $this->agent->fresh();
+        $form = $this->form()->assertSee('id="new-mailbox"', false)->assertSee($this->mailbox->name.' · '.$this->mailbox->email)
+            ->assertSee('<option value="'.$chats->id.'" >Chats</option>', false)->assertDontSee('Elsewhere');
+
+        $form->set('to', 'casey@customer.example.org')->set('subject', 'Your order')->set('body', '<p>Draft</p>')->call('saveDraft');
+        $draft = Conversation::find($form->get('conversation_id'));
+        $form->call('chooseMailbox', $elsewhere->id)->assertSet('mailbox_id', $this->mailbox->id);
+        $form->call('chooseMailbox', $chats->id)->assertSet('mailbox_id', $chats->id)->assertSet('type', Conversation::TYPE_PHONE)
+            ->assertSee('<option value="'.$chats->id.'" selected>Chats</option>', false);
+        $draft->refresh();
+        $this->assertSame($chats->id, (int) $draft->mailbox_id);
+        $this->assertSame(\App\Folder::TYPE_DRAFTS, (int) $draft->folder->type);
+        $this->assertSame((int) $chats->id, (int) $draft->folder->mailbox_id);
+        $this->assertSame(0, $draft->threads()->where('type', Thread::TYPE_LINEITEM)->count());
+        $this->assertSame((int) $chats->id, \App\Misc\Sidebar::newConversationMailboxId($this->agent));
+    }
+
     public function testOnlyForThoseWhoSeeTheMailbox()
     {
         $conversation = new Conversation();

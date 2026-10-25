@@ -1755,11 +1755,21 @@ a.disabled:focus {
     width: 28px;
     color: var(--f-accent);
 }
-.app-sidebar__mailbox-actions {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    padding: 2px 0 6px;
+/* A mailbox whose notifications the user muted: a bell-slash beside its name (in the sidebar, in the
+   list's toolbar), hidden while they aren't (an SVG: the attribute needs saying). */
+.app-sidebar__muted {
+    --f-icon-size: 14px;
+    flex: none;
+    color: var(--f-secondary);
+}
+.mailbox-mute-icon {
+    --f-icon-size: 12px;
+    display: inline-block;
+    vertical-align: -1px;
+}
+.app-sidebar__muted[hidden],
+.mailbox-mute-icon[hidden] {
+    display: none;
 }
 .app-sidebar__module-items {
     list-style: none;

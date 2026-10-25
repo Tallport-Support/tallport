@@ -2379,5 +2379,6 @@
     "Dismiss": "Жасыру",
     "Sound": "Дыбыс",
     "Sound On": "Дыбыс Қосулы",
-    "Sound Off": "Дыбыс Өшірулі"
+    "Sound Off": "Дыбыс Өшірулі",
+    ":label, notifications muted": ":label, хабарландырулар өшірулі"
 }

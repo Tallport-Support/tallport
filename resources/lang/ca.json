@@ -2077,5 +2077,6 @@
     "Dismiss": "Amaga",
     "Sound": "So",
     "Sound On": "So Activat",
-    "Sound Off": "So Desactivat"
+    "Sound Off": "So Desactivat",
+    ":label, notifications muted": ":label, notificacions silenciades"
 }

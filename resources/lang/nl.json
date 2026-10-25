@@ -1986,5 +1986,6 @@
     "Dismiss": "Verbergen",
     "Sound": "Geluid",
     "Sound On": "Geluid Aan",
-    "Sound Off": "Geluid Uit"
+    "Sound Off": "Geluid Uit",
+    ":label, notifications muted": ":label, meldingen gedempt"
 }

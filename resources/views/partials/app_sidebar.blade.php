@@ -5,8 +5,6 @@
     $sidebar_all = App\Misc\AllMailboxes::isAvailable($sidebar_user);
     $sidebar_mailboxes = App\Misc\Sidebar::mailboxes($sidebar_user);
     $sidebar_counts = $sidebar_counts ?? (App\Misc\Sidebar::isSettings() ? ['folders' => [], 'mailboxes' => []] : App\Misc\Sidebar::unreadCounts($sidebar_user));
-    // The mailbox "New Conversation" (shortcut) is for: the current one, else the first.
-    $sidebar_new_mailbox_id = collect($sidebar_mailboxes)->pluck(0)->pluck('id')->contains($sidebar_mailbox_id) ? $sidebar_mailbox_id : ($sidebar_mailboxes[0][0]->id ?? null);
 @endphp
 @if (!empty($sidebar_column))
 {{-- The first level of a drill-down (layouts/app), as FruitUI's settings example: the brand and the
@@ -56,9 +54,15 @@
             $sidebar_muted = (bool) $sidebar_user->mailboxSettings($sidebar_mailbox->id)->mute;
             $sidebar_open_count = $sidebar_counts['mailboxes'][$sidebar_mailbox->id] ?? 0;
             $sidebar_mailbox_for_you = !empty($sidebar_counts['for_you']['mailboxes'][$sidebar_mailbox->id]);
+            // Its name for screen readers: with its count or dot, and muted notifications (tallportRowLabel()).
+            $sidebar_label = $sidebar_open_count ? __(':mailbox, :count unread', ['mailbox' => $sidebar_mailbox->name, 'count' => $sidebar_open_count])
+                : ($sidebar_mailbox_for_you ? __(':mailbox, conversations for you, all read', ['mailbox' => $sidebar_mailbox->name]) : null);
+            if ($sidebar_muted) {
+                $sidebar_label = __(':label, notifications muted', ['label' => $sidebar_label ?? $sidebar_mailbox->name]);
+            }
         @endphp
         <details class="f-sidebar__group app-sidebar__mailbox" data-mailbox_id="{{ $sidebar_mailbox->id }}" @if ($sidebar_is_current || (!$sidebar_all && count($sidebar_mailboxes) == 1)) open @endif>
-            <summary class="f-sidebar__item" data-fruit-mark="{{ $sidebar_mailbox->accent ?: 'blue' }}" @if ($sidebar_open_count) aria-label="{{ __(':mailbox, :count unread', ['mailbox' => $sidebar_mailbox->name, 'count' => $sidebar_open_count]) }}" @elseif ($sidebar_mailbox_for_you) aria-label="{{ __(':mailbox, conversations for you, all read', ['mailbox' => $sidebar_mailbox->name]) }}" @endif data-label-unread="{{ __(':mailbox, :count unread', ['mailbox' => $sidebar_mailbox->name, 'count' => ':count']) }}" data-label-read="{{ __(':mailbox, conversations for you, all read', ['mailbox' => $sidebar_mailbox->name]) }}" data-unread-count="{{ $sidebar_open_count }}" data-for-you="{{ $sidebar_mailbox_for_you ? 1 : 0 }}" data-dot="{{ __('Conversations for you, all read') }}">
+            <summary class="f-sidebar__item" data-fruit-mark="{{ $sidebar_mailbox->accent ?: 'blue' }}" @if ($sidebar_label) aria-label="{{ $sidebar_label }}" @endif data-label-unread="{{ __(':mailbox, :count unread', ['mailbox' => $sidebar_mailbox->name, 'count' => ':count']) }}" data-label-read="{{ __(':mailbox, conversations for you, all read', ['mailbox' => $sidebar_mailbox->name]) }}" data-label-name="{{ $sidebar_mailbox->name }}" data-label-muted="{{ __(':label, notifications muted') }}" data-muted="{{ $sidebar_muted ? 1 : 0 }}" data-unread-count="{{ $sidebar_open_count }}" data-for-you="{{ $sidebar_mailbox_for_you ? 1 : 0 }}" data-dot="{{ __('Conversations for you, all read') }}">
                 @if ($sidebar_mailbox->isArchived())<x-icon.lock class="f-icon" aria-hidden="true" />@else<x-icon.mail class="f-icon" aria-hidden="true" />@endif
                 <span class="f-sidebar__identity mailbox-name">
                     @if (count($sidebar_mailboxes) == 1)
@@ -73,26 +77,23 @@
                         @action('menu.mailbox.after_name', $sidebar_mailbox)
                     @endif
                 </span>
+                {{-- The user's notifications for it muted (tallportMuteMailbox). --}}
+                <x-icon.bell-off class="f-icon app-sidebar__muted" aria-hidden="true" :data-muted-mailbox="$sidebar_mailbox->id" :hidden="!$sidebar_muted" />
                 @if ($sidebar_open_count)<span class="f-badge app-sidebar__mailbox-count">{{ $sidebar_open_count }}</span>@elseif ($sidebar_mailbox_for_you)<span class="f-badge f-badge--dot app-sidebar__mailbox-count" role="img" aria-label="{{ __('Conversations for you, all read') }}" title="{{ __('Conversations for you, all read') }}"></span>@endif
                 <svg class="f-icon f-sidebar__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg>
             </summary>
             <div class="app-sidebar__folders" data-mailbox_id="{{ $sidebar_mailbox->id }}">
                 @include('partials/app_sidebar_folders', ['sidebar_mailbox' => $sidebar_mailbox, 'sidebar_folders' => $sidebar_folders, 'sidebar_current_folder_id' => $sidebar_is_current ? $sidebar_folder_id : null])
             </div>
-            <div class="app-sidebar__mailbox-actions">
-                <a href="{{ route('conversations.create', ['mailbox_id' => $sidebar_mailbox->id]) }}" class="f-button f-button--ghost f-button--small @if ($sidebar_mailbox->id == $sidebar_new_mailbox_id) new-conversation-link @endif"><x-icon.square-pen class="f-icon" aria-hidden="true" /> {{ __('New Conversation') }}</a>
-                <x-fruit::menu :title="__('Mailbox')" class="app-sidebar__mailbox-menu">
-                    <x-slot:trigger class="f-button--ghost f-button--icon f-button--small" :aria-label="__('More')"><x-icon.ellipsis class="f-icon" aria-hidden="true" /></x-slot:trigger>
-                    {{-- Its settings, in the mailbox (MailboxSettings). --}}
-                    @if ($sidebar_user->can('updateSettings', $sidebar_mailbox) || $sidebar_user->can('updateEmailSignature', $sidebar_mailbox) || $sidebar_user->can('update', $sidebar_mailbox))
-                        <x-fruit::menu-link wire:navigate :href="route('mailboxes.update', ['id' => $sidebar_mailbox->getSlug()])">{{ __('Mailbox Settings') }}</x-fruit::menu-link>
-                    @endif
-                    <x-fruit::menu-item x-data="tallportMuteMailbox({{ $sidebar_mailbox->id }}, {{ $sidebar_muted ? 'true' : 'false' }})" x-on:click="toggle"><span x-text="muted ? @js(__('Unmute Notifications')) : @js(__('Mute Notifications'))">{{ $sidebar_muted ? __('Unmute Notifications') : __('Mute Notifications') }}</span></x-fruit::menu-item>
-                    <ul class="app-sidebar__module-items">@action('mailbox.sidebar.buttons', $sidebar_mailbox)</ul>
-                </x-fruit::menu>
-            </div>
             @action('mailbox.after_sidebar_buttons')
         </details>
+    @endforeach
+    {{-- Each mailbox's commands on its row (a secondary click, Shift+F10 or the menu key), as in the list's
+         toolbar while one of its folders is open (mailboxes/partials/mailbox_menu). --}}
+    @foreach ($sidebar_mailboxes as [$sidebar_mailbox])
+        <x-fruit::context-menu :title="$sidebar_mailbox->name" :targets="'details.app-sidebar__mailbox[data-mailbox_id=\''.$sidebar_mailbox->id.'\'] > summary'">
+            @include('mailboxes/partials/mailbox_menu', ['menu_mailbox' => $sidebar_mailbox, 'menu_muted' => (bool) $sidebar_user->mailboxSettings($sidebar_mailbox->id)->mute])
+        </x-fruit::context-menu>
     @endforeach
 
     <ul class="app-sidebar__module-items">@action('menu.append')</ul>

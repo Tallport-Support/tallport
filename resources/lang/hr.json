@@ -1986,5 +1986,6 @@
     "Dismiss": "Sakrij",
     "Sound": "Zvuk",
     "Sound On": "Zvuk Uključen",
-    "Sound Off": "Zvuk Isključen"
+    "Sound Off": "Zvuk Isključen",
+    ":label, notifications muted": ":label, obavijesti utišane"
 }

@@ -1989,5 +1989,6 @@
     "Dismiss": "Skjul",
     "Sound": "Lyd",
     "Sound On": "Lyd På",
-    "Sound Off": "Lyd Av"
+    "Sound Off": "Lyd Av",
+    ":label, notifications muted": ":label, varsler dempet"
 }

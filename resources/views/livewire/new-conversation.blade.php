@@ -39,6 +39,16 @@
             <x-fruit::composer class="form-reply conv-composer" id="form-create" :aria-label="__('New Conversation')" x-on:submit.prevent="submit()">
                 {{-- Mail-style rows (FruitUI inline fields); Cc and Bcc on demand. --}}
                 <div class="conv-composer__recipients" x-data="{ copies: @js($cc !== '' || $bcc !== '') }">
+                    {{-- Which mailbox, as mail apps choose the account (with only one, no choice). --}}
+                    @if (count($mailbox_choices) > 1)
+                        <x-fruit::field :label="__('Mailbox')" layout="inline" control-id="new-mailbox" class="conv-new-mailbox">
+                            <x-fruit::select id="new-mailbox" wire:change="chooseMailbox($event.target.value)">
+                                @foreach ($mailbox_choices as $choice_id => $choice_name)
+                                    <option value="{{ $choice_id }}" @selected($choice_id == $mailbox->id)>{{ $choice_name }}</option>
+                                @endforeach
+                            </x-fruit::select>
+                        </x-fruit::field>
+                    @endif
                     @if ($conversation->created_by_user_id && $conversation->created_by_user)
                         <p class="f-muted conv-new-author">{{ __('Author') }}: {{ $conversation->created_by_user->getFullName() }}</p>
                     @endif

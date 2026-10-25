@@ -1987,5 +1987,6 @@
     "Dismiss": "隐藏",
     "Sound": "声音",
     "Sound On": "声音已开启",
-    "Sound Off": "声音已关闭"
+    "Sound Off": "声音已关闭",
+    ":label, notifications muted": ":label，通知已静音"
 }

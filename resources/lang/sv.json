@@ -1986,5 +1986,6 @@
     "Dismiss": "Dölj",
     "Sound": "Ljud",
     "Sound On": "Ljud På",
-    "Sound Off": "Ljud Av"
+    "Sound Off": "Ljud Av",
+    ":label, notifications muted": ":label, aviseringar avstängda"
 }

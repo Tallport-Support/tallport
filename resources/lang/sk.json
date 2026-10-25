@@ -1986,5 +1986,6 @@
     "Dismiss": "Skryť",
     "Sound": "Zvuk",
     "Sound On": "Zvuk Zapnutý",
-    "Sound Off": "Zvuk Vypnutý"
+    "Sound Off": "Zvuk Vypnutý",
+    ":label, notifications muted": ":label, upozornenia stlmené"
 }

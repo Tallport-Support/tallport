@@ -1986,5 +1986,6 @@
     "Dismiss": "הסתר",
     "Sound": "צליל",
     "Sound On": "צליל מופעל",
-    "Sound Off": "צליל כבוי"
+    "Sound Off": "צליל כבוי",
+    ":label, notifications muted": ":label, ההתראות מושתקות"
 }

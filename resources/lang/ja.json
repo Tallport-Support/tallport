@@ -1986,5 +1986,6 @@
     "Dismiss": "非表示",
     "Sound": "サウンド",
     "Sound On": "サウンドオン",
-    "Sound Off": "サウンドオフ"
+    "Sound Off": "サウンドオフ",
+    ":label, notifications muted": ":label、通知はミュート中"
 }
