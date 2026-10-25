@@ -5647,8 +5647,12 @@ textarea.f-composer__input,
     text-decoration: none;
   }
 
+/* The label keeps its line while the value gives way; one longer than the row wraps, leaving room
+     for the gaps beside the value and the chevron. */
+
 .f-form-row--link > :first-child:not(:only-child) {
-    flex: 1 1 auto;
+    flex: 1 0 auto;
+    max-width: calc(100% - 12px - 2 * var(--f-space-4));
   }
 
 /* Where the row is short of room, the value gives way before the label. */
