@@ -139,7 +139,7 @@ class EmailTranslationTest extends FeatureTestCase
             ->call('previewTranslation', '<p>I will look into it.</p>')->assertReturned('error')->assertSee('Send as Written');
         $this->assertSame(0, $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->count());
 
-        $composer->call('send', Conversation::STATUS_CLOSED, '<p>I will look into it.</p>')->assertReturned(true);
+        $composer->call('send', Conversation::STATUS_CLOSED, '<p>I will look into it.</p>', true)->assertReturned(true);
         $reply = $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         $this->assertStringContainsString('I will look into it.', $reply->body);
         $this->assertNull(Translations::get($reply, 'en'));

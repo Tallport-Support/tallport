@@ -304,9 +304,10 @@ class ConversationComposer extends Component
      * failure shows on the message: SendReplyToCustomer and the channels' jobs). $body: the
      * editor's text as the browser sent it, which may clear the editor at once (the message
      * already shows, public/js/conversations.js). The chat view stays where it is: the history
-     * shows the message, and the composer is ready for the next one.
+     * shows the message, and the composer is ready for the next one. "translate": not sent, its
+     * translation is to be previewed first; $as_written: sent as written anyway.
      */
-    public function send($status = null, $body = null)
+    public function send($status = null, $body = null, $as_written = false)
     {
         if ($status !== null && $status !== '') {
             $this->status = (int) $status;
@@ -318,6 +319,13 @@ class ConversationComposer extends Component
             Fruit::toast(__('Please enter a message'), 'danger');
 
             return false;
+        }
+        // A reply that goes out translated, decided now: the customer's language may have become
+        // known since the page showed (their first message's). The translation first, for a look
+        // (public/js/conversations.js), unless sent as written.
+        unset($this->translating);
+        if (!$as_written && $this->translating()) {
+            return 'translate';
         }
 
         $is_note = $this->mode == 'note';
@@ -420,7 +428,7 @@ class ConversationComposer extends Component
         // The translation is HTML.
         $this->markdown = false;
 
-        return $this->send($status, $body) ? 'sent' : 'failed';
+        return $this->send($status, $body, true) ? 'sent' : 'failed';
     }
 
     public function discardTranslation()

@@ -187,7 +187,7 @@ class ChatTranslationTest extends FeatureTestCase
         $this->assertSame(0, $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->count());
 
         // As written: the reply as it is, no translation kept.
-        $composer->call('send', null, '<p>I will look into it.</p>')->assertReturned(true)->assertSet('translation', null);
+        $composer->call('send', null, '<p>I will look into it.</p>', true)->assertReturned(true)->assertSet('translation', null);
         $reply = $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         $this->assertStringContainsString('I will look into it.', $reply->body);
         $this->assertNull(Translations::get($reply, 'en'));
@@ -205,6 +205,25 @@ class ChatTranslationTest extends FeatureTestCase
         Option::$cache = [];
         ReplyTranslator::fake([['translation' => '', 'same_language' => true, 'note' => '']]);
         $this->composer()->call('previewTranslation', '<p>Bedankt!</p>')->assertReturned('same')->assertSet('translation', null);
+    }
+
+    /**
+     * The customer's language known only after the chat showed (from their first message, a few
+     * seconds later): sending still shows the translation first, nothing goes out as written. A
+     * translation no longer needed (they read the agent's language now) goes as written.
+     */
+    public function testTranslatedEvenWhenTheLanguageBecameKnownAfterThePageShowed()
+    {
+        $this->setCustomerLanguage(null);
+        $composer = $this->composer()->assertSet('translating', false)->assertDontSee('data-translating', false);
+        $this->setCustomerLanguage('nl');
+        $composer->call('send', null, '<p>I will look into it.</p>')->assertReturned('translate');
+        $this->assertSame(0, $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->count());
+
+        $this->setCustomerLanguage(null);
+        $composer->call('previewTranslation', '<p>Thanks!</p>')->assertReturned('off');
+        $composer->call('send', null, '<p>Thanks!</p>')->assertReturned(true);
+        $this->assertSame(1, $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->count());
     }
 
     public function testAnEmptyTranslationCannotBeMistakenForTheSameLanguage()

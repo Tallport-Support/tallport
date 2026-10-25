@@ -1469,6 +1469,7 @@ document.addEventListener('alpine:init', function () {
 						self.translate(html);
 						return;
 					}
+					var as_written = self.as_written;
 					self.as_written = false;
 					self.dirty = false;
 					var shown = self.showSending(html);
@@ -1478,7 +1479,22 @@ document.addEventListener('alpine:init', function () {
 					} else {
 						self.$root.classList.add('conv-action-wrapper--sent');
 					}
-					self.$wire.send(status === undefined ? null : status, html).then(function (sent) {
+					self.$wire.send(status === undefined ? null : status, html, as_written).then(function (sent) {
+						// Translated after all (the customer's language known since the page showed):
+						// back in the editor, its translation shown first.
+						if (sent === 'translate') {
+							if (shown) {
+								shown.remove();
+							}
+							self.$root.classList.remove('conv-action-wrapper--sent');
+							if (chat) {
+								window.dispatchEvent(new CustomEvent('fruit-editor-set', {detail: {target: 'body', html: html, markdown: html}}));
+							}
+							self.$root.setAttribute('data-translating', '');
+							self.send_status = status;
+							self.translate(html);
+							return;
+						}
 						if (sent) {
 							// The history's render may have taken the focus: the next message.
 							if (chat && (!document.activeElement || !document.activeElement.closest('.conv-action-wrapper'))) {
@@ -1512,7 +1528,12 @@ document.addEventListener('alpine:init', function () {
 				this.translating_now = true;
 				this.$wire.previewTranslation(html).then(function (result) {
 					self.translating_now = false;
-					if (result == 'same') {
+					// In the customer's language already, or no longer translated (their language
+					// changed since the page showed): sent as it is.
+					if (result == 'off') {
+						self.$root.removeAttribute('data-translating');
+					}
+					if (result == 'same' || result == 'off') {
 						self.sendAsWritten();
 					}
 				});
