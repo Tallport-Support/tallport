@@ -391,7 +391,7 @@
         "element": "`a`, native link role with required href or client href binding.",
         "state": "`current` adds `aria-current=page`; an explicit `aria-current`, such as `true` for the section a deeper Drill-Down level is open under, is kept, and a null one leaves `current`'s.",
         "keyboard": "Tab focuses; Enter follows the link.",
-        "options": "`current`: boolean. `mark`: a named accent (`Fruit::ACCENTS`) for the icon, the legend for rows marked with it. Native link attributes, including `wire:navigate`. Default slot: label; `icon`: decorative artwork; `badge`: trailing count."
+        "options": "`current`: boolean. `mark`: a named accent (`Fruit::ACCENTS`) for the leading icon, the legend for rows marked with it; an icon after the label (a state, such as muted) keeps the secondary color. Native link attributes, including `wire:navigate`. Default slot: label; `icon`: decorative artwork; `badge`: trailing count."
       }
     }
   },
