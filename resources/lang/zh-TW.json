@@ -2025,5 +2025,10 @@
     "“Hi, how can we help?” in the customer’s language, with their first name when it’s known.": "以客戶的語言顯示「您好！有什麼可以幫您？」；如果知道客戶的名字，還會加上名字。",
     "Shown when a visitor opens the chat.": "訪客開啟聊天時顯示。",
     "Sent when the customer taps Start, and shown in the empty chat.": "客戶點選 Start 時傳送，並在空白聊天中顯示。",
-    "Sent when the bot joins a direct chat.": "機器人加入私人聊天時傳送。"
+    "Sent when the bot joins a direct chat.": "機器人加入私人聊天時傳送。",
+    ":name replied": ":name 回覆了",
+    "Dismiss": "隱藏",
+    "Sound": "聲音",
+    "Sound On": "聲音已開啟",
+    "Sound Off": "聲音已關閉"
 }

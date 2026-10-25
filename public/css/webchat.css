@@ -115,6 +115,12 @@ body {
 .widget-entry[data-kind='team']:not([data-last]) .widget-bubble {
   border-end-start-radius: 6px;
 }
+/* A web address in a message: a link in the bubble's own colour, underlined. */
+.widget-bubble a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
 /* The visitor's own messages: the end side, in the accent, without a name or avatar. */
 .widget-entry[data-kind='visitor'] .widget-message {
   grid-template-columns: minmax(0, 1fr);

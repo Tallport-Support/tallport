@@ -1981,5 +1981,10 @@
     "“Hi, how can we help?” in the customer’s language, with their first name when it’s known.": "顧客の言語での「こんにちは。どのようなご用件でしょうか？」。名前がわかる場合は名前も入ります。",
     "Shown when a visitor opens the chat.": "訪問者がチャットを開いたときに表示されます。",
     "Sent when the customer taps Start, and shown in the empty chat.": "顧客が Start をタップしたときに送信され、空のチャットにも表示されます。",
-    "Sent when the bot joins a direct chat.": "ボットがダイレクトチャットに参加したときに送信されます。"
+    "Sent when the bot joins a direct chat.": "ボットがダイレクトチャットに参加したときに送信されます。",
+    ":name replied": ":name から返信",
+    "Dismiss": "非表示",
+    "Sound": "サウンド",
+    "Sound On": "サウンドオン",
+    "Sound Off": "サウンドオフ"
 }

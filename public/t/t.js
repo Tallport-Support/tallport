@@ -15,10 +15,20 @@
  * own domain (a proxy for the folder) and the script finds the window there. Commands, queued until
  * the script loads: init, open, close, identify (a token the website's server signs), logout and
  * appearance ('system', 'light' or 'dark'). The launcher appears once the window says it is ready,
- * so a window that can't load (or isn't allowed on this website) leaves no button behind. The styles
+ * so a window that can't load (or isn't allowed on this website) leaves no button behind. A window
+ * that is ready but takes no new chats now (a limit reached, for a visitor without a conversation)
+ * says available: false: no button, open does nothing, and window.tallport.available stays false, so
+ * a website's own "Chat with us" link can follow its href to the window's page instead. The styles
  * are adopted rather than inline, so a strict Content Security Policy needs only script-src and
  * frame-src for the script's domain. It has no words of its own: the window sends the launcher's
  * name, so it is in the visitor's language. Icons: Lucide (https://lucide.dev, ISC licence).
+ *
+ * An answer that arrives while the window is closed counts on the launcher's badge and shows its start
+ * in a card beside it, which opens the chat (or is dismissed, the badge staying); while the website's
+ * tab is in the background, the tab's title alternates with the answer's news until the visitor
+ * returns. The window chimes too, unless the visitor muted it in its header. init's options: title:
+ * false leaves the website's title alone; sound: false starts the chime off (the visitor may turn it
+ * on, and their choice is kept in their browser).
  */
 (() => {
   'use strict';
@@ -31,6 +41,8 @@
     chat: '<path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/>',
     // chevron-down
     down: '<path d="m6 9 6 6 6-6"/>',
+    // x
+    close: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
   };
   const css = `
     .root { all: initial; }
@@ -69,7 +81,7 @@
     .launcher .open { opacity: 0; transform: rotate(-90deg); }
     .root[data-open] .launcher .closed { opacity: 0; transform: rotate(90deg); }
     .root[data-open] .launcher .open { opacity: 1; transform: none; }
-    .label {
+    .label, .announce {
       position: absolute;
       width: 1px;
       height: 1px;
@@ -92,6 +104,85 @@
       text-align: center;
     }
     .badge[hidden] { display: none; }
+    /* An answer's start, beside the launcher while the window is closed: who wrote, then two lines. */
+    .preview {
+      position: fixed;
+      inset: auto 20px 88px auto;
+      z-index: 2147483000;
+      display: flex;
+      align-items: flex-start;
+      gap: 2px;
+      width: min(300px, 100vw - 40px);
+      box-sizing: border-box;
+      padding: 4px;
+      border-radius: 14px;
+      background: var(--canvas, #fff);
+      color: var(--text, #1d1d1f);
+      box-shadow: 0 0 0 1px var(--edge, rgb(0 0 0 / 8%)), 0 10px 30px rgb(0 0 0 / 16%);
+      font: 14px/1.4 system-ui, sans-serif;
+      animation: preview-in 0.18s ease-out;
+    }
+    .preview[hidden] { display: none; }
+    .preview button {
+      border: 0;
+      background: none;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+    }
+    .preview button:focus-visible { outline: 2px solid var(--fill); outline-offset: 1px; }
+    .preview-open {
+      display: flex;
+      flex: 1;
+      align-items: flex-start;
+      gap: 10px;
+      min-width: 0;
+      padding: 8px;
+      border-radius: 10px;
+      text-align: start;
+    }
+    .preview-open:hover, .preview-dismiss:hover { background: color-mix(in srgb, currentColor 8%, transparent); }
+    .avatar {
+      display: grid;
+      flex: none;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--fill);
+      color: #fff;
+      font: 600 12px/1 system-ui, sans-serif;
+    }
+    .preview-body { display: grid; gap: 1px; min-width: 0; }
+    .preview-author { font-weight: 600; }
+    .preview-text {
+      display: -webkit-box;
+      overflow: hidden;
+      color: var(--secondary, #6e6e73);
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+    }
+    .preview .preview-dismiss {
+      display: grid;
+      flex: none;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border-radius: 50%;
+      color: var(--secondary, #6e6e73);
+    }
+    .preview-dismiss svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    @keyframes preview-in { from { opacity: 0; transform: translateY(6px); } }
     .window {
       position: fixed;
       inset: auto 20px 88px auto;
@@ -122,17 +213,22 @@
     }
     @media (prefers-reduced-motion: reduce) {
       .launcher, .launcher svg, .window, .root[data-open] .window { transition: none; }
+      .preview { animation: none; }
     }
     @media (forced-colors: active) {
       .launcher { border: 2px solid ButtonText; }
-      .window { border: 1px solid CanvasText; }
+      .window, .preview { border: 1px solid CanvasText; }
     }
     @media print {
       .root { display: none; }
     }`;
 
-  let root, launcher, label, badge, frame, config, name;
+  let root, launcher, label, badge, frame, config, name, preview, announce;
+  // The tab's title while it alternates with an answer's news: the website's own, and the timer.
+  let ownTitle = '';
+  let titleTimer = null;
   let ready = false;
+  let available = false;
   let opened = false;
   let openWhenReady = false;
   let unread = 0;
@@ -154,8 +250,10 @@
     const sheet = new CSSStyleSheet();
     sheet.replaceSync(css);
     shadow.adoptedStyleSheets = [sheet];
-    shadow.innerHTML = `<div class="root"><button class="launcher" type="button" aria-expanded="false" aria-controls="window" hidden>${icon('chat', 'closed')}${icon('down', 'open')}<span class="label"></span><span class="badge" aria-hidden="true" hidden></span></button><div class="window" id="window"><iframe></iframe></div></div>`;
+    shadow.innerHTML = `<div class="root"><div class="preview" hidden><button class="preview-open" type="button"><span class="avatar" aria-hidden="true"></span><span class="preview-body"><span class="preview-author"></span><span class="preview-text"></span></span></button><button class="preview-dismiss" type="button">${icon('close', '')}</button></div><button class="launcher" type="button" aria-expanded="false" aria-controls="window" hidden>${icon('chat', 'closed')}${icon('down', 'open')}<span class="label"></span><span class="badge" aria-hidden="true" hidden></span></button><span class="announce" role="status"></span><div class="window" id="window"><iframe></iframe></div></div>`;
     root = shadow.querySelector('.root');
+    preview = shadow.querySelector('.preview');
+    announce = shadow.querySelector('.announce');
     launcher = shadow.querySelector('.launcher');
     label = shadow.querySelector('.label');
     badge = shadow.querySelector('.badge');
@@ -165,8 +263,17 @@
     url.searchParams.set('origin', location.origin);
     // The page the visitor is on, for the team (without its fragment).
     url.searchParams.set('page', location.href.replace(/#.*$/, ''));
+    if (config.sound === false) url.searchParams.set('sound', 'off');
     frame.src = url;
     launcher.addEventListener('click', () => (opened ? close() : open({ focus: true })));
+    preview.querySelector('.preview-open').addEventListener('click', () => open({ focus: true }));
+    preview.querySelector('.preview-dismiss').addEventListener('click', () => {
+      preview.hidden = true;
+      launcher.focus();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) stopTitle();
+    });
     root.addEventListener('keydown', event => {
       if (event.key === 'Escape' && opened) close({ focus: true });
     });
@@ -177,17 +284,60 @@
 
   // The count shows on the badge, and the launcher's name says it in the window's words ("Chat with
   // Forma, 2 unread"): every word comes from the window, in the visitor's language.
-  function setUnread(count, words) {
+  function setUnread(count, words, news) {
     unread = opened ? 0 : count;
     badge.hidden = unread === 0;
     badge.textContent = unread || '';
     label.textContent = unread && words ? words : name;
+    if (!unread) {
+      preview.hidden = true;
+      stopTitle();
+      return;
+    }
+    if (news?.preview) showPreview(news.preview);
+    if (news?.title) flashTitle(`(${unread}) ${news.title}`);
   }
 
-  function theme({ fill, fillHover, canvas, dark }) {
+  // The answer's start, in the window's words; a new answer shows again what was dismissed.
+  function showPreview({ author, initials, text, dismiss }) {
+    preview.querySelector('.avatar').textContent = initials ?? '';
+    preview.querySelector('.preview-author').textContent = author;
+    preview.querySelector('.preview-text').textContent = text;
+    preview.querySelector('.preview-dismiss').setAttribute('aria-label', dismiss);
+    preview.querySelector('.preview-dismiss').title = dismiss;
+    preview.hidden = false;
+    announce.textContent = `${author}: ${text}`;
+  }
+
+  // Only while the tab is in the background, and never on a website that turned it off: on a page in
+  // view the badge and the card say it, and a changing title would only distract.
+  function flashTitle(news) {
+    if (config.title === false || !document.hidden) return;
+    if (!titleTimer) ownTitle = document.title;
+    let showing = true;
+    document.title = news;
+    clearInterval(titleTimer);
+    titleTimer = setInterval(() => {
+      // The website changed its own title meanwhile: that one returns.
+      if (document.title !== news && document.title !== ownTitle) ownTitle = document.title;
+      showing = !showing;
+      document.title = showing ? news : ownTitle;
+    }, 1500);
+  }
+
+  function stopTitle() {
+    if (!titleTimer) return;
+    clearInterval(titleTimer);
+    titleTimer = null;
+    document.title = ownTitle;
+  }
+
+  function theme({ fill, fillHover, canvas, text, secondary, dark }) {
     root.style.setProperty('--fill', fill);
     root.style.setProperty('--fill-hover', fillHover);
     root.style.setProperty('--canvas', canvas);
+    if (text) root.style.setProperty('--text', text);
+    if (secondary) root.style.setProperty('--secondary', secondary);
     root.style.setProperty('--edge', dark ? 'rgb(255 255 255 / 14%)' : 'rgb(0 0 0 / 8%)');
   }
 
@@ -195,8 +345,7 @@
   // or link calling open), never when the website opens it by itself, such as on page load.
   function open({ focus = navigator.userActivation?.isActive ?? true } = {}) {
     if (!ready) return void (openWhenReady = true);
-    if (!window.tallport.available) return;
-    if (opened) return;
+    if (opened || !available) return;
     opened = true;
     root.toggleAttribute('data-open', true);
     launcher.setAttribute('aria-expanded', 'true');
@@ -221,19 +370,18 @@
     if (data?.tallport !== 1) return;
     if (data.type === 'ready') {
       ready = true;
+      available = data.available !== false;
+      window.tallport.available = available;
       name = data.label;
       label.textContent = name;
       frame.title = name;
       theme(data);
-      // While the chat takes no new chats, the button shows only for a visitor with a conversation;
-      // a website's own "Chat with us" link can check window.tallport.available and use its href.
-      const available = data.available !== false;
-      window.tallport.available = available;
       launcher.hidden = !available;
       for (const [type, payload] of outbox.splice(0)) post(type, payload);
-      if (openWhenReady && available) open({ focus: false });
+      if (openWhenReady) open({ focus: false });
     } else if (data.type === 'theme') theme(data);
-    else if (data.type === 'unread') setUnread(data.count, data.label);
+    else if (data.type === 'unread') setUnread(data.count, data.label, data);
+    else if (data.type === 'attention') flashTitle(data.title);
     else if (data.type === 'close') close({ focus: true });
   });
 

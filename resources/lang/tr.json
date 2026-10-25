@@ -1981,5 +1981,10 @@
     "“Hi, how can we help?” in the customer’s language, with their first name when it’s known.": "“Merhaba, size nasıl yardımcı olabiliriz?” müşterinin dilinde; biliniyorsa adıyla birlikte.",
     "Shown when a visitor opens the chat.": "Bir ziyaretçi sohbeti açtığında gösterilir.",
     "Sent when the customer taps Start, and shown in the empty chat.": "Müşteri Start’a dokunduğunda gönderilir ve boş sohbette gösterilir.",
-    "Sent when the bot joins a direct chat.": "Bot doğrudan bir sohbete katıldığında gönderilir."
+    "Sent when the bot joins a direct chat.": "Bot doğrudan bir sohbete katıldığında gönderilir.",
+    ":name replied": ":name yanıtladı",
+    "Dismiss": "Gizle",
+    "Sound": "Ses",
+    "Sound On": "Ses Açık",
+    "Sound Off": "Ses Kapalı"
 }

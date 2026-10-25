@@ -2374,5 +2374,10 @@
     "“Hi, how can we help?” in the customer’s language, with their first name when it’s known.": "«Сәлеметсіз бе! Қалай көмектесе аламыз?» клиенттің тілінде, белгілі болса — оның атымен.",
     "Shown when a visitor opens the chat.": "Келуші чатты ашқанда көрсетіледі.",
     "Sent when the customer taps Start, and shown in the empty chat.": "Клиент Start түймесін түрткенде жіберіледі және бос чатта көрсетіледі.",
-    "Sent when the bot joins a direct chat.": "Бот тікелей чатқа қосылғанда жіберіледі."
+    "Sent when the bot joins a direct chat.": "Бот тікелей чатқа қосылғанда жіберіледі.",
+    ":name replied": ":name жауап берді",
+    "Dismiss": "Жасыру",
+    "Sound": "Дыбыс",
+    "Sound On": "Дыбыс Қосулы",
+    "Sound Off": "Дыбыс Өшірулі"
 }

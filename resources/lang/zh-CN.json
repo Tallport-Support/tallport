@@ -1982,5 +1982,10 @@
     "“Hi, how can we help?” in the customer’s language, with their first name when it’s known.": "以客户的语言显示“您好！有什么可以帮您？”；如果知道客户的名字，还会加上名字。",
     "Shown when a visitor opens the chat.": "访客打开聊天时显示。",
     "Sent when the customer taps Start, and shown in the empty chat.": "客户点击 Start 时发送，并在空白聊天中显示。",
-    "Sent when the bot joins a direct chat.": "机器人加入私聊时发送。"
+    "Sent when the bot joins a direct chat.": "机器人加入私聊时发送。",
+    ":name replied": ":name 回复了",
+    "Dismiss": "隐藏",
+    "Sound": "声音",
+    "Sound On": "声音已开启",
+    "Sound Off": "声音已关闭"
 }

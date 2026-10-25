@@ -1981,5 +1981,10 @@
     "“Hi, how can we help?” in the customer’s language, with their first name when it’s known.": "“היי, איך נוכל לעזור?” בשפת הלקוח, עם השם הפרטי שלו כשהוא ידוע.",
     "Shown when a visitor opens the chat.": "מוצגת כשמבקר פותח את הצ'אט.",
     "Sent when the customer taps Start, and shown in the empty chat.": "נשלחת כשהלקוח מקיש על Start, ומוצגת בצ'אט הריק.",
-    "Sent when the bot joins a direct chat.": "נשלחת כשהבוט מצטרף לצ'אט ישיר."
+    "Sent when the bot joins a direct chat.": "נשלחת כשהבוט מצטרף לצ'אט ישיר.",
+    ":name replied": ":name ענה/תה",
+    "Dismiss": "הסתר",
+    "Sound": "צליל",
+    "Sound On": "צליל מופעל",
+    "Sound Off": "צליל כבוי"
 }

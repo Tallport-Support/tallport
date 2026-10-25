@@ -94,6 +94,11 @@ class WebChatTest extends FeatureTestCase
             ->assertSee('Chat met Forma')->assertHeaderMissing('X-Frame-Options')->assertHeaderMissing('Set-Cookie');
         $this->assertStringContainsString("frame-ancestors 'self' ".self::SITE, $response->headers->get('Content-Security-Policy'));
 
+        // An answer the visitor may miss: its words for the launcher (the tab's title, the card), in their
+        // language, and the chime's Sound button in the header.
+        $response->assertSee('\u0022replied\u0022:\u0022:name heeft geantwoord\u0022', false)->assertSee('\u0022dismiss\u0022:\u0022Verbergen\u0022', false)
+            ->assertSeeInOrder(['widget-sound', 'aria-label="Geluid"', 'title="Geluid Aan"', 'widget-close'], false);
+
         // Opened on its own (the website's link).
         $this->get('/t/w?widget=forma')->assertOk();
 

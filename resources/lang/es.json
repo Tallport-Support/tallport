@@ -1981,5 +1981,10 @@
     "“Hi, how can we help?” in the customer’s language, with their first name when it’s known.": "«Hola, ¿en qué podemos ayudarle?» en el idioma del cliente, con su nombre cuando se conoce.",
     "Shown when a visitor opens the chat.": "Se muestra cuando un visitante abre el chat.",
     "Sent when the customer taps Start, and shown in the empty chat.": "Se envía cuando el cliente toca Start y se muestra en el chat vacío.",
-    "Sent when the bot joins a direct chat.": "Se envía cuando el bot se une a un chat directo."
+    "Sent when the bot joins a direct chat.": "Se envía cuando el bot se une a un chat directo.",
+    ":name replied": ":name respondió",
+    "Dismiss": "Ocultar",
+    "Sound": "Sonido",
+    "Sound On": "Sonido Activado",
+    "Sound Off": "Sonido Desactivado"
 }

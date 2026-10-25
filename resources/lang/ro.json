@@ -1981,5 +1981,10 @@
     "“Hi, how can we help?” in the customer’s language, with their first name when it’s known.": "„Bună, cu ce vă putem ajuta?” în limba clientului, cu prenumele său când este cunoscut.",
     "Shown when a visitor opens the chat.": "Afișat când un vizitator deschide chatul.",
     "Sent when the customer taps Start, and shown in the empty chat.": "Trimis când clientul atinge Start și afișat în chatul gol.",
-    "Sent when the bot joins a direct chat.": "Trimis când botul intră într-un chat direct."
+    "Sent when the bot joins a direct chat.": "Trimis când botul intră într-un chat direct.",
+    ":name replied": ":name a răspuns",
+    "Dismiss": "Ascunde",
+    "Sound": "Sunet",
+    "Sound On": "Sunet Pornit",
+    "Sound Off": "Sunet Oprit"
 }

@@ -1981,5 +1981,10 @@
     "“Hi, how can we help?” in the customer’s language, with their first name when it’s known.": "»Pozdravljeni, kako vam lahko pomagamo?« v jeziku stranke, z njenim imenom, ko je znano.",
     "Shown when a visitor opens the chat.": "Prikaže se, ko obiskovalec odpre klepet.",
     "Sent when the customer taps Start, and shown in the empty chat.": "Pošlje se, ko stranka tapne Start, in se prikaže v praznem klepetu.",
-    "Sent when the bot joins a direct chat.": "Pošlje se, ko se bot pridruži neposrednemu klepetu."
+    "Sent when the bot joins a direct chat.": "Pošlje se, ko se bot pridruži neposrednemu klepetu.",
+    ":name replied": ":name je odgovoril(a)",
+    "Dismiss": "Skrij",
+    "Sound": "Zvok",
+    "Sound On": "Zvok Vklopljen",
+    "Sound Off": "Zvok Izklopljen"
 }

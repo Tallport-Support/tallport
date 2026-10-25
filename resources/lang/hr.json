@@ -1981,5 +1981,10 @@
     "“Hi, how can we help?” in the customer’s language, with their first name when it’s known.": "„Pozdrav, kako vam možemo pomoći?” na jeziku kupca, s njegovim imenom kada je poznato.",
     "Shown when a visitor opens the chat.": "Prikazuje se kada posjetitelj otvori chat.",
     "Sent when the customer taps Start, and shown in the empty chat.": "Šalje se kada kupac dodirne Start i prikazuje se u praznom chatu.",
-    "Sent when the bot joins a direct chat.": "Šalje se kada se bot pridruži izravnom chatu."
+    "Sent when the bot joins a direct chat.": "Šalje se kada se bot pridruži izravnom chatu.",
+    ":name replied": ":name je odgovorio/la",
+    "Dismiss": "Sakrij",
+    "Sound": "Zvuk",
+    "Sound On": "Zvuk Uključen",
+    "Sound Off": "Zvuk Isključen"
 }

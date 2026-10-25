@@ -1981,5 +1981,10 @@
     "“Hi, how can we help?” in the customer’s language, with their first name when it’s known.": "„Dobrý deň, ako vám môžeme pomôcť?“ v jazyku zákazníka, s jeho krstným menom, keď je známe.",
     "Shown when a visitor opens the chat.": "Zobrazí sa, keď návštevník otvorí chat.",
     "Sent when the customer taps Start, and shown in the empty chat.": "Odošle sa, keď zákazník ťukne na Start, a zobrazí sa v prázdnom chate.",
-    "Sent when the bot joins a direct chat.": "Odošle sa, keď sa bot pripojí k priamemu chatu."
+    "Sent when the bot joins a direct chat.": "Odošle sa, keď sa bot pripojí k priamemu chatu.",
+    ":name replied": ":name odpovedal(a)",
+    "Dismiss": "Skryť",
+    "Sound": "Zvuk",
+    "Sound On": "Zvuk Zapnutý",
+    "Sound Off": "Zvuk Vypnutý"
 }

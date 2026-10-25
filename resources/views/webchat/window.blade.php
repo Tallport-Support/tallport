@@ -51,6 +51,13 @@
                 'confirmed'    => __('Email confirmed.'),
                 'tooLarge' => __('Files can be up to :size MB.', ['size' => \App\WebChat\WebChat::MAX_FILE_MB]),
                 'tooMany'  => __('Up to :count files per message.', ['count' => \App\WebChat\WebChat::MAX_FILES]),
+                // An answer the visitor may miss (the window closed, or the website's tab in the
+                // background): the website's tab says ":name replied", the card beside the launcher
+                // can be dismissed.
+                'replied'  => __(':name replied'),
+                'dismiss'  => __('Dismiss'),
+                'soundOn'  => __('Sound On'),
+                'soundOff' => __('Sound Off'),
             ],
         ];
     @endphp
@@ -63,6 +70,8 @@
                     <p>{{ $settings['reply_time'] }}</p>
                 @endif
             </div>
+            {{-- The chime for an answer the visitor may miss, on or off (kept in this browser). --}}
+            <button class="f-button f-button--ghost f-button--icon widget-sound" type="button" @click="toggleSound" :aria-pressed="String(sound)" aria-pressed="true" aria-label="{{ __('Sound') }}" :title="sound ? text.soundOn : text.soundOff" title="{{ __('Sound On') }}"><x-icon.volume-2 class="f-icon" aria-hidden="true" x-show="sound" /><x-icon.volume-x class="f-icon" aria-hidden="true" x-show="!sound" x-cloak /></button>
             <button class="f-button f-button--ghost f-button--icon widget-close" type="button" x-show="embedded" x-cloak @click="close" aria-label="{{ __('Close Chat') }}" title="{{ __('Close Chat') }}"><x-icon.x class="f-icon" aria-hidden="true" /></button>
         </header>
         <div class="f-alert f-alert--warning widget-offline" role="status" x-show="!online" x-cloak><x-icon.triangle-alert class="f-icon f-alert__icon" aria-hidden="true" /><div class="f-alert__body">{{ __('You’re offline. Your messages will be sent when you’re back.') }}</div></div>
@@ -100,7 +109,8 @@
                         <div class="widget-message" :data-state="entry.state" x-show="entry.kind === 'team' || entry.kind === 'visitor'">
                             <span class="f-avatar widget-avatar" :class="{ 'widget-team-mark': entry.team }" aria-hidden="true" x-show="entry.kind === 'team' && entry.first"><template x-if="entry.photo"><img :src="entry.photo" alt=""></template><template x-if="!entry.photo"><span x-text="entry.initials"></span></template></span>
                             <p class="widget-author" :class="{ 'f-sr-only': entry.kind === 'visitor' || !entry.first }" x-text="entry.kind === 'visitor' ? text.you : entry.author"></p>
-                            <p class="widget-bubble" x-show="entry.body" x-text="entry.body"></p>
+                            {{-- Its web addresses as links (parts() in public/js/webchat.js); on one line: the bubble keeps the text's spaces. --}}
+                            <p class="widget-bubble" x-show="entry.body"><template x-for="(part, index) in parts(entry.body)" :key="index"><span><template x-if="part.url"><a :href="part.url" target="_blank" rel="noopener noreferrer" x-text="part.text"></a></template><template x-if="!part.url"><span x-text="part.text"></span></template></span></template></p>
                             {{-- An image shows as a thumbnail and opens in a new tab; other files download. --}}
                             <template x-for="file in entry.files" :key="file.id"><div class="widget-attachment"><template x-if="file.thumbnail"><a class="f-attachment f-attachment--thumbnail" :href="file.url" target="_blank" rel="noopener"><span class="f-attachment__thumbnail"><img :src="file.thumbnail" alt="" loading="lazy"></span><span class="f-attachment__body"><span x-text="file.name"></span><small class="f-attachment__detail" x-text="file.size"></small></span></a></template><template x-if="!file.thumbnail"><a class="f-attachment" :href="file.url" :download="file.name"><span class="f-attachment__leading"><x-icon.file-text class="f-icon" aria-hidden="true" /></span><span class="f-attachment__body"><span x-text="file.name"></span><small class="f-attachment__detail" x-text="file.size"></small></span><span class="f-attachment__trailing"><x-icon.download class="f-icon" aria-hidden="true" /></span></a></template></div></template>
                             <p class="widget-meta" x-show="entry.time && entry.state !== 'failed' && (entry.last || entry.state)"><time x-text="entry.time"></time><span x-text="entry.state ? ' · ' + text[entry.state] : ''"></span></p>

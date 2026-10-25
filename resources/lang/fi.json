@@ -1997,5 +1997,10 @@
     "“Hi, how can we help?” in the customer’s language, with their first name when it’s known.": "”Hei, miten voimme auttaa?” asiakkaan kielellä ja hänen etunimellään, kun se tiedetään.",
     "Shown when a visitor opens the chat.": "Näytetään, kun kävijä avaa chatin.",
     "Sent when the customer taps Start, and shown in the empty chat.": "Lähetetään, kun asiakas napauttaa Start, ja näytetään tyhjässä chatissa.",
-    "Sent when the bot joins a direct chat.": "Lähetetään, kun botti liittyy suoraan chattiin."
+    "Sent when the bot joins a direct chat.": "Lähetetään, kun botti liittyy suoraan chattiin.",
+    ":name replied": ":name vastasi",
+    "Dismiss": "Piilota",
+    "Sound": "Ääni",
+    "Sound On": "Ääni Päällä",
+    "Sound Off": "Ääni Pois"
 }

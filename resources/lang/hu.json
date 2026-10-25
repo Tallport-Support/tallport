@@ -1981,5 +1981,10 @@
     "“Hi, how can we help?” in the customer’s language, with their first name when it’s known.": "„Üdvözöljük! Miben segíthetünk?” az ügyfél nyelvén, a keresztnevével, ha ismert.",
     "Shown when a visitor opens the chat.": "Akkor jelenik meg, amikor egy látogató megnyitja a chatet.",
     "Sent when the customer taps Start, and shown in the empty chat.": "Akkor küldjük el, amikor az ügyfél a Start gombra koppint, és megjelenik az üres chatben.",
-    "Sent when the bot joins a direct chat.": "Akkor küldjük el, amikor a bot csatlakozik egy közvetlen chathez."
+    "Sent when the bot joins a direct chat.": "Akkor küldjük el, amikor a bot csatlakozik egy közvetlen chathez.",
+    ":name replied": ":name válaszolt",
+    "Dismiss": "Elrejtés",
+    "Sound": "Hang",
+    "Sound On": "Hang Bekapcsolva",
+    "Sound Off": "Hang Kikapcsolva"
 }

@@ -2072,5 +2072,10 @@
     "“Hi, how can we help?” in the customer’s language, with their first name when it’s known.": "«Hola, en què us podem ajudar?» en l’idioma del client, amb el seu nom quan es coneix.",
     "Shown when a visitor opens the chat.": "Es mostra quan un visitant obre el xat.",
     "Sent when the customer taps Start, and shown in the empty chat.": "S’envia quan el client toca Start i es mostra al xat buit.",
-    "Sent when the bot joins a direct chat.": "S’envia quan el bot s’uneix a un xat directe."
+    "Sent when the bot joins a direct chat.": "S’envia quan el bot s’uneix a un xat directe.",
+    ":name replied": ":name ha respost",
+    "Dismiss": "Amaga",
+    "Sound": "So",
+    "Sound On": "So Activat",
+    "Sound Off": "So Desactivat"
 }

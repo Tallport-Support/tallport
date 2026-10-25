@@ -1981,5 +1981,10 @@
     "“Hi, how can we help?” in the customer’s language, with their first name when it’s known.": "«Здравствуйте! Чем можем помочь?» на языке клиента, с его именем, если оно известно.",
     "Shown when a visitor opens the chat.": "Показывается, когда посетитель открывает чат.",
     "Sent when the customer taps Start, and shown in the empty chat.": "Отправляется, когда клиент нажимает Start, и показывается в пустом чате.",
-    "Sent when the bot joins a direct chat.": "Отправляется, когда бот присоединяется к личному чату."
+    "Sent when the bot joins a direct chat.": "Отправляется, когда бот присоединяется к личному чату.",
+    ":name replied": ":name ответил(а)",
+    "Dismiss": "Скрыть",
+    "Sound": "Звук",
+    "Sound On": "Звук Включён",
+    "Sound Off": "Звук Выключен"
 }

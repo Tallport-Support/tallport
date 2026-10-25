@@ -1981,5 +1981,10 @@
     "“Hi, how can we help?” in the customer’s language, with their first name when it’s known.": "”Hej, hur kan vi hjälpa dig?” på kundens språk, med förnamnet när det är känt.",
     "Shown when a visitor opens the chat.": "Visas när en besökare öppnar chatten.",
     "Sent when the customer taps Start, and shown in the empty chat.": "Skickas när kunden trycker på Start och visas i den tomma chatten.",
-    "Sent when the bot joins a direct chat.": "Skickas när boten går med i en direktchatt."
+    "Sent when the bot joins a direct chat.": "Skickas när boten går med i en direktchatt.",
+    ":name replied": ":name svarade",
+    "Dismiss": "Dölj",
+    "Sound": "Ljud",
+    "Sound On": "Ljud På",
+    "Sound Off": "Ljud Av"
 }

@@ -1981,5 +1981,10 @@
     "“Hi, how can we help?” in the customer’s language, with their first name when it’s known.": "‘Hallo, waarmee kunnen we u helpen?’ in de taal van de klant, met diens voornaam als die bekend is.",
     "Shown when a visitor opens the chat.": "Getoond als een bezoeker de chat opent.",
     "Sent when the customer taps Start, and shown in the empty chat.": "Verstuurd als de klant op Start tikt, en getoond in de lege chat.",
-    "Sent when the bot joins a direct chat.": "Verstuurd als de bot een directe chat binnenkomt."
+    "Sent when the bot joins a direct chat.": "Verstuurd als de bot een directe chat binnenkomt.",
+    ":name replied": ":name heeft geantwoord",
+    "Dismiss": "Verbergen",
+    "Sound": "Geluid",
+    "Sound On": "Geluid Aan",
+    "Sound Off": "Geluid Uit"
 }

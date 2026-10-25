@@ -15,6 +15,10 @@ document.addEventListener('alpine:init', function () {
         var timer = null;
         var sequence = 0;
         var clock = new Intl.DateTimeFormat(document.documentElement.lang || undefined, { hour: 'numeric', minute: '2-digit' });
+        // The chime: the visitor's choice, kept in this browser (the website may start it off), and when it last played.
+        var soundKey = 'tallport:sound';
+        var audio = null;
+        var chimed = 0;
 
         function size(bytes) {
             return bytes < 1024 * 1024 ? Math.max(1, Math.round(bytes / 1024)) + ' KB' : (bytes / 1024 / 1024).toFixed(1) + ' MB';
@@ -56,9 +60,18 @@ document.addEventListener('alpine:init', function () {
             codeNotice: '',
             codesLeft: 3,
             busy: false,
+            sound: params.get('sound') !== 'off',
+            // The first poll done: what arrives after it is news (earlier messages aren't, on a new page).
+            settled: false,
 
             init: function () {
                 var self = this;
+                try {
+                    var chosen = localStorage.getItem(soundKey);
+                    if (chosen) this.sound = chosen === 'on';
+                } catch (e) {
+                    // Without storage the website's choice holds for this visit.
+                }
                 addEventListener('message', function (event) {
                     if (!self.embedded || event.source !== parent || event.origin !== host) return;
                     var data = event.data;
@@ -76,7 +89,7 @@ document.addEventListener('alpine:init', function () {
                     });
                 });
                 addEventListener('offline', function () { self.online = false; });
-                document.addEventListener('visibilitychange', function () { self.schedule(0); });
+                document.addEventListener('visibilitychange', function () { self.schedule(document.hidden ? undefined : 0); });
                 ['keydown', 'pointerdown'].forEach(function (type) {
                     addEventListener(type, function () { self.activeAt = Date.now(); });
                 });
@@ -138,6 +151,9 @@ document.addEventListener('alpine:init', function () {
                     fill: resolve('--f-accent-fill'),
                     fillHover: resolve('--f-accent-fill-hover'),
                     canvas: resolve('--f-surface'),
+                    // The card beside the launcher, for an answer.
+                    text: resolve('--f-text'),
+                    secondary: resolve('--f-secondary'),
                     dark: theme === 'dark' || (theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches),
                 };
                 probe.remove();
@@ -199,17 +215,18 @@ document.addEventListener('alpine:init', function () {
 
             /**
              * Asking for new messages: every few seconds while open and in use, slower while open and idle,
-             * slowly while closed (only with a conversation, for the unread count), never while the
-             * website's tab is hidden.
+             * slowly while closed or while the website's tab is hidden (only with a conversation: for the
+             * unread count, and so an answer can say so in the tab's title and with a chime).
              */
             schedule: function (delay) {
                 var self = this;
                 clearTimeout(timer);
-                if (document.hidden || !this.token()) return;
+                if (!this.token()) return;
                 if (delay === undefined) {
-                    var active = this.shown && Date.now() - this.activeAt < 120000;
-                    if (!this.shown && !this.hasConversation) return;
-                    delay = (active ? config.poll.active : this.shown ? config.poll.idle : config.poll.closed) * 1000;
+                    var seen = this.shown && !document.hidden;
+                    var active = seen && Date.now() - this.activeAt < 120000;
+                    if (!seen && !this.hasConversation) return;
+                    delay = (active ? config.poll.active : seen ? config.poll.idle : config.poll.closed) * 1000;
                 }
                 timer = setTimeout(function () { self.poll(); }, delay);
             },
@@ -218,13 +235,19 @@ document.addEventListener('alpine:init', function () {
                 var self = this;
                 return this.api('GET', 'm?after=' + this.cursor).then(function (data) {
                     self.hasConversation = data.messages.length > 0 || self.hasConversation;
-                    data.messages.forEach(function (message) { self.receive(message); });
+                    // The team's newest answer since the last poll (on a new page, earlier ones aren't news).
+                    var news = null;
+                    data.messages.forEach(function (message) {
+                        if (self.receive(message) && message.kind === 'team' && self.settled) news = message;
+                    });
+                    self.settled = true;
                     self.cursor = Math.max(self.cursor, data.cursor || 0);
                     if (data.greeting !== undefined) self.greeting = data.greeting;
                     self.emailState(data);
                     self.unread = data.unread;
                     if (self.shown) self.markRead();
-                    else self.post('unread', { count: self.unread, label: data.unread_label });
+                    else self.post('unread', Object.assign({ count: self.unread, label: data.unread_label }, news ? self.news(news) : {}));
+                    if (news) self.notice(news);
                 }).catch(function () {}).then(function () { self.schedule(); });
             },
 
@@ -240,12 +263,106 @@ document.addEventListener('alpine:init', function () {
                 }
             },
 
-            /** A message from the server, once: the team's are announced while the window is open. */
+            /** A message from the server, once (true when it's new): the team's are announced while the window is open. */
             receive: function (message) {
                 var known = this.entries.some(function (entry) { return entry.serverId === message.id; });
-                if (known) return;
+                if (known) return false;
                 this.entries.push(this.entry(message));
                 if (message.kind === 'team' && this.shown) this.announcement = message.author + ': ' + message.body;
+
+                return true;
+            },
+
+            /**
+             * An answer while the window is closed, for the launcher: the website's tab's title while it's
+             * in the background ("(1) Alex replied") and the card beside it (who, and the answer's start).
+             */
+            news: function (message) {
+                var who = message.team ? message.author : message.author.split(' ')[0];
+                var text = message.body || message.files.map(function (file) { return file.name; }).join(', ');
+
+                return { title: this.text.replied.replace(':name', who), preview: { author: message.author, initials: message.initials, text: text, dismiss: this.text.dismiss } };
+            },
+
+            /**
+             * An answer the visitor may not see (the window closed, or the website's tab in the background):
+             * a soft chime, unless muted; open in a background tab, the tab's title says so too.
+             */
+            notice: function (message) {
+                if (!this.shown || document.hidden) this.chime();
+                if (this.shown && document.hidden) this.post('attention', { title: this.news(message).title });
+            },
+
+            /**
+             * Two soft notes, once for answers that arrive close together. The visitor has typed in this
+             * window, which lets it play sound; without audio the launcher and the title still say it.
+             */
+            chime: function () {
+                if (!this.sound || Date.now() - chimed < 8000) return;
+                chimed = Date.now();
+                try {
+                    audio = audio || new AudioContext();
+                    audio.resume();
+                    var now = audio.currentTime;
+                    [[880, 0], [1318.5, 0.12]].forEach(function (note) {
+                        var tone = audio.createOscillator();
+                        var volume = audio.createGain();
+                        tone.frequency.value = note[0];
+                        volume.gain.setValueAtTime(0.0001, now + note[1]);
+                        volume.gain.exponentialRampToValueAtTime(0.08, now + note[1] + 0.02);
+                        volume.gain.exponentialRampToValueAtTime(0.0001, now + note[1] + 0.5);
+                        tone.connect(volume).connect(audio.destination);
+                        tone.start(now + note[1]);
+                        tone.stop(now + note[1] + 0.55);
+                    });
+                } catch (e) {
+                    // No audio here.
+                }
+            },
+
+            /** Sound on or off, kept in this browser; turned on, it plays once so the visitor hears it. */
+            toggleSound: function () {
+                this.sound = !this.sound;
+                try {
+                    localStorage.setItem(soundKey, this.sound ? 'on' : 'off');
+                } catch (e) {
+                    // The choice holds for this visit.
+                }
+                if (this.sound) {
+                    chimed = 0;
+                    this.chime();
+                }
+            },
+
+            /**
+             * A message's text in parts, its web addresses (http, https, www.) as links: shown as text and
+             * links, never as HTML. Punctuation after an address (a sentence's end, a closing bracket
+             * without its opening one) isn't part of it.
+             */
+            parts: function (text) {
+                var parts = [];
+                var pattern = /\b(?:https?:\/\/|www\.)[^\s<>"]+/gi;
+                var last = 0;
+                var match;
+                text = String(text || '');
+                while ((match = pattern.exec(text))) {
+                    var address = match[0];
+                    var trimmed = null;
+                    while (trimmed !== address) {
+                        trimmed = address;
+                        address = address.replace(/[.,;:!?'"]+$/, '');
+                        [['(', ')'], ['[', ']']].forEach(function (pair) {
+                            if (address.slice(-1) === pair[1] && address.split(pair[0]).length < address.split(pair[1]).length) address = address.slice(0, -1);
+                        });
+                    }
+                    if (match.index > last) parts.push({ text: text.slice(last, match.index) });
+                    parts.push({ text: address, url: /^www\./i.test(address) ? 'https://' + address : address });
+                    last = match.index + address.length;
+                    pattern.lastIndex = last;
+                }
+                if (last < text.length) parts.push({ text: text.slice(last) });
+
+                return parts;
             },
 
             entry: function (message) {

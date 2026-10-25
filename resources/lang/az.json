@@ -1981,5 +1981,10 @@
     "“Hi, how can we help?” in the customer’s language, with their first name when it’s known.": "“Salam! Sizə necə kömək edə bilərik?” müştərinin dilində; məlumdursa adı ilə birlikdə.",
     "Shown when a visitor opens the chat.": "Ziyarətçi çatı açanda göstərilir.",
     "Sent when the customer taps Start, and shown in the empty chat.": "Müştəri Start düyməsinə toxunanda göndərilir və boş çatda göstərilir.",
-    "Sent when the bot joins a direct chat.": "Bot birbaşa çata qoşulanda göndərilir."
+    "Sent when the bot joins a direct chat.": "Bot birbaşa çata qoşulanda göndərilir.",
+    ":name replied": ":name cavab verdi",
+    "Dismiss": "Gizlət",
+    "Sound": "Səs",
+    "Sound On": "Səs Açıq",
+    "Sound Off": "Səs Bağlı"
 }
