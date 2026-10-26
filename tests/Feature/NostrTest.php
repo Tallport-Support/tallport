@@ -274,7 +274,7 @@ class NostrTest extends FeatureTestCase
 
     // Replies.
 
-    public function testReplyCantBeUndoneAndFailureIsShown()
+    public function testReplyCanBeUndoneAndFailureIsShown()
     {
         $cfg = $this->setUpNostr();
         $conversation = $this->receive($cfg, 'Hello')->conversation;
@@ -285,10 +285,9 @@ class NostrTest extends FeatureTestCase
             'mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id,
             'body' => '<p>We are <b>on it</b>.</p>', 'status' => Conversation::STATUS_CLOSED,
         ]);
-        $this->assertStringNotContainsString('Undo', (string) session('flash_success_floating'));
-        $this->assertStringContainsString('Message sent', (string) session('flash_success_floating'));
-
         $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
+        // Undo, as on every channel (the queue runs the delayed send at once here).
+        $this->assertSame($reply->id, session('flash_undo_floating')['thread_id']);
         $this->assertSame(SendLog::STATUS_SEND_ERROR, (int) $reply->send_status);
         $this->assertStringContainsString('relay', $reply->getSendStatusData()['msg']);
         $this->assertSame(Conversation::STATUS_ACTIVE, (int) $conversation->fresh()->status);
@@ -299,6 +298,8 @@ class NostrTest extends FeatureTestCase
         $this->assertArrayHasKey(self::UNREACHABLE, $event->getRelays());
         $this->assertFalse($event->getRelays()[self::UNREACHABLE]['ok']);
 
+        // Not once Undo is over.
+        $this->travel(Conversation::UNDO_TIMOUT + 1)->seconds();
         \Session::start();
         $this->actingAs($this->agent)->post(route('conversations.undo.submit', ['thread_id' => $reply->id]), ['_token' => csrf_token()]);
         $this->assertSame(Thread::STATE_PUBLISHED, (int) $reply->fresh()->state);

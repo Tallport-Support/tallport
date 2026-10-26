@@ -1988,5 +1988,8 @@
     "Sound": "声音",
     "Sound On": "声音已开启",
     "Sound Off": "声音已关闭",
-    ":label, notifications muted": ":label，通知已静音"
+    ":label, notifications muted": ":label，通知已静音",
+    "Undo Send": "撤销发送",
+    ":count second|:count seconds": ":count 秒",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "发送回复后可撤回的时长，适用于所有渠道。之后回复才会送达客户。"
 }

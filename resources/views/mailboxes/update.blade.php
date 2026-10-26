@@ -65,6 +65,14 @@
                         <option value="{{ App\Mailbox::TICKET_ASSIGNEE_REPLYING }}" @selected(old('ticket_assignee', $mailbox->ticket_assignee) == App\Mailbox::TICKET_ASSIGNEE_REPLYING)>{{ __('Person Replying') }}</option>
                     </x-fruit::select>
                 </x-fruit::field>
+                {{-- How long a reply can be taken back before it goes out, the same on every channel. --}}
+                <x-fruit::field :label="__('Undo Send')" :description="__('How long you can take back a reply after sending it, on every channel. It reaches the customer after that.')" layout="row">
+                    <x-fruit::select id="undo_seconds" name="undo_seconds" required>
+                        @foreach (App\Mailbox::UNDO_CHOICES as $undo_choice)
+                            <option value="{{ $undo_choice }}" @selected((int) old('undo_seconds', $mailbox->undoSeconds()) === $undo_choice)>{{ $undo_choice ? trans_choice(':count second|:count seconds', $undo_choice) : __('Off') }}</option>
+                        @endforeach
+                    </x-fruit::select>
+                </x-fruit::field>
             </x-fruit::form-section>
         @endif
 

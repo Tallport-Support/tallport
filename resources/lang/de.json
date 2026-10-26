@@ -1983,5 +1983,8 @@
     "Sound": "Ton",
     "Sound On": "Ton An",
     "Sound Off": "Ton Aus",
-    ":label, notifications muted": ":label, Benachrichtigungen stumm"
+    ":label, notifications muted": ":label, Benachrichtigungen stumm",
+    "Undo Send": "Senden Rückgängig Machen",
+    ":count second|:count seconds": ":count Sekunde|:count Sekunden",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Wie lange Sie eine Antwort nach dem Senden zurücknehmen können, auf jedem Kanal. Danach erreicht sie den Kunden."
 }

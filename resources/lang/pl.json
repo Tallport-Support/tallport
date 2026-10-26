@@ -1987,5 +1987,8 @@
     "Sound": "Dźwięk",
     "Sound On": "Dźwięk Włączony",
     "Sound Off": "Dźwięk Wyłączony",
-    ":label, notifications muted": ":label, powiadomienia wyciszone"
+    ":label, notifications muted": ":label, powiadomienia wyciszone",
+    "Undo Send": "Cofnij Wysyłanie",
+    ":count second|:count seconds": ":count sekunda|:count sekundy|:count sekund",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Jak długo możesz cofnąć odpowiedź po jej wysłaniu, w każdym kanale. Potem trafia do klienta."
 }

@@ -1987,5 +1987,8 @@
     "Sound": "サウンド",
     "Sound On": "サウンドオン",
     "Sound Off": "サウンドオフ",
-    ":label, notifications muted": ":label、通知はミュート中"
+    ":label, notifications muted": ":label、通知はミュート中",
+    "Undo Send": "送信の取り消し",
+    ":count second|:count seconds": ":count 秒",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "返信を送信した後に取り消せる時間です（すべてのチャネル共通）。その後、顧客に届きます。"
 }

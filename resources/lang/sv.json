@@ -1987,5 +1987,8 @@
     "Sound": "Ljud",
     "Sound On": "Ljud På",
     "Sound Off": "Ljud Av",
-    ":label, notifications muted": ":label, aviseringar avstängda"
+    ":label, notifications muted": ":label, aviseringar avstängda",
+    "Undo Send": "Ångra Skicka",
+    ":count second|:count seconds": ":count sekund|:count sekunder",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Hur länge du kan ta tillbaka ett svar efter att du har skickat det, i alla kanaler. Därefter når det kunden."
 }

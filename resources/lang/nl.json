@@ -1987,5 +1987,8 @@
     "Sound": "Geluid",
     "Sound On": "Geluid Aan",
     "Sound Off": "Geluid Uit",
-    ":label, notifications muted": ":label, meldingen gedempt"
+    ":label, notifications muted": ":label, meldingen gedempt",
+    "Undo Send": "Verzenden Ongedaan Maken",
+    ":count second|:count seconds": ":count seconde|:count seconden",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Hoe lang u een antwoord na het verzenden kunt terugnemen, op elk kanaal. Daarna bereikt het de klant."
 }

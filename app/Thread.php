@@ -1268,8 +1268,8 @@ class Thread extends Model
                     // New conversation.
                     event(new UserCreatedConversation($conversation, $thread));
                     \Eventy::action('conversation.created_by_user_can_undo', $conversation, $thread);
-                    // After Conversation::UNDO_TIMOUT period trigger final event.
-                    \Helper::backgroundAction('conversation.created_by_user', [$conversation, $thread], now()->addSeconds(Conversation::UNDO_TIMOUT));
+                    // After the mailbox's Undo Send trigger final event.
+                    \Helper::backgroundAction('conversation.created_by_user', [$conversation, $thread], now()->addSeconds($conversation->mailbox->undoSeconds()));
                 }
             } elseif ($data['type'] == Thread::TYPE_NOTE) {
                 // Note.
@@ -1283,8 +1283,8 @@ class Thread extends Model
                 } else {
                     event(new UserReplied($conversation, $thread));
                     \Eventy::action('conversation.user_replied_can_undo', $conversation, $thread);
-                    // After Conversation::UNDO_TIMOUT period trigger final event.
-                    \Helper::backgroundAction('conversation.user_replied', [$conversation, $thread], now()->addSeconds(Conversation::UNDO_TIMOUT));
+                    // After the mailbox's Undo Send trigger final event.
+                    \Helper::backgroundAction('conversation.user_replied', [$conversation, $thread], now()->addSeconds($conversation->mailbox->undoSeconds()));
                 }
             }
         };

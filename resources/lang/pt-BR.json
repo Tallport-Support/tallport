@@ -1988,5 +1988,8 @@
     "Sound": "Som",
     "Sound On": "Som Ligado",
     "Sound Off": "Som Desligado",
-    ":label, notifications muted": ":label, notificações silenciadas"
+    ":label, notifications muted": ":label, notificações silenciadas",
+    "Undo Send": "Desfazer Envio",
+    ":count second|:count seconds": ":count segundo|:count segundos",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Por quanto tempo você pode desfazer uma resposta depois de enviá-la, em todos os canais. Depois disso, ela chega ao cliente."
 }

@@ -226,6 +226,7 @@ class MailboxesController extends Controller
                 'name'             => 'required|string|max:40',
                 'ticket_assignee'  => 'required|integer',
                 'chat_reopen_days' => 'sometimes|required|integer|min:1|max:3650',
+                'undo_seconds'     => 'sometimes|required|in:'.implode(',', Mailbox::UNDO_CHOICES),
                 'accent'           => ['nullable', \Illuminate\Validation\Rule::in(\FruitUI\Fruit::ACCENTS)],
                 'photo'            => 'nullable|image|mimes:jpeg,png,jpg,gif',
             ], [], ['chat_reopen_days' => __('Reopen Window'), 'photo' => __('Image')]);
@@ -292,6 +293,9 @@ class MailboxesController extends Controller
             }
             if ($request->has('chat_reopen_days')) {
                 $mailbox->setMetaParam('chat_reopen_days', (int) $request->input('chat_reopen_days'));
+            }
+            if ($request->has('undo_seconds')) {
+                $mailbox->setMetaParam('undo_seconds', (int) $request->input('undo_seconds'));
             }
 
             // Its image, once everything else is valid.

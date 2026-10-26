@@ -1422,10 +1422,9 @@ class ConversationsController extends Controller
 
         $this->authorize('view', $conversation);
 
-        // Check undo timeout; Nostr replies are sent right away.
-        if ((int) $thread->created_at->diffInSeconds(now(), true) > Conversation::UNDO_TIMOUT
-            || ($thread->type == Thread::TYPE_MESSAGE && (\App\Nostr\Nostr::isNostr($conversation) || \App\Matrix\Matrix::isMatrix($conversation)))
-        ) {
+        // Check the mailbox's Undo Send (Off: none).
+        $undo_seconds = $conversation->mailbox->undoSeconds();
+        if (!$undo_seconds || (int) $thread->created_at->diffInSeconds(now(), true) > $undo_seconds) {
             \Session::flash('flash_error_floating', __('Sending can not be undone'));
             return redirect()->away($conversation->url($conversation->folder_id));
         }
@@ -1444,7 +1443,7 @@ class ConversationsController extends Controller
                 $job->cancel();
             }
         }
-        // A Telegram reply is sent right away: delete it from the chat.
+        // Delete from the Telegram chat whatever of the reply went out already.
         if ($conversation->channel == \App\Telegram\Telegram::CHANNEL) {
             \App\Jobs\SendReplyToTelegram::undo($thread);
         }

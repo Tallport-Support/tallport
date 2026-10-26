@@ -1987,5 +1987,8 @@
     "Sound": "Sunet",
     "Sound On": "Sunet Pornit",
     "Sound Off": "Sunet Oprit",
-    ":label, notifications muted": ":label, notificări dezactivate"
+    ":label, notifications muted": ":label, notificări dezactivate",
+    "Undo Send": "Anulează Trimiterea",
+    ":count second|:count seconds": ":count secundă|:count secunde|:count de secunde",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Cât timp poți retrage un răspuns după ce l-ai trimis, pe fiecare canal. După aceea ajunge la client."
 }

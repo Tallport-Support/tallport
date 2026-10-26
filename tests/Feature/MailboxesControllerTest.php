@@ -198,6 +198,33 @@ PHP;
     }
 
     /**
+     * Undo Send: 15 seconds until changed on General, one of its choices (Off sends at once).
+     */
+    public function testUndoSendIsTheMailboxsChoice()
+    {
+        $mailbox = $this->createMailbox([], ['name' => 'Support']);
+        $fields = [
+            'name'            => 'Support',
+            'email'           => $mailbox->email,
+            'from_name'       => Mailbox::FROM_NAME_MAILBOX,
+            'ticket_assignee' => Mailbox::TICKET_ASSIGNEE_ANYONE,
+        ];
+        $save = fn (array $data) => $this->postForm($this->admin, route('mailboxes.update.save', ['id' => $mailbox->id]), array_merge($fields, $data));
+        $this->assertSame(\App\Conversation::UNDO_TIMOUT, $mailbox->undoSeconds());
+        $this->actingAs($this->admin)->get(route('mailboxes.update', ['id' => $mailbox->id]))
+            ->assertSee('Undo Send')->assertSee('<option value="15" selected', false);
+
+        $save(['undo_seconds' => 5])->assertSessionHasNoErrors();
+        $this->assertSame(5, $mailbox->fresh()->undoSeconds());
+        $save(['undo_seconds' => 7])->assertSessionHasErrors('undo_seconds');
+        $this->assertSame(5, $mailbox->fresh()->undoSeconds());
+        $save([])->assertSessionHasNoErrors();
+        $this->assertSame(5, $mailbox->fresh()->undoSeconds());
+        $save(['undo_seconds' => 0])->assertSessionHasNoErrors();
+        $this->assertSame(0, $mailbox->fresh()->undoSeconds());
+    }
+
+    /**
      * A mailbox's image: uploaded as a square JPEG with the settings, replaced (the old file
      * goes), refused when it isn't an image, removed, and gone with the mailbox. Every channel
      * shows it: Nostr's public profile is announced again when it changes.

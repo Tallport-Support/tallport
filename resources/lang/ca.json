@@ -2078,5 +2078,8 @@
     "Sound": "So",
     "Sound On": "So Activat",
     "Sound Off": "So Desactivat",
-    ":label, notifications muted": ":label, notificacions silenciades"
+    ":label, notifications muted": ":label, notificacions silenciades",
+    "Undo Send": "Desfés l'Enviament",
+    ":count second|:count seconds": ":count segon|:count segons",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Quant de temps podeu desfer una resposta després d'enviar-la, a tots els canals. Després arriba al client."
 }

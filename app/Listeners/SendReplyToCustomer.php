@@ -2,7 +2,6 @@
 
 namespace App\Listeners;
 
-use App\Conversation;
 use App\Customer;
 use App\Thread;
 
@@ -94,22 +93,23 @@ class SendReplyToCustomer
             return;
         }
 
-        // Telegram: the reply is sent by Tallport's Telegram bot, right away
-        // (Undo deletes it from the chat).
+        // Every channel sends once the mailbox's Undo Send is over.
+        $undo_seconds = $conversation->mailbox->undoSeconds();
+
+        // Telegram: the reply is sent by Tallport's Telegram bot.
         if ($conversation->channel == \App\Telegram\Telegram::CHANNEL) {
-            \App\Jobs\SendReplyToTelegram::dispatch($thread->id);
+            \App\Jobs\SendReplyToTelegram::dispatch($thread->id)->delay(now()->addSeconds($undo_seconds));
             return;
         }
 
-        // Nostr: sent right away (it can't be undone).
         if (\App\Nostr\Nostr::isNostr($conversation)) {
-            \App\Jobs\SendReplyToNostr::dispatch($thread->id);
+            \App\Jobs\SendReplyToNostr::dispatch($thread->id)->delay(now()->addSeconds($undo_seconds));
             return;
         }
 
         if (\App\Matrix\Matrix::isMatrix($conversation)) {
             if (!$thread->getMeta('chat_external_sender')) {
-                \App\Jobs\SendReplyToMatrix::dispatch($thread->id);
+                \App\Jobs\SendReplyToMatrix::dispatch($thread->id)->delay(now()->addSeconds($undo_seconds));
             }
             return;
         }
@@ -119,21 +119,21 @@ class SendReplyToCustomer
             \App\Misc\ChatDelivery::recordStatus($thread, \App\SendLog::STATUS_ACCEPTED);
             // And by email when they don't see it in a while (from a mailbox with email).
             if ($conversation->mailbox->hasEmail()) {
-                \App\Jobs\EmailWebChatReply::dispatch($thread->id)->delay(now()->addSeconds(Conversation::UNDO_TIMOUT + \App\WebChat\WebChat::EMAIL_AFTER))->onQueue('emails');
+                \App\Jobs\EmailWebChatReply::dispatch($thread->id)->delay(now()->addSeconds($undo_seconds + \App\WebChat\WebChat::EMAIL_AFTER))->onQueue('emails');
             }
             return;
         }
 
         // Modules' channels.
         if ($conversation->hasChannel()) {
-            \Helper::backgroundAction('chat_conversation.send_reply', [$conversation, $replies, $conversation->customer], now()->addSeconds(Conversation::UNDO_TIMOUT));
+            \Helper::backgroundAction('chat_conversation.send_reply', [$conversation, $replies, $conversation->customer], now()->addSeconds($undo_seconds));
             return;
         }
 
         // We can not check imported here, as after conversation has been imported via API
         // notifications has to be sent.
         //if (!$conversation->imported) {
-        $delay = \Eventy::filter('conversation.send_reply_to_customer_delay', now()->addSeconds(Conversation::UNDO_TIMOUT), $conversation, $replies);
+        $delay = \Eventy::filter('conversation.send_reply_to_customer_delay', now()->addSeconds($undo_seconds), $conversation, $replies);
 
         $recipient_customer = $conversation->customer;
 

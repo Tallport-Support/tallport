@@ -1990,5 +1990,8 @@
     "Sound": "Lyd",
     "Sound On": "Lyd På",
     "Sound Off": "Lyd Av",
-    ":label, notifications muted": ":label, varsler dempet"
+    ":label, notifications muted": ":label, varsler dempet",
+    "Undo Send": "Angre Sending",
+    ":count second|:count seconds": ":count sekund|:count sekunder",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Hvor lenge du kan trekke tilbake et svar etter at du har sendt det, i alle kanaler. Deretter når det kunden."
 }

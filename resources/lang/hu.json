@@ -1987,5 +1987,8 @@
     "Sound": "Hang",
     "Sound On": "Hang Bekapcsolva",
     "Sound Off": "Hang Kikapcsolva",
-    ":label, notifications muted": ":label, értesítések némítva"
+    ":label, notifications muted": ":label, értesítések némítva",
+    "Undo Send": "Küldés Visszavonása",
+    ":count second|:count seconds": ":count másodperc",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Mennyi ideig vonhatod vissza a választ elküldés után, minden csatornán. Utána jut el az ügyfélhez."
 }

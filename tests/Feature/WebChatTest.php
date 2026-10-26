@@ -187,6 +187,30 @@ class WebChatTest extends FeatureTestCase
         $this->actingAs($this->agent)->get('/conversation/'.$conversation->id)->assertSee('www.forma.example/orders');
     }
 
+    /**
+     * The team's reply shows once the mailbox's Undo Send is over: at once when it's Off.
+     */
+    public function testRepliesWaitForTheMailboxsUndoSend()
+    {
+        $token = $this->visitorToken();
+        $this->api('POST', '/t/m', ['body' => 'Hello'], $token)->assertOk();
+        $conversation = Visitor::firstOrFail()->conversation;
+        $this->mailbox->setMetaParam('undo_seconds', 5, true);
+        $reply = $this->reply($conversation);
+        $this->travel(4)->seconds();
+        $this->assertSame(['visitor'], array_column($this->api('GET', '/t/m?after=0', [], $token)->json('messages'), 'kind'));
+        $this->travel(2)->seconds();
+        $messages = $this->api('GET', '/t/m?after=0', [], $token)->json('messages');
+        $this->assertSame(['visitor', 'team'], array_column($messages, 'kind'));
+        $this->assertSame($reply->created_at->copy()->addSeconds(5)->toIso8601String(), $messages[1]['time']);
+
+        $this->mailbox->setMetaParam('undo_seconds', 0, true);
+        $now = $this->reply($conversation, 'Found it.');
+        $messages = $this->api('GET', '/t/m?after='.$reply->id, [], $token)->json('messages');
+        $this->assertSame([$now->id], array_column($messages, 'id'));
+        $this->assertSame($now->created_at->toIso8601String(), $messages[0]['time']);
+    }
+
     public function testOnlyTheVisitorsOwnConversation()
     {
         $token = $this->visitorToken();

@@ -1987,5 +1987,8 @@
     "Sound": "Zvok",
     "Sound On": "Zvok Vklopljen",
     "Sound Off": "Zvok Izklopljen",
-    ":label, notifications muted": ":label, obvestila utišana"
+    ":label, notifications muted": ":label, obvestila utišana",
+    "Undo Send": "Razveljavi Pošiljanje",
+    ":count second|:count seconds": ":count sekunda|:count sekundi|:count sekunde|:count sekund",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Kako dolgo lahko odgovor po pošiljanju prekličete, na vseh kanalih. Nato prispe do stranke."
 }

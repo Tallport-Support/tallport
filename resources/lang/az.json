@@ -1987,5 +1987,8 @@
     "Sound": "Səs",
     "Sound On": "Səs Açıq",
     "Sound Off": "Səs Bağlı",
-    ":label, notifications muted": ":label, bildirişlər səssizdir"
+    ":label, notifications muted": ":label, bildirişlər səssizdir",
+    "Undo Send": "Göndərməni Geri Al",
+    ":count second|:count seconds": ":count saniyə",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Cavabı göndərdikdən sonra onu nə qədər müddət geri ala bilərsiniz, bütün kanallarda. Bundan sonra müştəriyə çatır."
 }

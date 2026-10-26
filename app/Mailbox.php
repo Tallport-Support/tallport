@@ -150,6 +150,11 @@ class Mailbox extends Model
     const PHOTO_SIZE = 256;
 
     /**
+     * Undo Send's choices, in seconds (undoSeconds()); 0: sent at once.
+     */
+    const UNDO_CHOICES = [0, 5, 10, 15, 30];
+
+    /**
      * Default values.
      */
     protected $attributes = [
@@ -1256,6 +1261,18 @@ class Mailbox extends Model
         // Maybe remove notifications on events in this mailbox?
 
         $this->delete();
+    }
+
+    /**
+     * How long a reply (or note) can be taken back after it's sent, in seconds: it goes to the
+     * customer then, the same on every channel. 0: at once, without Undo. The mailbox's choice
+     * (General's Undo Send), else Conversation::UNDO_TIMOUT.
+     */
+    public function undoSeconds()
+    {
+        $seconds = $this->getMeta('undo_seconds');
+
+        return in_array($seconds, self::UNDO_CHOICES, true) ? $seconds : Conversation::UNDO_TIMOUT;
     }
 
     /**

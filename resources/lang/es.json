@@ -1987,5 +1987,8 @@
     "Sound": "Sonido",
     "Sound On": "Sonido Activado",
     "Sound Off": "Sonido Desactivado",
-    ":label, notifications muted": ":label, notificaciones silenciadas"
+    ":label, notifications muted": ":label, notificaciones silenciadas",
+    "Undo Send": "Deshacer Envío",
+    ":count second|:count seconds": ":count segundo|:count segundos",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Cuánto tiempo puede deshacer una respuesta después de enviarla, en todos los canales. Después llega al cliente."
 }

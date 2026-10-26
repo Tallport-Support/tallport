@@ -288,8 +288,8 @@ class ConversationReplies
                 $now = date('Y-m-d H:i:s');
                 $status_changed = false;
                 $user_changed = false;
-                // Chat conversations in chat mode can not be undone.
-                $can_undo = true;
+                // The mailbox's Undo Send, the same on every channel (0: sent at once).
+                $can_undo = $mailbox->undoSeconds() > 0;
 
                 $request_status = (int)$request->status;
 
@@ -695,20 +695,14 @@ class ConversationReplies
                     $user->followConversation($conversation->id);
                 }
 
-                // Nostr replies are sent right away.
-                $sent_right_away = !$is_note && (\App\Nostr\Nostr::isNostr($conversation) || \App\Matrix\Matrix::isMatrix($conversation));
-                if ($sent_right_away) {
-                    $can_undo = false;
-                }
-
-                $deferred_events[] = function () use ($is_create, $is_forward, $is_note, $conversation, $thread, $forwarded_conversations, $forwarded_threads, $can_undo) {
+                $deferred_events[] = function () use ($is_create, $is_forward, $is_note, $conversation, $thread, $forwarded_conversations, $forwarded_threads, $can_undo, $mailbox) {
                     // When user creates a new conversation it may be saved as draft first.
                     if ($is_create) {
                         // New conversation.
                         event(new UserCreatedConversation($conversation, $thread));
                         \Eventy::action('conversation.created_by_user_can_undo', $conversation, $thread);
                         // After Conversation::UNDO_TIMOUT period trigger final event.
-                        \Helper::backgroundAction('conversation.created_by_user', [$conversation, $thread], now()->addSeconds($this->getUndoTimeout($can_undo)));
+                        \Helper::backgroundAction('conversation.created_by_user', [$conversation, $thread], now()->addSeconds($this->getUndoTimeout($can_undo, $mailbox)));
                     } elseif ($is_forward) {
                         // Forward.
                         // Notifications to users not sent.
@@ -731,7 +725,7 @@ class ConversationReplies
                         event(new UserReplied($conversation, $thread));
                         \Eventy::action('conversation.user_replied_can_undo', $conversation, $thread);
                         // After Conversation::UNDO_TIMOUT period trigger final event.
-                        \Helper::backgroundAction('conversation.user_replied', [$conversation, $thread], now()->addSeconds($this->getUndoTimeout($can_undo)));
+                        \Helper::backgroundAction('conversation.user_replied', [$conversation, $thread], now()->addSeconds($this->getUndoTimeout($can_undo, $mailbox)));
                     }
                 };
 
@@ -791,10 +785,10 @@ class ConversationReplies
                             }
                         }
 
-                        $deferred_events[] = function () use ($conversation_copy, $thread_copy, $can_undo) {
+                        $deferred_events[] = function () use ($conversation_copy, $thread_copy, $can_undo, $mailbox) {
                             event(new UserCreatedConversation($conversation_copy, $thread_copy));
                             \Eventy::action('conversation.created_by_user_can_undo', $conversation_copy, $thread_copy);
-                            \Helper::backgroundAction('conversation.created_by_user', [$conversation_copy, $thread_copy], now()->addSeconds($this->getUndoTimeout($can_undo)));
+                            \Helper::backgroundAction('conversation.created_by_user', [$conversation_copy, $thread_copy], now()->addSeconds($this->getUndoTimeout($can_undo, $mailbox)));
                         };
                     }
                 }
@@ -851,10 +845,10 @@ class ConversationReplies
                 \Session::flash('flash_undo_floating', [
                     'thread_id' => $thread->id,
                     'text' => $flash_text,
-                    'expires_at' => $thread->created_at->copy()->addSeconds(Conversation::UNDO_TIMOUT)->timestamp,
+                    'expires_at' => $thread->created_at->copy()->addSeconds($mailbox->undoSeconds())->timestamp,
                 ]);
-            } elseif ($sent_right_away) {
-                \Session::flash('flash_success_floating', '<strong>'.__('Message sent').'</strong>'.($show_view_link ? ' &nbsp;<a href="'.$conversation->url().'">'.__('View').'</a>' : ''));
+            } else {
+                \Session::flash('flash_'.$flash_type.'_floating', '<strong>'.$flash_text.'</strong>'.($show_view_link ? ' &nbsp;<a href="'.$conversation->url().'">'.__('View').'</a>' : ''));
             }
         }
 
@@ -1399,10 +1393,13 @@ class ConversationReplies
         ];
     }
 
-    public function getUndoTimeout($can_undo)
+    /**
+     * Seconds until a reply's final event (its Undo is over): the mailbox's Undo Send.
+     */
+    public function getUndoTimeout($can_undo, $mailbox = null)
     {
         if ($can_undo) {
-            return Conversation::UNDO_TIMOUT;
+            return $mailbox ? $mailbox->undoSeconds() : Conversation::UNDO_TIMOUT;
         } else {
             return 1;
         }

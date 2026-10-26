@@ -1987,5 +1987,8 @@
     "Sound": "Звук",
     "Sound On": "Звук Увімкнено",
     "Sound Off": "Звук Вимкнено",
-    ":label, notifications muted": ":label, сповіщення вимкнено"
+    ":label, notifications muted": ":label, сповіщення вимкнено",
+    "Undo Send": "Скасування Надсилання",
+    ":count second|:count seconds": ":count секунда|:count секунди|:count секунд",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Скільки часу можна скасувати відповідь після надсилання, в усіх каналах. Після цього вона надходить клієнту."
 }

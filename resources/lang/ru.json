@@ -1987,5 +1987,8 @@
     "Sound": "Звук",
     "Sound On": "Звук Включён",
     "Sound Off": "Звук Выключен",
-    ":label, notifications muted": ":label, уведомления отключены"
+    ":label, notifications muted": ":label, уведомления отключены",
+    "Undo Send": "Отмена Отправки",
+    ":count second|:count seconds": ":count секунда|:count секунды|:count секунд",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Сколько времени можно отменить ответ после отправки, во всех каналах. После этого он доходит до клиента."
 }

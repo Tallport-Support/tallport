@@ -99,7 +99,7 @@ class WebChatController extends Controller
             // Messages up to the cursor won't change; a reply the team can still undo shows later, with
             // an older ID, so the cursor stays before it.
             $pending = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->where('state', Thread::STATE_PUBLISHED)
-                ->where('created_at', '>', now()->subSeconds(Conversation::UNDO_TIMOUT))->min('id');
+                ->where('created_at', '>', now()->subSeconds($conversation->mailbox->undoSeconds()))->min('id');
             $cursor = max($cursor, $pending ? $pending - 1 : (int) collect($messages)->max('id'));
         }
 
@@ -455,12 +455,14 @@ class WebChatController extends Controller
      */
     protected function threads(Conversation $conversation)
     {
+        $undo_seconds = $conversation->mailbox->undoSeconds();
+
         return $conversation->threads()
             ->where('state', Thread::STATE_PUBLISHED)
-            ->where(function ($query) {
+            ->where(function ($query) use ($undo_seconds) {
                 $query->where('type', Thread::TYPE_CUSTOMER)
-                    ->orWhere(function ($query) {
-                        $query->where('type', Thread::TYPE_MESSAGE)->where('created_at', '<=', now()->subSeconds(Conversation::UNDO_TIMOUT));
+                    ->orWhere(function ($query) use ($undo_seconds) {
+                        $query->where('type', Thread::TYPE_MESSAGE)->where('created_at', '<=', now()->subSeconds($undo_seconds));
                     })
                     ->orWhere(function ($query) {
                         $query->where('type', Thread::TYPE_LINEITEM)->where('action_type', Thread::ACTION_TYPE_AUTO_REPLY);
@@ -492,7 +494,7 @@ class WebChatController extends Controller
             'photo'    => $team ? ($mailbox ? WebChat::teamPhoto($thread->conversation->mailbox) : WebChat::userPhoto($thread->created_by_user)) : null,
             'body'     => \App\Misc\ChatDelivery::plainText($thread),
             // The team's: when the visitor could see it, once Undo had passed.
-            'time'     => ($team ? $thread->created_at->copy()->addSeconds(Conversation::UNDO_TIMOUT) : $thread->created_at)->toIso8601String(),
+            'time'     => ($team ? $thread->created_at->copy()->addSeconds($thread->conversation->mailbox->undoSeconds()) : $thread->created_at)->toIso8601String(),
             'files'    => $thread->attachments->map(function ($attachment) {
                 $url = 'f?'.http_build_query(['id' => $attachment->id, 'token' => $attachment->getToken()]);
                 $image = WebChat::imageType($attachment) !== null;

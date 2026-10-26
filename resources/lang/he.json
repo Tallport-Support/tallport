@@ -1987,5 +1987,8 @@
     "Sound": "צליל",
     "Sound On": "צליל מופעל",
     "Sound Off": "צליל כבוי",
-    ":label, notifications muted": ":label, ההתראות מושתקות"
+    ":label, notifications muted": ":label, ההתראות מושתקות",
+    "Undo Send": "ביטול שליחה",
+    ":count second|:count seconds": ":count שנייה|:count שניות",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "כמה זמן אפשר לבטל תשובה לאחר שליחתה, בכל הערוצים. לאחר מכן היא מגיעה ללקוח."
 }

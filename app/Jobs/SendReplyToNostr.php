@@ -12,8 +12,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 
 /**
- * Send an agent's reply to the customer's Nostr key, right away (Nostr
- * replies can't be undone). A reply that can't be delivered is shown as not
+ * Send an agent's reply to the customer's Nostr key, once the mailbox's Undo
+ * Send is over (a Nostr message can't be taken back). A reply that can't be delivered is shown as not
  * sent, with Retry, and its conversation is reopened.
  */
 class SendReplyToNostr implements ShouldQueue

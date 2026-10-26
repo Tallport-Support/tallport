@@ -432,6 +432,29 @@ class TelegramTest extends FeatureTestCase
         $this->assertFalse($reply->isSendStatusSuccess());
     }
 
+    /**
+     * Like every channel's, a reply waits for the mailbox's Undo Send; with Off it goes at once and
+     * can't be undone.
+     */
+    public function testReplyWaitsForTheMailboxsUndoSend()
+    {
+        $this->mailbox->setMetaParam('undo_seconds', 30, true);
+        $reply = $this->reply();
+        $this->assertSame($reply->created_at->timestamp + 30, session('flash_undo_floating')['expires_at']);
+        $this->assertGreaterThanOrEqual(time() + 29, \DB::table('jobs')->where('queue', 'emails')->value('available_at'));
+
+        \DB::table('jobs')->delete();
+        \Session::forget('flash_undo_floating');
+        $this->mailbox->setMetaParam('undo_seconds', 0, true);
+        $this->sendReply($this->agent, ['mailbox_id' => $this->mailbox->id, 'conversation_id' => $reply->conversation_id, 'body' => '<p>And now</p>']);
+        $this->assertNull(session('flash_undo_floating'));
+        $this->assertLessThanOrEqual(time(), \DB::table('jobs')->where('queue', 'emails')->value('available_at'));
+        $now = $reply->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->latest('id')->first();
+        \Session::start();
+        $this->actingAs($this->agent)->post(route('conversations.undo.submit', ['thread_id' => $now->id]), ['_token' => csrf_token()]);
+        $this->assertSame(Thread::STATE_PUBLISHED, (int) $now->fresh()->state);
+    }
+
     public function testUndoBeforeSendingSendsNothing()
     {
         $reply = $this->reply();

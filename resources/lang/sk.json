@@ -1987,5 +1987,8 @@
     "Sound": "Zvuk",
     "Sound On": "Zvuk Zapnutý",
     "Sound Off": "Zvuk Vypnutý",
-    ":label, notifications muted": ":label, upozornenia stlmené"
+    ":label, notifications muted": ":label, upozornenia stlmené",
+    "Undo Send": "Vrátiť Odoslanie",
+    ":count second|:count seconds": ":count sekunda|:count sekundy|:count sekúnd",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Ako dlho môžete odpoveď po odoslaní vziať späť, na všetkých kanáloch. Potom príde zákazníkovi."
 }

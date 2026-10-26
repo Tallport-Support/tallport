@@ -2003,5 +2003,8 @@
     "Sound": "Ääni",
     "Sound On": "Ääni Päällä",
     "Sound Off": "Ääni Pois",
-    ":label, notifications muted": ":label, ilmoitukset mykistetty"
+    ":label, notifications muted": ":label, ilmoitukset mykistetty",
+    "Undo Send": "Kumoa Lähetys",
+    ":count second|:count seconds": ":count sekunti|:count sekuntia",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Kuinka kauan voit perua vastauksen lähettämisen jälkeen, kaikissa kanavissa. Sen jälkeen se menee asiakkaalle."
 }

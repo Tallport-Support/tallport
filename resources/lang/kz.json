@@ -2380,5 +2380,8 @@
     "Sound": "Дыбыс",
     "Sound On": "Дыбыс Қосулы",
     "Sound Off": "Дыбыс Өшірулі",
-    ":label, notifications muted": ":label, хабарландырулар өшірулі"
+    ":label, notifications muted": ":label, хабарландырулар өшірулі",
+    "Undo Send": "Жіберуді Болдырмау",
+    ":count second|:count seconds": ":count секунд",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Жауапты жібергеннен кейін оны қанша уақыт ішінде қайтарып алуға болады, барлық арналарда. Одан кейін ол тұтынушыға жетеді."
 }

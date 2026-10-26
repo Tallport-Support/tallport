@@ -2031,5 +2031,8 @@
     "Sound": "聲音",
     "Sound On": "聲音已開啟",
     "Sound Off": "聲音已關閉",
-    ":label, notifications muted": ":label，通知已靜音"
+    ":label, notifications muted": ":label，通知已靜音",
+    "Undo Send": "撤銷傳送",
+    ":count second|:count seconds": ":count 秒",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "傳送回覆後可撤回的時長，適用於所有管道。之後回覆才會送達客戶。"
 }

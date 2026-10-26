@@ -1994,5 +1994,8 @@
     "Sound": "Son",
     "Sound On": "Son Activé",
     "Sound Off": "Son Désactivé",
-    ":label, notifications muted": ":label, notifications désactivées"
+    ":label, notifications muted": ":label, notifications désactivées",
+    "Undo Send": "Annuler l'Envoi",
+    ":count second|:count seconds": ":count seconde|:count secondes",
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Pendant combien de temps vous pouvez annuler une réponse après l'avoir envoyée, sur tous les canaux. Elle parvient ensuite au client."
 }
