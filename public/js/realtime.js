@@ -287,27 +287,24 @@ function maybeShowConnectionRestored()
 		}
 
 		// Who is viewing the open conversation: read from the page at each request
-		// (wire:navigate changes it without a new connection). Writing a reply: typing in its
-		// composer (a reply, not a note) in the last REPLYING_MS, or text there not sent yet; an
-		// open composer alone isn't (a chat's always is). Others hear at once when it starts,
-		// and when it stops.
+		// (wire:navigate changes it without a new connection). Writing a reply: typing its message
+		// (a reply, not a note; not To or Cc) in the last REPLYING_MS, or a message there not sent
+		// yet, the reply template alone not counting; an open composer alone isn't (a chat's always
+		// is). Others hear at once when it starts, and when it stops.
 		var REPLYING_MS = 10000;
 		var typed_at = 0;
 		var sent_replying = false;
 		var replying_timer = null;
 		var isReplying = function () {
-			var composer = document.querySelector('.conv-composer');
-			if (!composer || getReplyFormMode() != 'reply') {
+			var message = document.querySelector('.conv-composer .conv-reply-body');
+			if (!message || getReplyFormMode() != 'reply') {
 				return false;
 			}
-			// The editor's text: its field (HTML in rich mode) or what's being edited.
-			var text = Array.prototype.map.call(composer.querySelectorAll('textarea[data-fruit-control], [contenteditable="true"]'), function (editor) {
-				return editor.matches('textarea') ? stripTags(editor.value) : editor.textContent;
-			}).join('');
-			return Date.now() - typed_at < REPLYING_MS || text.trim() !== '';
+			var text = stripTags(getReplyBody()).trim();
+			return Date.now() - typed_at < REPLYING_MS || (text !== '' && text !== message.getAttribute('data-template-text'));
 		};
 		document.addEventListener('input', function (event) {
-			if (!event.target.closest || !event.target.closest('.conv-composer') || !poly) {
+			if (!event.target.closest || !event.target.closest('.conv-composer .conv-reply-body') || !poly) {
 				return;
 			}
 			typed_at = Date.now();

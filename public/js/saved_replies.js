@@ -56,6 +56,11 @@ function savedReplyTemplateLoad()
 		if (Tallport.isSuccess(response) && response.text) {
 			setReplyBody(response.text, response.markdown);
 			savedReplyFiles(response);
+			// The template alone isn't a reply being written (public/js/realtime.js).
+			var message = document.querySelector('.conv-reply-body');
+			if (message) {
+				message.setAttribute('data-template-text', stripTags(getReplyBody()).trim());
+			}
 		}
 	});
 }

@@ -2398,19 +2398,16 @@ h1.settings-toolbar__title {
 }
 /* In a chat's heading, under the customer's name, beside their picture. */
 .conv-heading--chat .conv-presence-line {
-    grid-column: 2;
+    grid-column: 2 / -1;
     margin-top: 4px;
 }
 .conv-presence-line__faces {
     display: inline-flex;
+    gap: 4px;
 }
 .conv-presence-line__face {
     --f-avatar-size: 22px;
     --f-avatar-font-size: 10px;
-    box-shadow: 0 0 0 2px var(--f-surface);
-}
-.conv-presence-line__face + .conv-presence-line__face {
-    margin-inline-start: -6px;
 }
 /* A teammate writing a reply, right above the composer; with nobody, it takes no room but stays a
    status region (FruitUI's Typing). */
