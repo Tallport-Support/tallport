@@ -1990,5 +1990,10 @@
     ":label, notifications muted": ":label, obvestila utišana",
     "Undo Send": "Razveljavi Pošiljanje",
     ":count second|:count seconds": ":count sekunda|:count sekundi|:count sekunde|:count sekund",
-    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Kako dolgo lahko odgovor po pošiljanju prekličete, na vseh kanalih. Nato prispe do stranke."
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Kako dolgo lahko odgovor po pošiljanju prekličete, na vseh kanalih. Nato prispe do stranke.",
+    "Agent": "Agent",
+    "On these channels the AI takes new chats instead of the auto reply. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "Na teh kanalih AI prevzame nove klepete namesto samodejnega odgovora. Stranko vpraša, kar mora vedeti vaša ekipa, največ trikrat in brez odgovarjanja, nato pa klepet preda vaši ekipi.",
+    "The AI couldn’t continue this chat.": "AI ni mogel nadaljevati tega klepeta.",
+    "The customer didn’t answer the last question.": "Stranka ni odgovorila na zadnje vprašanje.",
+    "Not sent while the AI takes new chats here.": "Se ne pošlje, dokler tu nove klepete prevzema AI."
 }

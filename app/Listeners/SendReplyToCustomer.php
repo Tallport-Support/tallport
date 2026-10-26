@@ -93,8 +93,8 @@ class SendReplyToCustomer
             return;
         }
 
-        // Every channel sends once the mailbox's Undo Send is over.
-        $undo_seconds = $conversation->mailbox->undoSeconds();
+        // Every channel sends once the mailbox's Undo Send is over; the AI agent's at once.
+        $undo_seconds = \App\Ai\ChatAgent::wrote($thread) ? 0 : $conversation->mailbox->undoSeconds();
 
         // Telegram: the reply is sent by Tallport's Telegram bot.
         if ($conversation->channel == \App\Telegram\Telegram::CHANNEL) {

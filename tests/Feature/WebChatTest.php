@@ -209,6 +209,13 @@ class WebChatTest extends FeatureTestCase
         $messages = $this->api('GET', '/t/m?after='.$reply->id, [], $token)->json('messages');
         $this->assertSame([$now->id], array_column($messages, 'id'));
         $this->assertSame($now->created_at->toIso8601String(), $messages[0]['time']);
+
+        // The AI agent's at once, whatever Undo Send is (it doesn't undo).
+        $this->mailbox->setMetaParam('undo_seconds', 30, true);
+        $conversation->createUserThread(\App\Ai\ChatAgent::user(), '<p>Before I hand this issue off to my human colleagues, please tell me your order number.</p>');
+        $ai = $conversation->threads()->orderBy('id', 'desc')->first();
+        $poll = $this->api('GET', '/t/m?after='.$now->id, [], $token);
+        $this->assertSame([[$ai->id, 'AI', $ai->created_at->toIso8601String()]], array_map(fn ($message) => [$message['id'], $message['author'], $message['time']], $poll->json('messages')));
     }
 
     public function testOnlyTheVisitorsOwnConversation()

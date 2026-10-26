@@ -61,6 +61,7 @@ abstract class FeatureTestCase extends TestCase
             (new \ReflectionProperty($class, $property))->setValue(null, []);
         }
         (new \ReflectionProperty(\App\Workflows\Runner::class, 'robot'))->setValue(null, null);
+        (new \ReflectionProperty(\App\Ai\ChatAgent::class, 'user'))->setValue(null, null);
 
         // No customer photos looked up online (Gravatar unless set) but in
         // the tests about them.

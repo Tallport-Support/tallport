@@ -1990,5 +1990,10 @@
     ":label, notifications muted": ":label, értesítések némítva",
     "Undo Send": "Küldés Visszavonása",
     ":count second|:count seconds": ":count másodperc",
-    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Mennyi ideig vonhatod vissza a választ elküldés után, minden csatornán. Utána jut el az ügyfélhez."
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Mennyi ideig vonhatod vissza a választ elküldés után, minden csatornán. Utána jut el az ügyfélhez.",
+    "Agent": "Ügynök",
+    "On these channels the AI takes new chats instead of the auto reply. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "Ezeken a csatornákon az MI veszi át az új csevegéseket az automatikus válasz helyett. Megkérdezi az ügyféltől, amit a csapatodnak tudnia kell, legfeljebb háromszor és válaszadás nélkül, majd átadja a csevegést a csapatodnak.",
+    "The AI couldn’t continue this chat.": "Az MI nem tudta folytatni ezt a csevegést.",
+    "The customer didn’t answer the last question.": "Az ügyfél nem válaszolt az utolsó kérdésre.",
+    "Not sent while the AI takes new chats here.": "Nem megy ki, amíg itt az MI veszi át az új csevegéseket."
 }

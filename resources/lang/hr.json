@@ -1990,5 +1990,10 @@
     ":label, notifications muted": ":label, obavijesti utišane",
     "Undo Send": "Poništi Slanje",
     ":count second|:count seconds": ":count sekunda|:count sekunde|:count sekundi",
-    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Koliko dugo možete povući odgovor nakon slanja, na svim kanalima. Nakon toga stiže kupcu."
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Koliko dugo možete povući odgovor nakon slanja, na svim kanalima. Nakon toga stiže kupcu.",
+    "Agent": "Agent",
+    "On these channels the AI takes new chats instead of the auto reply. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "Na ovim kanalima AI preuzima nove chatove umjesto automatskog odgovora. Pita kupca ono što vaš tim treba znati, najviše tri puta i bez odgovaranja, a zatim predaje chat vašem timu.",
+    "The AI couldn’t continue this chat.": "AI nije mogao nastaviti ovaj chat.",
+    "The customer didn’t answer the last question.": "Kupac nije odgovorio na posljednje pitanje.",
+    "Not sent while the AI takes new chats here.": "Ne šalje se dok AI ovdje preuzima nove chatove."
 }

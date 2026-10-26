@@ -29,7 +29,8 @@
             @foreach (array_slice($groups, 1, null, true) as $key => $group)
                 @php $channel_mode = old('messages.'.$key.'.mode', $group['mode']); @endphp
                 <x-fruit::form-section id="auto-reply-{{ $key }}" :title="$group['label']" :level="3" x-data="{ mode: {{ \Illuminate\Support\Js::from($channel_mode) }} }">
-                    <x-fruit::field :label="__('Auto Reply')" layout="row">
+                    {{-- Where the AI agent takes new chats (Mailbox › AI), it says the first word. --}}
+                    <x-fruit::field :label="__('Auto Reply')" layout="row" :description="in_array($key, App\Ai\ChatAgent::channels($mailbox), true) ? __('Not sent while the AI takes new chats here.') : null">
                         <x-fruit::select id="auto-reply-{{ $key }}-mode" name="messages[{{ $key }}][mode]" x-model="mode" x-on:change="chooseMode($el, {{ \Illuminate\Support\Js::from($key) }})" ::aria-describedby="mode === 'mailbox' && !enabled ? 'auto-reply-{{ $key }}-mode-note' : null">
                             <option value="mailbox" @selected($channel_mode == 'mailbox')>{{ __('The Mailbox’s') }}</option>
                             <option value="own" @selected($channel_mode == 'own')>{{ __('Its Own') }}</option>

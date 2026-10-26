@@ -1990,5 +1990,10 @@
     ":label, notifications muted": ":label, notificări dezactivate",
     "Undo Send": "Anulează Trimiterea",
     ":count second|:count seconds": ":count secundă|:count secunde|:count de secunde",
-    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Cât timp poți retrage un răspuns după ce l-ai trimis, pe fiecare canal. După aceea ajunge la client."
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Cât timp poți retrage un răspuns după ce l-ai trimis, pe fiecare canal. După aceea ajunge la client.",
+    "Agent": "Agent",
+    "On these channels the AI takes new chats instead of the auto reply. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "Pe aceste canale, AI-ul preia chaturile noi în locul răspunsului automat. Întreabă clientul ce trebuie să știe echipa ta, de cel mult trei ori și fără să răspundă, apoi predă chatul echipei tale.",
+    "The AI couldn’t continue this chat.": "AI-ul nu a putut continua acest chat.",
+    "The customer didn’t answer the last question.": "Clientul nu a răspuns la ultima întrebare.",
+    "Not sent while the AI takes new chats here.": "Nu se trimite cât timp AI-ul preia aici chaturile noi."
 }

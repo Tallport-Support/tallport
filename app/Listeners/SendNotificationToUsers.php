@@ -80,6 +80,11 @@ class SendNotificationToUsers
         }
         $conversation = $event->conversation;
 
+        // A chat the AI agent has, or what it did: people hear of it once it hands the chat over.
+        if (\App\Ai\ChatAgent::quiet($conversation, $caused_by_user_id)) {
+            return;
+        }
+
         // Using the last argument you can make event to be processed immediately
         Subscription::registerEvent($event_type, $conversation, $caused_by_user_id, $extra_data);
     }

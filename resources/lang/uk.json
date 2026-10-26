@@ -1990,5 +1990,10 @@
     ":label, notifications muted": ":label, сповіщення вимкнено",
     "Undo Send": "Скасування Надсилання",
     ":count second|:count seconds": ":count секунда|:count секунди|:count секунд",
-    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Скільки часу можна скасувати відповідь після надсилання, в усіх каналах. Після цього вона надходить клієнту."
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Скільки часу можна скасувати відповідь після надсилання, в усіх каналах. Після цього вона надходить клієнту.",
+    "Agent": "Агент",
+    "On these channels the AI takes new chats instead of the auto reply. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "У цих каналах нові чати замість автовідповіді приймає ШІ. Він запитує в клієнта те, що потрібно знати вашій команді, не більше трьох разів і не відповідаючи сам, а потім передає чат вашій команді.",
+    "The AI couldn’t continue this chat.": "ШІ не зміг продовжити цей чат.",
+    "The customer didn’t answer the last question.": "Клієнт не відповів на останнє запитання.",
+    "Not sent while the AI takes new chats here.": "Не надсилається, поки нові чати тут приймає ШІ."
 }

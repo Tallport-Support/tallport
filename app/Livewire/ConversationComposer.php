@@ -677,17 +677,19 @@ class ConversationComposer extends Component
         // agent set it (the toolbar's).
         $this->status = $this->chat ? $conversation->status : $user->replyStatus();
 
-        // The assignee, as the mailbox's setting says.
+        // The assignee, as the mailbox's setting says; a chat the AI agent has counts as nobody's
+        // (a person replying takes it from the AI).
+        $assignee = \App\Ai\ChatAgent::holds($conversation) ? null : $conversation->user_id;
         if ($mailbox->ticket_assignee == Mailbox::TICKET_ASSIGNEE_ANYONE
-            || ($mailbox->ticket_assignee == Mailbox::TICKET_ASSIGNEE_KEEP_CURRENT && !$conversation->user_id)
+            || ($mailbox->ticket_assignee == Mailbox::TICKET_ASSIGNEE_KEEP_CURRENT && !$assignee)
         ) {
             $this->user_id = -1;
         } elseif ($mailbox->ticket_assignee == Mailbox::TICKET_ASSIGNEE_REPLYING
-            || ($mailbox->ticket_assignee == Mailbox::TICKET_ASSIGNEE_REPLYING_UNASSIGNED && !$conversation->user_id)
+            || ($mailbox->ticket_assignee == Mailbox::TICKET_ASSIGNEE_REPLYING_UNASSIGNED && !$assignee)
         ) {
             $this->user_id = $user->id;
         } else {
-            $this->user_id = $conversation->user_id ?: -1;
+            $this->user_id = $assignee ?: -1;
         }
     }
 

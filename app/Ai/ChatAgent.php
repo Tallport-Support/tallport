@@ -1,0 +1,316 @@
+<?php
+
+namespace App\Ai;
+
+use App\Ai\Agents\ChatIntake;
+use App\AutoReply\ChannelMessages;
+use App\Conversation;
+use App\Jobs\AiChatAgentReply;
+use App\Jobs\AiChatAgentSilence;
+use App\Mailbox;
+use App\Subscription;
+use App\Thread;
+use App\User;
+
+/**
+ * The AI agent: a robot user (like Workflows') who takes new chats on the channels a mailbox turns
+ * it on for, instead of the auto reply. It asks the customer for what the team needs to know
+ * (Agents\ChatIntake), never answering, at most MAX_QUESTIONS times, then hands the chat to the
+ * team: a note for them, unassigned, notified as a new conversation. While it has a chat, the chat
+ * is Assigned to it and nobody is notified; a person replying or reassigning it takes it.
+ */
+class ChatAgent
+{
+    const EMAIL = 'tallport-ai@example.org';
+
+    /**
+     * The chat channels it can take (App\AutoReply\ChannelMessages keys).
+     */
+    const CHANNELS = ['webchat', 'telegram', 'matrix', 'nostr'];
+
+    const MAX_QUESTIONS = 3;
+
+    /**
+     * Seconds it waits for the rest of a customer's message: chats come in pieces.
+     */
+    const WAIT = 5;
+
+    /**
+     * Minutes without an answer to its question: a chat with a request goes to the team, one
+     * without (a greeting only) closes.
+     */
+    const HAND_OVER_AFTER = 10;
+
+    const CLOSE_AFTER = 120;
+
+    /**
+     * Its state in a chat (conversation meta): questions asked, whether the customer has said what
+     * they need, its note so far; 'done' once handed over.
+     */
+    const META = 'ai_agent';
+
+    protected static $user = null;
+
+    public static function user()
+    {
+        if (self::$user && self::$user->exists) {
+            return self::$user;
+        }
+        $user = User::where('email', self::EMAIL)->first();
+        if (!$user) {
+            $user = new User();
+            $user->email = self::EMAIL;
+            $user->password = \Hash::make(\Str::random(40));
+        }
+        $user->first_name = 'AI';
+        $user->last_name = '';
+        $user->type = User::TYPE_ROBOT;
+        // Not a person: in no list of users.
+        $user->status = User::STATUS_DELETED;
+        if ($user->isDirty()) {
+            $user->save();
+        }
+
+        return self::$user = $user;
+    }
+
+    /**
+     * Its user's ID, without making the user (null before its first chat).
+     */
+    public static function userId()
+    {
+        return self::$user && self::$user->exists ? self::$user->id : User::where('email', self::EMAIL)->value('id');
+    }
+
+    /**
+     * The chat channels a mailbox has it on (off by default).
+     */
+    public static function channels(Mailbox $mailbox)
+    {
+        return array_values(array_intersect(self::CHANNELS, (array) (((array) \Option::get('aiassistant.mailbox_agent_channels', []))[$mailbox->id] ?? [])));
+    }
+
+    /**
+     * Whether it takes a new conversation: a chat on a channel it's on for, nobody assigned, and
+     * the AI set up with tokens left today.
+     */
+    public static function takes(Conversation $conversation)
+    {
+        $mailbox = $conversation->mailbox;
+        $key = ChannelMessages::key($conversation);
+
+        return $mailbox && $key && in_array($key, self::channels($mailbox), true)
+            && !$conversation->user_id && !$conversation->imported && !$conversation->isSpam()
+            && Settings::isConfigured() && Settings::withinBudget($mailbox);
+    }
+
+    public static function holds(Conversation $conversation)
+    {
+        return $conversation->user_id && (int) $conversation->user_id === (int) self::userId();
+    }
+
+    public static function wrote(Thread $thread)
+    {
+        return $thread->created_by_user_id && (int) $thread->created_by_user_id === (int) self::userId();
+    }
+
+    /**
+     * Whether people aren't told about something: in a chat it has, or something it did.
+     */
+    public static function quiet(Conversation $conversation, $caused_by_user_id = null)
+    {
+        return self::holds($conversation) || ($caused_by_user_id && (int) $caused_by_user_id === (int) self::userId());
+    }
+
+    /**
+     * Take a new chat: Assigned to it, its first message once the customer has finished writing.
+     */
+    public static function take(Conversation $conversation)
+    {
+        $conversation->setUser(self::user()->id);
+        $conversation->setMeta(self::META, ['questions' => 0]);
+        $conversation->save();
+        $conversation->mailbox->updateFoldersCounters();
+        AiChatAgentReply::dispatch($conversation->id)->delay(now()->addSeconds(self::WAIT));
+    }
+
+    /**
+     * The customer wrote in a chat it has: its next message (once they've finished writing).
+     */
+    public static function customerReplied(Conversation $conversation)
+    {
+        if (self::holds($conversation) && empty($conversation->getMeta(self::META, [])['done'])) {
+            AiChatAgentReply::dispatch($conversation->id)->delay(now()->addSeconds(self::WAIT));
+        }
+    }
+
+    /**
+     * A person replied in a chat it still has: theirs now (with nobody chosen, nobody's).
+     */
+    public static function personReplied(Conversation $conversation, Thread $thread)
+    {
+        if (self::holds($conversation) && !self::wrote($thread)) {
+            self::finish($conversation);
+            $conversation->setUser(null);
+            $conversation->save();
+            $conversation->mailbox->updateFoldersCounters();
+        }
+    }
+
+    /**
+     * Its next step in a chat it has, for the customer's latest message: a question, or the chat
+     * handed to the team. One at a time per chat.
+     */
+    public static function reply(Conversation $conversation)
+    {
+        $lock = \Cache::lock('ai-agent:'.$conversation->id, Drafts::TIMEOUT + 60);
+        // Busy with the chat: that run answers what came since.
+        if (!$lock->get()) {
+            return;
+        }
+        try {
+            $answered = self::step($conversation);
+        } finally {
+            $lock->release();
+        }
+        // More from the customer while it thought.
+        $conversation->refresh();
+        if ($answered && self::holds($conversation) && $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->where('id', '>', $answered)->exists()) {
+            self::customerReplied($conversation);
+        }
+    }
+
+    /**
+     * Returns the customer message it answered, if any.
+     */
+    protected static function step(Conversation $conversation)
+    {
+        $conversation->refresh();
+        $state = (array) $conversation->getMeta(self::META, []);
+        $last = self::lastMessage($conversation);
+        if (!self::holds($conversation) || !empty($state['done']) || !$last || $last->type != Thread::TYPE_CUSTOMER) {
+            return null;
+        }
+        $mailbox = $conversation->mailbox;
+        $questions = (int) ($state['questions'] ?? 0);
+        $language = Settings::language($mailbox);
+        try {
+            if (!Settings::isConfigured() || !Settings::withinBudget($mailbox)) {
+                throw new \RuntimeException('The AI is not set up, or the mailbox has no tokens left today.');
+            }
+            $context = ConversationContext::build($conversation, $language, false, null, microtime(true) + Drafts::TIMEOUT);
+            // Their language as far as known (a website chat's browser): for a greeting that doesn't tell.
+            $customer_language = ChatTranslation::customerLanguage($conversation);
+            $prompt = $context['prompt'].($customer_language ? "\n\n".ChatIntake::data('customer_language', Settings::languageName($customer_language).' ('.$customer_language.')') : '');
+            $answer = (new ChatIntake($language, $questions))->recordFor(Usage::FEATURE_AGENT, $conversation)->prompt($prompt);
+            $action = $answer['action'] ?? null;
+            $message = trim((string) ($answer['message'] ?? ''));
+            if (!in_array($action, ['ask', 'hand_over'], true) || ($action == 'ask' && $message === '')) {
+                throw new \UnexpectedValueException('The AI gave no usable answer.');
+            }
+        } catch (\Throwable $e) {
+            Errors::report($e, 'AI agent in conversation #'.$conversation->number.':');
+            self::handOver($conversation, '', __('The AI couldn’t continue this chat.'), $questions == 0);
+
+            return $last->id;
+        }
+
+        // A person took it, or it was handed over, while it thought.
+        $conversation->refresh();
+        if (!self::holds($conversation) || !empty($conversation->getMeta(self::META, [])['done'])) {
+            return $last->id;
+        }
+        $note = trim((string) ($answer['staff_note'] ?? ''));
+        if ($action == 'ask' && $questions < self::MAX_QUESTIONS) {
+            $thread = self::send($conversation, $message);
+            $has_request = !empty($answer['has_request']);
+            $conversation->setMeta(self::META, ['questions' => $questions + 1, 'has_request' => $has_request, 'note' => $note], true);
+            AiChatAgentSilence::dispatch($conversation->id, $thread->id)->delay(now()->addMinutes($has_request ? self::HAND_OVER_AFTER : self::CLOSE_AFTER));
+        } else {
+            // What it's about, in the list, instead of a greeting.
+            $subject = trim((string) ($answer['subject'] ?? ''));
+            if ($subject !== '') {
+                $conversation->subject = mb_substr($subject, 0, 100);
+                $conversation->save();
+            }
+            // Out of questions, it hands over without its last one.
+            self::handOver($conversation, $action == 'hand_over' ? $message : '', $note);
+        }
+
+        return $last->id;
+    }
+
+    /**
+     * No answer to its question ($thread_id): a chat with a request goes to the team; one without
+     * closes, and opens again (still its) when the customer writes.
+     */
+    public static function silence(Conversation $conversation, $thread_id)
+    {
+        $state = (array) $conversation->getMeta(self::META, []);
+        $last = self::lastMessage($conversation);
+        if (!self::holds($conversation) || !empty($state['done']) || !$conversation->isActive() || !$last || $last->id != $thread_id) {
+            return;
+        }
+        if (!empty($state['has_request'])) {
+            self::handOver($conversation, '', trim(($state['note'] ?? '')."\n\n".__('The customer didn’t answer the last question.')));
+        } else {
+            $conversation->changeStatus(Conversation::STATUS_CLOSED, self::user());
+        }
+    }
+
+    /**
+     * Hand the chat to the team: its last message to the customer, its note, unassigned, and
+     * people told as of a new conversation. $auto_reply: the auto reply first (it said nothing yet).
+     */
+    public static function handOver(Conversation $conversation, $message, $note, $auto_reply = false)
+    {
+        $user = self::user();
+        if ($auto_reply && ChannelMessages::key($conversation) && ChannelMessages::hasAutoReply($conversation->mailbox, ChannelMessages::key($conversation))) {
+            \App\Jobs\SendChatAutoReply::dispatch($conversation->id)->onQueue('emails');
+        }
+        if (trim($message) !== '') {
+            self::send($conversation, $message);
+        }
+        if (trim($note) !== '') {
+            $conversation->createUserThread($user, self::html($note), ['type' => Thread::TYPE_NOTE]);
+        }
+        self::finish($conversation);
+        $conversation->changeUser(null, $user);
+        Subscription::registerEvent(Subscription::EVENT_TYPE_NEW, $conversation, $user->id);
+        Subscription::processEvents();
+    }
+
+    protected static function finish(Conversation $conversation)
+    {
+        $conversation->setMeta(self::META, ['done' => true] + (array) $conversation->getMeta(self::META, []), true);
+    }
+
+    /**
+     * Its message to the customer, sent at once (no Undo).
+     */
+    protected static function send(Conversation $conversation, $text)
+    {
+        $conversation->createUserThread(self::user(), self::html($text));
+
+        return $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->where('created_by_user_id', self::user()->id)->orderBy('id', 'desc')->first();
+    }
+
+    /**
+     * Plain text as paragraphs.
+     */
+    protected static function html($text)
+    {
+        $paragraphs = array_filter(preg_split("/\n\s*\n/", trim(str_replace("\r", '', $text))), fn ($paragraph) => trim($paragraph) !== '');
+
+        return implode('', array_map(fn ($paragraph) => '<p>'.nl2br(e(trim($paragraph)), false).'</p>', $paragraphs));
+    }
+
+    /**
+     * The chat's latest message, the customer's or the team's.
+     */
+    protected static function lastMessage(Conversation $conversation)
+    {
+        return $conversation->threads()->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])
+            ->where('state', Thread::STATE_PUBLISHED)->orderBy('id', 'desc')->first();
+    }
+}

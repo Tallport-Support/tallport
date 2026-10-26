@@ -1990,5 +1990,10 @@
     ":label, notifications muted": ":label, notifiche silenziate",
     "Undo Send": "Annulla Invio",
     ":count second|:count seconds": ":count secondo|:count secondi",
-    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Per quanto tempo puoi annullare una risposta dopo averla inviata, su ogni canale. Dopo arriva al cliente."
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Per quanto tempo puoi annullare una risposta dopo averla inviata, su ogni canale. Dopo arriva al cliente.",
+    "Agent": "Agente",
+    "On these channels the AI takes new chats instead of the auto reply. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "Su questi canali l’IA prende in carico le nuove chat al posto della risposta automatica. Chiede al cliente ciò che il tuo team deve sapere, al massimo tre volte e senza rispondere, poi passa la chat al tuo team.",
+    "The AI couldn’t continue this chat.": "L’IA non è riuscita a continuare questa chat.",
+    "The customer didn’t answer the last question.": "Il cliente non ha risposto all’ultima domanda.",
+    "Not sent while the AI takes new chats here.": "Non inviata finché l’IA prende in carico qui le nuove chat."
 }

@@ -12,6 +12,8 @@
         $ai_chat = App\Ai\Settings::chatTranslation($mailbox);
         $ai_email = App\Ai\Settings::emailTranslation($mailbox);
         $ai_language = ((array) Option::get('aiassistant.mailbox_language', []))[$mailbox->id] ?? '';
+        $ai_agent_channels = array_intersect_key(App\AutoReply\ChannelMessages::channels(), array_flip(App\Ai\ChatAgent::CHANNELS));
+        $ai_agent_on = App\Ai\ChatAgent::channels($mailbox);
     @endphp
     <div class="page-content">
         @include('partials/flash_messages')
@@ -37,6 +39,16 @@
                     <x-fruit::field :label="__('Drafts')" :description="__('Reply drafts for agents to review and send.')" layout="row">
                         <x-fruit::switch name="features[drafts]" value="1" :checked="$ai_features_on['drafts']" x-on:change="drafts = $el.checked" />
                     </x-fruit::field>
+                </x-fruit::form-section>
+
+                {{-- The AI agent (App\Ai\ChatAgent): the chat channels it takes new chats on. --}}
+                <x-fruit::form-section :title="__('Agent')" :level="3" :footer="__('On these channels the AI takes new chats instead of the auto reply. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.')">
+                    @foreach ($ai_agent_channels as $key => $channel)
+                        @php $ai_agent_has = ($channel['has'])($mailbox); @endphp
+                        <x-fruit::field :label="$channel['label']" :description="$ai_agent_has ? null : __('Not set up')" layout="row">
+                            <x-fruit::switch name="agent_channels[]" :value="$key" :checked="$ai_agent_has && in_array($key, $ai_agent_on, true)" :disabled="!$ai_agent_has" />
+                        </x-fruit::field>
+                    @endforeach
                 </x-fruit::form-section>
 
                 <x-fruit::form-section :title="__('Language')" :level="3">

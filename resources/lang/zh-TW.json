@@ -2034,5 +2034,10 @@
     ":label, notifications muted": ":label，通知已靜音",
     "Undo Send": "撤銷傳送",
     ":count second|:count seconds": ":count 秒",
-    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "傳送回覆後可撤回的時長，適用於所有管道。之後回覆才會送達客戶。"
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "傳送回覆後可撤回的時長，適用於所有管道。之後回覆才會送達客戶。",
+    "Agent": "代理",
+    "On these channels the AI takes new chats instead of the auto reply. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "在這些管道上，由 AI 取代自動回覆接待新的聊天。它會向客戶詢問您的團隊需要知道的資訊（最多三次，且不作答），然後將聊天轉交給您的團隊。",
+    "The AI couldn’t continue this chat.": "AI 無法繼續此聊天。",
+    "The customer didn’t answer the last question.": "客戶沒有回答最後一個問題。",
+    "Not sent while the AI takes new chats here.": "在此由 AI 接待新聊天時不傳送。"
 }

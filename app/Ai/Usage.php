@@ -18,6 +18,8 @@ class Usage extends Model
     const FEATURE_DRAFT = 'draft';
     const FEATURE_LANGUAGE = 'language';
     const FEATURE_EMBEDDING = 'embedding';
+    // The AI agent's steps in chats (App\Ai\ChatAgent), with the drafts' models.
+    const FEATURE_AGENT = 'agent';
 
     /**
      * The calls of each feature in the settings (Settings::MODEL_FEATURES).
@@ -25,7 +27,7 @@ class Usage extends Model
     const SETTING_FEATURES = [
         'summaries'    => [self::FEATURE_SUMMARY],
         'translations' => [self::FEATURE_TRANSLATION, self::FEATURE_REPLY_TRANSLATION],
-        'drafts'       => [self::FEATURE_DRAFT],
+        'drafts'       => [self::FEATURE_DRAFT, self::FEATURE_AGENT],
         'language'     => [self::FEATURE_LANGUAGE],
     ];
 
@@ -269,6 +271,7 @@ class Usage extends Model
             self::FEATURE_DRAFT             => __('Drafts'),
             self::FEATURE_LANGUAGE          => __('Language Detection'),
             self::FEATURE_EMBEDDING         => __('Documentation'),
+            self::FEATURE_AGENT             => __('Agent'),
         ][$feature] ?? $feature;
     }
 

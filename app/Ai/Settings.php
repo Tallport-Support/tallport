@@ -423,7 +423,8 @@ class Settings
         if (!self::isConfigured()) {
             return __('Not set up');
         }
-        $on = self::chatTranslation($mailbox) || self::emailTranslation($mailbox) || collect(self::FEATURES)->contains(fn ($feature) => self::enabled($feature, $mailbox));
+        $on = self::chatTranslation($mailbox) || self::emailTranslation($mailbox) || ChatAgent::channels($mailbox)
+            || collect(self::FEATURES)->contains(fn ($feature) => self::enabled($feature, $mailbox));
 
         return $on ? __('On').' · '.self::displayName(self::language($mailbox)) : __('Off');
     }

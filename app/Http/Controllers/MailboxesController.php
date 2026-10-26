@@ -387,6 +387,7 @@ class MailboxesController extends Controller
         };
         $features = (array) $request->input('features', []);
         $set('aiassistant.mailbox_features_off', array_values(array_filter(\App\Ai\Settings::FEATURES, fn ($feature) => empty($features[$feature]))));
+        $set('aiassistant.mailbox_agent_channels', array_values(array_intersect(\App\Ai\ChatAgent::CHANNELS, (array) $request->input('agent_channels', []))));
         $language = (string) $request->input('language', '');
         $set('aiassistant.mailbox_language', \App\Ai\Settings::isLanguage($language) ? $language : '');
         $set('aiassistant.translation_glossary', trim((string) $request->input('glossary', '')));

@@ -1990,5 +1990,10 @@
     ":label, notifications muted": ":label, bildirimler sessizde",
     "Undo Send": "Göndermeyi Geri Al",
     ":count second|:count seconds": ":count saniye",
-    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Bir yanıtı gönderdikten sonra ne kadar süre geri alabileceğiniz, tüm kanallarda. Ardından müşteriye ulaşır."
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Bir yanıtı gönderdikten sonra ne kadar süre geri alabileceğiniz, tüm kanallarda. Ardından müşteriye ulaşır.",
+    "Agent": "Ajan",
+    "On these channels the AI takes new chats instead of the auto reply. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "Bu kanallarda yeni sohbetleri oto yanıt yerine yapay zekâ karşılar. Müşteriye ekibinizin bilmesi gerekenleri en fazla üç kez ve yanıt vermeden sorar, ardından sohbeti ekibinize devreder.",
+    "The AI couldn’t continue this chat.": "Yapay zekâ bu sohbete devam edemedi.",
+    "The customer didn’t answer the last question.": "Müşteri son soruyu yanıtlamadı.",
+    "Not sent while the AI takes new chats here.": "Burada yeni sohbetleri yapay zekâ karşıladığı sürece gönderilmez."
 }

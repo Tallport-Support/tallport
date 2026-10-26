@@ -1990,5 +1990,10 @@
     ":label, notifications muted": ":label、通知はミュート中",
     "Undo Send": "送信の取り消し",
     ":count second|:count seconds": ":count 秒",
-    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "返信を送信した後に取り消せる時間です（すべてのチャネル共通）。その後、顧客に届きます。"
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "返信を送信した後に取り消せる時間です（すべてのチャネル共通）。その後、顧客に届きます。",
+    "Agent": "エージェント",
+    "On these channels the AI takes new chats instead of the auto reply. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "これらのチャネルでは、自動返信の代わりにAIが新しいチャットを受け付けます。チームが知る必要のあることを顧客に尋ね（最大3回、回答はしません）、その後チャットをチームに引き継ぎます。",
+    "The AI couldn’t continue this chat.": "AIはこのチャットを続けられませんでした。",
+    "The customer didn’t answer the last question.": "顧客は最後の質問に答えませんでした。",
+    "Not sent while the AI takes new chats here.": "ここではAIが新しいチャットを受け付けている間は送信されません。"
 }

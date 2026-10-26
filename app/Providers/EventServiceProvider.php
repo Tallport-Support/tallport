@@ -64,6 +64,7 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         'App\Events\UserReplied' => [
+             'App\Listeners\AiChatAgent',
              'App\Listeners\SendReplyToCustomer',
              'App\Listeners\SendNotificationToUsers',
              'App\Listeners\RefreshConversations',
@@ -75,6 +76,7 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\SendNotificationToUsers',
             'App\Listeners\AiUpdateSummary',
             'App\Listeners\AiTranslateMessage',
+            'App\Listeners\AiChatAgent',
         ],
 
         'App\Events\UserCreatedConversation' => [
@@ -85,6 +87,8 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         'App\Events\CustomerCreatedConversation' => [
+            // First: a chat it takes gets no auto reply and notifies nobody.
+            'App\Listeners\AiChatAgent',
             'App\Listeners\SendAutoReply',
             'App\Listeners\SendNotificationToUsers',
             'App\Listeners\AiUpdateSummary',

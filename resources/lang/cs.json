@@ -1990,5 +1990,10 @@
     ":label, notifications muted": ":label, oznámení ztlumena",
     "Undo Send": "Vrátit Odeslání",
     ":count second|:count seconds": ":count sekunda|:count sekundy|:count sekund",
-    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Jak dlouho lze odpověď po odeslání vzít zpět, na všech kanálech. Poté dorazí zákazníkovi."
+    "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Jak dlouho lze odpověď po odeslání vzít zpět, na všech kanálech. Poté dorazí zákazníkovi.",
+    "Agent": "Agent",
+    "On these channels the AI takes new chats instead of the auto reply. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "Na těchto kanálech přebírá nové chaty AI místo automatické odpovědi. Zeptá se zákazníka na to, co váš tým potřebuje vědět, nejvýše třikrát a bez odpovídání, a pak chat předá vašemu týmu.",
+    "The AI couldn’t continue this chat.": "AI nemohla v tomto chatu pokračovat.",
+    "The customer didn’t answer the last question.": "Zákazník neodpověděl na poslední otázku.",
+    "Not sent while the AI takes new chats here.": "Neodesílá se, dokud zde nové chaty přebírá AI."
 }

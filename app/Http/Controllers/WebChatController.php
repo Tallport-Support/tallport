@@ -99,7 +99,8 @@ class WebChatController extends Controller
             // Messages up to the cursor won't change; a reply the team can still undo shows later, with
             // an older ID, so the cursor stays before it.
             $pending = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->where('state', Thread::STATE_PUBLISHED)
-                ->where('created_at', '>', now()->subSeconds($conversation->mailbox->undoSeconds()))->min('id');
+                ->where('created_at', '>', now()->subSeconds($conversation->mailbox->undoSeconds()))
+                ->where(fn ($query) => $query->whereNull('created_by_user_id')->orWhere('created_by_user_id', '!=', (int) \App\Ai\ChatAgent::userId()))->min('id');
             $cursor = max($cursor, $pending ? $pending - 1 : (int) collect($messages)->max('id'));
         }
 
@@ -456,13 +457,17 @@ class WebChatController extends Controller
     protected function threads(Conversation $conversation)
     {
         $undo_seconds = $conversation->mailbox->undoSeconds();
+        // The AI agent's at once (it doesn't undo).
+        $ai_id = (int) \App\Ai\ChatAgent::userId();
 
         return $conversation->threads()
             ->where('state', Thread::STATE_PUBLISHED)
-            ->where(function ($query) use ($undo_seconds) {
+            ->where(function ($query) use ($undo_seconds, $ai_id) {
                 $query->where('type', Thread::TYPE_CUSTOMER)
-                    ->orWhere(function ($query) use ($undo_seconds) {
-                        $query->where('type', Thread::TYPE_MESSAGE)->where('created_at', '<=', now()->subSeconds($undo_seconds));
+                    ->orWhere(function ($query) use ($undo_seconds, $ai_id) {
+                        $query->where('type', Thread::TYPE_MESSAGE)->where(function ($query) use ($undo_seconds, $ai_id) {
+                            $query->where('created_at', '<=', now()->subSeconds($undo_seconds))->orWhere('created_by_user_id', $ai_id);
+                        });
                     })
                     ->orWhere(function ($query) {
                         $query->where('type', Thread::TYPE_LINEITEM)->where('action_type', Thread::ACTION_TYPE_AUTO_REPLY);
@@ -493,8 +498,8 @@ class WebChatController extends Controller
             'initials' => $team ? mb_strtoupper(mb_substr($author, 0, 1)) : '',
             'photo'    => $team ? ($mailbox ? WebChat::teamPhoto($thread->conversation->mailbox) : WebChat::userPhoto($thread->created_by_user)) : null,
             'body'     => \App\Misc\ChatDelivery::plainText($thread),
-            // The team's: when the visitor could see it, once Undo had passed.
-            'time'     => ($team ? $thread->created_at->copy()->addSeconds($thread->conversation->mailbox->undoSeconds()) : $thread->created_at)->toIso8601String(),
+            // The team's: when the visitor could see it, once Undo had passed (the AI agent's at once).
+            'time'     => ($team && !\App\Ai\ChatAgent::wrote($thread) ? $thread->created_at->copy()->addSeconds($thread->conversation->mailbox->undoSeconds()) : $thread->created_at)->toIso8601String(),
             'files'    => $thread->attachments->map(function ($attachment) {
                 $url = 'f?'.http_build_query(['id' => $attachment->id, 'token' => $attachment->getToken()]);
                 $image = WebChat::imageType($attachment) !== null;
