@@ -109,6 +109,8 @@ class WebChatController extends Controller
             // The launcher's name with the count, in the visitor's language.
             'unread_label' => trans_choice(':name, :count unread message|:name, :count unread messages', $unread, ['name' => __('Chat with :name', ['name' => WebChat::teamName($visitor->mailbox)])]),
             'cursor'       => $cursor,
+            // The team's messages up to this one are read: older ones are never news to announce.
+            'read'         => (int) $visitor->read_thread_id,
             // By name once the website has signed them in.
             'greeting'     => WebChat::greeting($visitor->mailbox, $visitor->customer),
         ] + $this->emailState($visitor));

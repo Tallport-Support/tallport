@@ -171,9 +171,12 @@ class WebChatTest extends FeatureTestCase
         $this->assertSame(1, $poll->json('unread'));
         $this->assertSame('Chat with Forma, 1 unread message', $poll->json('unread_label'));
 
-        // Read: the unread count goes.
+        // Read: the unread count goes, and how far they read comes along (older answers are never news to
+        // announce again: a new page, a sign-in).
+        $this->assertSame(0, $poll->json('read'));
         $this->api('POST', '/t/r', ['thread_id' => $reply->id], $token)->assertOk();
-        $this->assertSame(0, $this->api('GET', '/t/m?after=0', [], $token)->json('unread'));
+        $poll = $this->api('GET', '/t/m?after=0', [], $token);
+        $this->assertSame([0, $reply->id], [$poll->json('unread'), $poll->json('read')]);
 
         // Its file, by the link's own token (a link can't carry the visitor's).
         $file = $messages[0]['files'][0];

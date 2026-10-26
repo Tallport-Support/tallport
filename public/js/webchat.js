@@ -19,6 +19,8 @@ document.addEventListener('alpine:init', function () {
         var soundKey = 'tallport:sound';
         var audio = null;
         var chimed = 0;
+        // The newest team answer the visitor has been told about, where the browser refuses storage.
+        var toldMemory = 0;
 
         function size(bytes) {
             return bytes < 1024 * 1024 ? Math.max(1, Math.round(bytes / 1024)) + ' KB' : (bytes / 1024 / 1024).toFixed(1) + ' MB';
@@ -61,13 +63,9 @@ document.addEventListener('alpine:init', function () {
             codesLeft: 3,
             busy: false,
             sound: params.get('sound') !== 'off',
-            // The first poll done: what arrives after it is news (earlier messages aren't, on a new page).
-            settled: false,
 
             init: function () {
                 var self = this;
-                // A new visitor has no earlier messages: everything that arrives is news.
-                this.settled = !this.token();
                 try {
                     var chosen = localStorage.getItem(soundKey);
                     if (chosen) this.sound = chosen === 'on';
@@ -238,26 +236,53 @@ document.addEventListener('alpine:init', function () {
                 // From a tab in the background: not the visitor being on the website (a reply they don't see goes by email too).
                 return this.api('GET', 'm?after=' + this.cursor + (document.hidden ? '&hidden=1' : '')).then(function (data) {
                     self.hasConversation = data.messages.length > 0 || self.hasConversation;
-                    // The team's newest answer since the last poll (on a new page, earlier ones aren't news).
+                    // The team's newest answer the visitor hasn't read or been told about (told()): news, once.
+                    var told = Math.max(self.told(), data.read || 0);
                     var news = null;
                     data.messages.forEach(function (message) {
-                        if (self.receive(message) && message.kind === 'team' && self.settled) news = message;
+                        if (self.receive(message) && message.kind === 'team' && message.id > told) news = message;
                     });
-                    self.settled = true;
                     self.cursor = Math.max(self.cursor, data.cursor || 0);
                     if (data.greeting !== undefined) self.greeting = data.greeting;
                     self.emailState(data);
                     self.unread = data.unread;
                     if (self.shown) self.markRead();
                     else self.post('unread', Object.assign({ count: self.unread, label: data.unread_label }, news ? self.news(news) : {}));
-                    if (news) self.notice(news);
+                    if (news) {
+                        self.notice(news);
+                        self.told(news.id);
+                    }
                 }).catch(function () {}).then(function () { self.schedule(); });
+            },
+
+            /**
+             * The newest of the team's answers the visitor has been told about (announced: the card, the
+             * tab's title, the chime; or read), kept in this browser for their token: only newer ones are
+             * news. A new page or a sign-in isn't: an answer waiting for them is announced once, on the
+             * next page. Raised with a value.
+             */
+            told: function (value) {
+                var marker = key + ':told:' + String(this.token() || '').slice(-16);
+                var stored = toldMemory;
+                try {
+                    stored = Math.max(stored, parseInt(localStorage.getItem(marker)) || 0);
+                } catch (e) {
+                    // Without storage, for this page.
+                }
+                if (value === undefined || value <= stored) return stored;
+                toldMemory = value;
+                try {
+                    localStorage.setItem(marker, String(value));
+                } catch (e) {}
+
+                return value;
             },
 
             markRead: function () {
                 var last = this.entries.filter(function (entry) { return entry.kind === 'team' && entry.serverId; }).pop();
                 this.unread = 0;
                 this.post('unread', { count: 0, label: this.text.label });
+                if (last) this.told(last.serverId);
                 if (last && last.serverId > (this.readId || 0)) {
                     this.readId = last.serverId;
                     var form = new FormData();
@@ -526,7 +551,11 @@ document.addEventListener('alpine:init', function () {
                 form.append('identity', identity);
                 form.append('language', navigator.language || '');
                 this.api('POST', 'i', form).then(function (data) {
-                    if (data.token) self.token(data.token);
+                    // Someone else: what they were told is their own (told()).
+                    if (data.token) {
+                        self.token(data.token);
+                        toldMemory = 0;
+                    }
                     clearTimeout(timer);
                     Object.assign(self, { entries: [], cursor: 0, hasConversation: false, email: null, emailStep: 'address', emailDraft: '' });
                     return self.poll();
@@ -616,6 +645,7 @@ document.addEventListener('alpine:init', function () {
                 clearTimeout(timer);
                 this.token(null);
                 memory = null;
+                toldMemory = 0;
                 Object.assign(this, { entries: [], greeting: config.greeting, draft: '', files: [], error: '', unread: 0, announcement: '', cursor: 0, hasConversation: false,
                     email: null, emailStep: 'address', emailDraft: '', emailError: '', codeDraft: '', codeError: '', codeNotice: '', codesLeft: 3 });
                 this.post('unread', { count: 0, label: this.text.label });
