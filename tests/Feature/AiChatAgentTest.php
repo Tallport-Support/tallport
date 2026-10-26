@@ -94,12 +94,12 @@ class AiChatAgentTest extends FeatureTestCase
             ]);
         })->preventStrayPrompts();
 
-        // A greeting only: Assigned to the AI, its question instead of the auto reply, nobody told.
+        // A greeting only: Assigned to the AI, its question (the auto reply goes out as always), nobody told.
         $conversation = $this->write('hello');
         $ai = ChatAgent::user();
         $this->assertSame([$ai->id, 'AI', \App\User::TYPE_ROBOT, \App\User::STATUS_DELETED], [(int) $conversation->user_id, $ai->getFullName(), (int) $ai->type, (int) $ai->status]);
         $this->assertSame(['<p>Before I hand this issue off to my human colleagues, please tell me what you need help with.</p>'], $this->messages($conversation));
-        $this->assertFalse($conversation->threads()->where('action_type', Thread::ACTION_TYPE_AUTO_REPLY)->exists());
+        $this->assertTrue($conversation->threads()->where('action_type', Thread::ACTION_TYPE_AUTO_REPLY)->exists());
         $this->assertCount(0, $this->sentEmailsTo($this->agent->email));
         $this->assertSame(1, $conversation->getMeta(ChatAgent::META)['questions']);
         $this->assertStringContainsString('hello', $prompts[0]);
@@ -169,11 +169,10 @@ class AiChatAgentTest extends FeatureTestCase
 
     public function testFailingOrOutOfQuestionsItHandsOver()
     {
-        // Failing on its first message: the auto reply, and the team gets the chat.
+        // Failing on its first message: the team gets the chat.
         ChatIntake::fake(fn () => throw new \RuntimeException('Provider down'));
         $conversation = $this->write('hello');
         $this->assertNull($conversation->user_id);
-        $this->assertTrue($conversation->threads()->where('action_type', Thread::ACTION_TYPE_AUTO_REPLY)->exists());
         $this->assertSame(['<p>The AI couldn’t continue this chat.</p>'], $this->messages($conversation, Thread::TYPE_NOTE));
         $this->assertNotEmpty($this->sentEmailsTo($this->agent->email));
 

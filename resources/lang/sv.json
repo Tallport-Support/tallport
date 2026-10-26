@@ -1992,8 +1992,7 @@
     ":count second|:count seconds": ":count sekund|:count sekunder",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Hur länge du kan ta tillbaka ett svar efter att du har skickat det, i alla kanaler. Därefter når det kunden.",
     "Agent": "Agent",
-    "On these channels the AI takes new chats instead of the auto reply. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "På de här kanalerna tar AI emot nya chattar i stället för det automatiska svaret. Den frågar kunden om det ditt team behöver veta, högst tre gånger och utan att svara själv, och lämnar sedan chatten till ditt team.",
+    "On these channels the AI takes new chats first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "På de här kanalerna tar AI emot nya chattar först. Den frågar kunden om det ditt team behöver veta, högst tre gånger och utan att svara själv, och lämnar sedan chatten till ditt team.",
     "The AI couldn’t continue this chat.": "AI kunde inte fortsätta den här chatten.",
-    "The customer didn’t answer the last question.": "Kunden svarade inte på den sista frågan.",
-    "Not sent while the AI takes new chats here.": "Skickas inte medan AI tar emot nya chattar här."
+    "The customer didn’t answer the last question.": "Kunden svarade inte på den sista frågan."
 }

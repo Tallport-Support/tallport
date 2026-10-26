@@ -1992,8 +1992,7 @@
     ":count second|:count seconds": ":count seconde|:count seconden",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Hoe lang u een antwoord na het verzenden kunt terugnemen, op elk kanaal. Daarna bereikt het de klant.",
     "Agent": "Agent",
-    "On these channels the AI takes new chats instead of the auto reply. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "Op deze kanalen neemt de AI nieuwe chats aan in plaats van het automatische antwoord. Hij vraagt de klant wat uw team moet weten, hooguit drie keer en zonder zelf te antwoorden, en geeft de chat daarna aan uw team.",
+    "On these channels the AI takes new chats first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "Op deze kanalen neemt eerst de AI nieuwe chats aan. Hij vraagt de klant wat uw team moet weten, hooguit drie keer en zonder zelf te antwoorden, en geeft de chat daarna aan uw team.",
     "The AI couldn’t continue this chat.": "De AI kon deze chat niet voortzetten.",
-    "The customer didn’t answer the last question.": "De klant heeft de laatste vraag niet beantwoord.",
-    "Not sent while the AI takes new chats here.": "Niet verzonden zolang de AI hier nieuwe chats aanneemt."
+    "The customer didn’t answer the last question.": "De klant heeft de laatste vraag niet beantwoord."
 }

@@ -87,7 +87,7 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         'App\Events\CustomerCreatedConversation' => [
-            // First: a chat it takes gets no auto reply and notifies nobody.
+            // First: a chat the AI agent takes notifies nobody.
             'App\Listeners\AiChatAgent',
             'App\Listeners\SendAutoReply',
             'App\Listeners\SendNotificationToUsers',

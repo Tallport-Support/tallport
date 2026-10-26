@@ -14,7 +14,7 @@ use App\User;
 
 /**
  * The AI agent: a robot user (like Workflows') who takes new chats on the channels a mailbox turns
- * it on for, instead of the auto reply. It asks the customer for what the team needs to know
+ * it on for. It asks the customer for what the team needs to know
  * (Agents\ChatIntake), never answering, at most MAX_QUESTIONS times, then hands the chat to the
  * team: a note for them, unassigned, notified as a new conversation. While it has a chat, the chat
  * is Assigned to it and nobody is notified; a person replying or reassigning it takes it.
@@ -210,7 +210,7 @@ class ChatAgent
             }
         } catch (\Throwable $e) {
             Errors::report($e, 'AI agent in conversation #'.$conversation->number.':');
-            self::handOver($conversation, '', __('The AI couldn’t continue this chat.'), $questions == 0);
+            self::handOver($conversation, '', __('The AI couldn’t continue this chat.'));
 
             return $last->id;
         }
@@ -260,14 +260,11 @@ class ChatAgent
 
     /**
      * Hand the chat to the team: its last message to the customer, its note, unassigned, and
-     * people told as of a new conversation. $auto_reply: the auto reply first (it said nothing yet).
+     * people told as of a new conversation.
      */
-    public static function handOver(Conversation $conversation, $message, $note, $auto_reply = false)
+    public static function handOver(Conversation $conversation, $message, $note)
     {
         $user = self::user();
-        if ($auto_reply && ChannelMessages::key($conversation) && ChannelMessages::hasAutoReply($conversation->mailbox, ChannelMessages::key($conversation))) {
-            \App\Jobs\SendChatAutoReply::dispatch($conversation->id)->onQueue('emails');
-        }
         if (trim($message) !== '') {
             self::send($conversation, $message);
         }

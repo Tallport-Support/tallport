@@ -5,7 +5,7 @@ namespace App\Listeners;
 use App\Ai\ChatAgent;
 
 /**
- * The AI agent (App\Ai\ChatAgent): takes a new chat (before the auto reply and notifications),
+ * The AI agent (App\Ai\ChatAgent): takes a new chat (before notifications),
  * follows the customer's replies in a chat it has, and lets go when a person replies.
  */
 class AiChatAgent

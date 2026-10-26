@@ -2385,8 +2385,7 @@
     ":count second|:count seconds": ":count секунд",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Жауапты жібергеннен кейін оны қанша уақыт ішінде қайтарып алуға болады, барлық арналарда. Одан кейін ол тұтынушыға жетеді.",
     "Agent": "Агент",
-    "On these channels the AI takes new chats instead of the auto reply. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "Бұл арналарда ЖИ автоматты жауаптың орнына жаңа чаттарды қабылдайды. Ол тұтынушыдан командаңызға не білу керек екенін сұрайды, ең көбі үш рет және жауап бермей, содан кейін чатты командаңызға береді.",
+    "On these channels the AI takes new chats first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "Бұл арналарда жаңа чаттарды алдымен ЖИ қабылдайды. Ол тұтынушыдан командаңызға не білу керек екенін сұрайды, ең көбі үш рет және жауап бермей, содан кейін чатты командаңызға береді.",
     "The AI couldn’t continue this chat.": "ЖИ бұл чатты жалғастыра алмады.",
-    "The customer didn’t answer the last question.": "Тұтынушы соңғы сұраққа жауап бермеді.",
-    "Not sent while the AI takes new chats here.": "Мұнда жаңа чаттарды ЖИ қабылдап жатқанда жіберілмейді."
+    "The customer didn’t answer the last question.": "Тұтынушы соңғы сұраққа жауап бермеді."
 }

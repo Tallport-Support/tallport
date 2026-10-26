@@ -42,7 +42,7 @@
                 </x-fruit::form-section>
 
                 {{-- The AI agent (App\Ai\ChatAgent): the chat channels it takes new chats on. --}}
-                <x-fruit::form-section :title="__('Agent')" :level="3" :footer="__('On these channels the AI takes new chats instead of the auto reply. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.')">
+                <x-fruit::form-section :title="__('Agent')" :level="3" :footer="__('On these channels the AI takes new chats first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.')">
                     @foreach ($ai_agent_channels as $key => $channel)
                         @php $ai_agent_has = ($channel['has'])($mailbox); @endphp
                         <x-fruit::field :label="$channel['label']" :description="$ai_agent_has ? null : __('Not set up')" layout="row">

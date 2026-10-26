@@ -1993,8 +1993,7 @@
     ":count second|:count seconds": ":count 秒",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "发送回复后可撤回的时长，适用于所有渠道。之后回复才会送达客户。",
     "Agent": "智能体",
-    "On these channels the AI takes new chats instead of the auto reply. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "在这些渠道上，由 AI 代替自动回复接待新的聊天。它会向客户询问您的团队需要了解的信息（最多三次，且不作答），然后将聊天转交给您的团队。",
+    "On these channels the AI takes new chats first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "在这些渠道上，新的聊天先由 AI 接待。它会向客户询问您的团队需要了解的信息（最多三次，且不作答），然后将聊天转交给您的团队。",
     "The AI couldn’t continue this chat.": "AI 无法继续此聊天。",
-    "The customer didn’t answer the last question.": "客户没有回答最后一个问题。",
-    "Not sent while the AI takes new chats here.": "在此由 AI 接待新聊天时不发送。"
+    "The customer didn’t answer the last question.": "客户没有回答最后一个问题。"
 }

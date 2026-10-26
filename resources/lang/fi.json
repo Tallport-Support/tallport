@@ -2008,8 +2008,7 @@
     ":count second|:count seconds": ":count sekunti|:count sekuntia",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Kuinka kauan voit perua vastauksen lähettämisen jälkeen, kaikissa kanavissa. Sen jälkeen se menee asiakkaalle.",
     "Agent": "Agentti",
-    "On these channels the AI takes new chats instead of the auto reply. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "Näillä kanavilla tekoäly ottaa uudet chatit automaattisen vastauksen sijaan. Se kysyy asiakkaalta, mitä tiimisi tarvitsee tietää, enintään kolme kertaa ja vastaamatta itse, ja antaa sitten chatin tiimillesi.",
+    "On these channels the AI takes new chats first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "Näillä kanavilla tekoäly ottaa uudet chatit ensin. Se kysyy asiakkaalta, mitä tiimisi tarvitsee tietää, enintään kolme kertaa ja vastaamatta itse, ja antaa sitten chatin tiimillesi.",
     "The AI couldn’t continue this chat.": "Tekoäly ei voinut jatkaa tätä chattia.",
-    "The customer didn’t answer the last question.": "Asiakas ei vastannut viimeiseen kysymykseen.",
-    "Not sent while the AI takes new chats here.": "Ei lähetetä, kun tekoäly ottaa täällä uudet chatit."
+    "The customer didn’t answer the last question.": "Asiakas ei vastannut viimeiseen kysymykseen."
 }

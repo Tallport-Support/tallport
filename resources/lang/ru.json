@@ -1992,8 +1992,7 @@
     ":count second|:count seconds": ":count секунда|:count секунды|:count секунд",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Сколько времени можно отменить ответ после отправки, во всех каналах. После этого он доходит до клиента.",
     "Agent": "Агент",
-    "On these channels the AI takes new chats instead of the auto reply. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "В этих каналах новые чаты вместо автоответа принимает ИИ. Он спрашивает у клиента то, что нужно знать вашей команде, не более трёх раз и не отвечая сам, а затем передаёт чат вашей команде.",
+    "On these channels the AI takes new chats first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "В этих каналах новые чаты сначала принимает ИИ. Он спрашивает у клиента то, что нужно знать вашей команде, не более трёх раз и не отвечая сам, а затем передаёт чат вашей команде.",
     "The AI couldn’t continue this chat.": "ИИ не смог продолжить этот чат.",
-    "The customer didn’t answer the last question.": "Клиент не ответил на последний вопрос.",
-    "Not sent while the AI takes new chats here.": "Не отправляется, пока новые чаты здесь принимает ИИ."
+    "The customer didn’t answer the last question.": "Клиент не ответил на последний вопрос."
 }

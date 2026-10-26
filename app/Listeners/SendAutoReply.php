@@ -27,11 +27,6 @@ class SendAutoReply
     {
         $conversation = $event->conversation;
 
-        // The AI agent's first message instead (App\Ai\ChatAgent).
-        if (\App\Ai\ChatAgent::holds($conversation)) {
-            return;
-        }
-
         // no_autoreply meta value is checked in the SendAutoReply job.
 
         // On its channel: the mailbox's auto reply, or the channel's own (App\AutoReply\ChannelMessages).
