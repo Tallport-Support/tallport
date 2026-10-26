@@ -67,6 +67,39 @@ class ConversationPagesTest extends FeatureTestCase
         $response->assertSee('Casey Customer');
     }
 
+    /**
+     * Who else has a conversation open: in its row by first name, replying first; in its heading
+     * with faces and full names; a teammate writing a reply right above the composer. Only
+     * viewing: no typing line (empty, a status region still).
+     */
+    public function testWhoElseHasItOpen()
+    {
+        $conversation = $this->receiveCustomerEmail(['subject' => 'Question about my order']);
+        $mia = $this->createUser(['first_name' => 'Mia', 'last_name' => 'Patel']);
+        $noah = $this->createUser(['first_name' => 'Noah', 'last_name' => 'Williams']);
+        $this->mailbox->users()->attach([$mia->id, $noah->id]);
+        $open = fn ($noah_replying) => \Cache::put('conv_view', [$conversation->id => [
+            $mia->id  => ['t' => now()->toDateTimeString(), 'r' => 0],
+            $noah->id => ['t' => now()->toDateTimeString(), 'r' => (int) $noah_replying],
+        ]], 60);
+
+        $open(true);
+        $list = $this->getPage($this->agent, '/mailbox/'.$this->mailbox->id)->getContent();
+        $this->assertMatchesRegularExpression('/<span class="conv-presence" data-viewers="[^"]*"\s+data-replying\s*>.*<span class="conv-presence__text">Noah is replying · Mia is viewing<\/span>/s', $list);
+        $this->assertStringContainsString('<template id="conv-presence-template">', $list);
+        // Without Livewire's block markers (CSS's :empty ignores them).
+        $page = preg_replace('/<!--\[if (END)?BLOCK\]><!\[endif\]-->/', '', $this->getPage($this->agent, '/conversation/'.$conversation->id)->getContent());
+        $this->assertMatchesRegularExpression('/id="conv-presence" class="conv-presence-line"[^>]*data-replying.*<span class="conv-presence-line__text">Noah Williams is replying, Mia Patel is viewing<\/span>/s', $page);
+        $this->assertMatchesRegularExpression('/<p role="status" [^>]*id="conv-typing"[^>]*><span class="f-typing__dots" aria-hidden="true">.*<\/span>Noah Williams is writing a reply<\/p>/', $page);
+
+        $open(false);
+        $list = $this->getPage($this->agent, '/mailbox/'.$this->mailbox->id)->getContent();
+        $this->assertMatchesRegularExpression('/<span class="conv-presence" data-viewers="[^"]*"\s*>.*<span class="conv-presence__text">Mia is viewing · Noah is viewing<\/span>/s', $list);
+        $page = preg_replace('/<!--\[if (END)?BLOCK\]><!\[endif\]-->/', '', $this->getPage($this->agent, '/conversation/'.$conversation->id)->getContent());
+        $this->assertMatchesRegularExpression('/<p role="status" [^>]*id="conv-typing"[^>]*><\/p>/', $page);
+        $this->assertStringNotContainsString('is replying', $page);
+    }
+
     public function testConversationPageListsItsFolderBesideIt()
     {
         $first = $this->receiveCustomerEmail(['subject' => 'First question']);

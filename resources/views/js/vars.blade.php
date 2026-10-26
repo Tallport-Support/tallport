@@ -48,6 +48,7 @@ var LangMessages = {
             "passkeys_unsupported": "{{ __("This browser does not support passkeys.") }}",
             "user_viewing": "{{ __(":user is viewing") }}",
             "user_replying": "{{ __(":user is replying") }}",
+            "user_writing_reply": "{{ __(":user is writing a reply") }}",
             "new_message": "{{ __("New message") }}",
             @action('js.lang.messages')
             "update": "{{ __("Update") }}"

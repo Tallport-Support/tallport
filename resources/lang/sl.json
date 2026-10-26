@@ -1994,5 +1994,6 @@
     "Agent": "Agent",
     "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Na teh kanalih nove pogovore najprej prevzame AI. Stranko vpraša, kar mora vedeti vaša ekipa, največ trikrat in brez odgovarjanja, nato pa pogovor preda vaši ekipi.",
     "The AI couldn’t continue this conversation.": "AI ni mogel nadaljevati tega pogovora.",
-    "The customer didn’t answer the last question.": "Stranka ni odgovorila na zadnje vprašanje."
+    "The customer didn’t answer the last question.": "Stranka ni odgovorila na zadnje vprašanje.",
+    ":user is writing a reply": ":user piše odgovor"
 }

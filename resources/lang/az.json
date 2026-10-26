@@ -1994,5 +1994,6 @@
     "Agent": "Agent",
     "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Bu kanallarda yeni söhbətləri əvvəlcə Sİ qəbul edir. Müştəridən komandanızın bilməli olduğunu soruşur, ən çoxu üç dəfə və özü cavab vermədən, sonra söhbəti komandanıza ötürür.",
     "The AI couldn’t continue this conversation.": "Sİ bu söhbəti davam etdirə bilmədi.",
-    "The customer didn’t answer the last question.": "Müştəri son suala cavab vermədi."
+    "The customer didn’t answer the last question.": "Müştəri son suala cavab vermədi.",
+    ":user is writing a reply": ":user cavab yazır"
 }

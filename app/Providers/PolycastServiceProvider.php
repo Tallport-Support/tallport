@@ -168,6 +168,9 @@ class PolycastServiceProvider extends ServiceProvider
                 } else {
                     $replying_changed = true;
                 }
+            } elseif ((int) ($request->data['replying'] ?? 0)) {
+                // Writing a reply from the first: the page said viewing.
+                \App\Events\RealtimeConvView::dispatchSelf($viewing_conversation_id, $user, true);
             }
             
             if (!$cache_data || $replying_changed || ($view_date && (int) $now->diffInSeconds($view_date, true) > 15)) {

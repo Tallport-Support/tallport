@@ -1994,5 +1994,6 @@
     "Agent": "Агент",
     "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "У цих каналах нові розмови спершу приймає ШІ. Він запитує в клієнта те, що потрібно знати вашій команді, не більше трьох разів і не відповідаючи сам, а потім передає розмову вашій команді.",
     "The AI couldn’t continue this conversation.": "ШІ не зміг продовжити цю розмову.",
-    "The customer didn’t answer the last question.": "Клієнт не відповів на останнє запитання."
+    "The customer didn’t answer the last question.": "Клієнт не відповів на останнє запитання.",
+    ":user is writing a reply": ":user пише відповідь"
 }

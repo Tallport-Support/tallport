@@ -107,6 +107,8 @@ class RealtimeConvView implements ShouldBroadcastNow
             // These has to be encoded to avoid "Unable to JSON encode payload. Error code: 5"
             'user_initials'   => htmlentities($user->getInitials()),
             'user_name'       => htmlentities($user->getFullName()),
+            // In list rows ("Noah is replying").
+            'user_first_name' => htmlentities($user->getFirstName()),
             'replying'        => (int)$replying,
         ];
         event(new \App\Events\RealtimeConvView($notification_data));

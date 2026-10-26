@@ -184,7 +184,7 @@
                             @if ($conv_assignee)<span class="conv-owner-name"><x-icon.user class="f-icon" aria-hidden="true" /> <span class="conv-owner-name__text">{{ $conv_assignee->getFullName() }}</span></span>@endif
                             @if ($conversation->has_attachments)<x-icon.paperclip class="f-icon" :aria-label="__('Attachments')" role="img" />@endif
                             @if (!empty($viewers[$conversation->id]))
-                                <span class="viewer-badge @if (!empty($viewers[$conversation->id]['replying'])) viewer-replying @endif"><x-icon.eye class="f-icon" aria-hidden="true" /> {{ implode(', ', array_map(function ($viewer) { return __($viewer['replying'] ? ':user is replying' : ':user is viewing', ['user' => $viewer['user']->getFullName()]); }, $viewers[$conversation->id]['users'])) }}</span>
+                                @include('conversations/partials/presence', ['presence_viewers' => $viewers[$conversation->id]['users']])
                             @endif
                             @if ($show_status && (int) $conversation->status != App\Conversation::STATUS_ACTIVE)
                                 <span class="conv-row__status">@include('conversations/partials/status_dot', ['status' => (int) $conversation->status]){{ App\Conversation::statusCodeToName($conversation->status) }}</span>
@@ -195,6 +195,10 @@
                 </li>
             @endforeach
         </x-fruit::item-list>
+        @if (empty($no_checkboxes))
+            {{-- A row's who-else-has-it-open, for one that had nobody (public/js/realtime.js). --}}
+            <template id="conv-presence-template">@include('conversations/partials/presence', ['presence_viewers' => []])</template>
+        @endif
         @if ($row_menus)
             {{-- One menu for every row (tallportRowMenu): a selected row's acts on the selection (ConversationList::rowTargets). The selection bar and the conversation's toolbar have the same commands. --}}
             <x-fruit::context-menu targets="li.conv-row" :title="__('Conversation Actions')" x-bind:aria-label="menuTitle(target, {{ \Illuminate\Support\Js::from(__('Conversation Actions')) }})">

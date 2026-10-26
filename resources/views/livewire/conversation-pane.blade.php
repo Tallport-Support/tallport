@@ -22,12 +22,15 @@
                 @if ($chat_last_customer && App\Nostr\Nostr::isNostr($conversation))
                     <div class="conv-heading__device">@include('nostr/partials/thread_sender', ['sender' => App\Nostr\NostrEvent::sender($conversation, $threads, $chat_last_customer), 'thread' => $chat_last_customer])</div>
                 @endif
+                {{-- Under the customer's name, in the name column. --}}
+                @include('conversations/partials/presence_line')
                 @action('conversation.after_subject', $conversation, $mailbox)
             </header>
             @action('conversation.after_subject_block', $conversation, $mailbox)
             @action('conversation.before_threads', $conversation)
             <livewire:conversation-thread wire:key="thread-{{ $conversation->id }}" :conversation="$conversation" :threads="$threads->reverse()->values()" chat />
             @action('conversation.after_threads', $conversation)
+            @include('conversations/partials/typing_line')
             <livewire:conversation-composer wire:key="composer-{{ $conversation->id }}" :conversation="$conversation" :to-customers="$to_customers" :cc="$cc" :from-aliases="$from_aliases" :from-alias="$from_alias" chat />
         </div>
     @else
@@ -39,6 +42,7 @@
                         @action('conversation.after_subject', $conversation, $mailbox)
                     </header>
                     @action('conversation.after_subject_block', $conversation, $mailbox)
+                    @include('conversations/partials/typing_line')
                     <livewire:conversation-composer wire:key="composer-{{ $conversation->id }}" :conversation="$conversation" :to-customers="$to_customers" :cc="$cc" :from-aliases="$from_aliases" :from-alias="$from_alias" />
                 </div>
             </div>

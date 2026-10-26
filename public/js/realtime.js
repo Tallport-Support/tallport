@@ -1,6 +1,7 @@
 /**
  * Realtime updates (Polycast): notifications, who else is viewing or replying
- * to the open conversation, its new messages, assignee and status, the
+ * to a conversation (in its list row, and the open one's heading and typing
+ * line), the open conversation's new messages, assignee and status, the
  * sidebar's folders and the lists.
  */
 var poly;
@@ -66,35 +67,110 @@ function maybeShowConnectionRestored()
 		}, {once: true});
 	};
 
-	// Who else is viewing (or replying to) the open conversation, replying first.
-	var viewer = function (data) {
-		var viewers = document.getElementById('conv-viewers');
-		if (!viewers) {
+	// Who else has a conversation open (App\Events\RealtimeConvView, ...Finish), replying first:
+	// in its list row (conversations/partials/presence), and for the open one in its heading
+	// (presence_line) and the line above its composer (typing_line). Each keeps its viewers in
+	// data-viewers, from the page and then from these events.
+	var decode = function (text) {
+		var area = document.createElement('textarea');
+		area.innerHTML = text || '';
+		return area.value;
+	};
+	var viewersOf = function (element) {
+		try {
+			return JSON.parse(element.getAttribute('data-viewers') || '[]');
+		} catch (e) {
+			return [];
+		}
+	};
+	var withViewer = function (viewers, data, finished) {
+		viewers = viewers.filter(function (viewer) {
+			return viewer.id != data.user_id;
+		});
+		if (!finished) {
+			viewers.push({
+				id: data.user_id, first: decode(data.user_first_name || data.user_name), name: decode(data.user_name),
+				initials: decode(data.user_initials), photo: data.user_photo_url || '', replying: !!data.replying
+			});
+		}
+		return viewers.sort(function (a, b) {
+			return (b.replying ? 1 : 0) - (a.replying ? 1 : 0);
+		});
+	};
+	var presenceText = function (viewers, full) {
+		return viewers.map(function (viewer) {
+			return Lang.get(viewer.replying ? 'messages.user_replying' : 'messages.user_viewing', {user: full ? viewer.name : viewer.first});
+		}).join(full ? ', ' : ' · ');
+	};
+	var showViewers = function (element, viewers) {
+		element.setAttribute('data-viewers', JSON.stringify(viewers));
+		element.toggleAttribute('data-replying', viewers.some(function (viewer) { return viewer.replying; }));
+		element.hidden = !viewers.length;
+	};
+	var presence = function (data, finished) {
+		// Its list row ("Noah is replying · Mia is viewing"), its last line made if it had none.
+		document.querySelectorAll('.conv-row[data-conversation_id="'+data.conversation_id+'"] .conv-row__link').forEach(function (link) {
+			var element = link.querySelector('.conv-presence');
+			var viewers = withViewer(element ? viewersOf(element) : [], data, finished);
+			var template = document.getElementById('conv-presence-template');
+			if (!element) {
+				if (!viewers.length || !template) {
+					return;
+				}
+				element = template.content.firstElementChild.cloneNode(true);
+				var meta = link.querySelector('.f-item-row__meta');
+				if (!meta) {
+					meta = document.createElement('span');
+					meta.className = 'f-item-row__meta conv-row__meta';
+					(link.querySelector('.f-item-row__preview') || link.querySelector('.f-item-row__subtitle') || link.querySelector('.f-item-row__top')).after(meta);
+				}
+				meta.appendChild(element);
+			}
+			showViewers(element, viewers);
+			element.querySelector('.conv-presence__text').textContent = presenceText(viewers, false);
+			// A last line with nothing else on it goes with them.
+			var meta = element.parentElement;
+			meta.hidden = !viewers.length && !Array.prototype.some.call(meta.children, function (child) { return child !== element && !child.hidden; });
+		});
+		if (data.conversation_id != attr('conversation_id')) {
 			return;
 		}
-		var item = viewers.querySelector('.viewer-'+data.user_id);
-		if (!item) {
-			item = document.createElement('span');
-			item.className = 'viewer-'+data.user_id;
-			var photo;
-			if (data.user_photo_url) {
-				photo = document.createElement('img');
-				photo.src = data.user_photo_url;
-			} else {
-				photo = document.createElement('i');
-				photo.className = 'person-photo-auto';
-				photo.setAttribute('data-initial', data.user_initials || '');
-			}
-			photo.classList.add('person-photo');
-			item.appendChild(photo);
-			viewers.prepend(item);
+		// The open conversation's heading: their faces and full names.
+		var line = document.getElementById('conv-presence');
+		if (!line) {
+			return;
 		}
-		item.hidden = false;
-		item.classList.toggle('viewer-replying', !!data.replying);
-		item.title = Lang.get(data.replying ? 'messages.user_replying' : 'messages.user_viewing', {user: data.user_name});
-		Array.prototype.slice.call(viewers.querySelectorAll('.viewer-replying')).reverse().forEach(function (replying) {
-			viewers.prepend(replying);
+		var viewers = withViewer(viewersOf(line), data, finished);
+		showViewers(line, viewers);
+		var faces = line.querySelector('.conv-presence-line__faces');
+		faces.textContent = '';
+		viewers.forEach(function (viewer) {
+			var face = document.createElement('span');
+			face.className = 'f-avatar conv-presence-line__face';
+			if (viewer.photo) {
+				var photo = document.createElement('img');
+				photo.src = viewer.photo;
+				photo.alt = '';
+				face.appendChild(photo);
+			} else {
+				face.textContent = viewer.initials;
+			}
+			faces.appendChild(face);
 		});
+		line.querySelector('.conv-presence-line__text').textContent = presenceText(viewers, true);
+		// Above the composer: who is writing a reply.
+		var typing = document.getElementById('conv-typing');
+		var writer = viewers.filter(function (viewer) { return viewer.replying; })[0];
+		if (typing) {
+			typing.textContent = '';
+			if (writer) {
+				var dots = document.createElement('span');
+				dots.className = 'f-typing__dots';
+				dots.setAttribute('aria-hidden', 'true');
+				dots.innerHTML = '<span></span><span></span><span></span>';
+				typing.append(dots, Lang.get('messages.user_writing_reply', {user: writer.name}));
+			}
+		}
 	};
 
 	// The toolbar's assignee and status menus after someone else changed them.
@@ -211,13 +287,47 @@ function maybeShowConnectionRestored()
 		}
 
 		// Who is viewing the open conversation: read from the page at each request
-		// (wire:navigate changes it without a new connection).
+		// (wire:navigate changes it without a new connection). Writing a reply: typing in its
+		// composer (a reply, not a note) in the last REPLYING_MS, or text there not sent yet; an
+		// open composer alone isn't (a chat's always is). Others hear at once when it starts,
+		// and when it stops.
+		var REPLYING_MS = 10000;
+		var typed_at = 0;
+		var sent_replying = false;
+		var replying_timer = null;
+		var isReplying = function () {
+			var composer = document.querySelector('.conv-composer');
+			if (!composer || getReplyFormMode() != 'reply') {
+				return false;
+			}
+			// The editor's text: its field (HTML in rich mode) or what's being edited.
+			var text = Array.prototype.map.call(composer.querySelectorAll('textarea[data-fruit-control], [contenteditable="true"]'), function (editor) {
+				return editor.matches('textarea') ? stripTags(editor.value) : editor.textContent;
+			}).join('');
+			return Date.now() - typed_at < REPLYING_MS || text.trim() !== '';
+		};
+		document.addEventListener('input', function (event) {
+			if (!event.target.closest || !event.target.closest('.conv-composer') || !poly) {
+				return;
+			}
+			typed_at = Date.now();
+			if (!sent_replying && isReplying()) {
+				poly.fetchNow();
+			}
+			clearTimeout(replying_timer);
+			replying_timer = setTimeout(function () {
+				if (sent_replying && !isReplying()) {
+					poly.fetchNow();
+				}
+			}, REPLYING_MS + 500);
+		}, true);
 		var had_focus = true;
 		poly_data_closures.push(function (data) {
 			if (!attr('conversation_id')) {
 				return data;
 			}
-			data.replying = getReplyFormMode() == 'reply' ? 1 : 0;
+			data.replying = isReplying() ? 1 : 0;
+			sent_replying = !!data.replying;
 			if (!had_focus && document.hasFocus()) {
 				data.conversation_view_focus = 1;
 			}
@@ -332,16 +442,13 @@ function maybeShowConnectionRestored()
 
 		var conv = poly.subscribe('conv');
 		conv.on('App\\Events\\RealtimeConvView', function (data) {
-			if (data && data.conversation_id == attr('conversation_id') && data.user_id != attr('auth_user_id')) {
-				viewer(data);
+			if (data && data.user_id != attr('auth_user_id')) {
+				presence(data, false);
 			}
 		});
 		conv.on('App\\Events\\RealtimeConvViewFinish', function (data) {
-			if (data && data.conversation_id == attr('conversation_id') && data.user_id != attr('auth_user_id')) {
-				var item = document.querySelector('#conv-viewers .viewer-'+data.user_id);
-				if (item) {
-					item.hidden = true;
-				}
+			if (data && data.user_id != attr('auth_user_id')) {
+				presence(data, true);
 			}
 		});
 

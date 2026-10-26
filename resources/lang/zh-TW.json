@@ -2038,5 +2038,6 @@
     "Agent": "代理",
     "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "在這些管道上，新的對話先由 AI 接待。它會向客戶詢問您的團隊需要知道的資訊（最多三次，且不作答），然後將對話轉交給您的團隊。",
     "The AI couldn’t continue this conversation.": "AI 無法繼續此對話。",
-    "The customer didn’t answer the last question.": "客戶沒有回答最後一個問題。"
+    "The customer didn’t answer the last question.": "客戶沒有回答最後一個問題。",
+    ":user is writing a reply": ":user 正在撰寫回覆"
 }

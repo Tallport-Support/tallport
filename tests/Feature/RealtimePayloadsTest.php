@@ -158,10 +158,27 @@ class RealtimePayloadsTest extends FeatureTestCase
         $this->assertSame($conversation->id, $replying[0]['payload']['conversation_id']);
         $this->assertSame($colleague->id, $replying[0]['payload']['user_id']);
         $this->assertSame('Cole League', $replying[0]['payload']['user_name']);
+        $this->assertSame('Cole', $replying[0]['payload']['user_first_name']);
         $this->assertSame([$colleague->id], array_keys(\Cache::get('conv_view')[$conversation->id]));
 
         $payloads = $this->payloadsOf($this->poll($this->outsider, ['conv' => [$event]]), $event);
         $this->assertSame([[]], array_values(array_unique(array_column($payloads, 'payload'), SORT_REGULAR)));
+    }
+
+    /**
+     * Writing a reply from their first poll (the page said viewing): others hear at once.
+     */
+    public function testOthersSeeReplyingFromTheFirstPoll()
+    {
+        $conversation = $this->receiveCustomerEmail();
+        $colleague = $this->createUser(['first_name' => 'Cole', 'last_name' => 'League']);
+        $this->mailbox->users()->attach($colleague->id);
+        $event = 'App\Events\RealtimeConvView';
+
+        $this->poll($colleague, ['conv' => [$event]], ['conversation_id' => $conversation->id, 'replying' => 1]);
+
+        $payloads = $this->payloadsOf($this->poll($this->agent, ['conv' => [$event]]), $event);
+        $this->assertSame([[$conversation->id, $colleague->id, 1]], array_map(fn ($item) => [$item['payload']['conversation_id'], $item['payload']['user_id'], $item['payload']['replying']], $payloads));
     }
 
     public function testOthersSeeWhenSomeoneStopsViewing()

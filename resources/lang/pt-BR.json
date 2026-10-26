@@ -1995,5 +1995,6 @@
     "Agent": "Agente",
     "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Nesses canais, a IA atende primeiro as novas conversas. Ela pergunta ao cliente o que sua equipe precisa saber, no máximo três vezes e sem responder, e depois passa a conversa para sua equipe.",
     "The AI couldn’t continue this conversation.": "A IA não conseguiu continuar esta conversa.",
-    "The customer didn’t answer the last question.": "O cliente não respondeu à última pergunta."
+    "The customer didn’t answer the last question.": "O cliente não respondeu à última pergunta.",
+    ":user is writing a reply": ":user está escrevendo uma resposta"
 }

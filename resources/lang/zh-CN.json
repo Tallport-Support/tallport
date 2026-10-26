@@ -1995,5 +1995,6 @@
     "Agent": "智能体",
     "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "在这些渠道上，新的对话先由 AI 接待。它会向客户询问您的团队需要了解的信息（最多三次，且不作答），然后将对话转交给您的团队。",
     "The AI couldn’t continue this conversation.": "AI 无法继续此对话。",
-    "The customer didn’t answer the last question.": "客户没有回答最后一个问题。"
+    "The customer didn’t answer the last question.": "客户没有回答最后一个问题。",
+    ":user is writing a reply": ":user正在撰写回复"
 }

@@ -1,4 +1,4 @@
-{{-- The heading's status, mailbox, viewers, star and subject, then who wrote in and the AI summary (App\Livewire\ConversationSubject). --}}
+{{-- The heading's status, mailbox, star and subject, then who wrote in, the AI summary and who else has it open (App\Livewire\ConversationSubject). --}}
 <div class="conv-heading__top @if ($is_following) conv-following @endif">
     <div class="conv-heading__overline">
         @if ($compact)
@@ -15,13 +15,6 @@
             </span>
         @endif
         <span class="conv-heading__tools">
-            <span id="conv-viewers" wire:ignore>
-                @foreach ($viewers as $viewer)
-                    <span class="viewer-{{ $viewer['user']->id }} @if ($viewer['replying']) viewer-replying @endif" title="@if ($viewer['replying']){{ __(':user is replying', ['user' => $viewer['user']->getFullName()]) }}@else{{ __(':user is viewing', ['user' => $viewer['user']->getFullName()]) }}@endif">
-                        @include('partials/person_photo', ['person' => $viewer['user']])
-                    </span>
-                @endforeach
-            </span>
             <button type="button" class="f-button f-button--ghost f-button--icon f-button--small conv-star" wire:click="star" aria-pressed="{{ $starred ? 'true' : 'false' }}" aria-label="{{ __('Star Conversation') }}" title="@if ($starred){{ __("Unstar Conversation") }}@else{{ __("Star Conversation") }}@endif"><x-icon.star class="f-icon conv-star__off" aria-hidden="true" /><x-icon.star fill="currentColor" class="f-icon conv-star__on" aria-hidden="true" /></button>
         </span>
     </div>
@@ -38,5 +31,6 @@
             <p class="conv-heading__customer">{{ $customer->getFullName(true) }}@if ($conversation->customer_email && $conversation->customer_email != $customer->getFullName(true)) · {{ $conversation->customer_email }}@endif</p>
         @endif
         @include('conversations/partials/ai_summary')
+        @include('conversations/partials/presence_line')
     @endunless
 </div>

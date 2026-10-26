@@ -351,12 +351,6 @@ a h4 {
     display: flex;
 }
 
-/*#conv-viewers > span {
-    display: inline-block;
-}*/
-.viewer-replying .person-photo {
-    background-color: #d43f3a!important;
-}
 .conv-star {
     color: var(--f-tertiary);
 }
@@ -2367,11 +2361,67 @@ h1.settings-toolbar__title {
 .conv-list .conv-badge {
     display: inline-block;
 }
-.conv-list .viewer-badge {
-    color: var(--f-warning);
+/* Who else has a conversation open (conversations/partials/presence, presence_line; public/js/realtime.js):
+   quiet, as it's no problem; in the accent while someone writes a reply (types in its composer). */
+.conv-presence {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    color: var(--f-secondary);
 }
-.conv-list .viewer-badge.viewer-replying {
-    color: var(--f-danger);
+.conv-presence__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.conv-presence:not([data-replying]) .conv-presence__replying,
+.conv-presence[data-replying] .conv-presence__viewing,
+.conv-presence[hidden],
+.conv-row__meta[hidden] {
+    display: none;
+}
+.conv-presence[data-replying],
+.conv-presence-line[data-replying] {
+    color: var(--f-accent-text);
+}
+.conv-presence-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 0;
+    color: var(--f-secondary);
+    font-size: var(--f-text-sm);
+}
+.conv-presence-line[hidden] {
+    display: none;
+}
+/* In a chat's heading, under the customer's name, beside their picture. */
+.conv-heading--chat .conv-presence-line {
+    grid-column: 2;
+    margin-top: 4px;
+}
+.conv-presence-line__faces {
+    display: inline-flex;
+}
+.conv-presence-line__face {
+    --f-avatar-size: 22px;
+    --f-avatar-font-size: 10px;
+    box-shadow: 0 0 0 2px var(--f-surface);
+}
+.conv-presence-line__face + .conv-presence-line__face {
+    margin-inline-start: -6px;
+}
+/* A teammate writing a reply, right above the composer; with nobody, it takes no room but stays a
+   status region (FruitUI's Typing). */
+.conv-typing {
+    padding: 6px var(--conv-gutter) 0;
+    color: var(--f-accent-text);
+    font-size: var(--f-text-sm);
+}
+.conv-typing:empty {
+    min-height: 0;
+    padding: 0;
 }
 .conv-star .conv-star__on,
 .conv-star[aria-pressed="true"] .conv-star__off {
@@ -2935,15 +2985,6 @@ h1.settings-toolbar__title {
 .conv-heading__mailbox .f-icon {
     --f-icon-size: 14px;
 }
-#conv-viewers {
-    display: flex;
-    gap: 2px;
-}
-#conv-viewers .person-photo {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-}
 /* The chat view (conversations/view): a one-line heading, the history scrolling
    below it (FruitUI's history) and the composer docked at the bottom. */
 .app-main:has(.conv-chat, .team-room) > #app-content-scroll {
@@ -3005,6 +3046,10 @@ h1.settings-toolbar__title {
 }
 .conv-history {
     flex: 1;
+}
+/* On the chat's surface, as FruitUI's typing line and composer docked below a history (it's in another Livewire component). */
+.conv-chat .conv-typing {
+    background: var(--f-history-background, var(--f-grouped-background));
 }
 /* On the chat's surface, as FruitUI's composer docked below a history (it's in another Livewire component). */
 .conv-composer-docked .conv-composer {

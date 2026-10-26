@@ -2010,5 +2010,6 @@
     "Agent": "Agentti",
     "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Näillä kanavilla tekoäly ottaa uudet keskustelut ensin. Se kysyy asiakkaalta, mitä tiimisi tarvitsee tietää, enintään kolme kertaa ja vastaamatta itse, ja antaa sitten keskustelun tiimillesi.",
     "The AI couldn’t continue this conversation.": "Tekoäly ei voinut jatkaa tätä keskustelua.",
-    "The customer didn’t answer the last question.": "Asiakas ei vastannut viimeiseen kysymykseen."
+    "The customer didn’t answer the last question.": "Asiakas ei vastannut viimeiseen kysymykseen.",
+    ":user is writing a reply": ":user kirjoittaa vastausta"
 }

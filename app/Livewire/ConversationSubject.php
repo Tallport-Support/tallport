@@ -11,10 +11,10 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 
 /**
- * The open conversation's heading: its status and number, its mailbox, who else is
- * viewing it (updated by the realtime script), the star and the subject, which a user
- * may edit, then who wrote in and the AI summary. A bell marks the conversations the
- * user follows. Compact (the chat view): the status, viewers and star without the rest.
+ * The open conversation's heading: its status and number, its mailbox, the star and the
+ * subject, which a user may edit, then who wrote in, the AI summary and who else has it
+ * open (updated by the realtime script). A bell marks the conversations the user follows.
+ * Compact (the chat view): the status and star without the rest.
  */
 class ConversationSubject extends Component
 {
