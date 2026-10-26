@@ -94,7 +94,9 @@ function a() {
 				confirm: n.confirm || r.fruitConfirmLabel || "OK",
 				cancel: n.cancel || r.fruitCancelLabel || "Cancel",
 				tone: n.tone
-			}, t.returnValue = "", this.$nextTick(() => {
+			}, t.returnValue = "";
+			for (let e of t.querySelectorAll("button")) e.removeAttribute("aria-busy"), e.removeAttribute("data-loading");
+			this.$nextTick(() => {
 				t.showModal(), t.querySelector(`button[value="${n.tone === "danger" ? "cancel" : "confirm"}"]`)?.focus();
 			});
 		},

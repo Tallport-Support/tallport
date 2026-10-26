@@ -61,6 +61,13 @@ export function fruitConfirmer() {
         tone: current.tone,
       };
       dialog.returnValue = '';
+      // Each question starts with its buttons ready. Answering submits the dialog's form (method
+      // "dialog"), which leaves nothing; a page's own "busy until the next page" script may still have
+      // marked the button, and the outlet serves every question after it.
+      for (const button of dialog.querySelectorAll('button')) {
+        button.removeAttribute('aria-busy');
+        button.removeAttribute('data-loading');
+      }
       this.$nextTick(() => {
         dialog.showModal();
         dialog.querySelector(`button[value="${current.tone === 'danger' ? 'cancel' : 'confirm'}"]`)?.focus();

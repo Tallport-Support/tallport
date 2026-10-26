@@ -262,9 +262,13 @@ document.addEventListener('fruit-resize', function (event) {
 });
 
 // A form sent the regular way: its button is busy until the next page shows (FruitUI's
-// spinner). Forms that scripts send themselves (submit prevented) are left alone.
+// spinner). Forms that scripts send themselves (submit prevented) are left alone, and so are
+// forms that only close a dialog (method="dialog": a confirmer's answer, Cancel), which stay on the page.
 document.addEventListener('submit', function (event) {
 	var button = event.submitter;
+	if (event.target.method == 'dialog' || (button && button.getAttribute('formmethod') == 'dialog')) {
+		return;
+	}
 	if (!event.defaultPrevented && button && button.classList.contains('f-button')) {
 		button.setAttribute('aria-busy', 'true');
 	}
