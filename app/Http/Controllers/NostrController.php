@@ -216,7 +216,6 @@ class NostrController extends Controller
             'announce_relays' => NostrMailbox::normalizeRelays($request->input('announce_relays', '')),
             'profile_name' => trim((string) $request->input('profile_name', '')),
             'profile_about' => trim((string) $request->input('profile_about', '')),
-            'profile_picture' => trim((string) $request->input('profile_picture', '')),
             'nip05' => strtolower(trim((string) $request->input('nip05', ''))),
         ];
 
@@ -226,7 +225,6 @@ class NostrController extends Controller
             'announce_relays' => 'array',
             'announce_relays.*' => ['regex:#^wss?://[^\s/]+#i'],
             'profile_name' => 'nullable|string|max:255',
-            'profile_picture' => 'nullable|url|max:1024',
             'nip05' => ['nullable', 'regex:/^[a-z0-9._-]+@([a-z0-9-]+\.)+[a-z]{2,}$/', 'max:255'],
         ]);
         $validator->after(function ($validator) use ($input, $cfg) {
@@ -244,21 +242,20 @@ class NostrController extends Controller
                 ->withInput();
         }
 
-        $announceBefore = $cfg->exists ? md5(json_encode([$cfg->inbox_relays, $cfg->profile_name, $cfg->profile_about, $cfg->profile_picture, $cfg->nip05])) : '';
+        $announceBefore = $cfg->exists ? md5(json_encode([$cfg->inbox_relays, $cfg->profile_name, $cfg->profile_about, $cfg->nip05])) : '';
 
         $cfg->enabled = $input['enabled'];
         $cfg->setInboxRelays($input['inbox_relays']);
         $cfg->setAnnounceRelays($input['announce_relays']);
         $cfg->profile_name = $input['profile_name'] ?: null;
         $cfg->profile_about = $input['profile_about'] ?: null;
-        $cfg->profile_picture = $input['profile_picture'] ?: null;
         $cfg->nip05 = $input['nip05'] ?: null;
         $cfg->save();
 
         \Session::flash('flash_success_floating', __('Settings updated'));
 
         // Public metadata changed: republish in the background.
-        $announceAfter = md5(json_encode([$cfg->inbox_relays, $cfg->profile_name, $cfg->profile_about, $cfg->profile_picture, $cfg->nip05]));
+        $announceAfter = md5(json_encode([$cfg->inbox_relays, $cfg->profile_name, $cfg->profile_about, $cfg->nip05]));
         if ($cfg->enabled && $cfg->pubkey && $cfg->getAllRelays() && ($announceBefore !== $announceAfter || !$cfg->last_announced_at)) {
             \App\Jobs\NostrTask::dispatch('announce', [$cfg->id]);
         }

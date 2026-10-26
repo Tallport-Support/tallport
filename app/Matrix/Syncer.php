@@ -59,6 +59,12 @@ class Syncer
                 }
                 if ($identity->isReady()) {
                     (new Incoming($identity, $crypto))->process();
+                    // The bot's picture: the mailbox's image. Not a reason to stop syncing.
+                    try {
+                        Profile::sync($identity);
+                    } catch (MatrixException $e) {
+                        \App\Misc\ChatLog::failure('matrix', $identity->mailbox_id, 'connection', $e, ['message' => 'avatar']);
+                    }
                 }
             } catch (MatrixException $e) {
                 if ($e->retry_after > 0) {

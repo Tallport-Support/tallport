@@ -1129,6 +1129,7 @@ class ComposerStaticInitfc9b7b2ca15b4d1aba40fc18ae3b6e13
         'App\\Matrix\\MatrixRoom' => __DIR__ . '/../..' . '/app/Matrix/MatrixRoom.php',
         'App\\Matrix\\Outbox' => __DIR__ . '/../..' . '/app/Matrix/Outbox.php',
         'App\\Matrix\\Outgoing' => __DIR__ . '/../..' . '/app/Matrix/Outgoing.php',
+        'App\\Matrix\\Profile' => __DIR__ . '/../..' . '/app/Matrix/Profile.php',
         'App\\Matrix\\RoomState' => __DIR__ . '/../..' . '/app/Matrix/RoomState.php',
         'App\\Matrix\\Syncer' => __DIR__ . '/../..' . '/app/Matrix/Syncer.php',
         'App\\Matrix\\Verification' => __DIR__ . '/../..' . '/app/Matrix/Verification.php',

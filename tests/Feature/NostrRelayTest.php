@@ -1237,9 +1237,11 @@ class NostrRelayTest extends FeatureTestCase
         $cfg->setAnnounceRelays([$url]);
         $cfg->profile_name = 'Example Support';
         $cfg->profile_about = 'We help.';
-        $cfg->profile_picture = 'https://example.org/logo.png';
         $cfg->nip05 = 'support@example.org';
         $cfg->save();
+        // Its picture: the mailbox's image, as on every channel.
+        \App\Mailbox::where('id', $cfg->mailbox_id)->update(['photo_url' => 'logo.jpg']);
+        $picture = \App\Mailbox::find($cfg->mailbox_id)->getPhotoUrl();
         $empty = $this->mailboxConfig([]);
         $empty->setAnnounceRelays([]);
         $empty->save();
@@ -1259,7 +1261,8 @@ class NostrRelayTest extends FeatureTestCase
         }
         $this->assertSame([['relay', $url]], $events[0]['tags']);
         $this->assertSame([['r', $url]], $events[1]['tags']);
-        $this->assertSame(['name' => 'Example Support', 'display_name' => 'Example Support', 'about' => 'We help.', 'picture' => 'https://example.org/logo.png', 'nip05' => 'support@example.org'], json_decode($events[2]['content'], true));
+        $this->assertSame(['name' => 'Example Support', 'display_name' => 'Example Support', 'about' => 'We help.', 'picture' => $picture, 'nip05' => 'support@example.org'], json_decode($events[2]['content'], true));
+        $this->assertStringEndsWith('/storage/mailboxes/logo.jpg', $picture);
         $this->assertNotNull($cfg->fresh()->last_announced_at);
 
         $this->artisan('tallport:nostr-announce', ['--mailbox' => $empty->mailbox_id])

@@ -313,6 +313,7 @@ return array(
     'App\\Matrix\\MatrixRoom' => $baseDir . '/app/Matrix/MatrixRoom.php',
     'App\\Matrix\\Outbox' => $baseDir . '/app/Matrix/Outbox.php',
     'App\\Matrix\\Outgoing' => $baseDir . '/app/Matrix/Outgoing.php',
+    'App\\Matrix\\Profile' => $baseDir . '/app/Matrix/Profile.php',
     'App\\Matrix\\RoomState' => $baseDir . '/app/Matrix/RoomState.php',
     'App\\Matrix\\Syncer' => $baseDir . '/app/Matrix/Syncer.php',
     'App\\Matrix\\Verification' => $baseDir . '/app/Matrix/Verification.php',

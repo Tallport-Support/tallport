@@ -35,8 +35,6 @@
                         <x-fruit::accent-picker name="accent" :value="old('accent', $settings['accent'])" />
                     </div>
 
-                    {{-- The mailbox's own image, set in its settings. --}}
-                    <a class="f-form-row f-form-row--link" href="{{ route('mailboxes.general', ['id' => $mailbox->getSlug()]) }}" wire:navigate><span>{{ __('Image') }}</span><span class="f-form-row__value">@if ($mailbox->photo_url)<x-fruit::avatar :src="$mailbox->getPhotoUrl()" />@else{{ __('None') }}@endif</span></a>
                 </x-fruit::form-section>
 
                 {{-- What the chat says by itself: the mailbox's greeting (the first thing visitors see) and auto reply, or its own. --}}

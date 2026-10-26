@@ -318,6 +318,14 @@ class MailboxesController extends Controller
         $mailbox->signature = Mailbox::sanitizeSignature($mailbox->signature);
 
         $mailbox->save();
+        // Its image is every channel's: Nostr's public profile is announced again with it (Matrix's
+        // follows with its sync, App\Matrix\Profile).
+        if ($mailbox->wasChanged('photo_url')) {
+            $nostr = \App\Nostr\NostrMailbox::where('mailbox_id', $mailbox->id)->where('enabled', true)->first();
+            if ($nostr && $nostr->pubkey && $nostr->getAllRelays()) {
+                \App\Jobs\NostrTask::dispatch('announce', [$nostr->id]);
+            }
+        }
 
         if (!$request->ajax()) {
             \Session::flash('flash_success_floating', __('Mailbox settings saved'));

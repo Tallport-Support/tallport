@@ -339,6 +339,40 @@ class MatrixTest extends FeatureTestCase
         $this->assertSame(0, MatrixEvent::where('kind', 'outgoing')->whereNotNull('payload')->count());
     }
 
+    /**
+     * The bot's picture is the mailbox's image, as on every channel: uploaded as an image and set on
+     * its profile once per image, taken away with the mailbox's; one set by hand stays while the
+     * mailbox has none.
+     */
+    public function testTheBotsPictureIsTheMailboxsImage()
+    {
+        [$identity] = $this->identity();
+        $calls = [];
+        Http::fake(function ($request) use (&$calls) {
+            $calls[] = [$request->method(), parse_url($request->url(), PHP_URL_PATH), $request->header('Content-Type')[0] ?? '', $request->data()];
+
+            return Http::response(str_contains($request->url(), '/media/') ? ['content_uri' => 'mxc://example.org/avatar1'] : []);
+        });
+        \App\Matrix\Profile::sync($identity);
+        $this->assertSame([], $calls, 'No image: a picture set by hand stays.');
+
+        \Storage::disk('local')->put(\App\Mailbox::PHOTO_DIRECTORY.'/logo.jpg', 'JPEG');
+        $identity->mailbox->photo_url = 'logo.jpg';
+        $identity->mailbox->save();
+        \App\Matrix\Profile::sync($identity->fresh());
+        \App\Matrix\Profile::sync($identity->fresh());
+        $this->assertSame([
+            ['POST', '/_matrix/media/v3/upload', 'image/jpeg', []],
+            ['PUT', '/_matrix/client/v3/profile/'.rawurlencode(self::USER).'/avatar_url', 'application/json', ['avatar_url' => 'mxc://example.org/avatar1']],
+        ], $calls);
+
+        $identity->mailbox->photo_url = null;
+        $identity->mailbox->save();
+        \App\Matrix\Profile::sync($identity->fresh());
+        $this->assertSame(['PUT', '/_matrix/client/v3/profile/'.rawurlencode(self::USER).'/avatar_url', 'application/json', ['avatar_url' => '']], $calls[2]);
+        \Storage::disk('local')->delete(\App\Mailbox::PHOTO_DIRECTORY.'/logo.jpg');
+    }
+
     public function testRoomStopsBeingSupportedWhenAnotherUserIsInvitedAndNeverChangesCustomer()
     {
         [$identity] = $this->identity();

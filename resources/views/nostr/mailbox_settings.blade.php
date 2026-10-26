@@ -294,10 +294,6 @@
                     <x-fruit::textarea id="nostr_profile_about" name="profile_about" rows="3">{{ old('profile_about', $cfg->profile_about ?? '') }}</x-fruit::textarea>
                 </x-fruit::field>
 
-                <x-fruit::field :label="__('Picture URL')">
-                    <x-fruit::input type="url" id="nostr_profile_picture" name="profile_picture" :value="old('profile_picture', $cfg->profile_picture ?? '')" placeholder="https://" />
-                </x-fruit::field>
-
                 <x-fruit::field :label="__('Address')" :description="__('Optional NIP-05 address customers can look up instead of the npub. Any domain works: the domain must serve /.well-known/nostr.json.')">
                     <x-fruit::input id="nostr_nip05" name="nip05" :value="old('nip05', $cfg->nip05 ?? '')" placeholder="support@yourdomain.com" maxlength="255" />
                 </x-fruit::field>

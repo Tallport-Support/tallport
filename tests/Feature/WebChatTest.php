@@ -415,9 +415,9 @@ class WebChatTest extends FeatureTestCase
         $this->get('/t/a?u=missing.jpg')->assertNotFound();
         $this->get('/t/a')->assertNotFound();
 
-        // Set with the mailbox; its Website Chat settings show it and link there.
-        $this->actingAs($this->admin)->get(route('mailboxes.web_chat', ['id' => $this->mailbox->id]))
-            ->assertSee($this->mailbox->getPhotoUrl())->assertSee(route('mailboxes.update', ['id' => $this->mailbox->id]));
+        // Set with the mailbox, for every channel: the Website Chat settings have no image of their own.
+        $this->actingAs($this->admin)->get(route('mailboxes.web_chat', ['id' => $this->mailbox->id]))->assertOk()
+            ->assertDontSee($this->mailbox->getPhotoUrl());
     }
 
     /**

@@ -47,12 +47,16 @@ class Client
         return $result;
     }
 
-    public function upload($bytes)
+    /**
+     * A file to the homeserver's media: its mxc:// address. $type: an image shown as one (a profile's
+     * picture); files of conversations go encrypted, as bytes.
+     */
+    public function upload($bytes, $type = 'application/octet-stream')
     {
         if (strlen($bytes) > self::MAX_FILE_BYTES) {
             throw new MatrixException('Matrix file is too large.');
         }
-        $result = json_decode($this->request('POST', '/_matrix/media/v3/upload', [], self::MAX_JSON_BYTES, $bytes), true, 128, JSON_THROW_ON_ERROR);
+        $result = json_decode($this->request('POST', '/_matrix/media/v3/upload', [], self::MAX_JSON_BYTES, $bytes, $type), true, 128, JSON_THROW_ON_ERROR);
         if (!is_string($result['content_uri'] ?? null)) {
             throw new MatrixException('Invalid Matrix media response.');
         }
@@ -69,7 +73,7 @@ class Client
         return $this->request('GET', '/_matrix/client/v1/media/download/'.rawurlencode($matches[1]).'/'.rawurlencode($matches[2]), [], self::MAX_FILE_BYTES);
     }
 
-    private function request($method, $path, #[\SensitiveParameter] array $data, $limit, #[\SensitiveParameter] $bytes = null)
+    private function request($method, $path, #[\SensitiveParameter] array $data, $limit, #[\SensitiveParameter] $bytes = null, $type = 'application/octet-stream')
     {
         if (!str_starts_with($path, '/_matrix/') || str_contains($path, '..') || preg_match('/[\x00-\x20\\\\]/', $path)) {
             throw new MatrixException('Invalid Matrix request path.');
@@ -102,7 +106,7 @@ class Client
                 $request = $request->withToken($this->token);
             }
             if ($bytes !== null) {
-                $response = $request->withBody($bytes, 'application/octet-stream')->send($method, $url);
+                $response = $request->withBody($bytes, $type)->send($method, $url);
             } else {
                 $response = $request->send($method, $url, [$method === 'GET' ? 'query' : 'json' => $method === 'GET' ? $data : ($data ?: (object) [])]);
             }

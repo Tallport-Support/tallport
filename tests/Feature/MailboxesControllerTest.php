@@ -199,7 +199,8 @@ PHP;
 
     /**
      * A mailbox's image: uploaded as a square JPEG with the settings, replaced (the old file
-     * goes), refused when it isn't an image, removed, and gone with the mailbox.
+     * goes), refused when it isn't an image, removed, and gone with the mailbox. Every channel
+     * shows it: Nostr's public profile is announced again when it changes.
      */
     public function testTheMailboxsImage()
     {
@@ -211,8 +212,14 @@ PHP;
             'ticket_assignee' => Mailbox::TICKET_ASSIGNEE_ANYONE,
         ];
         $save = fn (array $data) => $this->postForm($this->admin, route('mailboxes.update.save', ['id' => $mailbox->id]), array_merge($fields, $data));
+        $nostr = \App\Nostr\NostrMailbox::forMailbox($mailbox->id);
+        $nostr->enabled = true;
+        $nostr->pubkey = str_repeat('a', 64);
+        $nostr->save();
+        \Illuminate\Support\Facades\Bus::fake([\App\Jobs\NostrTask::class]);
 
         $save(['photo' => \Illuminate\Http\UploadedFile::fake()->image('logo.png', 600, 400)])->assertSessionHasNoErrors();
+        \Illuminate\Support\Facades\Bus::assertDispatched(\App\Jobs\NostrTask::class, fn ($job) => $job->task === 'announce' && $job->params === [$nostr->id]);
         $first = $mailbox->fresh()->photo_url;
         \Storage::disk('local')->assertExists(Mailbox::PHOTO_DIRECTORY.'/'.$first);
         $this->assertSame([Mailbox::PHOTO_SIZE, Mailbox::PHOTO_SIZE, IMAGETYPE_JPEG], array_slice(getimagesize(\Storage::disk('local')->path(Mailbox::PHOTO_DIRECTORY.'/'.$first)), 0, 3));

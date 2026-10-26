@@ -103,8 +103,10 @@ class Announcer
         if ($cfg->profile_about) {
             $profile['about'] = $cfg->profile_about;
         }
-        if ($cfg->profile_picture) {
-            $profile['picture'] = $cfg->profile_picture;
+        // The mailbox's image, as on every channel (not one of its own).
+        $mailbox = \App\Mailbox::find($cfg->mailbox_id);
+        if ($mailbox && $mailbox->photo_url) {
+            $profile['picture'] = $mailbox->getPhotoUrl();
         }
         if ($cfg->getNip05()) {
             $profile['nip05'] = $cfg->getNip05();
