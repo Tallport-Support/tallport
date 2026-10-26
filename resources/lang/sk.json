@@ -1992,7 +1992,7 @@
     ":count second|:count seconds": ":count sekunda|:count sekundy|:count sekúnd",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Ako dlho môžete odpoveď po odoslaní vziať späť, na všetkých kanáloch. Potom príde zákazníkovi.",
     "Agent": "Agent",
-    "On these channels the AI takes new chats first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "Na týchto kanáloch nové chaty najprv preberá AI. Opýta sa zákazníka na to, čo váš tím potrebuje vedieť, najviac trikrát a bez odpovedania, a potom chat odovzdá vášmu tímu.",
-    "The AI couldn’t continue this chat.": "AI nemohla v tomto chate pokračovať.",
+    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Na týchto kanáloch nové konverzácie najprv preberá AI. Opýta sa zákazníka na to, čo váš tím potrebuje vedieť, najviac trikrát a bez odpovedania, a potom konverzáciu odovzdá vášmu tímu.",
+    "The AI couldn’t continue this conversation.": "AI nemohla v tejto konverzácii pokračovať.",
     "The customer didn’t answer the last question.": "Zákazník neodpovedal na poslednú otázku."
 }

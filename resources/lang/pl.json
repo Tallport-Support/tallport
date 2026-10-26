@@ -1992,7 +1992,7 @@
     ":count second|:count seconds": ":count sekunda|:count sekundy|:count sekund",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Jak długo możesz cofnąć odpowiedź po jej wysłaniu, w każdym kanale. Potem trafia do klienta.",
     "Agent": "Agent",
-    "On these channels the AI takes new chats first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "Na tych kanałach nowe czaty najpierw przejmuje AI. Pyta klienta o to, co Twój zespół musi wiedzieć, najwyżej trzy razy i bez odpowiadania, a potem przekazuje czat Twojemu zespołowi.",
-    "The AI couldn’t continue this chat.": "AI nie mogła kontynuować tego czatu.",
+    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Na tych kanałach nowe rozmowy najpierw przejmuje AI. Pyta klienta o to, co Twój zespół musi wiedzieć, najwyżej trzy razy i bez odpowiadania, a potem przekazuje rozmowę Twojemu zespołowi.",
+    "The AI couldn’t continue this conversation.": "AI nie mogła kontynuować tej rozmowy.",
     "The customer didn’t answer the last question.": "Klient nie odpowiedział na ostatnie pytanie."
 }

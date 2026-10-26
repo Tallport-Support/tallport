@@ -2083,7 +2083,7 @@
     ":count second|:count seconds": ":count segon|:count segons",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Quant de temps podeu desfer una resposta després d'enviar-la, a tots els canals. Després arriba al client.",
     "Agent": "Agent",
-    "On these channels the AI takes new chats first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "En aquests canals, la IA atén primer els xats nous. Pregunta al client el que el vostre equip necessita saber, com a màxim tres vegades i sense respondre, i després passa el xat al vostre equip.",
-    "The AI couldn’t continue this chat.": "La IA no ha pogut continuar aquest xat.",
+    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "En aquests canals, la IA atén primer les converses noves. Pregunta al client el que el vostre equip necessita saber, com a màxim tres vegades i sense respondre, i després passa la conversa al vostre equip.",
+    "The AI couldn’t continue this conversation.": "La IA no ha pogut continuar aquesta conversa.",
     "The customer didn’t answer the last question.": "El client no ha respost l’última pregunta."
 }

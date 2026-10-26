@@ -173,7 +173,7 @@ class AiChatAgentTest extends FeatureTestCase
         ChatIntake::fake(fn () => throw new \RuntimeException('Provider down'));
         $conversation = $this->write('hello');
         $this->assertNull($conversation->user_id);
-        $this->assertSame(['<p>The AI couldn’t continue this chat.</p>'], $this->messages($conversation, Thread::TYPE_NOTE));
+        $this->assertSame(['<p>The AI couldn’t continue this conversation.</p>'], $this->messages($conversation, Thread::TYPE_NOTE));
         $this->assertNotEmpty($this->sentEmailsTo($this->agent->email));
 
         // Three questions at most: then handed over, without a fourth.
@@ -192,6 +192,44 @@ class AiChatAgentTest extends FeatureTestCase
         $this->assertNull($conversation->user_id);
         $this->assertCount(3, $this->messages($conversation));
         $this->assertSame(['<p>Unclear what Casey needs.</p>'], $this->messages($conversation, Thread::TYPE_NOTE));
+    }
+
+    /**
+     * Email like the chats: its question is emailed at once, the customer's answer by email hands
+     * over, and the email keeps its subject. Auto-responders are left to the team.
+     */
+    public function testEmailToo()
+    {
+        Option::set('aiassistant.mailbox_agent_channels', [$this->mailbox->id => ['email']]);
+        Option::$cache = [];
+        ChatIntake::fake([
+            $this->answer(['message' => 'Before I hand this issue off to my human colleagues, please tell me your order number.', 'has_request' => true]),
+            $this->answer(['action' => 'hand_over', 'message' => 'Thanks! My human colleagues will reply to this email.', 'staff_note' => 'Order 1042 hasn’t arrived.', 'subject' => 'Order 1042 missing']),
+        ])->preventStrayPrompts();
+        $email = fn (array $options = []) => $this->receiveEmail($this->mailbox, $this->makeEmail(array_merge([
+            'from' => 'Casey Customer <casey@customer.example.org>', 'to' => $this->mailbox->email, 'subject' => 'Where is my order?', 'message_id' => 'first@customer.example.org',
+        ], $options)));
+
+        $email(['body' => 'Hello, my order didn’t arrive.']);
+        $conversation = Conversation::where('mailbox_id', $this->mailbox->id)->firstOrFail();
+        $this->assertTrue(ChatAgent::holds($conversation));
+        // The auto reply (as always), and its question.
+        $sent = fn () => implode("\n", array_map(fn ($message) => $message->getBody(), $this->sentEmailsTo('casey@customer.example.org')));
+        $this->assertCount(2, $this->sentEmailsTo('casey@customer.example.org'));
+        $this->assertStringContainsString('We will answer within a day.', $sent());
+        $this->assertStringContainsString('please tell me your order number', $sent());
+        $this->assertCount(0, $this->sentEmailsTo($this->agent->email));
+
+        $email(['message_id' => 'second@customer.example.org', 'in_reply_to' => 'first@customer.example.org', 'subject' => 'Re: Where is my order?', 'body' => 'It’s order 1042.']);
+        $conversation = $conversation->fresh();
+        $this->assertNull($conversation->user_id);
+        $this->assertSame('Where is my order?', $conversation->subject);
+        $this->assertStringContainsString('reply to this email', $sent());
+        $this->assertNotEmpty($this->sentEmailsTo($this->agent->email));
+
+        // An auto-responder's: the team's.
+        $email(['from' => 'Robin <robin@customer.example.org>', 'message_id' => 'away@customer.example.org', 'subject' => 'Out of office', 'headers' => ['Auto-Submitted' => 'auto-replied'], 'body' => 'I’m away.']);
+        $this->assertNull(Conversation::where('mailbox_id', $this->mailbox->id)->orderBy('id', 'desc')->first()->user_id);
     }
 
     /**
@@ -235,9 +273,9 @@ class AiChatAgentTest extends FeatureTestCase
         Option::set('aiassistant.mailbox_agent_channels', []);
         Option::$cache = [];
         $this->actingAs($this->admin)->get(route('mailboxes.ai', ['id' => $this->mailbox->id]))
-            ->assertOk()->assertSee('Agent')->assertSee('name="agent_channels[]"', false)->assertSee('value="webchat"', false)->assertSee('Not set up');
+            ->assertOk()->assertSee('Agent')->assertSee('name="agent_channels[]"', false)->assertSee('value="email"', false)->assertSee('value="webchat"', false)->assertSee('Not set up');
 
-        $this->postForm($this->admin, route('mailboxes.ai.save', ['id' => $this->mailbox->id]), ['agent_channels' => ['webchat', 'telegram', 'email']])
+        $this->postForm($this->admin, route('mailboxes.ai.save', ['id' => $this->mailbox->id]), ['agent_channels' => ['webchat', 'telegram', 'sms']])
             ->assertSessionHasNoErrors();
         Option::$cache = [];
         $this->assertSame(['webchat', 'telegram'], ChatAgent::channels($this->mailbox));

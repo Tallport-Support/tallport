@@ -5,8 +5,8 @@ namespace App\Listeners;
 use App\Ai\ChatAgent;
 
 /**
- * The AI agent (App\Ai\ChatAgent): takes a new chat (before notifications),
- * follows the customer's replies in a chat it has, and lets go when a person replies.
+ * The AI agent (App\Ai\ChatAgent): takes a new conversation (before notifications), follows the
+ * customer's replies in one it has, and lets go when a person replies.
  */
 class AiChatAgent
 {
@@ -18,12 +18,12 @@ class AiChatAgent
         }
         switch (get_class($event)) {
             case 'App\Events\CustomerCreatedConversation':
-                if (ChatAgent::takes($conversation)) {
+                if (ChatAgent::takes($conversation, $event->thread ?? null)) {
                     ChatAgent::take($conversation);
                 }
                 break;
             case 'App\Events\CustomerReplied':
-                ChatAgent::customerReplied($conversation);
+                ChatAgent::customerReplied($conversation, $event->thread ?? null);
                 break;
             case 'App\Events\UserReplied':
                 ChatAgent::personReplied($conversation, $event->thread);

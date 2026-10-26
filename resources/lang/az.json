@@ -1992,7 +1992,7 @@
     ":count second|:count seconds": ":count saniyə",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Cavabı göndərdikdən sonra onu nə qədər müddət geri ala bilərsiniz, bütün kanallarda. Bundan sonra müştəriyə çatır.",
     "Agent": "Agent",
-    "On these channels the AI takes new chats first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "Bu kanallarda yeni söhbətləri əvvəlcə Sİ qəbul edir. Müştəridən komandanızın bilməli olduğunu soruşur, ən çoxu üç dəfə və özü cavab vermədən, sonra söhbəti komandanıza ötürür.",
-    "The AI couldn’t continue this chat.": "Sİ bu söhbəti davam etdirə bilmədi.",
+    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Bu kanallarda yeni söhbətləri əvvəlcə Sİ qəbul edir. Müştəridən komandanızın bilməli olduğunu soruşur, ən çoxu üç dəfə və özü cavab vermədən, sonra söhbəti komandanıza ötürür.",
+    "The AI couldn’t continue this conversation.": "Sİ bu söhbəti davam etdirə bilmədi.",
     "The customer didn’t answer the last question.": "Müştəri son suala cavab vermədi."
 }

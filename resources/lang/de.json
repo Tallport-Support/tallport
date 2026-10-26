@@ -1988,7 +1988,7 @@
     ":count second|:count seconds": ":count Sekunde|:count Sekunden",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Wie lange Sie eine Antwort nach dem Senden zurücknehmen können, auf jedem Kanal. Danach erreicht sie den Kunden.",
     "Agent": "Agent",
-    "On these channels the AI takes new chats first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "Auf diesen Kanälen übernimmt die KI neue Chats zuerst. Sie fragt den Kunden, was Ihr Team wissen muss, höchstens dreimal und ohne selbst zu antworten, und übergibt den Chat dann an Ihr Team.",
-    "The AI couldn’t continue this chat.": "Die KI konnte diesen Chat nicht fortsetzen.",
+    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Auf diesen Kanälen übernimmt die KI neue Gespräche zuerst. Sie fragt den Kunden, was Ihr Team wissen muss, höchstens dreimal und ohne selbst zu antworten, und übergibt das Gespräch dann an Ihr Team.",
+    "The AI couldn’t continue this conversation.": "Die KI konnte dieses Gespräch nicht fortsetzen.",
     "The customer didn’t answer the last question.": "Der Kunde hat die letzte Frage nicht beantwortet."
 }

@@ -2036,7 +2036,7 @@
     ":count second|:count seconds": ":count 秒",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "傳送回覆後可撤回的時長，適用於所有管道。之後回覆才會送達客戶。",
     "Agent": "代理",
-    "On these channels the AI takes new chats first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "在這些管道上，新的聊天先由 AI 接待。它會向客戶詢問您的團隊需要知道的資訊（最多三次，且不作答），然後將聊天轉交給您的團隊。",
-    "The AI couldn’t continue this chat.": "AI 無法繼續此聊天。",
+    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "在這些管道上，新的對話先由 AI 接待。它會向客戶詢問您的團隊需要知道的資訊（最多三次，且不作答），然後將對話轉交給您的團隊。",
+    "The AI couldn’t continue this conversation.": "AI 無法繼續此對話。",
     "The customer didn’t answer the last question.": "客戶沒有回答最後一個問題。"
 }

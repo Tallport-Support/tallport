@@ -1992,7 +1992,7 @@
     ":count second|:count seconds": ":count שנייה|:count שניות",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "כמה זמן אפשר לבטל תשובה לאחר שליחתה, בכל הערוצים. לאחר מכן היא מגיעה ללקוח.",
     "Agent": "סוכן",
-    "On these channels the AI takes new chats first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "בערוצים אלה ה-AI מקבל ראשון צ׳אטים חדשים. הוא שואל את הלקוח מה הצוות שלך צריך לדעת, עד שלוש פעמים ובלי לענות, ואז מעביר את הצ׳אט לצוות שלך.",
-    "The AI couldn’t continue this chat.": "ה-AI לא הצליח להמשיך את הצ׳אט הזה.",
+    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "בערוצים אלה ה-AI מקבל ראשון שיחות חדשות. הוא שואל את הלקוח מה הצוות שלך צריך לדעת, עד שלוש פעמים ובלי לענות, ואז מעביר את השיחה לצוות שלך.",
+    "The AI couldn’t continue this conversation.": "ה-AI לא הצליח להמשיך את השיחה הזו.",
     "The customer didn’t answer the last question.": "הלקוח לא ענה על השאלה האחרונה."
 }

@@ -1992,7 +1992,7 @@
     ":count second|:count seconds": ":count másodperc",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Mennyi ideig vonhatod vissza a választ elküldés után, minden csatornán. Utána jut el az ügyfélhez.",
     "Agent": "Ügynök",
-    "On these channels the AI takes new chats first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the chat to your team.": "Ezeken a csatornákon az új csevegéseket először az MI veszi át. Megkérdezi az ügyféltől, amit a csapatodnak tudnia kell, legfeljebb háromszor és válaszadás nélkül, majd átadja a csevegést a csapatodnak.",
-    "The AI couldn’t continue this chat.": "Az MI nem tudta folytatni ezt a csevegést.",
+    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Ezeken a csatornákon az új beszélgetéseket először az MI veszi át. Megkérdezi az ügyféltől, amit a csapatodnak tudnia kell, legfeljebb háromszor és válaszadás nélkül, majd átadja a beszélgetést a csapatodnak.",
+    "The AI couldn’t continue this conversation.": "Az MI nem tudta folytatni ezt a beszélgetést.",
     "The customer didn’t answer the last question.": "Az ügyfél nem válaszolt az utolsó kérdésre."
 }

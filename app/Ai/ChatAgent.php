@@ -13,20 +13,21 @@ use App\Thread;
 use App\User;
 
 /**
- * The AI agent: a robot user (like Workflows') who takes new chats on the channels a mailbox turns
- * it on for. It asks the customer for what the team needs to know
- * (Agents\ChatIntake), never answering, at most MAX_QUESTIONS times, then hands the chat to the
- * team: a note for them, unassigned, notified as a new conversation. While it has a chat, the chat
- * is Assigned to it and nobody is notified; a person replying or reassigning it takes it.
+ * The AI agent: a robot user (like Workflows') who takes new conversations on the channels a mailbox
+ * turns it on for, email and chats alike. It asks the customer for what the team needs to know
+ * (Agents\ChatIntake), never answering, at most MAX_QUESTIONS times, then hands the conversation to
+ * the team: a note for them, unassigned, notified as a new conversation. While it has one, it's
+ * Assigned to it and nobody is notified; a person replying or reassigning it takes it. ("Chat" in
+ * names here means any conversation.)
  */
 class ChatAgent
 {
     const EMAIL = 'tallport-ai@example.org';
 
     /**
-     * The chat channels it can take (App\AutoReply\ChannelMessages keys).
+     * The channels it can take (App\AutoReply\ChannelMessages keys).
      */
-    const CHANNELS = ['webchat', 'telegram', 'matrix', 'nostr'];
+    const CHANNELS = ['email', 'webchat', 'telegram', 'matrix', 'nostr'];
 
     const MAX_QUESTIONS = 3;
 
@@ -91,17 +92,26 @@ class ChatAgent
     }
 
     /**
-     * Whether it takes a new conversation: a chat on a channel it's on for, nobody assigned, and
-     * the AI set up with tokens left today.
+     * Whether it takes a new conversation: on a channel it's on for, from a person (not an
+     * auto-responder or a bounce), nobody assigned, and the AI set up with tokens left today.
      */
-    public static function takes(Conversation $conversation)
+    public static function takes(Conversation $conversation, ?Thread $thread = null)
     {
         $mailbox = $conversation->mailbox;
         $key = ChannelMessages::key($conversation);
 
         return $mailbox && $key && in_array($key, self::channels($mailbox), true)
             && !$conversation->user_id && !$conversation->imported && !$conversation->isSpam()
+            && (!$thread || self::fromPerson($conversation, $thread))
             && Settings::isConfigured() && Settings::withinBudget($mailbox);
+    }
+
+    /**
+     * Not an auto-responder's message or a bounce: nothing to answer.
+     */
+    protected static function fromPerson(Conversation $conversation, Thread $thread)
+    {
+        return !$thread->isAutoResponder() && !$thread->isBounce() && !\MailHelper::isAutoReplySubject($conversation->subject);
     }
 
     public static function holds(Conversation $conversation)
@@ -135,11 +145,14 @@ class ChatAgent
     }
 
     /**
-     * The customer wrote in a chat it has: its next message (once they've finished writing).
+     * The customer wrote in a chat it has: its next message (once they've finished writing). An
+     * auto-responder's or a bounce gets none (it hands over once its question goes unanswered).
      */
-    public static function customerReplied(Conversation $conversation)
+    public static function customerReplied(Conversation $conversation, ?Thread $thread = null)
     {
-        if (self::holds($conversation) && empty($conversation->getMeta(self::META, [])['done'])) {
+        if (self::holds($conversation) && empty($conversation->getMeta(self::META, [])['done'])
+            && (!$thread || (!$thread->isAutoResponder() && !$thread->isBounce()))
+        ) {
             AiChatAgentReply::dispatch($conversation->id)->delay(now()->addSeconds(self::WAIT));
         }
     }
@@ -202,7 +215,7 @@ class ChatAgent
             // Their language as far as known (a website chat's browser): for a greeting that doesn't tell.
             $customer_language = ChatTranslation::customerLanguage($conversation);
             $prompt = $context['prompt'].($customer_language ? "\n\n".ChatIntake::data('customer_language', Settings::languageName($customer_language).' ('.$customer_language.')') : '');
-            $answer = (new ChatIntake($language, $questions))->recordFor(Usage::FEATURE_AGENT, $conversation)->prompt($prompt);
+            $answer = (new ChatIntake($language, $questions, ChannelMessages::key($conversation) == 'email'))->recordFor(Usage::FEATURE_AGENT, $conversation)->prompt($prompt);
             $action = $answer['action'] ?? null;
             $message = trim((string) ($answer['message'] ?? ''));
             if (!in_array($action, ['ask', 'hand_over'], true) || ($action == 'ask' && $message === '')) {
@@ -210,7 +223,7 @@ class ChatAgent
             }
         } catch (\Throwable $e) {
             Errors::report($e, 'AI agent in conversation #'.$conversation->number.':');
-            self::handOver($conversation, '', __('The AI couldn’t continue this chat.'));
+            self::handOver($conversation, '', __('The AI couldn’t continue this conversation.'));
 
             return $last->id;
         }
@@ -227,9 +240,10 @@ class ChatAgent
             $conversation->setMeta(self::META, ['questions' => $questions + 1, 'has_request' => $has_request, 'note' => $note], true);
             AiChatAgentSilence::dispatch($conversation->id, $thread->id)->delay(now()->addMinutes($has_request ? self::HAND_OVER_AFTER : self::CLOSE_AFTER));
         } else {
-            // What it's about, in the list, instead of a greeting.
+            // What it's about, in the list, instead of a greeting; an email keeps its subject (the
+            // customer's, which their replies carry).
             $subject = trim((string) ($answer['subject'] ?? ''));
-            if ($subject !== '') {
+            if ($subject !== '' && ChannelMessages::key($conversation) != 'email') {
                 $conversation->subject = mb_substr($subject, 0, 100);
                 $conversation->save();
             }
