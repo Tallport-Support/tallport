@@ -1995,5 +1995,6 @@
     "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Su questi canali l’IA prende in carico per prima i nuovi ticket. Chiede al cliente ciò che il tuo team deve sapere, al massimo tre volte e senza rispondere, poi passa il ticket al tuo team.",
     "The AI couldn’t continue this conversation.": "L’IA non è riuscita a continuare questo ticket.",
     "The customer didn’t answer the last question.": "Il cliente non ha risposto all’ultima domanda.",
-    ":user is writing a reply": ":user sta scrivendo una risposta"
+    ":user is writing a reply": ":user sta scrivendo una risposta",
+    ":name is typing…": ":name sta scrivendo…"
 }

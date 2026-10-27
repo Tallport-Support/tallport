@@ -1995,5 +1995,6 @@
     "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "В этих каналах новые тикеты сначала принимает ИИ. Он спрашивает у клиента то, что нужно знать вашей команде, не более трёх раз и не отвечая сам, а затем передаёт тикет вашей команде.",
     "The AI couldn’t continue this conversation.": "ИИ не смог продолжить этот тикет.",
     "The customer didn’t answer the last question.": "Клиент не ответил на последний вопрос.",
-    ":user is writing a reply": ":user пишет ответ"
+    ":user is writing a reply": ":user пишет ответ",
+    ":name is typing…": ":name печатает…"
 }

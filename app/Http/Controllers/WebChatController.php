@@ -90,6 +90,7 @@ class WebChatController extends Controller
 
         $messages = [];
         $unread = 0;
+        $typing = null;
         $cursor = (int) $request->after;
         if ($visitor->exists && ($conversation = $visitor->currentConversation())) {
             foreach ($this->threads($conversation)->where('id', '>', $cursor)->get() as $thread) {
@@ -102,6 +103,8 @@ class WebChatController extends Controller
                 ->where('created_at', '>', now()->subSeconds($conversation->mailbox->undoSeconds()))
                 ->where(fn ($query) => $query->whereNull('created_by_user_id')->orWhere('created_by_user_id', '!=', (int) \App\Ai\ChatAgent::userId()))->min('id');
             $cursor = max($cursor, $pending ? $pending - 1 : (int) collect($messages)->max('id'));
+            // The AI agent writing its next message: its name, as on its messages.
+            $typing = \App\Ai\ChatAgent::isTyping($conversation) ? \App\Ai\ChatAgent::user()->getFirstName() : null;
         }
 
         return response()->json([
@@ -110,6 +113,7 @@ class WebChatController extends Controller
             // The launcher's name with the count, in the visitor's language.
             'unread_label' => trans_choice(':name, :count unread message|:name, :count unread messages', $unread, ['name' => __('Chat with :name', ['name' => WebChat::teamName($visitor->mailbox)])]),
             'cursor'       => $cursor,
+            'typing'       => $typing,
             // The team's messages up to this one are read: older ones are never news to announce.
             'read'         => (int) $visitor->read_thread_id,
             // By name once the website has signed them in.

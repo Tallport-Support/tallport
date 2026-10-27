@@ -244,6 +244,12 @@ body {
   gap: 4px;
   margin: 6px -8px -4px;
 }
+/* The AI agent writing: a line between the messages and the composer, kept while empty so the
+   composer doesn't move. */
+.widget-typing {
+  flex: none;
+  padding-inline: 14px;
+}
 .widget-composer {
   --f-composer-padding: 10px 12px 12px;
 }

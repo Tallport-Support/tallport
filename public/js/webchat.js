@@ -39,6 +39,8 @@ document.addEventListener('alpine:init', function () {
             files: [],
             error: '',
             unread: 0,
+            // Who is writing to the visitor now (the AI agent), from the server.
+            writing: '',
             announcement: '',
             // The newest message the server says won't change (the team's can still be undone a moment).
             cursor: 0,
@@ -246,6 +248,7 @@ document.addEventListener('alpine:init', function () {
                     if (data.greeting !== undefined) self.greeting = data.greeting;
                     self.emailState(data);
                     self.unread = data.unread;
+                    self.writing = data.typing || '';
                     if (self.shown) self.markRead();
                     else self.post('unread', Object.assign({ count: self.unread, label: data.unread_label }, news ? self.news(news) : {}));
                     if (news) {
@@ -557,7 +560,7 @@ document.addEventListener('alpine:init', function () {
                         toldMemory = 0;
                     }
                     clearTimeout(timer);
-                    Object.assign(self, { entries: [], cursor: 0, hasConversation: false, email: null, emailStep: 'address', emailDraft: '' });
+                    Object.assign(self, { entries: [], cursor: 0, hasConversation: false, writing: '', email: null, emailStep: 'address', emailDraft: '' });
                     return self.poll();
                 }).catch(function () {});
             },
@@ -646,7 +649,7 @@ document.addEventListener('alpine:init', function () {
                 this.token(null);
                 memory = null;
                 toldMemory = 0;
-                Object.assign(this, { entries: [], greeting: config.greeting, draft: '', files: [], error: '', unread: 0, announcement: '', cursor: 0, hasConversation: false,
+                Object.assign(this, { entries: [], greeting: config.greeting, draft: '', files: [], error: '', unread: 0, writing: '', announcement: '', cursor: 0, hasConversation: false,
                     email: null, emailStep: 'address', emailDraft: '', emailError: '', codeDraft: '', codeError: '', codeNotice: '', codesLeft: 3 });
                 this.post('unread', { count: 0, label: this.text.label });
             },

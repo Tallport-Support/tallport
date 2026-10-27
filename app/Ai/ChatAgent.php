@@ -9,6 +9,7 @@ use App\Jobs\AiChatAgentReply;
 use App\Jobs\AiChatAgentSilence;
 use App\Mailbox;
 use App\Subscription;
+use App\Telegram\Telegram;
 use App\Thread;
 use App\User;
 
@@ -43,6 +44,11 @@ class ChatAgent
     const HAND_OVER_AFTER = 10;
 
     const CLOSE_AFTER = 120;
+
+    /**
+     * Seconds the customer sees it writing at most: a run that dies leaves no "typing" behind.
+     */
+    const TYPING_SECONDS = 90;
 
     /**
      * Its state in a chat (conversation meta): questions asked, whether the customer has said what
@@ -184,6 +190,7 @@ class ChatAgent
         try {
             $answered = self::step($conversation);
         } finally {
+            self::typing($conversation, false);
             $lock->release();
         }
         // More from the customer while it thought.
@@ -211,6 +218,7 @@ class ChatAgent
             if (!Settings::isConfigured() || !Settings::withinBudget($mailbox)) {
                 throw new \RuntimeException('The AI is not set up, or the mailbox has no tokens left today.');
             }
+            self::typing($conversation);
             $context = ConversationContext::build($conversation, $language, false, null, microtime(true) + Drafts::TIMEOUT);
             // Their language as far as known (a website chat's browser): for a greeting that doesn't tell.
             $customer_language = ChatTranslation::customerLanguage($conversation);
@@ -291,6 +299,39 @@ class ChatAgent
         Subscription::processEvents();
     }
 
+    /**
+     * Whether it's writing its next message in a chat (the website chat's window says so).
+     */
+    public static function isTyping(Conversation $conversation)
+    {
+        return \Cache::has('ai-agent:typing:'.$conversation->id);
+    }
+
+    /**
+     * Show the customer it's writing, where their channel can (the website chat's window, Telegram
+     * for its first seconds, Matrix), or stop. Only a nicety: its message comes either way.
+     */
+    public static function typing(Conversation $conversation, $typing = true)
+    {
+        $key = 'ai-agent:typing:'.$conversation->id;
+        if ($typing) {
+            \Cache::put($key, true, self::TYPING_SECONDS);
+        } elseif (!\Cache::pull($key)) {
+            return;
+        }
+        $mailbox = $conversation->mailbox;
+        try {
+            $channel = ChannelMessages::key($conversation);
+            if ($channel == 'telegram' && $typing && Telegram::isEnabled($mailbox) && ($chat_id = $conversation->customer?->getChannelId(Telegram::CHANNEL))) {
+                Telegram::client($mailbox)->sendChatAction($chat_id, 'typing');
+            } elseif ($channel == 'matrix') {
+                (new \App\Matrix\Outgoing())->typing($conversation, $typing, self::TYPING_SECONDS);
+            }
+        } catch (\Throwable $e) {
+            // Not shown, then.
+        }
+    }
+
     protected static function finish(Conversation $conversation)
     {
         $conversation->setMeta(self::META, ['done' => true] + (array) $conversation->getMeta(self::META, []), true);
@@ -303,6 +344,7 @@ class ChatAgent
      */
     protected static function send(Conversation $conversation, $text, array $answer = [])
     {
+        self::typing($conversation, false);
         $conversation->createUserThread(self::user(), self::html($text));
         $thread = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->where('created_by_user_id', self::user()->id)->orderBy('id', 'desc')->first();
         $translation = trim((string) ($answer['translation'] ?? ''));

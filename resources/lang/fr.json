@@ -2002,5 +2002,6 @@
     "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Sur ces canaux, l’IA prend d’abord en charge les nouvelles conversations. Elle demande au client ce que votre équipe doit savoir, trois fois au plus et sans répondre, puis transmet la conversation à votre équipe.",
     "The AI couldn’t continue this conversation.": "L’IA n’a pas pu poursuivre cette conversation.",
     "The customer didn’t answer the last question.": "Le client n’a pas répondu à la dernière question.",
-    ":user is writing a reply": ":user rédige une réponse"
+    ":user is writing a reply": ":user rédige une réponse",
+    ":name is typing…": ":name est en train d’écrire…"
 }

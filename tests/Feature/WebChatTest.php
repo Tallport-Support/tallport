@@ -218,6 +218,22 @@ class WebChatTest extends FeatureTestCase
         $this->assertSame([[$ai->id, 'AI', $ai->created_at->toIso8601String()]], array_map(fn ($message) => [$message['id'], $message['author'], $message['time']], $poll->json('messages')));
     }
 
+    /**
+     * The AI agent writing its next message (App\Ai\ChatAgent): the window says who, until it's done.
+     */
+    public function testTheWindowShowsTheAiWriting()
+    {
+        $token = $this->visitorToken();
+        $this->api('POST', '/t/m', ['body' => 'Hello'], $token)->assertOk();
+        $conversation = Visitor::firstOrFail()->conversation;
+        $this->assertNull($this->api('GET', '/t/m?after=0', [], $token)->json('typing'));
+
+        \App\Ai\ChatAgent::typing($conversation);
+        $this->assertSame('AI', $this->api('GET', '/t/m?after=0', [], $token)->json('typing'));
+        \App\Ai\ChatAgent::typing($conversation, false);
+        $this->assertNull($this->api('GET', '/t/m?after=0', [], $token)->json('typing'));
+    }
+
     public function testOnlyTheVisitorsOwnConversation()
     {
         $token = $this->visitorToken();

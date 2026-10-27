@@ -1995,5 +1995,6 @@
     "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Bu kanallarda yeni görüşmeleri önce yapay zekâ karşılar. Müşteriye ekibinizin bilmesi gerekenleri en fazla üç kez ve yanıt vermeden sorar, ardından görüşmeyi ekibinize devreder.",
     "The AI couldn’t continue this conversation.": "Yapay zekâ bu görüşmeye devam edemedi.",
     "The customer didn’t answer the last question.": "Müşteri son soruyu yanıtlamadı.",
-    ":user is writing a reply": ":user bir yanıt yazıyor"
+    ":user is writing a reply": ":user bir yanıt yazıyor",
+    ":name is typing…": ":name yazıyor…"
 }

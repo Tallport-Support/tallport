@@ -1995,5 +1995,6 @@
     "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "På de här kanalerna tar AI emot nya konversationer först. Den frågar kunden om det ditt team behöver veta, högst tre gånger och utan att svara själv, och lämnar sedan konversationen till ditt team.",
     "The AI couldn’t continue this conversation.": "AI kunde inte fortsätta den här konversationen.",
     "The customer didn’t answer the last question.": "Kunden svarade inte på den sista frågan.",
-    ":user is writing a reply": ":user skriver ett svar"
+    ":user is writing a reply": ":user skriver ett svar",
+    ":name is typing…": ":name skriver…"
 }

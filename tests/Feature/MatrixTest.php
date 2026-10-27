@@ -633,6 +633,28 @@ class MatrixTest extends FeatureTestCase
         $conversation->moveToMailbox($this->createMailbox(), $this->createAdmin());
     }
 
+    /**
+     * The AI agent writing (App\Ai\ChatAgent::typing()): the room shows the mailbox typing, until it stops.
+     */
+    public function testTheRoomShowsTheAiWriting()
+    {
+        [$identity] = $this->identity();
+        $conversation = Conversation::create(['type' => Conversation::TYPE_EMAIL, 'subject' => 'Support', 'source_type' => Conversation::SOURCE_TYPE_API, 'mailbox_id' => $identity->mailbox_id, 'channel' => Matrix::CHANNEL], [['type' => Thread::TYPE_CUSTOMER, 'body' => 'Question']], $this->createCustomer())['conversation'];
+        $conversation->setMeta('matrix', ['identity' => $identity->id, 'room' => self::ROOM], true);
+        $typing = [];
+        Http::fake(function ($request) use (&$typing) {
+            $this->assertSame(['PUT', self::HOME.'/_matrix/client/v3/rooms/'.rawurlencode(self::ROOM).'/typing/'.rawurlencode(self::USER)], [$request->method(), $request->url()]);
+            $typing[] = $request->data();
+
+            return Http::response([]);
+        });
+
+        \App\Ai\ChatAgent::typing($conversation);
+        \App\Ai\ChatAgent::typing($conversation, false);
+        \App\Ai\ChatAgent::typing($conversation, false);
+        $this->assertSame([['typing' => true, 'timeout' => \App\Ai\ChatAgent::TYPING_SECONDS * 1000], ['typing' => false]], $typing);
+    }
+
     public function testSignedJsonObjectsSurviveEncryptedPersistence()
     {
         [$identity] = $this->identity();

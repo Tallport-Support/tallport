@@ -257,6 +257,42 @@ class AiChatAgentTest extends FeatureTestCase
     }
 
     /**
+     * The customer sees it writing while it does (the website chat's window asks; Telegram is told),
+     * and no longer once its message is there.
+     */
+    public function testTheCustomerSeesItWriting()
+    {
+        $typing = [];
+        ChatIntake::fake(function () use (&$typing) {
+            $typing[] = ChatAgent::isTyping(Conversation::orderBy('id', 'desc')->first());
+
+            return $this->answer();
+        })->preventStrayPrompts();
+
+        $conversation = $this->write('hello');
+        $this->assertSame([true], $typing);
+        $this->assertFalse(ChatAgent::isTyping($conversation));
+
+        Option::set('aiassistant.mailbox_agent_channels', [$this->mailbox->id => ['telegram']]);
+        Option::$cache = [];
+        \App\Telegram\Telegram::saveSettings($this->mailbox, ['enabled' => true, 'token' => '123:abc']);
+        \Illuminate\Support\Facades\Bus::fake([\App\Jobs\SendReplyToTelegram::class]);
+        $actions = [];
+        \Illuminate\Support\Facades\Http::swap(new \Illuminate\Http\Client\Factory());
+        \Illuminate\Support\Facades\Http::fake(function ($request) use (&$actions) {
+            $actions[] = [basename(parse_url($request->url(), PHP_URL_PATH)), $request['chat_id'], $request['action']];
+
+            return \Illuminate\Support\Facades\Http::response(['ok' => true, 'result' => true]);
+        });
+        $this->customer = Customer::createWithoutEmail(['channel' => \App\Telegram\Telegram::CHANNEL, 'channel_id' => '555']);
+        ChatConversations::receive(null, $this->customer, [
+            'subject' => 'Hi', 'mailbox_id' => $this->mailbox->id, 'source_type' => Conversation::SOURCE_TYPE_WEB, 'channel' => \App\Telegram\Telegram::CHANNEL,
+        ], ['body' => 'Hi']);
+        $this->assertSame([['sendChatAction', '555', 'typing']], $actions);
+        $this->assertSame([true, true], $typing);
+    }
+
+    /**
      * Its messages go out at once on every channel; a person's wait for Undo Send.
      */
     public function testItsMessagesGoOutAtOnce()

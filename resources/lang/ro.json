@@ -1995,5 +1995,6 @@
     "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Pe aceste canale, AI-ul preia primul conversațiile noi. Întreabă clientul ce trebuie să știe echipa ta, de cel mult trei ori și fără să răspundă, apoi predă conversația echipei tale.",
     "The AI couldn’t continue this conversation.": "AI-ul nu a putut continua această conversație.",
     "The customer didn’t answer the last question.": "Clientul nu a răspuns la ultima întrebare.",
-    ":user is writing a reply": ":user scrie un răspuns"
+    ":user is writing a reply": ":user scrie un răspuns",
+    ":name is typing…": ":name scrie…"
 }

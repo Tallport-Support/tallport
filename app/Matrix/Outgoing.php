@@ -120,6 +120,27 @@ class Outgoing
     }
 
     /**
+     * The mailbox writing in a conversation's room, for at most $seconds; or stopped (a message
+     * doesn't stop it).
+     */
+    public function typing(\App\Conversation $conversation, $typing, $seconds = 30)
+    {
+        $binding = $conversation->getMeta('matrix', []);
+        $identity = MatrixMailbox::find($binding['identity'] ?? 0);
+        if (!$identity || (int) $identity->mailbox_id !== (int) $conversation->mailbox_id || empty($binding['room'])) {
+            return;
+        }
+        $identity->locked(function () use ($identity, $binding, $typing, $seconds) {
+            if (!$identity->isReady()) {
+                return;
+            }
+            (new Connection())->refresh($identity);
+            $content = $typing ? ['typing' => true, 'timeout' => $seconds * 1000] : ['typing' => false];
+            $identity->client()->call('PUT', 'v3/rooms/'.rawurlencode($binding['room']).'/typing/'.rawurlencode($identity->user_id), $content);
+        });
+    }
+
+    /**
      * A message from the mailbox that isn't a reply (the greeting when the bot joins a chat, an auto
      * reply), as a notice (a bot's): sent now or not at all, once per key. The caller holds the
      * identity's lock.

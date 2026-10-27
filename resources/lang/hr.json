@@ -1995,5 +1995,6 @@
     "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Na ovim kanalima AI prvi preuzima nove razgovore. Pita kupca ono što vaš tim treba znati, najviše tri puta i bez odgovaranja, a zatim predaje razgovor vašem timu.",
     "The AI couldn’t continue this conversation.": "AI nije mogao nastaviti ovaj razgovor.",
     "The customer didn’t answer the last question.": "Kupac nije odgovorio na posljednje pitanje.",
-    ":user is writing a reply": ":user piše odgovor"
+    ":user is writing a reply": ":user piše odgovor",
+    ":name is typing…": ":name piše…"
 }

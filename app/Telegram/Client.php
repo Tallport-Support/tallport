@@ -116,6 +116,14 @@ class Client
         return $this->call('setMyDescription', array_filter(['description' => $description, 'language_code' => $language_code], fn ($value) => $value !== '') + ['description' => '']);
     }
 
+    /**
+     * Show the chat the bot doing something ('typing'): for 5 seconds, or until its next message.
+     */
+    public function sendChatAction($chat_id, $action)
+    {
+        return $this->call('sendChatAction', ['chat_id' => $chat_id, 'action' => $action], [], 5);
+    }
+
     public function deleteMessage($chat_id, $message_id)
     {
         return $this->call('deleteMessage', ['chat_id' => $chat_id, 'message_id' => $message_id]);

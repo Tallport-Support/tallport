@@ -58,6 +58,7 @@
                 'dismiss'  => __('Dismiss'),
                 'soundOn'  => __('Sound On'),
                 'soundOff' => __('Sound Off'),
+                'typing'   => __(':name is typing…'),
             ],
         ];
     @endphp
@@ -122,6 +123,8 @@
             </ol>
             <button class="f-button f-history__latest" type="button" x-show="awayFromLatest" x-cloak @click="jumpToLatest({ focus: true })"><x-icon.chevron-down class="f-icon" aria-hidden="true" />{{ __('Jump to Latest') }}</button>
         </div>
+        {{-- The AI agent writing its next message: FruitUI's typing line, as in its Chat example. --}}
+        <p class="f-typing widget-typing" role="status"><span class="f-typing__dots" aria-hidden="true" x-show="writing" x-cloak><span></span><span></span><span></span></span><span x-text="writing ? text.typing.replace(':name', writing) : ''"></span></p>
         <p class="f-sr-only" role="status" x-text="announcement"></p>
         {{-- New chats aren't taken now (App\WebChat\Spam): said to a visitor without a conversation. --}}
         <p class="f-alert widget-unavailable" role="status" x-show="!available && !hasConversation" x-cloak>{{ __('Chat isn’t available right now. Try again later.') }}</p>

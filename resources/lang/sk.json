@@ -1995,5 +1995,6 @@
     "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Na týchto kanáloch nové konverzácie najprv preberá AI. Opýta sa zákazníka na to, čo váš tím potrebuje vedieť, najviac trikrát a bez odpovedania, a potom konverzáciu odovzdá vášmu tímu.",
     "The AI couldn’t continue this conversation.": "AI nemohla v tejto konverzácii pokračovať.",
     "The customer didn’t answer the last question.": "Zákazník neodpovedal na poslednú otázku.",
-    ":user is writing a reply": ":user píše odpoveď"
+    ":user is writing a reply": ":user píše odpoveď",
+    ":name is typing…": ":name píše…"
 }
