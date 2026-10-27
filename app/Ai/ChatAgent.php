@@ -215,7 +215,7 @@ class ChatAgent
             // Their language as far as known (a website chat's browser): for a greeting that doesn't tell.
             $customer_language = ChatTranslation::customerLanguage($conversation);
             $prompt = $context['prompt'].($customer_language ? "\n\n".ChatIntake::data('customer_language', Settings::languageName($customer_language).' ('.$customer_language.')') : '');
-            $answer = (new ChatIntake($language, $questions, ChannelMessages::key($conversation) == 'email'))->recordFor(Usage::FEATURE_AGENT, $conversation)->prompt($prompt);
+            $answer = (new ChatIntake($language, $questions, ChannelMessages::key($conversation) == 'email'))->recordFor(Usage::FEATURE_AGENT, $conversation)->prompt($prompt)->toArray();
             $action = $answer['action'] ?? null;
             $message = trim((string) ($answer['message'] ?? ''));
             if (!in_array($action, ['ask', 'hand_over'], true) || ($action == 'ask' && $message === '')) {
@@ -235,7 +235,7 @@ class ChatAgent
         }
         $note = trim((string) ($answer['staff_note'] ?? ''));
         if ($action == 'ask' && $questions < self::MAX_QUESTIONS) {
-            $thread = self::send($conversation, $message);
+            $thread = self::send($conversation, $message, $answer);
             $has_request = !empty($answer['has_request']);
             $conversation->setMeta(self::META, ['questions' => $questions + 1, 'has_request' => $has_request, 'note' => $note], true);
             AiChatAgentSilence::dispatch($conversation->id, $thread->id)->delay(now()->addMinutes($has_request ? self::HAND_OVER_AFTER : self::CLOSE_AFTER));
@@ -248,7 +248,7 @@ class ChatAgent
                 $conversation->save();
             }
             // Out of questions, it hands over without its last one.
-            self::handOver($conversation, $action == 'hand_over' ? $message : '', $note);
+            self::handOver($conversation, $action == 'hand_over' ? $message : '', $note, $answer);
         }
 
         return $last->id;
@@ -274,13 +274,13 @@ class ChatAgent
 
     /**
      * Hand the chat to the team: its last message to the customer, its note, unassigned, and
-     * people told as of a new conversation.
+     * people told as of a new conversation. $answer: Agents\ChatIntake's (the message's translation).
      */
-    public static function handOver(Conversation $conversation, $message, $note)
+    public static function handOver(Conversation $conversation, $message, $note, array $answer = [])
     {
         $user = self::user();
         if (trim($message) !== '') {
-            self::send($conversation, $message);
+            self::send($conversation, $message, $answer);
         }
         if (trim($note) !== '') {
             $conversation->createUserThread($user, self::html($note), ['type' => Thread::TYPE_NOTE]);
@@ -297,13 +297,28 @@ class ChatAgent
     }
 
     /**
-     * Its message to the customer, sent at once (no Undo).
+     * Its message to the customer, sent at once (no Undo). Written in another language than the
+     * team's, its translation ($answer: Agents\ChatIntake's) is shown as a translated reply's is
+     * (Drafts::keepTranslation()): the team's version, and the one sent beside it.
      */
-    protected static function send(Conversation $conversation, $text)
+    protected static function send(Conversation $conversation, $text, array $answer = [])
     {
         $conversation->createUserThread(self::user(), self::html($text));
+        $thread = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->where('created_by_user_id', self::user()->id)->orderBy('id', 'desc')->first();
+        $translation = trim((string) ($answer['translation'] ?? ''));
+        if ($thread && $translation !== '') {
+            $language = Settings::language($conversation->mailbox);
+            $sent_in = (string) ($answer['language'] ?? '');
+            $data = Summaries::data($thread);
+            $data['translations'][$language] = mb_substr($translation, 0, 20000);
+            $data['written_in'] = $language;
+            $data['sent_in'] = Settings::isLanguage($sent_in) ? $sent_in : ChatTranslation::customerLanguage($conversation);
+            $thread->ai_assistant = json_encode($data, JSON_UNESCAPED_UNICODE);
+            $thread->ai_assistant_updated_at = now();
+            $thread->save();
+        }
 
-        return $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->where('created_by_user_id', self::user()->id)->orderBy('id', 'desc')->first();
+        return $thread;
     }
 
     /**

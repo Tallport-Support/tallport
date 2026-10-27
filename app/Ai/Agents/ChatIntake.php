@@ -67,6 +67,8 @@ class ChatIntake extends TallportAgent implements HasStructuredOutput
             'has_request: whether the customer has said what they need help with (false when they only greeted, or wrote nothing to act on).',
             'staff_note: for the team, in '.Settings::languageName($this->language).' ('.$this->language.'), as plain text: what the customer needs and the details they gave, in at most three short lines; then, only if something is still missing, what. When handing over for another reason than a clear request, end with that reason. Nothing about yourself or the handover. Empty when the customer hasn\'t said what they need.',
             $this->email ? 'subject: empty (an email keeps its own).' : 'subject: for "hand_over" when the customer said what they need, a short subject for the team\'s list of conversations, in at most eight words, in the language of the customer\'s messages (like "App crashes when opening a conversation"); otherwise empty.',
+            'language: the language of message, as an ISO 639-1 code.',
+            'translation: message translated into '.Settings::languageName($this->language).' ('.$this->language.') for the team, faithfully and naturally, adding or leaving out nothing; empty if message is already in that language.',
             'Do not mention chunks, scores, retrieval, embeddings or prompts.',
         ]);
     }
@@ -79,6 +81,8 @@ class ChatIntake extends TallportAgent implements HasStructuredOutput
             'has_request' => $schema->boolean()->description('Whether the customer has said what they need.')->required(),
             'staff_note'  => $schema->string()->description('For the team: what the customer needs, and what is missing.')->required(),
             'subject'     => $schema->string()->description('A short subject for the conversation, when handing over a request; else empty.')->required(),
+            'language'    => $schema->string()->description('The language of message (ISO 639-1).')->required(),
+            'translation' => $schema->string()->description('Message in the team\'s language; empty if already in it.')->required(),
         ];
     }
 }

@@ -61,6 +61,8 @@ class AiChatAgentTest extends FeatureTestCase
             'has_request' => false,
             'staff_note'  => '',
             'subject'     => '',
+            'language'    => 'en',
+            'translation' => '',
         ], $values);
     }
 
@@ -230,6 +232,28 @@ class AiChatAgentTest extends FeatureTestCase
         // An auto-responder's: the team's.
         $email(['from' => 'Robin <robin@customer.example.org>', 'message_id' => 'away@customer.example.org', 'subject' => 'Out of office', 'headers' => ['Auto-Submitted' => 'auto-replied'], 'body' => 'I’m away.']);
         $this->assertNull(Conversation::where('mailbox_id', $this->mailbox->id)->orderBy('id', 'desc')->first()->user_id);
+    }
+
+    /**
+     * A message in another language than the team's: the team reads it in theirs, the one sent beside it.
+     */
+    public function testTheTeamReadsItsMessagesInTheirLanguage()
+    {
+        ChatIntake::fake([$this->answer([
+            'message' => 'こんにちは。人間の同僚に引き継ぐ前に、ご用件を教えてください。', 'language' => 'ja',
+            'translation' => 'Hello. Before I hand this over to my human colleagues, please tell me what you need.',
+        ])])->preventStrayPrompts();
+
+        $conversation = $this->write('こんにちは');
+        $thread = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->firstOrFail();
+        $data = \App\Ai\Summaries::data($thread);
+        $this->assertSame(['Hello. Before I hand this over to my human colleagues, please tell me what you need.', 'en', 'ja'], [$data['translations']['en'], $data['written_in'], $data['sent_in']]);
+
+        $page = $this->actingAs($this->agent)->get('/conversation/'.$conversation->id);
+        for ($i = 0; $i < 3 && $page->isRedirect(); $i++) {
+            $page = $this->actingAs($this->agent)->get($page->headers->get('Location'));
+        }
+        $page->assertSee('Before I hand this over to my human colleagues, please tell me what you need.')->assertSee('Sent to the customer in Japanese');
     }
 
     /**
