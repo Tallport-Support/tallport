@@ -527,9 +527,6 @@ a h4 {
     .conv-new-form {
         padding-top: 0;
     }
-    .conv-block {
-        margin: 0 13px;
-    }
 }
 @media (max-width:991px) {
     .conv-attachment .conv-star {
