@@ -1996,5 +1996,9 @@
     "The AI couldn’t continue this conversation.": "La IA no pudo continuar esta conversación.",
     ":user is writing a reply": ":user está escribiendo una respuesta",
     ":name is typing…": ":name está escribiendo…",
-    "The AI couldn’t draft a reply.": "La IA no pudo redactar una respuesta."
+    "The AI couldn’t draft a reply.": "La IA no pudo redactar una respuesta.",
+    "Low Confidence": "Confianza Baja",
+    "Medium Confidence": "Confianza Media",
+    "High Confidence": "Confianza Alta",
+    "Dismiss Draft Details": "Ocultar Detalles del Borrador"
 }

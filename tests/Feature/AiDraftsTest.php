@@ -122,19 +122,28 @@ class AiDraftsTest extends FeatureTestCase
     }
 
     /**
-     * In a chat, Draft with AI is in the chat field too and writes into it (no card); with
-     * chat translation the agent's version goes in, as it's translated on sending.
+     * In a chat, Draft with AI is in the chat field too and writes into it; the card, in the
+     * composer above the field, keeps only the draft's details. With chat translation the agent's
+     * version goes in, as it's translated on sending.
      */
     public function testInAChatTheDraftGoesIntoTheField()
     {
         $config = fn ($inline, $translated) => '{\\u0022inline\\u0022:'.($inline ? 'true' : 'false').',\\u0022translated\\u0022:'.($translated ? 'true' : 'false').',\\u0022handover\\u0022:null}';
-        $this->assertStringContainsString($config(false, false), $this->getConversationPage($this->agent)->getContent());
+        $email_page = $this->getConversationPage($this->agent)->getContent();
+        $this->assertStringContainsString($config(false, false), $email_page);
+        $this->assertStringContainsString('Insert Into Reply', $email_page);
+        $this->assertStringContainsString('Medium Confidence', $email_page);
 
         $this->conversation->channel = \App\Telegram\Telegram::CHANNEL;
         $this->conversation->save();
         $chat_page = $this->getConversationPage($this->agent)->getContent();
         $this->assertStringContainsString($config(true, false), $chat_page);
         $this->assertSame(2, substr_count($chat_page, 'ai-draft-action'), 'In the toolbar and the chat field.');
+        // The details card, the composer's first part; no draft, translation or actions of its own.
+        $this->assertMatchesRegularExpression('/<form[^>]*conv-composer[^>]*>\s*(<!--.*?-->\s*)*<div wire:ignore><div class="ai-draft-panel"/', $chat_page);
+        $this->assertStringContainsString('Dismiss Draft Details', $chat_page);
+        $this->assertStringNotContainsString('Insert Into Reply', $chat_page);
+        $this->assertStringNotContainsString('f-suggestion__body', $chat_page);
 
         Option::set('aiassistant.mailbox_chat_translation', [$this->mailbox->id => true]);
         \App\Ai\ChatTranslation::setCustomerLanguage($this->conversation->customer, 'zh-Hans', true);

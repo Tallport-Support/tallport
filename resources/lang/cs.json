@@ -1996,5 +1996,9 @@
     "The AI couldn’t continue this conversation.": "AI nemohla v této konverzaci pokračovat.",
     ":user is writing a reply": ":user píše odpověď",
     ":name is typing…": ":name píše…",
-    "The AI couldn’t draft a reply.": "AI nemohla připravit koncept odpovědi."
+    "The AI couldn’t draft a reply.": "AI nemohla připravit koncept odpovědi.",
+    "Low Confidence": "Nízká Spolehlivost",
+    "Medium Confidence": "Střední Spolehlivost",
+    "High Confidence": "Vysoká Spolehlivost",
+    "Dismiss Draft Details": "Skrýt Podrobnosti Konceptu"
 }

@@ -1992,5 +1992,9 @@
     "The AI couldn’t continue this conversation.": "Die KI konnte dieses Gespräch nicht fortsetzen.",
     ":user is writing a reply": ":user schreibt eine Antwort",
     ":name is typing…": ":name schreibt…",
-    "The AI couldn’t draft a reply.": "Die KI konnte keinen Antwortentwurf erstellen."
+    "The AI couldn’t draft a reply.": "Die KI konnte keinen Antwortentwurf erstellen.",
+    "Low Confidence": "Geringe Sicherheit",
+    "Medium Confidence": "Mittlere Sicherheit",
+    "High Confidence": "Hohe Sicherheit",
+    "Dismiss Draft Details": "Entwurfsdetails Ausblenden"
 }

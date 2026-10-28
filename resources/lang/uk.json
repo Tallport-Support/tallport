@@ -1996,5 +1996,9 @@
     "The AI couldn’t continue this conversation.": "ШІ не зміг продовжити цю розмову.",
     ":user is writing a reply": ":user пише відповідь",
     ":name is typing…": ":name друкує…",
-    "The AI couldn’t draft a reply.": "ШІ не зміг підготувати чернетку відповіді."
+    "The AI couldn’t draft a reply.": "ШІ не зміг підготувати чернетку відповіді.",
+    "Low Confidence": "Низька Впевненість",
+    "Medium Confidence": "Середня Впевненість",
+    "High Confidence": "Висока Впевненість",
+    "Dismiss Draft Details": "Сховати Деталі Чернетки"
 }

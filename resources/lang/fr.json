@@ -2003,5 +2003,9 @@
     "The AI couldn’t continue this conversation.": "L’IA n’a pas pu poursuivre cette conversation.",
     ":user is writing a reply": ":user rédige une réponse",
     ":name is typing…": ":name est en train d’écrire…",
-    "The AI couldn’t draft a reply.": "L’IA n’a pas pu rédiger de réponse."
+    "The AI couldn’t draft a reply.": "L’IA n’a pas pu rédiger de réponse.",
+    "Low Confidence": "Confiance Faible",
+    "Medium Confidence": "Confiance Moyenne",
+    "High Confidence": "Confiance Élevée",
+    "Dismiss Draft Details": "Masquer les Détails du Brouillon"
 }

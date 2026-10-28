@@ -1,5 +1,7 @@
 {{-- AI Assistant: a reply draft (App\Ai\Drafts), asked for by the toolbar's Draft with AI (tallportAiDraft in public/js/conversations.js),
-     or the AI agent's for the team, there when the conversation opens (App\Ai\ChatAgent::handoverDraft()). --}}
+     or the AI agent's for the team, there when the conversation opens (App\Ai\ChatAgent::handoverDraft()). In a chat ($chat) the
+     draft goes into the field and this card, above it in the composer, keeps only its details (FruitUI's Support example):
+     gone once the field is emptied (sent or discarded), hidden while it holds a note. --}}
 <div class="ai-draft-panel" x-data="tallportAiDraft(@js(route('ai.drafts.store', ['id' => $conversation->id])), @js(App\Ai\Settings::language($conversation->mailbox, Auth::user())), @js([
         'drafting' => __('Drafting…'),
         // Each step as it starts (Drafts::draft()), with the seconds it has taken.
@@ -7,18 +9,26 @@
         'customer_context' => __('Asking for the customer\'s details…'),
         'thinking'         => __('Thinking…'),
         'failed'   => __('Could not draft a reply.'),
-     ]), @js(['inline' => !empty($chat), 'translated' => App\Ai\ChatTranslation::needed($conversation, Auth::user()), 'handover' => App\Ai\ChatAgent::handoverDraft($conversation, Auth::user())]))" x-show="active" x-cloak x-on:ai-draft-request.window="request()">
-    <x-fruit::suggestion :title="__('AI Draft')" x-bind:aria-busy="busy() ? 'true' : 'false'">
+        'confidence' => ['low' => __('Low Confidence'), 'medium' => __('Medium Confidence'), 'high' => __('High Confidence')],
+     ]), @js(['inline' => !empty($chat), 'translated' => App\Ai\ChatTranslation::needed($conversation, Auth::user()), 'handover' => App\Ai\ChatAgent::handoverDraft($conversation, Auth::user())]))" x-show="{{ empty($chat) ? 'active' : 'active && $wire.mode == \'reply\'' }}" x-cloak x-on:ai-draft-request.window="request()" @if (!empty($chat)) x-on:fruit-editor-set.window="if ($event.detail.target == 'body' && !$event.detail.html) close()" @endif>
+    <x-fruit::suggestion :title="__('AI Draft')" :class="empty($chat) ? '' : 'ai-draft-chat'" x-bind:aria-busy="busy() ? 'true' : 'false'">
         <x-slot:meta><span x-text="meta"></span></x-slot:meta>
-        <x-slot:dismiss><x-fruit::button variant="ghost" class="f-button--icon" :aria-label="__('Close')" :title="__('Close')" x-on:click="close()"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button></x-slot:dismiss>
+        @if (empty($chat))
+            <x-slot:dismiss><x-fruit::button variant="ghost" class="f-button--icon" :aria-label="__('Close')" :title="__('Close')" x-on:click="close()"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button></x-slot:dismiss>
+        @else
+            {{-- The draft stays in the field. --}}
+            <x-slot:dismiss><x-fruit::button variant="ghost" class="f-button--icon" :aria-label="__('Dismiss Draft Details')" :title="__('Dismiss')" x-on:click="close(); editorFocus('body', true)"><x-icon.x class="f-icon" aria-hidden="true" /></x-fruit::button></x-slot:dismiss>
+        @endif
         <x-slot:status class="ai-draft-status" x-show="status" x-bind:data-tone="tone()" role="status"><span x-text="status"></span></x-slot:status>
-        <div class="ai-draft-body" x-show="html" x-html="html"></div>
-        <p class="f-muted" x-show="detail" x-text="detail"></p>
-        <x-slot:translation x-show="draft && draft.translation" :lang="App\Ai\Settings::language($conversation->mailbox, Auth::user())"><div class="ai-draft-translation-body" x-text="draft ? draft.translation : ''"></div></x-slot:translation>
-        <x-slot:actions x-show="draft || failed">
-            <x-fruit::button variant="primary" class="ai-draft-insert" x-show="draft" x-on:click="insert()">{{ __('Insert Into Reply') }}</x-fruit::button>
-            <x-fruit::button class="ai-draft-again" x-on:click="request()">{{ __('Draft Again') }}</x-fruit::button>
-        </x-slot:actions>
+        @if (empty($chat))
+            <div class="ai-draft-body" x-show="html" x-html="html"></div>
+            <p class="f-muted" x-show="detail" x-text="detail"></p>
+            <x-slot:translation x-show="draft && draft.translation" :lang="App\Ai\Settings::language($conversation->mailbox, Auth::user())"><div class="ai-draft-translation-body" x-text="draft ? draft.translation : ''"></div></x-slot:translation>
+            <x-slot:actions x-show="draft || failed">
+                <x-fruit::button variant="primary" class="ai-draft-insert" x-show="draft" x-on:click="insert()">{{ __('Insert Into Reply') }}</x-fruit::button>
+                <x-fruit::button class="ai-draft-again" x-on:click="request()">{{ __('Draft Again') }}</x-fruit::button>
+            </x-slot:actions>
+        @endif
         <x-slot:details x-show="draft && ((draft.staff_notes || []).length || (draft.retrieved_documents || []).length)">
             <section x-show="draft && (draft.staff_notes || []).length">
                 <h4>{{ __('Notes') }}</h4>

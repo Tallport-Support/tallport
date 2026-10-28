@@ -2205,14 +2205,28 @@ document.addEventListener('alpine:init', function () {
 				return next();
 			},
 
-			// A finished draft: in the card, or in a chat straight into the field.
+			// A finished draft: in the card, or in a chat straight into the field, the card above it
+			// with its details.
 			show: function (data) {
 				this.drafting = false;
 				this.reset('');
 				this.draft = data;
-				this.meta = data.language+' · '+data.confidence;
+				this.meta = this.languageName(data.language)+' · '+(texts.confidence[data.confidence] || data.confidence);
 				this.html = markdownToHtml(data.draft);
-				return chat.inline ? this.insert() : Promise.resolve();
+				if (!chat.inline) {
+					return Promise.resolve();
+				}
+				this.active = true;
+				return this.insert();
+			},
+
+			// A language's name in the page's language ("English"), else its code.
+			languageName: function (code) {
+				try {
+					return new Intl.DisplayNames([document.documentElement.lang || 'en'], {type: 'language'}).of(code) || code;
+				} catch (e) {
+					return code;
+				}
 			},
 
 			// Into the reply (ConversationComposer::aiDraft()): done when the composer has it.

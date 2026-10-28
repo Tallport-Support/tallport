@@ -2642,6 +2642,14 @@ h1.settings-toolbar__title {
 .ai-draft-panel .f-suggestion {
     margin: 16px var(--conv-gutter, 26px) 0;
 }
+/* In a chat, its details above the field, quieter than the draft (FruitUI's Support example,
+   .support-chat-draft). */
+.ai-draft-panel .f-suggestion.ai-draft-chat {
+    --f-suggestion-padding: 10px 14px 12px;
+    --f-suggestion-gap: 8px;
+    margin: 0 0 10px;
+    font-size: var(--f-text-sm);
+}
 .ai-draft-translation-body {
     white-space: pre-wrap;
 }

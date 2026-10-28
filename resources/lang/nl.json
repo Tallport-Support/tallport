@@ -1996,5 +1996,9 @@
     "The AI couldn’t continue this conversation.": "De AI kon dit gesprek niet voortzetten.",
     ":user is writing a reply": ":user schrijft een antwoord",
     ":name is typing…": ":name typt…",
-    "The AI couldn’t draft a reply.": "De AI kon geen antwoordconcept maken."
+    "The AI couldn’t draft a reply.": "De AI kon geen antwoordconcept maken.",
+    "Low Confidence": "Lage Betrouwbaarheid",
+    "Medium Confidence": "Gemiddelde Betrouwbaarheid",
+    "High Confidence": "Hoge Betrouwbaarheid",
+    "Dismiss Draft Details": "Conceptdetails Verbergen"
 }

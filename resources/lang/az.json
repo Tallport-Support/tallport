@@ -1996,5 +1996,9 @@
     "The AI couldn’t continue this conversation.": "Sİ bu söhbəti davam etdirə bilmədi.",
     ":user is writing a reply": ":user cavab yazır",
     ":name is typing…": ":name yazır…",
-    "The AI couldn’t draft a reply.": "Sİ cavab qaralaması hazırlaya bilmədi."
+    "The AI couldn’t draft a reply.": "Sİ cavab qaralaması hazırlaya bilmədi.",
+    "Low Confidence": "Aşağı Etibarlılıq",
+    "Medium Confidence": "Orta Etibarlılıq",
+    "High Confidence": "Yüksək Etibarlılıq",
+    "Dismiss Draft Details": "Qaralama Təfərrüatlarını Gizlət"
 }

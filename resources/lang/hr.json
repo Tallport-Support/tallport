@@ -1996,5 +1996,9 @@
     "The AI couldn’t continue this conversation.": "AI nije mogao nastaviti ovaj razgovor.",
     ":user is writing a reply": ":user piše odgovor",
     ":name is typing…": ":name piše…",
-    "The AI couldn’t draft a reply.": "AI nije mogao sastaviti nacrt odgovora."
+    "The AI couldn’t draft a reply.": "AI nije mogao sastaviti nacrt odgovora.",
+    "Low Confidence": "Niska Pouzdanost",
+    "Medium Confidence": "Srednja Pouzdanost",
+    "High Confidence": "Visoka Pouzdanost",
+    "Dismiss Draft Details": "Sakrij Detalje Nacrta"
 }

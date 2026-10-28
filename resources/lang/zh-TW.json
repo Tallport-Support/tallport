@@ -2040,5 +2040,9 @@
     "The AI couldn’t continue this conversation.": "AI 無法繼續此對話。",
     ":user is writing a reply": ":user 正在撰寫回覆",
     ":name is typing…": ":name 正在輸入…",
-    "The AI couldn’t draft a reply.": "AI 無法草擬回覆。"
+    "The AI couldn’t draft a reply.": "AI 無法草擬回覆。",
+    "Low Confidence": "信心度低",
+    "Medium Confidence": "信心度中",
+    "High Confidence": "信心度高",
+    "Dismiss Draft Details": "隱藏草稿詳細資料"
 }

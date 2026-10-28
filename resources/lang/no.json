@@ -1999,5 +1999,9 @@
     "The AI couldn’t continue this conversation.": "AI-en kunne ikke fortsette denne samtalen.",
     ":user is writing a reply": ":user skriver et svar",
     ":name is typing…": ":name skriver…",
-    "The AI couldn’t draft a reply.": "AI-en kunne ikke skrive et svarutkast."
+    "The AI couldn’t draft a reply.": "AI-en kunne ikke skrive et svarutkast.",
+    "Low Confidence": "Lav Sikkerhet",
+    "Medium Confidence": "Middels Sikkerhet",
+    "High Confidence": "Høy Sikkerhet",
+    "Dismiss Draft Details": "Skjul Utkastdetaljer"
 }

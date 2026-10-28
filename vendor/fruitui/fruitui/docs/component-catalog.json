@@ -1407,14 +1407,14 @@
     "kind": "primitive",
     "classes": ["f-suggestion"],
     "blade": ["suggestion"],
-    "uses": [],
+    "uses": ["support.html"],
     "contracts": {
       "suggestion": {
         "purpose": "Offer a generated suggestion for the reader to review and use, such as an AI reply draft.",
-        "element": "`section` named by its title (`aria-label`), with a sparkles icon, the title and meta, an optional status line, the suggestion as prose, an optional translation, an actions group and quieter details.",
-        "state": "The application owns the content and state. `aria-busy=\"true\"` (bindable) shows a skeleton in place of the suggestion, its translation, actions and details.",
+        "element": "`section` named by its title (`aria-label`), with a sparkles icon, the title and meta, an optional status line, the suggestion as prose (left out when the default slot is empty), an optional translation, an actions group and quieter details.",
+        "state": "The application owns the content and state. `aria-busy=\"true\"` (bindable) shows a skeleton in place of the suggestion, its translation, actions and details; without a suggestion, only the title and status show.",
         "keyboard": "No keyboard behavior of its own; actions, links and the dismiss button keep theirs.",
-        "options": "`title` (required), `meta` (for example language and confidence; a prop or a slot, for markup bound from script). Slots: default (the suggestion, rich text), `dismiss` (a close button), `status` (`tone`: neutral, working with a spinner, warning, danger; bindable `data-tone`), `translation` (with `lang`; announced as Translation), `actions` (Insert, Draft Again), `details` (sections with an `h4` and a list; `ul.f-suggestion__sources` for sources: the linked title, then a muted site, both shortened)."
+        "options": "`title` (required), `meta` (for example language and confidence; a prop or a slot, for markup bound from script). Slots: default (the suggestion, rich text; leave it empty when the suggestion is already where it's used, such as a chat's field: the card is then its title, status and details, with no separator above them, and Livewire's comments alone count as empty), `dismiss` (a close button), `status` (`tone`: neutral, working with a spinner, warning, danger; bindable `data-tone`), `translation` (with `lang`; announced as Translation), `actions` (Insert, Draft Again), `details` (sections with an `h4` and a list; `ul.f-suggestion__sources` for sources: the linked title, then a muted site, both shortened)."
       }
     }
   },

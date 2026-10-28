@@ -2087,5 +2087,9 @@
     "The AI couldn’t continue this conversation.": "La IA no ha pogut continuar aquesta conversa.",
     ":user is writing a reply": ":user està escrivint una resposta",
     ":name is typing…": ":name està escrivint…",
-    "The AI couldn’t draft a reply.": "La IA no ha pogut redactar una resposta."
+    "The AI couldn’t draft a reply.": "La IA no ha pogut redactar una resposta.",
+    "Low Confidence": "Confiança Baixa",
+    "Medium Confidence": "Confiança Mitjana",
+    "High Confidence": "Confiança Alta",
+    "Dismiss Draft Details": "Amaga els Detalls de l’Esborrany"
 }

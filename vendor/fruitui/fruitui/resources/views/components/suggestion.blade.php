@@ -1,7 +1,9 @@
 @props(['title', 'meta' => null])
 @php(\FruitUI\Support\ComponentContract::suggestion($title, $attributes))
 {{-- A generated suggestion for the reader to review and use, such as an AI reply draft. While it is
-     being made, set aria-busy="true" (or bind it): a skeleton stands in for the body. --}}
+     being made, set aria-busy="true" (or bind it): a skeleton stands in for the body. Without a default
+     slot (the suggestion is already where it's used, such as a chat's field), the card is its title,
+     status and details; Livewire's comments alone count as empty. --}}
 <section {{ $attributes->merge(['aria-label' => $title])->class(['f-suggestion']) }}>
     <header class="f-suggestion__header">
         <svg class="f-icon f-suggestion__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/><path d="M20 2v4"/><path d="M22 4h-4"/><circle cx="4" cy="20" r="2"/></svg>
@@ -18,8 +20,10 @@
             <span class="f-suggestion__status-text">{{ $status }}</span>
         </div>
     @endisset
-    <div class="f-skeleton f-suggestion__placeholder" aria-hidden="true">@for ($line = 0; $line < 4; $line++)<div class="f-skeleton__line"></div>@endfor</div>
-    <div class="f-suggestion__body f-prose">{{ $slot }}</div>
+    @if ($slot->hasActualContent())
+        <div class="f-skeleton f-suggestion__placeholder" aria-hidden="true">@for ($line = 0; $line < 4; $line++)<div class="f-skeleton__line"></div>@endfor</div>
+        <div class="f-suggestion__body f-prose">{{ $slot }}</div>
+    @endif
     @isset($translation)
         <div {{ $translation->attributes->class(['f-suggestion__translation']) }}><svg class="f-icon f-suggestion__translation-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg><span class="f-sr-only">{{ __('Translation') }}</span><div class="f-suggestion__translation-text f-prose">{{ $translation }}</div></div>
     @endisset

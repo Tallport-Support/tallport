@@ -2389,5 +2389,9 @@
     "The AI couldn’t continue this conversation.": "ЖИ бұл тикетті жалғастыра алмады.",
     ":user is writing a reply": ":user жауап жазып жатыр",
     ":name is typing…": ":name жазып жатыр…",
-    "The AI couldn’t draft a reply.": "ЖИ жауап жобасын жаза алмады."
+    "The AI couldn’t draft a reply.": "ЖИ жауап жобасын жаза алмады.",
+    "Low Confidence": "Төмен Сенімділік",
+    "Medium Confidence": "Орташа Сенімділік",
+    "High Confidence": "Жоғары Сенімділік",
+    "Dismiss Draft Details": "Жоба Мәліметтерін Жасыру"
 }

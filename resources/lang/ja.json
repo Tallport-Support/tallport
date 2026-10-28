@@ -1996,5 +1996,9 @@
     "The AI couldn’t continue this conversation.": "AIはこの会話を続けられませんでした。",
     ":user is writing a reply": ":user が返信を書いています",
     ":name is typing…": ":name が入力中…",
-    "The AI couldn’t draft a reply.": "AIは返信の下書きを作成できませんでした。"
+    "The AI couldn’t draft a reply.": "AIは返信の下書きを作成できませんでした。",
+    "Low Confidence": "信頼度：低",
+    "Medium Confidence": "信頼度：中",
+    "High Confidence": "信頼度：高",
+    "Dismiss Draft Details": "下書きの詳細を非表示"
 }

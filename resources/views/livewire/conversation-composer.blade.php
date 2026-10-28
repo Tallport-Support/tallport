@@ -11,6 +11,8 @@
     if ($conversation->isChatUnavailable()) {
         $send_labels = [App\Conversation::STATUS_CLOSED => $send_labels[App\Conversation::STATUS_CLOSED]];
     }
+    // AI drafts (partials/ai_draft_panel): below the email's editor, in a chat's composer.
+    $ai_drafts = !$conversation->isChatUnavailable() && App\Ai\Drafts::allowed(Auth::user(), $conversation);
 @endphp
 <div class="conv-action-wrapper @if ($chat) conv-composer-docked @endif" x-data="tallportComposer({{ $conversation->id }}, @js($mode), @js($chat))" data-author="{{ Auth::user()->getFullName() }}" data-sending="{{ __('Sending') }}…" @if ($this->translating) data-translating @endif x-on:input="changed($event)" x-on:change="blurred($event)" x-on:fruit-editor-upload.stop="embed($event)" x-on:keydown.enter.capture="enter($event)">
     @if ($conversation->isChatUnavailable())
@@ -22,6 +24,10 @@
     @if ($mode && ($mode != 'reply' || !$conversation->isChatUnavailable()))
         <div class="conv-block conv-reply-block conv-action-block @if ($mode == 'note') conv-note-block @elseif ($mode == 'forward') conv-forward-block @endif">
             <x-fruit::composer :placement="$chat ? 'bottom' : 'top'" class="form-reply conv-composer" :aria-label="$mode == 'note' ? __('Note') : ($mode == 'forward' ? __('Forward') : __('Reply'))" x-on:submit.prevent="submit()">
+                {{-- In a chat, an AI draft's details above the field (the draft is in it). --}}
+                @if ($chat && $ai_drafts)
+                    <div wire:ignore>@include('conversations/partials/ai_draft_panel')</div>
+                @endif
                 @if ($mode != 'note' && !($chat && $has_channel))
                     {{-- Mail-style recipient rows (FruitUI inline fields); Cc and Bcc on demand. --}}
                     <div class="conv-composer__recipients" x-data="{ copies: @js($cc !== '' || $bcc !== '') }">
@@ -106,7 +112,7 @@
         </div>
     @endif
     <span id="attachment-reminder" class="hidden" data-phrases="{{ json_encode(App\Http\Controllers\AttachmentsController::reminderPhrases()) }}" data-message="{{ __('You mentioned :phrase but there is no attachment. Send anyway?') }}" data-send="{{ __('Send Anyway') }}"></span>
-    @if (!$conversation->isChatUnavailable() && App\Ai\Drafts::allowed(Auth::user(), $conversation))
+    @if (!$chat && $ai_drafts)
         <div wire:ignore>@include('conversations/partials/ai_draft_panel')</div>
     @endif
     @action('reply_form.after', $conversation)

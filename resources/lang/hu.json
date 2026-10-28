@@ -1996,5 +1996,9 @@
     "The AI couldn’t continue this conversation.": "Az MI nem tudta folytatni ezt a beszélgetést.",
     ":user is writing a reply": ":user éppen választ ír",
     ":name is typing…": ":name éppen ír…",
-    "The AI couldn’t draft a reply.": "Az MI nem tudott válaszpiszkozatot készíteni."
+    "The AI couldn’t draft a reply.": "Az MI nem tudott válaszpiszkozatot készíteni.",
+    "Low Confidence": "Alacsony Megbízhatóság",
+    "Medium Confidence": "Közepes Megbízhatóság",
+    "High Confidence": "Magas Megbízhatóság",
+    "Dismiss Draft Details": "Piszkozat Részleteinek Elrejtése"
 }

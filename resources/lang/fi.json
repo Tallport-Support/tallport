@@ -2012,5 +2012,9 @@
     "The AI couldn’t continue this conversation.": "Tekoäly ei voinut jatkaa tätä keskustelua.",
     ":user is writing a reply": ":user kirjoittaa vastausta",
     ":name is typing…": ":name kirjoittaa…",
-    "The AI couldn’t draft a reply.": "Tekoäly ei voinut laatia vastausluonnosta."
+    "The AI couldn’t draft a reply.": "Tekoäly ei voinut laatia vastausluonnosta.",
+    "Low Confidence": "Matala Luotettavuus",
+    "Medium Confidence": "Kohtalainen Luotettavuus",
+    "High Confidence": "Korkea Luotettavuus",
+    "Dismiss Draft Details": "Piilota Luonnoksen Tiedot"
 }

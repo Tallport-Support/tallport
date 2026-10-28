@@ -1996,5 +1996,9 @@
     "The AI couldn’t continue this conversation.": "Yapay zekâ bu görüşmeye devam edemedi.",
     ":user is writing a reply": ":user bir yanıt yazıyor",
     ":name is typing…": ":name yazıyor…",
-    "The AI couldn’t draft a reply.": "Yapay zekâ bir yanıt taslağı hazırlayamadı."
+    "The AI couldn’t draft a reply.": "Yapay zekâ bir yanıt taslağı hazırlayamadı.",
+    "Low Confidence": "Düşük Güven",
+    "Medium Confidence": "Orta Güven",
+    "High Confidence": "Yüksek Güven",
+    "Dismiss Draft Details": "Taslak Ayrıntılarını Gizle"
 }

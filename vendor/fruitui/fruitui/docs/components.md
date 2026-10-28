@@ -875,7 +875,7 @@ These cover the core screens of helpdesks, mail and chat. Contracts are in the [
 - **Files**: `x-fruit::dropzone` wraps a native file input. Dropped files are filtered by `accept` and `multiple`, then assigned to the input with `input` and `change`, so `wire:model` uploads and change handlers work unchanged. Use Livewire's `temporaryUrl()` with Avatar or Attachment for previews.
 - **Uploads**: `x-fruit::upload-list` with `upload-row` (`name`, `state`: uploading, complete, error, cancelled, and `progress`). With Livewire uploads, read progress from the input's `livewire-upload-progress` event, as below.
 - **Notifications**: `x-fruit::notification-group heading="Today"` with `x-fruit::notification` links (`avatar`, `meta` and `badge` slots).
-- **Typing**: `x-fruit::typing` renders a persistent status region; give it text such as "Mia is typing…" while someone types, and leave it empty otherwise.
+- **Typing**: `x-fruit::typing` renders a persistent status region; give it text such as "Mia is typing…" while someone types, and leave it empty otherwise. In a shared inbox, put one right above a conversation's composer for a teammate writing a reply there ("Noah Williams is writing a reply"), so two people don't answer at once; the Support example shows it. Say "replying" only while they type in its composer (or have text there not sent yet), not for an open composer, which a chat always has; someone who only has the conversation open is viewing, said quietly in its row and heading, never in a warning colour.
 - **Back**: `x-fruit::back-link` returns to the parent screen in compact layouts, with its title truncated. Buttons that switch views in place use the `f-back` class.
 - **Badges** take `tone` (accent, success, warning, danger), `variant="outline"` and a `dot` slot for status labels.
 - **Menus** add Menu Checkbox, Menu Radio, Menu Link, Menu Separator, Menu Group and `shortcut` hints; checked state is the caller's (`checked` or `x-bind:aria-checked`).
@@ -1097,6 +1097,15 @@ An AI reply draft, or any generated suggestion the reader reviews and uses, is `
             <ul class="f-suggestion__sources"><li><a href="{{ $url }}">Inviting guests</a><small>forma.example/help</small></li></ul>
         </section>
     </x-slot:details>
+</x-fruit::suggestion>
+```
+
+When the suggestion is already where it's used, such as a reply draft that goes straight into a chat's field, leave the default slot empty: the card is then its title and meta, the dismiss button, the status while it is made, and the details, with no skeleton and no separator above the details. Livewire's `<!--[if BLOCK]>` comments alone count as empty. Leave out the translation and actions too; the field is where the draft is edited and sent. In a chat, put the card in the composer, above its field and as wide, remove it when the draft is sent or dismissed, and hide it while the field holds an internal note, as in the Support example's chat with Lena.
+
+```blade
+<x-fruit::suggestion title="AI draft" meta="English · Medium confidence">
+    <x-slot:dismiss><x-fruit::button variant="ghost" class="f-button--icon" aria-label="Dismiss draft details">…</x-fruit::button></x-slot:dismiss>
+    <x-slot:details>…</x-slot:details>
 </x-fruit::suggestion>
 ```
 
