@@ -2385,9 +2385,9 @@
     ":count second|:count seconds": ":count секунд",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Жауапты жібергеннен кейін оны қанша уақыт ішінде қайтарып алуға болады, барлық арналарда. Одан кейін ол тұтынушыға жетеді.",
     "Agent": "Агент",
-    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Бұл арналарда жаңа тикеттерді алдымен ЖИ қабылдайды. Ол тұтынушыдан командаңызға не білу керек екенін сұрайды, ең көбі үш рет және жауап бермей, содан кейін тикетті командаңызға береді.",
+    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team, with a draft reply if Drafts is on.": "Бұл арналарда жаңа тикеттерді алдымен ЖИ қабылдайды. Ол тұтынушыдан командаңызға не білу керек екенін сұрайды, ең көбі үш рет және жауап бермей, содан кейін тикетті командаңызға береді, Жобалар қосулы болса, жауап жобасымен бірге.",
     "The AI couldn’t continue this conversation.": "ЖИ бұл тикетті жалғастыра алмады.",
-    "The customer didn’t answer the last question.": "Тұтынушы соңғы сұраққа жауап бермеді.",
     ":user is writing a reply": ":user жауап жазып жатыр",
-    ":name is typing…": ":name жазып жатыр…"
+    ":name is typing…": ":name жазып жатыр…",
+    "The AI couldn’t draft a reply.": "ЖИ жауап жобасын жаза алмады."
 }

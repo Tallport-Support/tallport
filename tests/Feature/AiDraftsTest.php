@@ -127,7 +127,7 @@ class AiDraftsTest extends FeatureTestCase
      */
     public function testInAChatTheDraftGoesIntoTheField()
     {
-        $config = fn ($inline, $translated) => '{\\u0022inline\\u0022:'.($inline ? 'true' : 'false').',\\u0022translated\\u0022:'.($translated ? 'true' : 'false').'}';
+        $config = fn ($inline, $translated) => '{\\u0022inline\\u0022:'.($inline ? 'true' : 'false').',\\u0022translated\\u0022:'.($translated ? 'true' : 'false').',\\u0022handover\\u0022:null}';
         $this->assertStringContainsString($config(false, false), $this->getConversationPage($this->agent)->getContent());
 
         $this->conversation->channel = \App\Telegram\Telegram::CHANNEL;

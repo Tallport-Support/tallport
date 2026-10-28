@@ -304,7 +304,8 @@ function maybeShowConnectionRestored()
 			return Date.now() - typed_at < REPLYING_MS || (text !== '' && text !== message.getAttribute('data-template-text'));
 		};
 		document.addEventListener('input', function (event) {
-			if (!event.target.closest || !event.target.closest('.conv-composer .conv-reply-body') || !poly) {
+			// Not while the AI agent's draft goes in (tallportAiDraft in public/js/conversations.js).
+			if (!event.target.closest || !event.target.closest('.conv-composer .conv-reply-body') || event.target.closest('[data-template-pending]') || !poly) {
 				return;
 			}
 			typed_at = Date.now();

@@ -2008,9 +2008,9 @@
     ":count second|:count seconds": ":count sekunti|:count sekuntia",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Kuinka kauan voit perua vastauksen lähettämisen jälkeen, kaikissa kanavissa. Sen jälkeen se menee asiakkaalle.",
     "Agent": "Agentti",
-    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Näillä kanavilla tekoäly ottaa uudet keskustelut ensin. Se kysyy asiakkaalta, mitä tiimisi tarvitsee tietää, enintään kolme kertaa ja vastaamatta itse, ja antaa sitten keskustelun tiimillesi.",
+    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team, with a draft reply if Drafts is on.": "Näillä kanavilla tekoäly ottaa uudet keskustelut ensin. Se kysyy asiakkaalta, mitä tiimisi tarvitsee tietää, enintään kolme kertaa ja vastaamatta itse, ja antaa sitten keskustelun tiimillesi vastausluonnoksen kanssa, jos Luonnokset on käytössä.",
     "The AI couldn’t continue this conversation.": "Tekoäly ei voinut jatkaa tätä keskustelua.",
-    "The customer didn’t answer the last question.": "Asiakas ei vastannut viimeiseen kysymykseen.",
     ":user is writing a reply": ":user kirjoittaa vastausta",
-    ":name is typing…": ":name kirjoittaa…"
+    ":name is typing…": ":name kirjoittaa…",
+    "The AI couldn’t draft a reply.": "Tekoäly ei voinut laatia vastausluonnosta."
 }

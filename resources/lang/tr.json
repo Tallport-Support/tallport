@@ -1992,9 +1992,9 @@
     ":count second|:count seconds": ":count saniye",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Bir yanıtı gönderdikten sonra ne kadar süre geri alabileceğiniz, tüm kanallarda. Ardından müşteriye ulaşır.",
     "Agent": "Ajan",
-    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Bu kanallarda yeni görüşmeleri önce yapay zekâ karşılar. Müşteriye ekibinizin bilmesi gerekenleri en fazla üç kez ve yanıt vermeden sorar, ardından görüşmeyi ekibinize devreder.",
+    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team, with a draft reply if Drafts is on.": "Bu kanallarda yeni görüşmeleri önce yapay zekâ karşılar. Müşteriye ekibinizin bilmesi gerekenleri en fazla üç kez ve yanıt vermeden sorar, ardından görüşmeyi ekibinize devreder; Taslak açıksa bir yanıt taslağıyla birlikte.",
     "The AI couldn’t continue this conversation.": "Yapay zekâ bu görüşmeye devam edemedi.",
-    "The customer didn’t answer the last question.": "Müşteri son soruyu yanıtlamadı.",
     ":user is writing a reply": ":user bir yanıt yazıyor",
-    ":name is typing…": ":name yazıyor…"
+    ":name is typing…": ":name yazıyor…",
+    "The AI couldn’t draft a reply.": "Yapay zekâ bir yanıt taslağı hazırlayamadı."
 }

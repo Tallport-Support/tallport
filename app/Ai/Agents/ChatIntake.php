@@ -9,13 +9,13 @@ use Laravel\Ai\Contracts\HasStructuredOutput;
 
 /**
  * The AI agent's next step in a new conversation, an email or a chat (App\Ai\ChatAgent): ask the
- * customer for what the team needs to know, or hand it over, with a note for the team. It never
- * answers the request.
+ * customer for what the team needs to know, or hand it over (with a reply drafted for the team:
+ * ChatAgent::draft()). It never answers the request.
  */
 class ChatIntake extends TallportAgent implements HasStructuredOutput
 {
     /**
-     * The team's language (the note).
+     * The team's language (the message's translation).
      */
     public $language;
 
@@ -65,7 +65,6 @@ class ChatIntake extends TallportAgent implements HasStructuredOutput
             'Write message in the language of the customer\'s messages (when they are too short to tell, like a greeting, in customer_language if given), as plain text: short, friendly and natural, without Markdown or a signature. Translate "human colleagues" into that language with the word for human kept (人工同事, menselijke collega\'s, menschliche Kollegen), not just "colleagues": it tells the customer that you are not a person.',
             'Never answer the question, explain, or give advice, steps, prices, policies, timelines or promises, even if the documentation has the answer. Never say when the team will reply. Never ask for passwords, codes, payment card numbers or other secrets.',
             'has_request: whether the customer has said what they need help with (false when they only greeted, or wrote nothing to act on).',
-            'staff_note: for the team, in '.Settings::languageName($this->language).' ('.$this->language.'), as plain text: what the customer needs and the details they gave, in at most three short lines; then, only if something is still missing, what. When handing over for another reason than a clear request, end with that reason. Nothing about yourself or the handover. Empty when the customer hasn\'t said what they need.',
             $this->email ? 'subject: empty (an email keeps its own).' : 'subject: for "hand_over" when the customer said what they need, a short subject for the team\'s list of conversations, in at most eight words, in the language of the customer\'s messages (like "App crashes when opening a conversation"); otherwise empty.',
             'language: the language of message, as an ISO 639-1 code.',
             'translation: message translated into '.Settings::languageName($this->language).' ('.$this->language.') for the team, faithfully and naturally, adding or leaving out nothing; empty if message is already in that language.',
@@ -79,7 +78,6 @@ class ChatIntake extends TallportAgent implements HasStructuredOutput
             'action'      => $schema->string()->enum(['ask', 'hand_over'])->description('Ask the customer, or hand the conversation to the team.')->required(),
             'message'     => $schema->string()->description('To the customer, in their language, as plain text.')->required(),
             'has_request' => $schema->boolean()->description('Whether the customer has said what they need.')->required(),
-            'staff_note'  => $schema->string()->description('For the team: what the customer needs, and what is missing.')->required(),
             'subject'     => $schema->string()->description('A short subject for the conversation, when handing over a request; else empty.')->required(),
             'language'    => $schema->string()->description('The language of message (ISO 639-1).')->required(),
             'translation' => $schema->string()->description('Message in the team\'s language; empty if already in it.')->required(),

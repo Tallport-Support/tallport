@@ -17,7 +17,7 @@ use App\User;
  * The AI agent: a robot user (like Workflows') who takes new conversations on the channels a mailbox
  * turns it on for, email and chats alike. It asks the customer for what the team needs to know
  * (Agents\ChatIntake), never answering, at most MAX_QUESTIONS times, then hands the conversation to
- * the team: a note for them, unassigned, notified as a new conversation. While it has one, it's
+ * the team: a reply drafted for them, unassigned, notified as a new conversation. While it has one, it's
  * Assigned to it and nobody is notified; a person replying or reassigning it takes it. ("Chat" in
  * names here means any conversation.)
  */
@@ -52,7 +52,7 @@ class ChatAgent
 
     /**
      * Its state in a chat (conversation meta): questions asked, whether the customer has said what
-     * they need, its note so far; 'done' once handed over.
+     * they need; 'done' once handed over.
      */
     const META = 'ai_agent';
 
@@ -182,7 +182,8 @@ class ChatAgent
      */
     public static function reply(Conversation $conversation)
     {
-        $lock = \Cache::lock('ai-agent:'.$conversation->id, Drafts::TIMEOUT + 60);
+        // Its step, and at the end the team's draft.
+        $lock = \Cache::lock('ai-agent:'.$conversation->id, Drafts::TIMEOUT * 2 + 60);
         // Busy with the chat: that run answers what came since.
         if (!$lock->get()) {
             return;
@@ -231,7 +232,7 @@ class ChatAgent
             }
         } catch (\Throwable $e) {
             Errors::report($e, 'AI agent in conversation #'.$conversation->number.':');
-            self::handOver($conversation, '', __('The AI couldn’t continue this conversation.'));
+            self::handOver($conversation, '', [], __('The AI couldn’t continue this conversation.'));
 
             return $last->id;
         }
@@ -241,11 +242,10 @@ class ChatAgent
         if (!self::holds($conversation) || !empty($conversation->getMeta(self::META, [])['done'])) {
             return $last->id;
         }
-        $note = trim((string) ($answer['staff_note'] ?? ''));
         if ($action == 'ask' && $questions < self::MAX_QUESTIONS) {
             $thread = self::send($conversation, $message, $answer);
             $has_request = !empty($answer['has_request']);
-            $conversation->setMeta(self::META, ['questions' => $questions + 1, 'has_request' => $has_request, 'note' => $note], true);
+            $conversation->setMeta(self::META, ['questions' => $questions + 1, 'has_request' => $has_request], true);
             AiChatAgentSilence::dispatch($conversation->id, $thread->id)->delay(now()->addMinutes($has_request ? self::HAND_OVER_AFTER : self::CLOSE_AFTER));
         } else {
             // What it's about, in the list, instead of a greeting; an email keeps its subject (the
@@ -256,7 +256,7 @@ class ChatAgent
                 $conversation->save();
             }
             // Out of questions, it hands over without its last one.
-            self::handOver($conversation, $action == 'hand_over' ? $message : '', $note, $answer);
+            self::handOver($conversation, $action == 'hand_over' ? $message : '', $answer);
         }
 
         return $last->id;
@@ -274,24 +274,27 @@ class ChatAgent
             return;
         }
         if (!empty($state['has_request'])) {
-            self::handOver($conversation, '', trim(($state['note'] ?? '')."\n\n".__('The customer didn’t answer the last question.')));
+            self::handOver($conversation);
         } else {
             $conversation->changeStatus(Conversation::STATUS_CLOSED, self::user());
         }
     }
 
     /**
-     * Hand the chat to the team: its last message to the customer, its note, unassigned, and
-     * people told as of a new conversation. $answer: Agents\ChatIntake's (the message's translation).
+     * Hand the chat to the team: its last message to the customer, a reply drafted for them
+     * (draft()), unassigned, and people told as of a new conversation. $answer: Agents\ChatIntake's
+     * (the message's translation). $error: why it couldn't go on, a note instead of the draft.
      */
-    public static function handOver(Conversation $conversation, $message, $note, array $answer = [])
+    public static function handOver(Conversation $conversation, $message = '', array $answer = [], $error = '')
     {
         $user = self::user();
         if (trim($message) !== '') {
             self::send($conversation, $message, $answer);
         }
-        if (trim($note) !== '') {
-            $conversation->createUserThread($user, self::html($note), ['type' => Thread::TYPE_NOTE]);
+        if ($error !== '') {
+            $conversation->createUserThread($user, self::html($error), ['type' => Thread::TYPE_NOTE]);
+        } else {
+            self::draft($conversation);
         }
         self::finish($conversation);
         $conversation->changeUser(null, $user);
@@ -330,6 +333,60 @@ class ChatAgent
         } catch (\Throwable $e) {
             // Not shown, then.
         }
+    }
+
+    /**
+     * A reply for the team to start from, as Draft with AI makes it (Drafts::draft()), in the
+     * team's language too: whoever opens the conversation finds it (handoverDraft()). Without one,
+     * a note says why.
+     */
+    protected static function draft(Conversation $conversation)
+    {
+        $mailbox = $conversation->mailbox;
+        if (!Settings::enabled('drafts', $mailbox) || !Settings::withinBudget($mailbox)) {
+            return;
+        }
+        $draft_job = new DraftJob();
+        $draft_job->conversation_id = $conversation->id;
+        $draft_job->user_id = self::user()->id;
+        $draft_job->status = DraftJob::STATUS_RUNNING;
+        $draft_job->started_at = now();
+        $draft_job->save();
+        try {
+            $draft_job->result = Drafts::draft($conversation, Settings::language($mailbox));
+            $draft_job->status = DraftJob::STATUS_COMPLETED;
+        } catch (\Throwable $e) {
+            $draft_job->status = DraftJob::STATUS_FAILED;
+            $draft_job->error_type = get_class($e);
+            $draft_job->error_message = __('Could not draft a reply.');
+            $draft_job->error_detail = __('ID').': '.Errors::report($e, 'AI agent\'s draft in conversation #'.$conversation->number.':');
+        }
+        $draft_job->completed_at = now();
+        $draft_job->save();
+        // None (the sources don't support an answer, or it failed): why, for the team.
+        if (trim((string) ($draft_job->result['draft'] ?? '')) === '') {
+            $notes = array_filter((array) ($draft_job->result['staff_notes'] ?? []), fn ($note) => trim($note) !== '');
+            $conversation->createUserThread(self::user(), self::html(implode("\n\n", array_merge([__('The AI couldn’t draft a reply.')], $notes))), ['type' => Thread::TYPE_NOTE]);
+        }
+    }
+
+    /**
+     * Its draft for the team (draft()), for $user while nobody has replied since and they have no
+     * draft of their own in the conversation: the reply panel shows it as Draft with AI's
+     * (conversations/partials/ai_draft_panel).
+     */
+    public static function handoverDraft(Conversation $conversation, $user)
+    {
+        $user_id = self::userId();
+        $draft_job = $user_id ? DraftJob::where('conversation_id', $conversation->id)->where('user_id', $user_id)->orderBy('id', 'desc')->first() : null;
+        if (!$draft_job || $draft_job->status != DraftJob::STATUS_COMPLETED || trim((string) ($draft_job->result['draft'] ?? '')) === '') {
+            return null;
+        }
+        $replied = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->where('state', Thread::STATE_PUBLISHED)
+            ->where('created_at', '>=', $draft_job->created_at)->where('created_by_user_id', '!=', $user_id)->exists();
+        $own_draft = $conversation->threads()->where('state', Thread::STATE_DRAFT)->where('created_by_user_id', $user->id)->exists();
+
+        return $replied || $own_draft ? null : $draft_job->result;
     }
 
     protected static function finish(Conversation $conversation)

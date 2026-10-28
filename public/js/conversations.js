@@ -1421,6 +1421,13 @@ document.addEventListener('alpine:init', function () {
 					this.rememberNote();
 					return;
 				}
+				// The reply template or the AI agent's draft as it was put in (data-template-text), or
+				// while it goes in: not the user's draft until they change it.
+				var message = this.$root.querySelector('.conv-reply-body[data-template-text], .conv-reply-body[data-template-pending]');
+				if (!force && message && (message.hasAttribute('data-template-pending') || stripTags(getReplyBody()).trim() === message.getAttribute('data-template-text'))) {
+					this.dirty = false;
+					return;
+				}
 				this.sync();
 				this.$wire.saveDraft(force);
 			},
@@ -1957,6 +1964,35 @@ document.addEventListener('alpine:init', function () {
 			html: '',
 			draft: null,
 
+			// The AI agent's draft for the team (App\Ai\ChatAgent::handoverDraft()): there when the
+			// conversation opens, as if Draft with AI had just made it. In a chat it's in the field, not
+			// yet a reply being written (public/js/realtime.js) until the agent changes it.
+			init: function () {
+				var self = this;
+				if (!chat.handover) {
+					return;
+				}
+				this.$nextTick(function () {
+					var message = chat.inline ? document.querySelector('.conv-reply-body') : null;
+					if (!chat.inline) {
+						self.active = true;
+						Livewire.dispatch('composer-open', {mode: 'reply'});
+					}
+					// While it goes in, the editor's changes aren't the agent's.
+					if (message) {
+						message.setAttribute('data-template-pending', '');
+					}
+					self.show(chat.handover).finally(function () {
+						setTimeout(function () {
+							if (message) {
+								message.setAttribute('data-template-text', stripTags(getReplyBody()).trim());
+								message.removeAttribute('data-template-pending');
+							}
+						}, 100);
+					});
+				});
+			},
+
 			reset: function (status) {
 				this.stopStep();
 				this.status = status || '';
@@ -2134,13 +2170,9 @@ document.addEventListener('alpine:init', function () {
 									self.fail((data.staff_notes || []).join('\n'));
 									return;
 								}
-								self.drafting = false;
-								self.reset('');
-								self.draft = data;
-								self.meta = data.language+' · '+data.confidence;
-								self.html = markdownToHtml(data.draft);
+								var shown = self.show(data);
 								if (chat.inline) {
-									self.insert().finally(function () {
+									shown.finally(function () {
 										self.lock(false);
 									});
 								}
@@ -2173,6 +2205,16 @@ document.addEventListener('alpine:init', function () {
 				return next();
 			},
 
+			// A finished draft: in the card, or in a chat straight into the field.
+			show: function (data) {
+				this.drafting = false;
+				this.reset('');
+				this.draft = data;
+				this.meta = data.language+' · '+data.confidence;
+				this.html = markdownToHtml(data.draft);
+				return chat.inline ? this.insert() : Promise.resolve();
+			},
+
 			// Into the reply (ConversationComposer::aiDraft()): done when the composer has it.
 			insert: function () {
 				if (!this.draft) {
@@ -2192,7 +2234,7 @@ document.addEventListener('alpine:init', function () {
 						return body ? self.$wire.aiDraftTranslated(body.value, markdownToHtml(draft.draft)) : null;
 					});
 				}
-				return this.$wire.aiDraft(markdownToHtml(this.draft.draft), this.draft.translation || '', this.draft.translation ? translation_language : '', this.draft.draft);
+				return this.$wire.aiDraft(markdownToHtml(this.draft.draft), this.draft.translation || '', this.draft.translation ? this.draft.translation_language || translation_language : '', this.draft.draft);
 			}
 		};
 	});

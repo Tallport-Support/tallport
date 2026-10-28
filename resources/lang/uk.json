@@ -1992,9 +1992,9 @@
     ":count second|:count seconds": ":count секунда|:count секунди|:count секунд",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Скільки часу можна скасувати відповідь після надсилання, в усіх каналах. Після цього вона надходить клієнту.",
     "Agent": "Агент",
-    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "У цих каналах нові розмови спершу приймає ШІ. Він запитує в клієнта те, що потрібно знати вашій команді, не більше трьох разів і не відповідаючи сам, а потім передає розмову вашій команді.",
+    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team, with a draft reply if Drafts is on.": "У цих каналах нові розмови спершу приймає ШІ. Він запитує в клієнта те, що потрібно знати вашій команді, не більше трьох разів і не відповідаючи сам, а потім передає розмову вашій команді разом із чернеткою відповіді, якщо Чернетки ввімкнено.",
     "The AI couldn’t continue this conversation.": "ШІ не зміг продовжити цю розмову.",
-    "The customer didn’t answer the last question.": "Клієнт не відповів на останнє запитання.",
     ":user is writing a reply": ":user пише відповідь",
-    ":name is typing…": ":name друкує…"
+    ":name is typing…": ":name друкує…",
+    "The AI couldn’t draft a reply.": "ШІ не зміг підготувати чернетку відповіді."
 }

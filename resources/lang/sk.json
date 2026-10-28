@@ -1992,9 +1992,9 @@
     ":count second|:count seconds": ":count sekunda|:count sekundy|:count sekúnd",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Ako dlho môžete odpoveď po odoslaní vziať späť, na všetkých kanáloch. Potom príde zákazníkovi.",
     "Agent": "Agent",
-    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Na týchto kanáloch nové konverzácie najprv preberá AI. Opýta sa zákazníka na to, čo váš tím potrebuje vedieť, najviac trikrát a bez odpovedania, a potom konverzáciu odovzdá vášmu tímu.",
+    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team, with a draft reply if Drafts is on.": "Na týchto kanáloch nové konverzácie najprv preberá AI. Opýta sa zákazníka na to, čo váš tím potrebuje vedieť, najviac trikrát a bez odpovedania, a potom konverzáciu odovzdá vášmu tímu, s návrhom odpovede, ak sú zapnuté Návrhy.",
     "The AI couldn’t continue this conversation.": "AI nemohla v tejto konverzácii pokračovať.",
-    "The customer didn’t answer the last question.": "Zákazník neodpovedal na poslednú otázku.",
     ":user is writing a reply": ":user píše odpoveď",
-    ":name is typing…": ":name píše…"
+    ":name is typing…": ":name píše…",
+    "The AI couldn’t draft a reply.": "AI nemohla pripraviť návrh odpovede."
 }

@@ -1992,9 +1992,9 @@
     ":count second|:count seconds": ":count secondo|:count secondi",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Per quanto tempo puoi annullare una risposta dopo averla inviata, su ogni canale. Dopo arriva al cliente.",
     "Agent": "Agente",
-    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Su questi canali l’IA prende in carico per prima i nuovi ticket. Chiede al cliente ciò che il tuo team deve sapere, al massimo tre volte e senza rispondere, poi passa il ticket al tuo team.",
+    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team, with a draft reply if Drafts is on.": "Su questi canali l’IA prende in carico per prima i nuovi ticket. Chiede al cliente ciò che il tuo team deve sapere, al massimo tre volte e senza rispondere, poi passa il ticket al tuo team, con una bozza di risposta se Bozze è attivo.",
     "The AI couldn’t continue this conversation.": "L’IA non è riuscita a continuare questo ticket.",
-    "The customer didn’t answer the last question.": "Il cliente non ha risposto all’ultima domanda.",
     ":user is writing a reply": ":user sta scrivendo una risposta",
-    ":name is typing…": ":name sta scrivendo…"
+    ":name is typing…": ":name sta scrivendo…",
+    "The AI couldn’t draft a reply.": "L’IA non è riuscita a preparare una bozza di risposta."
 }

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Ai\Agents\ChatIntake;
+use App\Ai\Agents\ReplyDrafter;
 use App\Ai\ChatAgent;
 use App\Conversation;
 use App\Customer;
@@ -13,8 +14,8 @@ use App\WebChat\WebChat;
 use Tests\FeatureTestCase;
 
 /**
- * The AI agent (App\Ai\ChatAgent, AI faked): takes new chats where it's on, instead of the auto
- * reply and without notifying anyone, asks, then hands the chat to the team; lets go to a person.
+ * The AI agent (App\Ai\ChatAgent, AI faked): takes new chats where it's on, without notifying
+ * anyone, asks, then hands the chat to the team with a reply drafted for them; lets go to a person.
  */
 class AiChatAgentTest extends FeatureTestCase
 {
@@ -43,7 +44,23 @@ class AiChatAgentTest extends FeatureTestCase
         Option::set('aiassistant.mailbox_agent_channels', [$this->mailbox->id => ['webchat']]);
         // Its silence checks only when a test runs them (the sync queue doesn't wait).
         \Illuminate\Support\Facades\Bus::fake([\App\Jobs\AiChatAgentSilence::class]);
+        ReplyDrafter::fake(fn () => $this->draft());
         $this->customer = Customer::createWithoutEmail(['channel' => WebChat::CHANNEL, 'channel_id' => 'v1', 'first_name' => 'Casey']);
+    }
+
+    /**
+     * The team's draft at handover (Agents\ReplyDrafter's answer).
+     */
+    protected function draft()
+    {
+        return [
+            'draft'              => 'Hi Casey, I’m sorry order 1042 hasn’t arrived. I’m checking with the carrier now.',
+            'translation'        => '',
+            'language'           => 'en',
+            'confidence'         => 'medium',
+            'documentation_urls' => [],
+            'staff_notes'        => ['Check order 1042 in the shop.'],
+        ];
     }
 
     protected function postForm($user, $uri, array $data)
@@ -59,7 +76,6 @@ class AiChatAgentTest extends FeatureTestCase
             'action'      => 'ask',
             'message'     => 'Before I hand this issue off to my human colleagues, please tell me what you need help with.',
             'has_request' => false,
-            'staff_note'  => '',
             'subject'     => '',
             'language'    => 'en',
             'translation' => '',
@@ -91,8 +107,7 @@ class AiChatAgentTest extends FeatureTestCase
             $prompts[] = (string) $prompt;
 
             return count($prompts) == 1 ? $this->answer() : $this->answer([
-                'action' => 'hand_over', 'message' => 'Thanks! My human colleagues will reply here.', 'has_request' => true,
-                'staff_note' => "Order 1042 hasn't arrived.\nMissing: nothing.", 'subject' => 'Order 1042 hasn’t arrived',
+                'action' => 'hand_over', 'message' => 'Thanks! My human colleagues will reply here.', 'has_request' => true, 'subject' => 'Order 1042 hasn’t arrived',
             ]);
         })->preventStrayPrompts();
 
@@ -108,13 +123,15 @@ class AiChatAgentTest extends FeatureTestCase
         // Sent at once (no Undo), for the website chat's window.
         $this->assertEquals(\App\SendLog::STATUS_ACCEPTED, $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first()->send_status);
 
-        // The customer says what they need: handed over with a note, unassigned, people told.
+        // The customer says what they need: handed over with a reply drafted for the team (no note),
+        // unassigned, people told.
         $conversation = $this->write('My order 1042 didn\'t arrive', $conversation);
         $this->assertStringContainsString('My order 1042', $prompts[1]);
         $this->assertNull($conversation->user_id);
         $this->assertSame('Order 1042 hasn’t arrived', $conversation->subject);
         $this->assertSame('<p>Thanks! My human colleagues will reply here.</p>', $this->messages($conversation)[1]);
-        $this->assertSame(["<p>Order 1042 hasn&#039;t arrived.<br>\nMissing: nothing.</p>"], $this->messages($conversation, Thread::TYPE_NOTE));
+        $this->assertSame([], $this->messages($conversation, Thread::TYPE_NOTE));
+        $this->assertSame([$this->draft()['draft'], ['Check order 1042 in the shop.']], [ChatAgent::handoverDraft($conversation, $this->agent)['draft'], ChatAgent::handoverDraft($conversation, $this->agent)['staff_notes']]);
         $this->assertTrue($conversation->threads()->where('action_type', Thread::ACTION_TYPE_USER_CHANGED)->where('created_by_user_id', $ai->id)->exists());
         $this->assertNotEmpty($this->sentEmailsTo($this->agent->email));
         $this->assertTrue($conversation->getMeta(ChatAgent::META)['done']);
@@ -148,15 +165,15 @@ class AiChatAgentTest extends FeatureTestCase
     {
         \Illuminate\Support\Facades\Bus::swap(\Illuminate\Support\Facades\Bus::getFacadeRoot()->dispatcher);
         ChatIntake::fake([
-            $this->answer(['has_request' => true, 'staff_note' => 'Casey asks about a refund.', 'message' => 'Which order is it?']),
+            $this->answer(['has_request' => true, 'message' => 'Which order is it?']),
             $this->answer(),
             $this->answer(['message' => 'What can we help you with?']),
         ])->preventStrayPrompts();
 
-        // Not answering about a request: the team gets it, with the note.
+        // Not answering about a request: the team gets it, with a draft.
         $conversation = $this->write('I want a refund');
         $this->assertNull($conversation->user_id);
-        $this->assertSame(['<p>Casey asks about a refund.</p><p>The customer didn’t answer the last question.</p>'], $this->messages($conversation, Thread::TYPE_NOTE));
+        $this->assertNotNull(ChatAgent::handoverDraft($conversation, $this->agent));
         $this->assertNotEmpty($this->sentEmailsTo($this->agent->email));
 
         // A greeting only: closed, still the AI's; it carries on when they write again.
@@ -176,11 +193,12 @@ class AiChatAgentTest extends FeatureTestCase
         $conversation = $this->write('hello');
         $this->assertNull($conversation->user_id);
         $this->assertSame(['<p>The AI couldn’t continue this conversation.</p>'], $this->messages($conversation, Thread::TYPE_NOTE));
+        $this->assertNull(ChatAgent::handoverDraft($conversation, $this->agent));
         $this->assertNotEmpty($this->sentEmailsTo($this->agent->email));
 
         // Three questions at most: then handed over, without a fourth.
         $this->customer = Customer::createWithoutEmail(['channel' => WebChat::CHANNEL, 'channel_id' => 'v2']);
-        ChatIntake::fake(array_fill(0, 4, $this->answer(['staff_note' => 'Unclear what Casey needs.'])))->preventStrayPrompts();
+        ChatIntake::fake(array_fill(0, 4, $this->answer()))->preventStrayPrompts();
         $conversation = $this->write('hi');
         $question = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         foreach (['hi?', 'hey', 'hello'] as $text) {
@@ -193,7 +211,55 @@ class AiChatAgentTest extends FeatureTestCase
         }
         $this->assertNull($conversation->user_id);
         $this->assertCount(3, $this->messages($conversation));
-        $this->assertSame(['<p>Unclear what Casey needs.</p>'], $this->messages($conversation, Thread::TYPE_NOTE));
+        $this->assertNotNull(ChatAgent::handoverDraft($conversation, $this->agent));
+    }
+
+    /**
+     * Its draft at handover: whoever may draft finds it when they open the chat, as Draft with AI's,
+     * until someone replies; not while they have a draft of their own there.
+     */
+    public function testTheTeamFindsItsDraft()
+    {
+        ChatIntake::fake([$this->answer(['action' => 'hand_over', 'message' => 'Thanks! My human colleagues will reply here.', 'has_request' => true])])->preventStrayPrompts();
+        $conversation = $this->write('My order 1042 didn\'t arrive');
+        $this->assertNull($conversation->user_id);
+        $draft = ChatAgent::handoverDraft($conversation, $this->agent);
+        $this->assertSame(['medium', 'en'], [$draft['confidence'], $draft['translation_language']]);
+
+        $page = $this->actingAs($this->agent)->get('/conversation/'.$conversation->id);
+        for ($i = 0; $i < 3 && $page->isRedirect(); $i++) {
+            $page = $this->actingAs($this->agent)->get($page->headers->get('Location'));
+        }
+        $page->assertOk()->assertSee('Check order 1042 in the shop.');
+
+        $own = Thread::create($conversation, Thread::TYPE_MESSAGE, 'Mine', ['source_via' => Thread::PERSON_USER, 'source_type' => Thread::SOURCE_TYPE_WEB], false);
+        $own->state = Thread::STATE_DRAFT;
+        $own->created_by_user_id = $this->agent->id;
+        $own->save();
+        $this->assertNull(ChatAgent::handoverDraft($conversation, $this->agent));
+        $this->assertNotNull(ChatAgent::handoverDraft($conversation, $this->admin));
+
+        $this->sendReply($this->admin, ['mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => 'Checking with the carrier.']);
+        $this->assertNull(ChatAgent::handoverDraft($conversation->fresh(), $this->admin));
+    }
+
+    /**
+     * No draft (the sources don't support an answer, or drafting failed): a note says why.
+     */
+    public function testWithoutADraftANoteSaysWhy()
+    {
+        $hand_over = $this->answer(['action' => 'hand_over', 'message' => 'Thanks! My human colleagues will reply here.', 'has_request' => true]);
+        ChatIntake::fake([$hand_over, $hand_over])->preventStrayPrompts();
+        ReplyDrafter::fake(fn () => ['draft' => '', 'translation' => '', 'language' => 'en', 'confidence' => 'low', 'documentation_urls' => [], 'staff_notes' => ['Nothing in the documentation about missing orders.']]);
+        $conversation = $this->write('My order 1042 didn\'t arrive');
+        $this->assertNull(ChatAgent::handoverDraft($conversation, $this->agent));
+        $this->assertSame(['<p>The AI couldn’t draft a reply.</p><p>Nothing in the documentation about missing orders.</p>'], $this->messages($conversation, Thread::TYPE_NOTE));
+
+        ReplyDrafter::fake(fn () => throw new \RuntimeException('Provider down'));
+        $this->customer = Customer::createWithoutEmail(['channel' => WebChat::CHANNEL, 'channel_id' => 'v2']);
+        $conversation = $this->write('Where is my order 1043?');
+        $this->assertNull($conversation->user_id);
+        $this->assertSame(['<p>The AI couldn’t draft a reply.</p>'], $this->messages($conversation, Thread::TYPE_NOTE));
     }
 
     /**
@@ -206,7 +272,7 @@ class AiChatAgentTest extends FeatureTestCase
         Option::$cache = [];
         ChatIntake::fake([
             $this->answer(['message' => 'Before I hand this issue off to my human colleagues, please tell me your order number.', 'has_request' => true]),
-            $this->answer(['action' => 'hand_over', 'message' => 'Thanks! My human colleagues will reply to this email.', 'staff_note' => 'Order 1042 hasn’t arrived.', 'subject' => 'Order 1042 missing']),
+            $this->answer(['action' => 'hand_over', 'message' => 'Thanks! My human colleagues will reply to this email.', 'subject' => 'Order 1042 missing']),
         ])->preventStrayPrompts();
         $email = fn (array $options = []) => $this->receiveEmail($this->mailbox, $this->makeEmail(array_merge([
             'from' => 'Casey Customer <casey@customer.example.org>', 'to' => $this->mailbox->email, 'subject' => 'Where is my order?', 'message_id' => 'first@customer.example.org',

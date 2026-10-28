@@ -1992,9 +1992,9 @@
     ":count second|:count seconds": ":count secundă|:count secunde|:count de secunde",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Cât timp poți retrage un răspuns după ce l-ai trimis, pe fiecare canal. După aceea ajunge la client.",
     "Agent": "Agent",
-    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Pe aceste canale, AI-ul preia primul conversațiile noi. Întreabă clientul ce trebuie să știe echipa ta, de cel mult trei ori și fără să răspundă, apoi predă conversația echipei tale.",
+    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team, with a draft reply if Drafts is on.": "Pe aceste canale, AI-ul preia primul conversațiile noi. Întreabă clientul ce trebuie să știe echipa ta, de cel mult trei ori și fără să răspundă, apoi predă conversația echipei tale, cu o schiță de răspuns dacă Schițe este activat.",
     "The AI couldn’t continue this conversation.": "AI-ul nu a putut continua această conversație.",
-    "The customer didn’t answer the last question.": "Clientul nu a răspuns la ultima întrebare.",
     ":user is writing a reply": ":user scrie un răspuns",
-    ":name is typing…": ":name scrie…"
+    ":name is typing…": ":name scrie…",
+    "The AI couldn’t draft a reply.": "AI-ul nu a putut redacta un răspuns."
 }

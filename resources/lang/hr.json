@@ -1992,9 +1992,9 @@
     ":count second|:count seconds": ":count sekunda|:count sekunde|:count sekundi",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Koliko dugo možete povući odgovor nakon slanja, na svim kanalima. Nakon toga stiže kupcu.",
     "Agent": "Agent",
-    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "Na ovim kanalima AI prvi preuzima nove razgovore. Pita kupca ono što vaš tim treba znati, najviše tri puta i bez odgovaranja, a zatim predaje razgovor vašem timu.",
+    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team, with a draft reply if Drafts is on.": "Na ovim kanalima AI prvi preuzima nove razgovore. Pita kupca ono što vaš tim treba znati, najviše tri puta i bez odgovaranja, a zatim predaje razgovor vašem timu, s nacrtom odgovora ako su Nacrti uključeni.",
     "The AI couldn’t continue this conversation.": "AI nije mogao nastaviti ovaj razgovor.",
-    "The customer didn’t answer the last question.": "Kupac nije odgovorio na posljednje pitanje.",
     ":user is writing a reply": ":user piše odgovor",
-    ":name is typing…": ":name piše…"
+    ":name is typing…": ":name piše…",
+    "The AI couldn’t draft a reply.": "AI nije mogao sastaviti nacrt odgovora."
 }

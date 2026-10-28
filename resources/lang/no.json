@@ -1995,9 +1995,9 @@
     ":count second|:count seconds": ":count sekund|:count sekunder",
     "How long you can take back a reply after sending it, on every channel. It reaches the customer after that.": "Hvor lenge du kan trekke tilbake et svar etter at du har sendt det, i alle kanaler. Deretter når det kunden.",
     "Agent": "Agent",
-    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team.": "På disse kanalene tar AI-en imot nye samtaler først. Den spør kunden om det teamet ditt trenger å vite, høyst tre ganger og uten å svare selv, og gir deretter samtalen til teamet ditt.",
+    "On these channels the AI takes new conversations first. It asks the customer for what your team needs to know, at most three times and without answering, then hands the conversation to your team, with a draft reply if Drafts is on.": "På disse kanalene tar AI-en imot nye samtaler først. Den spør kunden om det teamet ditt trenger å vite, høyst tre ganger og uten å svare selv, og gir deretter samtalen til teamet ditt, med et svarutkast hvis Utkast er på.",
     "The AI couldn’t continue this conversation.": "AI-en kunne ikke fortsette denne samtalen.",
-    "The customer didn’t answer the last question.": "Kunden svarte ikke på det siste spørsmålet.",
     ":user is writing a reply": ":user skriver et svar",
-    ":name is typing…": ":name skriver…"
+    ":name is typing…": ":name skriver…",
+    "The AI couldn’t draft a reply.": "AI-en kunne ikke skrive et svarutkast."
 }
