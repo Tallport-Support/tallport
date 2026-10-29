@@ -1035,6 +1035,7 @@ class ComposerStaticInitfc9b7b2ca15b4d1aba40fc18ae3b6e13
         'App\\Jobs\\AiChatAgentSilence' => __DIR__ . '/../..' . '/app/Jobs/AiChatAgentSilence.php',
         'App\\Jobs\\AiDetectCustomerLanguage' => __DIR__ . '/../..' . '/app/Jobs/AiDetectCustomerLanguage.php',
         'App\\Jobs\\AiIndexDocument' => __DIR__ . '/../..' . '/app/Jobs/AiIndexDocument.php',
+        'App\\Jobs\\AiRetryTranslations' => __DIR__ . '/../..' . '/app/Jobs/AiRetryTranslations.php',
         'App\\Jobs\\AiSummarizeConversation' => __DIR__ . '/../..' . '/app/Jobs/AiSummarizeConversation.php',
         'App\\Jobs\\AiTranslateChat' => __DIR__ . '/../..' . '/app/Jobs/AiTranslateChat.php',
         'App\\Jobs\\AiTranslateThread' => __DIR__ . '/../..' . '/app/Jobs/AiTranslateThread.php',

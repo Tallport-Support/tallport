@@ -2001,5 +2001,7 @@
     "Low Confidence": "置信度低",
     "Medium Confidence": "置信度中",
     "High Confidence": "置信度高",
-    "Dismiss Draft Details": "隐藏草稿详情"
+    "Dismiss Draft Details": "隐藏草稿详情",
+    "The AI isn’t answering right now": "AI 目前没有响应",
+    "The server didn’t answer. Try again in a moment.": "服务器没有响应。请稍后再试。"
 }

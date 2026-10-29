@@ -128,6 +128,13 @@ class ChatTranslation
     }
 
     /**
+     * A reply's translation is waited for (its preview) at most this many seconds: a reply is
+     * translated in a few, so the AI isn't answering, and the reply can be sent as written. Also
+     * within the time the server and a proxy in front of it (as Cloudflare's 100) give a request.
+     */
+    const REPLY_SECONDS = 45;
+
+    /**
      * An agent's reply (HTML) in the customer's language: ['html' => translation], or
      * ['same' => true] when it's in that language already. Throws when the AI fails or the
      * mailbox's tokens are used up. $on_translation: the translation so far, as it's written.
@@ -138,7 +145,7 @@ class ChatTranslation
             throw new \RuntimeException(__('This mailbox has used its AI tokens for today.'));
         }
         $language = self::customerLanguage($conversation);
-        $deadline = microtime(true) + 120;
+        $deadline = microtime(true) + self::REPLY_SECONDS;
         $context = ConversationContext::build($conversation, $language, false, null, $deadline);
         [$answer] = (new ReplyTranslator($language))->recordFor(Usage::FEATURE_REPLY_TRANSLATION, $conversation, null, $user ? $user->id : null)->streamJson(
             $context['prompt']."\n\n".TallportAgent::data('reply', $html),

@@ -219,6 +219,7 @@ return array(
     'App\\Jobs\\AiChatAgentSilence' => $baseDir . '/app/Jobs/AiChatAgentSilence.php',
     'App\\Jobs\\AiDetectCustomerLanguage' => $baseDir . '/app/Jobs/AiDetectCustomerLanguage.php',
     'App\\Jobs\\AiIndexDocument' => $baseDir . '/app/Jobs/AiIndexDocument.php',
+    'App\\Jobs\\AiRetryTranslations' => $baseDir . '/app/Jobs/AiRetryTranslations.php',
     'App\\Jobs\\AiSummarizeConversation' => $baseDir . '/app/Jobs/AiSummarizeConversation.php',
     'App\\Jobs\\AiTranslateChat' => $baseDir . '/app/Jobs/AiTranslateChat.php',
     'App\\Jobs\\AiTranslateThread' => $baseDir . '/app/Jobs/AiTranslateThread.php',

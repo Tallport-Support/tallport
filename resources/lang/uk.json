@@ -2000,5 +2000,7 @@
     "Low Confidence": "Низька Впевненість",
     "Medium Confidence": "Середня Впевненість",
     "High Confidence": "Висока Впевненість",
-    "Dismiss Draft Details": "Сховати Деталі Чернетки"
+    "Dismiss Draft Details": "Сховати Деталі Чернетки",
+    "The AI isn’t answering right now": "ШІ зараз не відповідає",
+    "The server didn’t answer. Try again in a moment.": "Сервер не відповів. Спробуйте ще раз за мить."
 }

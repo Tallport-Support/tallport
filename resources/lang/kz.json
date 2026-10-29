@@ -2393,5 +2393,7 @@
     "Low Confidence": "Төмен Сенімділік",
     "Medium Confidence": "Орташа Сенімділік",
     "High Confidence": "Жоғары Сенімділік",
-    "Dismiss Draft Details": "Жоба Мәліметтерін Жасыру"
+    "Dismiss Draft Details": "Жоба Мәліметтерін Жасыру",
+    "The AI isn’t answering right now": "ЖИ қазір жауап бермей тұр",
+    "The server didn’t answer. Try again in a moment.": "Сервер жауап бермеді. Сәлден кейін қайталап көріңіз."
 }

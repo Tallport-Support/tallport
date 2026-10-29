@@ -1996,5 +1996,7 @@
     "Low Confidence": "Geringe Sicherheit",
     "Medium Confidence": "Mittlere Sicherheit",
     "High Confidence": "Hohe Sicherheit",
-    "Dismiss Draft Details": "Entwurfsdetails Ausblenden"
+    "Dismiss Draft Details": "Entwurfsdetails Ausblenden",
+    "The AI isn’t answering right now": "Die KI antwortet gerade nicht",
+    "The server didn’t answer. Try again in a moment.": "Der Server hat nicht geantwortet. Bitte gleich noch einmal probieren."
 }

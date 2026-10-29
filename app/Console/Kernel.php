@@ -119,6 +119,13 @@ class Kernel extends ConsoleKernel
             ->dailyAt('03:40')
             ->withoutOverlapping();
 
+        // Translations that failed while the AI was unavailable: tried again by themselves.
+        $schedule->call(function () {
+            if (\App\Ai\Settings::isConfigured()) {
+                \App\Jobs\AiRetryTranslations::dispatch();
+            }
+        })->name('ai-translations-retry')->everyTenMinutes()->withoutOverlapping();
+
         // A killed PHP stream cannot mark its draft failed itself.
         $schedule->call(function () {
             \App\Ai\DraftJob::failAbandoned(now()->subMinutes(3));

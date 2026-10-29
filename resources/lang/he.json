@@ -2000,5 +2000,7 @@
     "Low Confidence": "ביטחון נמוך",
     "Medium Confidence": "ביטחון בינוני",
     "High Confidence": "ביטחון גבוה",
-    "Dismiss Draft Details": "הסתר את פרטי הטיוטה"
+    "Dismiss Draft Details": "הסתר את פרטי הטיוטה",
+    "The AI isn’t answering right now": "הבינה המלאכותית לא עונה כרגע",
+    "The server didn’t answer. Try again in a moment.": "השרת לא ענה. נסה שוב בעוד רגע."
 }

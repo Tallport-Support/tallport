@@ -21,6 +21,23 @@ class StreamThrottle
     }
 
     /**
+     * A request waiting for the AI sends nothing while it works: $send now and then (each 15
+     * seconds, the first after 15) keeps it open, as proxies close quiet ones (Cloudflare after
+     * 100 seconds). What this returns is called on each sign of the AI's work.
+     */
+    public static function keepAlive(callable $send)
+    {
+        $heartbeat = new self(15);
+        $heartbeat->ready();
+
+        return function () use ($heartbeat, $send) {
+            if ($heartbeat->ready()) {
+                $send();
+            }
+        };
+    }
+
+    /**
      * Whether it's time to pass the answer on (and it's done now).
      */
     public function ready()

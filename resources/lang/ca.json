@@ -2091,5 +2091,7 @@
     "Low Confidence": "Confiança Baixa",
     "Medium Confidence": "Confiança Mitjana",
     "High Confidence": "Confiança Alta",
-    "Dismiss Draft Details": "Amaga els Detalls de l’Esborrany"
+    "Dismiss Draft Details": "Amaga els Detalls de l’Esborrany",
+    "The AI isn’t answering right now": "La IA no respon ara mateix",
+    "The server didn’t answer. Try again in a moment.": "El servidor no ha respost. Torneu-ho a intentar d’aquí a un moment."
 }

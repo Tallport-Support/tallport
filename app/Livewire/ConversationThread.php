@@ -116,12 +116,15 @@ class ConversationThread extends Component
             return;
         }
         @set_time_limit(180);
+        // Kept open while the AI works (a stream no element of the page takes).
+        $keep_alive = \App\Ai\StreamThrottle::keepAlive(fn () => $this->stream(content: '', name: 'keep-alive'));
         try {
-            if (!\App\Ai\Translations::forceTranslate($thread, $user)) {
+            if (!\App\Ai\Translations::forceTranslate($thread, $user, $keep_alive)) {
                 Fruit::toast(__('The AI took this message to be in :language already.', ['language' => \App\Ai\Settings::displayName(\App\Ai\Settings::language($thread->conversation->mailbox, $user))]));
             }
         } catch (\Throwable $e) {
-            Fruit::toast(__('Could not translate the message: :error', ['error' => \App\Ai\Errors::message($e, 'Translation of thread '.$thread->id.':')]), 'danger');
+            $error = \App\Ai\Errors::message($e, 'Translation of thread '.$thread->id.':', \App\Ai\Errors::unavailable($e) ? __('The AI isn’t answering right now') : null);
+            Fruit::toast(__('Could not translate the message: :error', ['error' => $error]), 'danger');
         }
     }
 

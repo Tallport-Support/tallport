@@ -395,7 +395,7 @@ class ConversationComposer extends Component
         } catch (\Throwable $e) {
             $error = $e->getMessage() === __('This mailbox has used its AI tokens for today.')
                 ? $e->getMessage()
-                : \App\Ai\Errors::message($e, 'Translation of a reply in conversation '.$this->conversation_id.':');
+                : \App\Ai\Errors::message($e, 'Translation of a reply in conversation '.$this->conversation_id.':', \App\Ai\Errors::unavailable($e) ? __('The AI isn’t answering right now') : null);
             $this->translation = ['source' => $this->body, 'html' => '', 'error' => $error];
 
             return 'error';

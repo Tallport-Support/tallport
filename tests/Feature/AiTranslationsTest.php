@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Ai\Agents\ChatTranslator;
 use App\Ai\Agents\ThreadTranslator;
 use App\Ai\ChatTranslation;
+use App\Ai\Summaries;
 use App\Ai\Translations;
 use App\Conversation;
 use App\Livewire\ConversationComposer;
@@ -200,6 +201,71 @@ class AiTranslationsTest extends FeatureTestCase
         $this->assertMatchesRegularExpression('/^Error occurred \(ID: [A-F0-9]{12}\)$/', $message);
     }
 
+    /**
+     * Messages not translated while the AI was unavailable (Cloudflare's error page in front of
+     * it) are tried again by themselves: the latest first, and the others once that works; not
+     * one whose answer couldn't be used, nor one over a limit.
+     */
+    public function testWhatFailedWhileTheAiWasUnavailableIsTriedAgain()
+    {
+        Option::set('aiassistant.mailbox_features_off', [$this->mailbox->id => ['summaries']]);
+        Option::set('aiassistant.mailbox_chat_translation', []);
+        Option::$cache = [];
+        $first = $this->first();
+        $unusable = $this->customerMessage('Is daar iemand?');
+        $limited = $this->customerMessage('Hallo daar');
+        $latest = $this->customerMessage('Hallo?');
+        // The message translated (the prompt has the others too, as context).
+        $prompts = [];
+        $available = false;
+        ThreadTranslator::fake(function ($prompt) use (&$prompts, &$available) {
+            $prompts[] = $prompt = preg_match('/<message>\s*(.*?)\s*<\/message>/s', $prompt, $match) ? $match[1] : '';
+            if (str_contains($prompt, 'Is daar iemand?')) {
+                throw new \RuntimeException(__('The AI\'s answer could not be read.'));
+            }
+            if (!$available) {
+                throw new \Illuminate\Http\Client\RequestException(new \Illuminate\Http\Client\Response(new \GuzzleHttp\Psr7\Response(521, ['Server' => 'cloudflare'], '<!DOCTYPE html><title>api.x.ai | 521: Web server is down</title>')));
+            }
+
+            return ['translation' => 'Translated', 'same_language' => false, 'detected_language' => 'nl'];
+        });
+        foreach ([$first, $unusable, $latest] as $thread) {
+            (new \App\Jobs\AiTranslateThread($thread->id, 'en'))->handle();
+        }
+        Translations::limited($limited, 'en', Translations::LIMIT_CUSTOMER);
+        $this->assertSame('error', Translations::reason($first->fresh(), 'en')[0]);
+        $this->assertSame('error', Translations::reason($unusable->fresh(), 'en')[0]);
+
+        // Still down: only the latest is tried.
+        $prompts = [];
+        (new \App\Jobs\AiRetryTranslations())->handle();
+        $this->assertCount(1, $prompts);
+        $this->assertStringContainsString('Hallo?', $prompts[0]);
+        $this->assertNull(Translations::get($latest->fresh(), 'en'));
+
+        // Back: the latest, then the other.
+        $available = true;
+        $prompts = [];
+        (new \App\Jobs\AiRetryTranslations())->handle();
+        $this->assertCount(2, $prompts);
+        $this->assertSame('Translated', Translations::get($latest->fresh(), 'en'));
+        $this->assertSame('Translated', Translations::get($first->fresh(), 'en'));
+        $this->assertNull(Translations::get($unusable->fresh(), 'en'));
+        $this->assertSame([Translations::LIMIT_CUSTOMER], Translations::reason($limited->fresh(), 'en'));
+
+        // Nothing left: no prompt; nor for a failure tried enough, or older than the days it's tried for.
+        $prompts = [];
+        (new \App\Jobs\AiRetryTranslations())->handle();
+        $this->assertSame([], $prompts);
+        Summaries::updateData($first, fn ($data) => ['errors' => ['en' => 'Error occurred'], 'retries' => ['en' => Translations::RETRY_TIMES]]);
+        (new \App\Jobs\AiRetryTranslations())->handle();
+        $this->assertSame([], $prompts);
+        Summaries::updateData($first, fn ($data) => ['errors' => ['en' => 'Error occurred']]);
+        \App\Thread::whereKey($first->id)->update(['created_at' => now()->subDays(Translations::RETRY_DAYS + 1)]);
+        (new \App\Jobs\AiRetryTranslations())->handle();
+        $this->assertSame([], $prompts);
+    }
+
     public function testInvalidChatBatchAnswersUseTheBackupModel()
     {
         $first_id = $this->first()->id;
@@ -280,11 +346,37 @@ class AiTranslationsTest extends FeatureTestCase
             && preg_match('/^Could not translate the message: Error occurred \(ID: [A-F0-9]{12}\)$/', $params['message'] ?? ''));
         \Log::shouldHaveReceived('error')->withArgs(fn ($message) => str_contains($message, 'Translation of thread '.$thread->id.':') && str_contains($message, 'Service unavailable'));
 
+        // The AI unavailable (an error page from Cloudflare in front of it): it says so.
+        ThreadTranslator::fake(function () {
+            throw \Laravel\Ai\Exceptions\ProviderOverloadedException::forProvider('xai');
+        });
+        $history()->call('translate', $thread->id)->assertDispatched('fruit-toast', fn ($name, $params) => ($params['tone'] ?? '') === 'danger'
+            && preg_match('/^Could not translate the message: The AI isn’t answering right now \(ID: [A-F0-9]{12}\)$/u', $params['message'] ?? ''));
+
         Option::set('aiassistant.daily_tokens', 1);
         Option::$cache = [];
         \App\Ai\Usage::create(['mailbox_id' => $this->mailbox->id, 'feature' => 'summary', 'input_tokens' => 5]);
         ThreadTranslator::fake()->preventStrayPrompts();
         $history()->call('translate', $thread->id)->assertToasted('This mailbox has used its AI tokens for today.', 'danger');
+    }
+
+    /**
+     * A message translated on request while the AI is slow: the request is kept open meanwhile,
+     * as a proxy in front of the server (Cloudflare's) closes a quiet one.
+     */
+    public function testTranslateOnRequestKeepsTheRequestOpen()
+    {
+        Option::set('aiassistant.mailbox_chat_translation', []);
+        Option::$cache = [];
+        $thread = $this->first();
+        ThreadTranslator::fake(function () {
+            $this->travel(20)->seconds();
+
+            return ['translation' => 'Where is my order?', 'same_language' => false, 'detected_language' => 'nl'];
+        });
+        $streamed = $this->streamed(fn () => Livewire::actingAs($this->agent)->test(ConversationThread::class, ['conversation' => $this->conversation])->call('translate', $thread->id));
+        $this->assertSame([['type' => 'directive', 'content' => '', 'mode' => 'default', 'name' => 'keep-alive']], $streamed);
+        $this->assertSame('Where is my order?', Translations::get($thread->fresh(), 'en'));
     }
 
     /**

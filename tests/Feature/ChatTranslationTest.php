@@ -186,6 +186,13 @@ class ChatTranslationTest extends FeatureTestCase
             ->assertSee('The reply could not be translated: Error occurred (ID:')->assertSee('Send as Written');
         $this->assertSame(0, $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->count());
 
+        // The AI unavailable (an error page from Cloudflare in front of it): it says so.
+        ReplyTranslator::fake(function () {
+            throw \Laravel\Ai\Exceptions\ProviderOverloadedException::forProvider('xai');
+        });
+        $composer->call('previewTranslation', '<p>I will look into it.</p>')->assertReturned('error')
+            ->assertSee('The reply could not be translated: The AI isn’t answering right now (ID:')->assertSee('Send as Written');
+
         // As written: the reply as it is, no translation kept.
         $composer->call('send', null, '<p>I will look into it.</p>', true)->assertReturned(true)->assertSet('translation', null);
         $reply = $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();

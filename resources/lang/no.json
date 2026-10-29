@@ -2003,5 +2003,7 @@
     "Low Confidence": "Lav Sikkerhet",
     "Medium Confidence": "Middels Sikkerhet",
     "High Confidence": "Høy Sikkerhet",
-    "Dismiss Draft Details": "Skjul Utkastdetaljer"
+    "Dismiss Draft Details": "Skjul Utkastdetaljer",
+    "The AI isn’t answering right now": "AI-en svarer ikke akkurat nå",
+    "The server didn’t answer. Try again in a moment.": "Serveren svarte ikke. Prøv igjen om et øyeblikk."
 }

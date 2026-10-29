@@ -184,6 +184,19 @@ window.Tallport = (function () {
 	return {csrf: csrf, post: post, isSuccess: isSuccess, toast: toast, result: result, busy: busy, confirm: confirm, autoSave: autoSave};
 })();
 
+// A Livewire request a proxy in front of the server gave up on (its error page: Cloudflare's 52x,
+// nginx's 502 or 504): a message, not that page in Livewire's dialog.
+document.addEventListener('livewire:init', function () {
+	Livewire.hook('request', function (hook) {
+		hook.fail(function (failure) {
+			if (typeof failure.content == 'string' && ([502, 503, 504].indexOf(failure.status) >= 0 || (failure.status >= 520 && failure.status <= 530))) {
+				failure.preventDefault();
+				Tallport.toast(Lang.get('messages.server_unavailable'), 'danger');
+			}
+		});
+	});
+});
+
 document.addEventListener('fruit-dialog-error', function (event) {
 	var response = event.detail.response;
 	var login = document.querySelector('meta[name="login-url"]');

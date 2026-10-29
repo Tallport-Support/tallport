@@ -2000,5 +2000,7 @@
     "Low Confidence": "Düşük Güven",
     "Medium Confidence": "Orta Güven",
     "High Confidence": "Yüksek Güven",
-    "Dismiss Draft Details": "Taslak Ayrıntılarını Gizle"
+    "Dismiss Draft Details": "Taslak Ayrıntılarını Gizle",
+    "The AI isn’t answering right now": "Yapay zekâ şu anda yanıt vermiyor",
+    "The server didn’t answer. Try again in a moment.": "Sunucu yanıt vermedi. Biraz sonra tekrar deneyin."
 }

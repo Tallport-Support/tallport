@@ -12,7 +12,10 @@ use App\Thread;
  * "same": languages the message is already in (no translation needed).
  * "forced": languages it was translated into on request (shown even to users who read it).
  * Why there is none is kept too: "no_text" (nothing to translate),
- * "errors" (by language, until it works), "truncated" (only the start).
+ * "errors" (by language, until it works), "truncated" (only the start),
+ * "bad_answer": languages whose error was the AI's answer, not its being unavailable
+ * (not tried again by itself, App\Jobs\AiRetryTranslations), "retries": its tries by itself,
+ * by language.
  */
 class Translations
 {
@@ -201,10 +204,11 @@ class Translations
     /**
      * Translate a message now, on request, into the user's language: also a reply,
      * and also when an earlier translation took it to be in that language already.
+     * $on_activity: called on each sign of the AI's work.
      *
      * @return string|null the translation; null when it is in that language already
      */
-    public static function forceTranslate(Thread $thread, $user)
+    public static function forceTranslate(Thread $thread, $user, ?callable $on_activity = null)
     {
         if ($thread->getMeta('chat_pending')) {
             return null;
@@ -223,7 +227,7 @@ class Translations
             return $data;
         });
 
-        return self::translate($thread, $language);
+        return self::translate($thread, $language, $on_activity);
     }
 
     /**
@@ -262,11 +266,71 @@ class Translations
     public static function failed(Thread $thread, $language, \Throwable $e)
     {
         $message = Errors::message($e, 'Translation of thread '.$thread->id.':');
-        Summaries::updateData($thread, function ($data) use ($language, $message) {
+        $bad_answer = !Errors::unavailable($e);
+        Summaries::updateData($thread, function ($data) use ($language, $message, $bad_answer) {
             $data['errors'][$language] = $message;
+            $data['bad_answer'] = array_values(array_diff((array) ($data['bad_answer'] ?? []), [$language]));
+            if ($bad_answer) {
+                $data['bad_answer'][] = $language;
+            }
+            if (!$data['bad_answer']) {
+                unset($data['bad_answer']);
+            }
 
             return $data;
         });
+    }
+
+    /**
+     * Failed translations are tried again by themselves for this many days, each at most this
+     * many times (App\Jobs\AiRetryTranslations): then when someone opens the conversation.
+     */
+    const RETRY_DAYS = 7;
+    const RETRY_TIMES = 6;
+
+    /**
+     * Customers' messages of the last days not translated because the AI was unavailable (or
+     * failed before that was told apart): [[thread, language]], the latest first. Not those
+     * over a limit (tried again when someone reads them), nor an answer that couldn't be used,
+     * nor one tried enough.
+     */
+    public static function failedRecently($limit = 200)
+    {
+        $failed = [];
+        $threads = Thread::where('type', Thread::TYPE_CUSTOMER)
+            ->where('state', Thread::STATE_PUBLISHED)
+            ->where('created_at', '>=', now()->subDays(self::RETRY_DAYS))
+            ->where('ai_assistant', 'like', '%"errors"%')
+            ->orderBy('id', 'desc')
+            ->limit($limit)
+            ->get();
+        foreach ($threads as $thread) {
+            $data = Summaries::data($thread);
+            foreach ((array) ($data['errors'] ?? []) as $language => $error) {
+                if (in_array($error, [self::LIMIT_BUDGET, self::LIMIT_CUSTOMER]) || in_array($language, (array) ($data['bad_answer'] ?? []))
+                    || ($data['retries'][$language] ?? 0) >= self::RETRY_TIMES
+                ) {
+                    continue;
+                }
+                if (self::isWanted($thread) && self::isMissing($thread, $language)) {
+                    $failed[] = [$thread, $language];
+                }
+            }
+        }
+
+        return $failed;
+    }
+
+    /**
+     * A failed translation tried again by itself (failedRecently()): counted.
+     */
+    public static function retrying(Thread $thread, $language)
+    {
+        Summaries::updateData($thread, function ($data) use ($language) {
+            $data['retries'][$language] = ($data['retries'][$language] ?? 0) + 1;
+
+            return $data;
+        }, false);
     }
 
     /**
@@ -354,7 +418,7 @@ class Translations
         return in_array($language, (array) (Summaries::data($thread)['html'] ?? []));
     }
 
-    public static function translate(Thread $thread, $language)
+    public static function translate(Thread $thread, $language, ?callable $on_activity = null)
     {
         $text = Summaries::text($thread);
         $truncated = false;
@@ -368,13 +432,13 @@ class Translations
             $html = self::sourceHtml($thread);
             $as_html = $html !== '' && mb_strlen($html) <= Summaries::MAX_THREAD_CHARS * 3;
             $deadline = microtime(true) + 120;
-            $context = ConversationContext::build($thread->conversation, $language, false, $thread->id, $deadline, $thread);
+            $context = ConversationContext::build($thread->conversation, $language, false, $thread->id, $deadline, $thread, $on_activity);
             // The conversation's first message: its subject too (shown in lists).
             $subject = $thread->type == Thread::TYPE_CUSTOMER && trim((string) $thread->conversation->subject) !== ''
                 && $thread->id == Thread::where('conversation_id', $thread->conversation_id)->min('id');
             [$answer] = (new ThreadTranslator($language, $as_html, $subject))->recordFor(Usage::FEATURE_TRANSLATION, $thread->conversation)->streamJson(
                 $context['prompt']."\n\n".($subject ? TallportAgent::data('subject', mb_substr((string) $thread->conversation->subject, 0, 1000))."\n\n" : '').TallportAgent::data('message', $as_html ? $html : $text),
-                $thread->type == Thread::TYPE_CUSTOMER ? self::broadcaster($thread->conversation, $language, fn ($answer) => [$thread->id => [$answer['translation'] ?? '', $as_html]]) : null, $deadline
+                $thread->type == Thread::TYPE_CUSTOMER ? self::broadcaster($thread->conversation, $language, fn ($answer) => [$thread->id => [$answer['translation'] ?? '', $as_html]]) : null, $deadline, $on_activity
             );
         }
         $data = Summaries::updateData($thread, function ($data) use ($language, $text, $truncated, $as_html, $answer) {

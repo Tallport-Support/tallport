@@ -1543,6 +1543,9 @@ document.addEventListener('alpine:init', function () {
 					if (result == 'same' || result == 'off') {
 						self.sendAsWritten();
 					}
+				}, function () {
+					// The request failed (a toast says so): it can be tried again.
+					self.translating_now = false;
 				});
 			},
 
