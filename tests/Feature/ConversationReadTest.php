@@ -86,7 +86,11 @@ class ConversationReadTest extends FeatureTestCase
         $this->assertSame([], ConversationRead::unreadMessageCounts($this->agent)->all());
     }
 
-    public function testSidebarCountsUnreadMessagesForEachUserAndMailbox()
+    /**
+     * The sidebar counts unread conversations, not their messages: several new ones in a row (a
+     * chat's) count once.
+     */
+    public function testSidebarCountsUnreadConversationsForEachUserAndMailbox()
     {
         $conversation = $this->conversation();
         $unassigned = $this->mailbox->folders()->where('type', Folder::TYPE_UNASSIGNED)->first();
@@ -94,27 +98,28 @@ class ConversationReadTest extends FeatureTestCase
 
         $conversation->createUserThread($this->teammate, 'First update.');
         $conversation->createUserThread($this->teammate, 'Second update.');
-        $this->assertSame(2, Sidebar::unreadCounts($this->agent)['folders'][$unassigned->id]);
-        $this->assertSame(1, Sidebar::unreadCounts($this->teammate)['folders'][$unassigned->id], 'A user does not count their own replies.');
+        $this->assertSame(1, Sidebar::unreadCounts($this->agent)['folders'][$unassigned->id]);
+        $this->assertSame(1, Sidebar::unreadCounts($this->teammate)['folders'][$unassigned->id], 'Unread for the teammate by the customer\'s message, not their own replies.');
+        $this->assertSame(2, (int) ConversationRead::unreadMessageCounts($this->agent)->first()->unread_count);
 
         $second_mailbox = $this->createMailbox([$this->agent]);
         $this->receiveEmail($second_mailbox, $this->makeEmail([
             'from' => 'other@customer.example.org', 'to' => $second_mailbox->email, 'subject' => 'Other question',
         ]));
         $counts = Sidebar::unreadCounts($this->agent);
-        $this->assertSame(3, $counts['folders'][-Folder::TYPE_UNASSIGNED]);
-        $this->assertSame(2, $counts['mailboxes'][$this->mailbox->id]);
+        $this->assertSame(2, $counts['folders'][-Folder::TYPE_UNASSIGNED]);
+        $this->assertSame(1, $counts['mailboxes'][$this->mailbox->id]);
         $this->assertSame(1, $counts['mailboxes'][$second_mailbox->id]);
 
         $html = $this->actingAs($this->agent)->get('/?dashboard=1')->assertOk()->getContent();
-        $this->assertMatchesRegularExpression('#aria-label="Unassigned, 2 unread"\s+data-label-unread="Unassigned, :count unread"#', $html);
-        $this->assertMatchesRegularExpression('#data-folder_id="'.$unassigned->id.'" data-unread-count="2">.*?<span class="f-badge active-count">2</span>#s', $html);
-        $this->assertMatchesRegularExpression('#data-folder_id="-1" data-mailbox_id="-1" data-unread-count="3">.*?<span class="f-badge active-count">3</span>#s', $html);
+        $this->assertMatchesRegularExpression('#aria-label="Unassigned, 1 unread"\s+data-label-unread="Unassigned, :count unread"#', $html);
+        $this->assertMatchesRegularExpression('#data-folder_id="'.$unassigned->id.'" data-unread-count="1">.*?<span class="f-badge active-count">1</span>#s', $html);
+        $this->assertMatchesRegularExpression('#data-folder_id="-1" data-mailbox_id="-1" data-unread-count="2">.*?<span class="f-badge active-count">2</span>#s', $html);
 
-        ConversationRead::markUnread($conversation->id, $this->agent);
-        $this->assertSame(3, Sidebar::unreadCounts($this->agent)['folders'][$unassigned->id], 'Marking the conversation unread marks its messages unread.');
         $this->get($conversation->url())->assertOk();
         $this->assertSame(0, Sidebar::unreadCounts($this->agent)['folders'][$unassigned->id]);
+        ConversationRead::markUnread($conversation->id, $this->agent);
+        $this->assertSame(1, Sidebar::unreadCounts($this->agent)['folders'][$unassigned->id], 'Marked unread: counted again.');
     }
 
     public function testSidebarMovesUnreadMessagesWithTheirConversation()

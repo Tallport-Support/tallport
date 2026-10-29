@@ -100,7 +100,8 @@ class Sidebar
     }
 
     /**
-     * Unread message counts for the user's folders and mailbox headings.
+     * Unread conversations for the user's folders and mailbox headings: each conversation once,
+     * however many of its messages are new (a chat's often several in a row).
      */
     public static function unreadCounts(User $user)
     {
@@ -127,22 +128,21 @@ class Sidebar
 
         $unread = ConversationRead::unreadMessageCounts($user)->keyBy('id');
         foreach ($unread as $conversation) {
-            $count = (int) $conversation->unread_count;
-            $mailbox_counts[$conversation->mailbox_id] += $count;
+            $mailbox_counts[$conversation->mailbox_id]++;
             $folder = $folder_by_id->get($conversation->folder_id);
             if ($folder && (($folder->type == Folder::TYPE_DELETED && $conversation->state == Conversation::STATE_DELETED)
                 || ($folder->type != Folder::TYPE_DELETED && $conversation->state == Conversation::STATE_PUBLISHED))
                 && ($folder->type != Folder::TYPE_ASSIGNED || $conversation->user_id != $user->id)
                 && !in_array($folder->type, [Folder::TYPE_MINE, Folder::TYPE_STARRED, Folder::TYPE_DRAFTS])
             ) {
-                $counts[$folder->id] += $count;
+                $counts[$folder->id]++;
             }
             if ($conversation->state == Conversation::STATE_PUBLISHED && $conversation->user_id == $user->id
                 && in_array($conversation->status, [Conversation::STATUS_ACTIVE, Conversation::STATUS_PENDING])
             ) {
                 $mine_id = $folder_by_mailbox_type[$conversation->mailbox_id][Folder::TYPE_MINE] ?? null;
                 if ($mine_id) {
-                    $counts[$mine_id] += $count;
+                    $counts[$mine_id]++;
                 }
             }
         }
@@ -154,9 +154,9 @@ class Sidebar
                 foreach (ConversationFolder::whereIn('folder_id', $indirect_ids)->whereIn('conversation_id', $conversation_ids)->get() as $link) {
                     $conversation = $unread->get($link->conversation_id);
                     if ($conversation) {
-                        $counts[$link->folder_id] += (int) $conversation->unread_count;
+                        $counts[$link->folder_id]++;
                         if ($folder_by_id->get($link->folder_id)->type == Folder::TYPE_STARRED && $conversation->state == Conversation::STATE_PUBLISHED) {
-                            $all_starred += (int) $conversation->unread_count;
+                            $all_starred++;
                         }
                     }
                 }
@@ -171,7 +171,7 @@ class Sidebar
                     ->distinct()->pluck('conversation_id');
                 foreach ($sent_ids as $conversation_id) {
                     if ($unread[$conversation_id]->state == Conversation::STATE_PUBLISHED) {
-                        $sent += (int) $unread[$conversation_id]->unread_count;
+                        $sent++;
                     }
                 }
             }
