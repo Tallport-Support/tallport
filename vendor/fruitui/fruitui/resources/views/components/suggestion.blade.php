@@ -28,5 +28,6 @@
         <div {{ $translation->attributes->class(['f-suggestion__translation']) }}><svg class="f-icon f-suggestion__translation-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg><span class="f-sr-only">{{ __('Translation') }}</span><div class="f-suggestion__translation-text f-prose">{{ $translation }}</div></div>
     @endisset
     @isset($actions)<div {{ $actions->attributes->merge(['aria-label' => __('Actions')])->class(['f-suggestion__actions']) }} role="group">{{ $actions }}</div>@endisset
-    @isset($details)<div {{ $details->attributes->class(['f-suggestion__details']) }}>{{ $details }}</div>@endisset
+    {{-- Details longer than a few lines show their first lines, with Show More for the rest. --}}
+    @isset($details)<div {{ $details->attributes->class(['f-suggestion__details']) }}><x-fruit::more>{{ $details }}</x-fruit::more></div>@endisset
 </section>

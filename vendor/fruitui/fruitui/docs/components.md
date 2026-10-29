@@ -1109,6 +1109,18 @@ When the suggestion is already where it's used, such as a reply draft that goes 
 </x-fruit::suggestion>
 ```
 
+The details sit in a Show More (below), so notes and sources longer than a few lines never push the conversation out of view.
+
+### Long content
+
+Content that can run long beside something the reader needs to keep in view, such as a reply's translation shown before it's sent or a suggestion's notes, goes in `x-fruit::more`. Collapsed, it shows the first four lines, the last faded, with a Show More button; Show Less collapses it again. Content only a line or two longer shows in full, without the button, and so does all content until fruitMore has measured it. It is measured again as its width or content changes, including a Livewire morph or a list rendered from script, and Tabbing to a link the clamp hides shows the rest. Set `--f-more-lines` for another number of lines. Screen readers read all of it either way.
+
+```blade
+<x-fruit::more>
+    <div class="f-prose" lang="zh-Hans">{!! $translationHtml !!}</div>
+</x-fruit::more>
+```
+
 ### Dialogs with loaded content
 
 For content the server renders on demand (outgoing emails, the original message, a merge or move form), put one `<x-fruit::remote-dialog />` in the layout for translated labels, then open dialogs from links or script. A link or button with `data-fruit-dialog-url` loads that URL (empty on a link: its `href`) with the title from `data-fruit-dialog-title` (default: its text) and `data-fruit-dialog-size` (medium or large); Cmd/Ctrl/Shift-clicks keep the link's own behavior, so it can still open in a new tab.

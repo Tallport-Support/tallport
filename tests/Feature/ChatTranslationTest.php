@@ -128,7 +128,9 @@ class ChatTranslationTest extends FeatureTestCase
         $composer = $this->composer()->assertSet('translating', true)
             ->assertSee('wire:stream.replace="translation"', false);
         $streamed = $this->streamed(fn () => $composer->call('previewTranslation', '<p>I will look into it.</p>'));
-        $composer->assertReturned('ready')->assertSee('Ik zoek het voor u uit.')->assertSee('Sent in Dutch');
+        $composer->assertReturned('ready')->assertSee('Ik zoek het voor u uit.')->assertSee('Will be sent in Dutch');
+        // A long one shows its first lines, with Show More (FruitUI's), keeping the conversation in view.
+        $this->assertMatchesRegularExpression('#<div class="f-more" x-data="fruitMore"[^>]*>\s*<div class="f-more__content"><div class="conv-translation-preview__text f-prose" dir="auto"><p>Ik zoek het voor u uit.</p></div></div>\s*<button type="button" class="f-more__toggle"[^>]*><span class="f-more__show">Show More</span>#', $composer->html());
         $this->assertSame([['type' => 'directive', 'content' => '<p>Ik', 'mode' => 'replace', 'name' => 'translation']], $streamed);
         ReplyTranslator::assertPrompted(fn ($prompt) => str_contains($prompt->prompt, 'Waar blijft mijn bestelling?') && str_contains($prompt->prompt, 'I will look into it.'));
 
@@ -158,7 +160,7 @@ class ChatTranslationTest extends FeatureTestCase
         $composer = $this->composer()
             ->call('aiDraft', '<p>I will look into it.</p>', '', '', 'I will look into it.')
             ->call('aiDraftTranslated', '<p>I will look into it.</p>', '<p>Ik zoek het voor u uit.</p>')
-            ->assertSee('Ik zoek het voor u uit.')->assertSee('Sent in Dutch');
+            ->assertSee('Ik zoek het voor u uit.')->assertSee('Will be sent in Dutch');
         $composer->call('sendTranslation', '<p>I will look into it.</p>')->assertReturned('sent');
 
         $reply = $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();

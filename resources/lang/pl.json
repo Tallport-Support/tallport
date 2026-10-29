@@ -764,7 +764,7 @@
     "This mailbox has used its AI tokens for today.": "Ta skrzynka pocztowa wykorzystała już dzisiejsze tokeny AI.",
     "Send as Written": "Wyślij Bez Tłumaczenia",
     "Send Translation": "Wyślij Tłumaczenie",
-    "Sent in :language": "Zostanie wysłane w języku: :language",
+    "Will be sent in :language": "Zostanie wysłane w języku: :language",
     "The reply could not be translated: :error": "Nie udało się przetłumaczyć odpowiedzi: :error",
     "The AI used its tokens for today": "AI wykorzystała dzisiejsze tokeny",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "W tych skrzynkach pocztowych AI jest niedostępna do jutra: brak tłumaczeń, podsumowań i szkiców. Limit to Dzienne Tokeny Na Skrzynkę Pocztową w ustawieniach AI.",

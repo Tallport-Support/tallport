@@ -764,7 +764,7 @@
     "This mailbox has used its AI tokens for today.": "Ця поштова скринька вичерпала свої токени ШІ на сьогодні.",
     "Send as Written": "Надіслати Без Перекладу",
     "Send Translation": "Надіслати Переклад",
-    "Sent in :language": "Буде надіслано мовою: :language",
+    "Will be sent in :language": "Буде надіслано мовою: :language",
     "The reply could not be translated: :error": "Не вдалося перекласти відповідь: :error",
     "The AI used its tokens for today": "ШІ вичерпав свої токени на сьогодні",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "У цих поштових скриньках ШІ недоступний до завтра: ні перекладів, ні підсумків, ні чернеток. Ліміт — Токенів на День на Поштову Скриньку в налаштуваннях ШІ.",

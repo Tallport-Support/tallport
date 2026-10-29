@@ -764,7 +764,7 @@
     "This mailbox has used its AI tokens for today.": "このメールボックスは本日分のAIトークンを使い切りました。",
     "Send as Written": "原文のまま送信",
     "Send Translation": "翻訳を送信",
-    "Sent in :language": "送信言語: :language",
+    "Will be sent in :language": "送信言語: :language",
     "The reply could not be translated: :error": "返信を翻訳できませんでした: :error",
     "The AI used its tokens for today": "AIは今日のトークンを使い切りました",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "これらのメールボックスでは、AIは明日まで利用できません：翻訳、要約、下書きは行われません。上限はAI設定の「メールボックスごとの1日あたりのトークン数」です。",

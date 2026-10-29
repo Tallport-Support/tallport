@@ -1047,6 +1047,63 @@ textarea.f-input {
     margin-bottom: 0;
   }
 
+/* Long content as its first few lines, the last faded, with Show More for the rest (fruitMore
+     marks data-overflowing once the content is more than two lines longer). */
+
+.f-more {
+    display: grid;
+    gap: 4px;
+  }
+
+.f-more__content {
+    min-width: 0;
+  }
+
+.f-more__content > :last-child {
+    margin-bottom: 0;
+  }
+
+.f-more[data-overflowing]:has(> .f-more__toggle[aria-expanded='false']) > .f-more__content {
+    max-height: calc(var(--f-more-lines, 4) * 1lh);
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 1lh), transparent);
+    mask-image: linear-gradient(to bottom, black calc(100% - 1lh), transparent);
+  }
+
+.f-more__toggle {
+    display: inline-flex;
+    justify-self: start;
+    align-items: center;
+    gap: 4px;
+    min-height: 24px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--f-radius-sm);
+    color: var(--f-secondary);
+    background: none;
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+.f-more__toggle:hover {
+    color: var(--f-text);
+  }
+
+.f-more:not([data-overflowing]) > .f-more__toggle,
+  .f-more__toggle[aria-expanded='true'] > .f-more__show,
+  .f-more__toggle[aria-expanded='false'] > .f-more__hide {
+    display: none;
+  }
+
+.f-more__chevron {
+    --f-icon-size: 14px;
+  }
+
+.f-more__toggle[aria-expanded='true'] > .f-more__chevron {
+    rotate: 180deg;
+  }
+
 .f-dialog {
     width: min(480px, calc(100% - 32px));
     padding: 0;
@@ -5171,6 +5228,13 @@ textarea.f-composer__input,
 .f-suggestion > :is(.f-suggestion__header, .f-suggestion__status) + .f-suggestion__details {
     padding-top: 0;
     border-top: 0;
+  }
+
+/* In a Show More (the Blade adapter's), the sections keep their spacing. */
+
+.f-suggestion__details > .f-more > .f-more__content {
+    display: grid;
+    gap: 12px;
   }
 
 .f-suggestion__details :is(h3, h4) {

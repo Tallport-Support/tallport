@@ -765,7 +765,7 @@
     "This mailbox has used its AI tokens for today.": "Deze mailbox heeft zijn AI-tokens voor vandaag opgebruikt.",
     "Send as Written": "Verzenden Zoals Geschreven",
     "Send Translation": "Vertaling Verzenden",
-    "Sent in :language": "Wordt verzonden in het :language",
+    "Will be sent in :language": "Wordt verzonden in het :language",
     "The reply could not be translated: :error": "Het antwoord kon niet worden vertaald: :error",
     "The AI used its tokens for today": "De AI heeft de tokens voor vandaag opgebruikt",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "In deze mailboxen is de AI tot morgen niet beschikbaar: geen vertalingen, samenvattingen of concepten. De limiet is Dagelijkse Tokens per Mailbox in de AI-instellingen.",

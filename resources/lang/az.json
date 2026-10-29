@@ -764,7 +764,7 @@
     "This mailbox has used its AI tokens for today.": "Bu poçt qutusu bugünkü Sİ tokenlərini istifadə edib.",
     "Send as Written": "Yazıldığı Kimi Göndər",
     "Send Translation": "Tərcüməni Göndər",
-    "Sent in :language": "Göndəriləcək dil: :language",
+    "Will be sent in :language": "Göndəriləcək dil: :language",
     "The reply could not be translated: :error": "Cavabı tərcümə etmək mümkün olmadı: :error",
     "The AI used its tokens for today": "Sİ bugünkü tokenlərini istifadə etdi",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "Bu poçt qutularında Sİ sabaha qədər əlçatan deyil: tərcümələr, xülasələr və qaralamalar yoxdur. Limit Sİ parametrlərindəki Poçt Qutusu Üçün Gündəlik Tokenlər sahəsidir.",

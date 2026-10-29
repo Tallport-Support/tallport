@@ -9,6 +9,7 @@ export { confirm, fruitConfirmer } from './confirm.js';
 import { fruitDialogModel, listenForDialogFrames, listenForNamedDialogs } from './dialog.js';
 import { fruitSplitter } from './splitter.js';
 import { fruitHistory } from './history.js';
+import { fruitMore } from './more.js';
 import { fruitDrilldown } from './drilldown.js';
 import { listenForBusyButtons } from './busy.js';
 import { listenForDisabledControls } from './disabled.js';
@@ -47,6 +48,7 @@ export default function fruitUI(Alpine) {
   Alpine.data('fruitTabs', fruitTabs);
   Alpine.data('fruitSplitter', fruitSplitter);
   Alpine.data('fruitHistory', fruitHistory);
+  Alpine.data('fruitMore', fruitMore);
   Alpine.data('fruitDrilldown', fruitDrilldown);
   Alpine.data('fruitFloatingDisclosure', fruitFloatingDisclosure);
   Alpine.data('fruitDialogModel', fruitDialogModel);

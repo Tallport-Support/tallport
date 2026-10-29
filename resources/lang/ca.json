@@ -880,7 +880,7 @@
     "This mailbox has used its AI tokens for today.": "Aquesta bústia ha esgotat els seus tokens d'IA d'avui.",
     "Send as Written": "Envia Tal Com Està",
     "Send Translation": "Envia la Traducció",
-    "Sent in :language": "S'enviarà en :language",
+    "Will be sent in :language": "S'enviarà en :language",
     "The reply could not be translated: :error": "No s'ha pogut traduir la resposta: :error",
     "The AI used its tokens for today": "La IA ha esgotat els tokens d'avui",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "En aquestes bústies la IA no està disponible fins demà: ni traduccions, ni resums, ni esborranys. El límit és Tokens Diaris per Bústia a la configuració de la IA.",

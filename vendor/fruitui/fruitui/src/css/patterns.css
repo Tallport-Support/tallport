@@ -1187,6 +1187,11 @@
     padding-top: 0;
     border-top: 0;
   }
+  /* In a Show More (the Blade adapter's), the sections keep their spacing. */
+  .f-suggestion__details > .f-more > .f-more__content {
+    display: grid;
+    gap: 12px;
+  }
   .f-suggestion__details :is(h3, h4) {
     margin: 0 0 4px;
     color: var(--f-secondary);

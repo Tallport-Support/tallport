@@ -1347,7 +1347,7 @@
     "This mailbox has used its AI tokens for today.": "Бұл пошталық жәшік бүгінгі ЖИ токендерін жұмсап қойды.",
     "Send as Written": "Жазылғандай Жіберу",
     "Send Translation": "Аударманы Жіберу",
-    "Sent in :language": "Жіберілетін тіл: :language",
+    "Will be sent in :language": "Жіберілетін тіл: :language",
     "The reply could not be translated: :error": "Жауапты аудару мүмкін болмады: :error",
     "The AI used its tokens for today": "ЖИ бүгінгі токендерін жұмсап қойды",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "Бұл пошталық жәшіктерде ЖИ ертеңге дейін қолжетімсіз: аудармалар, түйіндемелер және жобалар жоқ. Шек — ЖИ параметрлеріндегі Пошталық Жәшікке Күнделікті Токендер.",

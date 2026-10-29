@@ -334,6 +334,22 @@
     }
   },
   {
+    "id": "more",
+    "kind": "primitive",
+    "classes": ["f-more"],
+    "blade": ["more"],
+    "uses": ["support.html"],
+    "contracts": {
+      "more": {
+        "purpose": "Show long content as its first few lines, with a button for the rest.",
+        "element": "`div` holding the content and, after it, a native `button type=button` (Show More, Show Less) with `aria-expanded`.",
+        "state": "fruitMore sets `data-overflowing` while the content is more than two lines longer than `--f-more-lines` (4), measuring again as its width or content changes, and binds the button's `aria-expanded`. Collapsed, the content shows that many lines, the last faded; content only a line or two longer, and all content before fruitMore runs, shows in full without the button.",
+        "keyboard": "Native button: Enter and Space show more or less. Tabbing to a link the clamp hides shows the rest.",
+        "options": "Slot: the content (prose, lists, sections). `--f-more-lines` sets how many lines show. Suggestion's `details` use it, and so can a translation shown before it's sent. Screen readers read all the content either way."
+      }
+    }
+  },
+  {
     "id": "dialog",
     "kind": "primitive",
     "classes": ["f-dialog"],
@@ -1414,7 +1430,7 @@
         "element": "`section` named by its title (`aria-label`), with a sparkles icon, the title and meta, an optional status line, the suggestion as prose (left out when the default slot is empty), an optional translation, an actions group and quieter details.",
         "state": "The application owns the content and state. `aria-busy=\"true\"` (bindable) shows a skeleton in place of the suggestion, its translation, actions and details; without a suggestion, only the title and status show.",
         "keyboard": "No keyboard behavior of its own; actions, links and the dismiss button keep theirs.",
-        "options": "`title` (required), `meta` (for example language and confidence; a prop or a slot, for markup bound from script). Slots: default (the suggestion, rich text; leave it empty when the suggestion is already where it's used, such as a chat's field: the card is then its title, status and details, with no separator above them, and Livewire's comments alone count as empty), `dismiss` (a close button), `status` (`tone`: neutral, working with a spinner, warning, danger; bindable `data-tone`), `translation` (with `lang`; announced as Translation), `actions` (Insert, Draft Again), `details` (sections with an `h4` and a list; `ul.f-suggestion__sources` for sources: the linked title, then a muted site, both shortened)."
+        "options": "`title` (required), `meta` (for example language and confidence; a prop or a slot, for markup bound from script). Slots: default (the suggestion, rich text; leave it empty when the suggestion is already where it's used, such as a chat's field: the card is then its title, status and details, with no separator above them, and Livewire's comments alone count as empty), `dismiss` (a close button), `status` (`tone`: neutral, working with a spinner, warning, danger; bindable `data-tone`), `translation` (with `lang`; announced as Translation), `actions` (Insert, Draft Again), `details` (sections with an `h4` and a list; `ul.f-suggestion__sources` for sources: the linked title, then a muted site, both shortened; in a Show More, so long details show their first four lines)."
       }
     }
   },

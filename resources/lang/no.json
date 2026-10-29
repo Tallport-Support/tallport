@@ -768,7 +768,7 @@
     "This mailbox has used its AI tokens for today.": "Denne postkassen har brukt opp AI-tokens for i dag.",
     "Send as Written": "Send Som Skrevet",
     "Send Translation": "Send Oversettelse",
-    "Sent in :language": "Sendes på :language",
+    "Will be sent in :language": "Sendes på :language",
     "The reply could not be translated: :error": "Kunne ikke oversette svaret: :error",
     "The AI used its tokens for today": "AI-en har brukt opp dagens tokens",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "I disse postkassene er AI-en utilgjengelig til i morgen: ingen oversettelser, sammendrag eller utkast. Grensen er Daglige Tokens Per Postkasse i innstillingene for AI.",

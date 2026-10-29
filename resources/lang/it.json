@@ -764,7 +764,7 @@
     "This mailbox has used its AI tokens for today.": "Questa casella postale ha esaurito i token IA di oggi.",
     "Send as Written": "Invia Così Com'è",
     "Send Translation": "Invia Traduzione",
-    "Sent in :language": "Verrà inviato in :language",
+    "Will be sent in :language": "Verrà inviato in :language",
     "The reply could not be translated: :error": "Impossibile tradurre la risposta: :error",
     "The AI used its tokens for today": "L'IA ha esaurito i token di oggi",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "In queste caselle postali l'IA non è disponibile fino a domani: niente traduzioni, riepiloghi o bozze. Il limite è Token Giornalieri per Casella Postale nelle impostazioni dell'IA.",

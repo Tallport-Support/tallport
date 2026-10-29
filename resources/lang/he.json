@@ -764,7 +764,7 @@
     "This mailbox has used its AI tokens for today.": "תיבת דואר זו ניצלה את טוקני ה-AI שלה להיום.",
     "Send as Written": "שלח כפי שנכתב",
     "Send Translation": "שלח תרגום",
-    "Sent in :language": "שפת השליחה: :language",
+    "Will be sent in :language": "שפת השליחה: :language",
     "The reply could not be translated: :error": "לא ניתן היה לתרגם את התשובה: :error",
     "The AI used its tokens for today": "ה-AI ניצל את הטוקנים שלו להיום",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "בתיבות הדואר האלה ה-AI אינו זמין עד מחר: אין תרגומים, סיכומים או טיוטות. המגבלה היא טוקנים יומיים לתיבת דואר בהגדרות ה-AI.",

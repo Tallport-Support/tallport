@@ -764,7 +764,7 @@
     "This mailbox has used its AI tokens for today.": "Tato schránka již vyčerpala své AI tokeny na dnešek.",
     "Send as Written": "Odeslat Bez Překladu",
     "Send Translation": "Odeslat Překlad",
-    "Sent in :language": "Odešle se v jazyce: :language",
+    "Will be sent in :language": "Odešle se v jazyce: :language",
     "The reply could not be translated: :error": "Odpověď se nepodařilo přeložit: :error",
     "The AI used its tokens for today": "AI vyčerpala své tokeny na dnešek",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "V těchto schránkách není AI do zítřka k dispozici: žádné překlady, shrnutí ani koncepty. Limit je Denní Tokeny Na Schránku v nastavení AI.",

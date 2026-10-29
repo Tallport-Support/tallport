@@ -779,7 +779,7 @@
     "This mailbox has used its AI tokens for today.": "Tämä postilaatikko on käyttänyt tämän päivän tekoälytokeninsa.",
     "Send as Written": "Lähetä Kääntämättä",
     "Send Translation": "Lähetä Käännös",
-    "Sent in :language": "Lähetetään kielellä: :language",
+    "Will be sent in :language": "Lähetetään kielellä: :language",
     "The reply could not be translated: :error": "Vastausta ei voitu kääntää: :error",
     "The AI used its tokens for today": "Tekoäly käytti tämän päivän tokeninsa",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "Näissä postilaatikoissa tekoäly ei ole käytettävissä huomiseen asti: ei käännöksiä, yhteenvetoja eikä luonnoksia. Raja on Päivittäiset Tokenit Postilaatikkoa Kohden tekoälyn asetuksissa.",

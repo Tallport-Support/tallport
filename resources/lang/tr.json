@@ -764,7 +764,7 @@
     "This mailbox has used its AI tokens for today.": "Bu posta kutusu bugünkü yapay zekâ tokenlerini kullandı.",
     "Send as Written": "Yazıldığı Gibi Gönder",
     "Send Translation": "Çeviriyi Gönder",
-    "Sent in :language": "Gönderilecek dil: :language",
+    "Will be sent in :language": "Gönderilecek dil: :language",
     "The reply could not be translated: :error": "Yanıt çevrilemedi: :error",
     "The AI used its tokens for today": "Yapay zekâ bugünkü tokenlerini kullandı",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "Bu posta kutularında yapay zekâ yarına kadar kullanılamaz: çeviri, özet veya taslak yok. Sınır, Yapay Zekâ ayarlarındaki Posta Kutusu Başına Günlük Token alanıdır.",

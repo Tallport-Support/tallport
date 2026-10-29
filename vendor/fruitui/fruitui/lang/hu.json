@@ -72,6 +72,8 @@
   "Saturation {saturation}%, brightness {brightness}%": "Telítettség: {saturation}%, fényerő: {brightness}%",
   "Search": "Keresés",
   "Selection": "Kijelölés",
+  "Show Less": "Kevesebb megjelenítése",
+  "Show More": "Több megjelenítése",
   "Suggestions": "Javaslatok",
   "Teal": "Kékeszöld",
   "Text formatting": "Szövegformázás",

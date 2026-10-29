@@ -106,7 +106,7 @@ class EmailTranslationTest extends FeatureTestCase
         $composer = $this->composer()->call('open', 'reply')->assertSet('translating', true)
             ->assertSee('data-translating', false)->assertSee('wire:stream.replace="translation"', false);
         $this->streamed(fn () => $composer->call('previewTranslation', '<p>I will look into it.</p>'));
-        $composer->assertReturned('ready')->assertSee('Sent in Dutch')->assertDontSee('Translate Replies Into');
+        $composer->assertReturned('ready')->assertSee('Will be sent in Dutch')->assertDontSee('Translate Replies Into');
         ReplyTranslator::assertPrompted(fn ($prompt) => str_contains($prompt->prompt, 'Waar blijft mijn bestelling?') && str_contains($prompt->prompt, 'I will look into it.')
             && !str_contains($prompt->prompt, 'Kind regards'));
         $this->assertCount(0, $this->sentEmailsTo('casey@customer.example.org'));
@@ -217,7 +217,7 @@ class EmailTranslationTest extends FeatureTestCase
         ReplyTranslator::fake([['translation' => '<p>調べます。</p>', 'same_language' => false, 'note' => '']]);
         $composer = $this->composer()->call('open', 'reply');
         $this->streamed(fn () => $composer->call('previewTranslation', '<p>I will look into it.</p>'));
-        $composer->assertSee('Sent in Japanese');
+        $composer->assertSee('Will be sent in Japanese');
         $this->postAjax($this->agent, '/customers/ajax', ['action' => 'set_language', 'customer_id' => $this->conversation->customer_id, 'language' => 'en'])->assertJson(['status' => 'success']);
         $composer->dispatch('customer-language-changed')->assertSet('translation', null)->assertSet('translating', false);
 

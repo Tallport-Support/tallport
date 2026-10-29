@@ -19,8 +19,9 @@
             </x-fruit::alert>
         @else
             <section class="conv-translation-preview conv-translation-preview--ready" aria-label="{{ __('Translation') }}">
-                <p class="conv-translation-preview__label">{{ __('Sent in :language', ['language' => App\Ai\Settings::displayName($chat_language)]) }}</p>
-                <div class="conv-translation-preview__text f-prose" dir="auto">{!! safe_raw_html($translation['html']) !!}</div>
+                <p class="conv-translation-preview__label">{{ __('Will be sent in :language', ['language' => App\Ai\Settings::displayName($chat_language)]) }}</p>
+                {{-- A long one shows its first lines (FruitUI's Show More): the conversation stays in view. --}}
+                <x-fruit::more><div class="conv-translation-preview__text f-prose" dir="auto">{!! safe_raw_html($translation['html']) !!}</div></x-fruit::more>
                 <div class="conv-translation-preview__actions">
                     <x-fruit::button size="small" variant="ghost" x-on:click="editTranslation()">{{ __('Edit') }}</x-fruit::button>
                     <x-fruit::button size="small" variant="ghost" x-on:click="sendAsWritten()">{{ __('Send as Written') }}</x-fruit::button>

@@ -120,6 +120,7 @@ final class ComponentContract
         'message' => ['roles' => ['article', 'listitem'], 'options' => ['layout' => ['inline', 'stacked'], 'variant' => ['default', 'note', 'generated'], 'direction' => ['incoming', 'outgoing']]],
         'thread' => ['roles' => ['list'], 'options' => ['density' => ['comfortable', 'compact']]],
         'history' => ['roles' => ['region'], 'owns' => ['x-data', 'tabindex'], 'message' => 'owns its fruitHistory helper and keyboard focus. Put application state on a parent'],
+        'more' => ['owns' => ['x-data'], 'message' => 'owns its fruitMore helper. Put application state on a parent'],
         'message-event' => ['roles' => ['note', 'listitem']],
         'timeline' => ['roles' => ['list']],
         'timeline-item' => [],

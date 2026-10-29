@@ -764,7 +764,7 @@
     "This mailbox has used its AI tokens for today.": "Ta poštni predal je porabil svoje žetone AI za danes.",
     "Send as Written": "Pošlji Brez Prevoda",
     "Send Translation": "Pošlji Prevod",
-    "Sent in :language": "Poslano bo v jeziku: :language",
+    "Will be sent in :language": "Poslano bo v jeziku: :language",
     "The reply could not be translated: :error": "Odgovora ni bilo mogoče prevesti: :error",
     "The AI used its tokens for today": "AI je porabila svoje žetone za danes",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "V teh poštnih predalih AI do jutri ni na voljo: ni prevodov, povzetkov ali osnutkov. Omejitev je Dnevni Žetoni na Poštni Predal v nastavitvah AI.",

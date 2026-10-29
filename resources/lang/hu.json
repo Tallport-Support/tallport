@@ -764,7 +764,7 @@
     "This mailbox has used its AI tokens for today.": "Ez a postafiók elhasználta mai MI-tokenjeit.",
     "Send as Written": "Küldés Fordítás Nélkül",
     "Send Translation": "Fordítás Küldése",
-    "Sent in :language": "Küldés nyelve: :language",
+    "Will be sent in :language": "Küldés nyelve: :language",
     "The reply could not be translated: :error": "A választ nem sikerült lefordítani: :error",
     "The AI used its tokens for today": "Az MI elhasználta a mai tokenjeit",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "Ezekben a postafiókokban az MI holnapig nem érhető el: nincsenek fordítások, összefoglalók és piszkozatok. A korlát az MI beállításaiban a Napi Tokenek Postafiókonként.",

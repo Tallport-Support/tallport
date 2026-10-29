@@ -764,7 +764,7 @@
     "This mailbox has used its AI tokens for today.": "Această cutie poștală și-a epuizat tokenurile AI pentru azi.",
     "Send as Written": "Trimite Așa Cum Este Scris",
     "Send Translation": "Trimite Traducerea",
-    "Sent in :language": "Se va trimite în :language",
+    "Will be sent in :language": "Se va trimite în :language",
     "The reply could not be translated: :error": "Răspunsul nu a putut fi tradus: :error",
     "The AI used its tokens for today": "AI-ul și-a epuizat tokenurile pentru azi",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "În aceste cutii poștale AI-ul nu este disponibil până mâine: fără traduceri, rezumate sau schițe. Limita este Tokenuri Zilnice per Cutie Poștală în setările AI.",

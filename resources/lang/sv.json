@@ -764,7 +764,7 @@
     "This mailbox has used its AI tokens for today.": "Den här brevlådan har förbrukat sina AI-tokens för i dag.",
     "Send as Written": "Skicka Som Skrivet",
     "Send Translation": "Skicka Översättning",
-    "Sent in :language": "Skickas på :language",
+    "Will be sent in :language": "Skickas på :language",
     "The reply could not be translated: :error": "Det gick inte att översätta svaret: :error",
     "The AI used its tokens for today": "AI har förbrukat sina tokens för i dag",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "I de här inkorgarna är AI otillgänglig till i morgon: inga översättningar, sammanfattningar eller utkast. Gränsen är Dagliga Tokens Per Brevlåda i inställningarna för AI.",

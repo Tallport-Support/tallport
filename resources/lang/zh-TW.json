@@ -821,7 +821,7 @@
     "This mailbox has used its AI tokens for today.": "此信箱今天的 AI Token 已用完。",
     "Send as Written": "依原文傳送",
     "Send Translation": "傳送翻譯",
-    "Sent in :language": "將以:language傳送",
+    "Will be sent in :language": "將以:language傳送",
     "The reply could not be translated: :error": "無法翻譯此回覆：:error",
     "The AI used its tokens for today": "AI 已用完今天的 Token",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "在這些信箱中，AI 明天之前無法使用：沒有翻譯、摘要或草稿。上限為 AI 設定中的「每個信箱每日 Token 數」。",

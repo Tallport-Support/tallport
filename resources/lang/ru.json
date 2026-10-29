@@ -764,7 +764,7 @@
     "This mailbox has used its AI tokens for today.": "Этот ящик израсходовал свои токены ИИ на сегодня.",
     "Send as Written": "Отправить Без Перевода",
     "Send Translation": "Отправить Перевод",
-    "Sent in :language": "Будет отправлено на языке: :language",
+    "Will be sent in :language": "Будет отправлено на языке: :language",
     "The reply could not be translated: :error": "Не удалось перевести ответ: :error",
     "The AI used its tokens for today": "ИИ израсходовал свои токены на сегодня",
     "In these mailboxes the AI is unavailable until tomorrow: no translations, summaries or drafts. The limit is Daily Tokens Per Mailbox in the AI settings.": "В этих ящиках ИИ недоступен до завтра: ни переводов, ни сводок, ни черновиков. Лимит — Токенов в День на Ящик в настройках ИИ.",

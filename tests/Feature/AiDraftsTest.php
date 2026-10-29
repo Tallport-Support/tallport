@@ -142,6 +142,8 @@ class AiDraftsTest extends FeatureTestCase
         // The details card, the composer's first part; no draft, translation or actions of its own.
         $this->assertMatchesRegularExpression('/<form[^>]*conv-composer[^>]*>\s*(<!--.*?-->\s*)*<div wire:ignore><div class="ai-draft-panel"/', $chat_page);
         $this->assertStringContainsString('Dismiss Draft Details', $chat_page);
+        // Long notes and sources show their first lines (FruitUI's Show More): the conversation stays in view.
+        $this->assertMatchesRegularExpression('/<div class="f-suggestion__details"[^>]*><div class="f-more" x-data="fruitMore"/', $chat_page);
         $this->assertStringNotContainsString('Insert Into Reply', $chat_page);
         $this->assertStringNotContainsString('f-suggestion__body', $chat_page);
 
