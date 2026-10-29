@@ -238,7 +238,7 @@ class AiTranslationsTest extends FeatureTestCase
 
         // Still down: only the latest is tried.
         $prompts = [];
-        (new \App\Jobs\AiRetryTranslations())->handle();
+        \App\Jobs\AiRetryTranslations::dispatch();
         $this->assertCount(1, $prompts);
         $this->assertStringContainsString('Hallo?', $prompts[0]);
         $this->assertNull(Translations::get($latest->fresh(), 'en'));
@@ -246,7 +246,7 @@ class AiTranslationsTest extends FeatureTestCase
         // Back: the latest, then the other.
         $available = true;
         $prompts = [];
-        (new \App\Jobs\AiRetryTranslations())->handle();
+        \App\Jobs\AiRetryTranslations::dispatch();
         $this->assertCount(2, $prompts);
         $this->assertSame('Translated', Translations::get($latest->fresh(), 'en'));
         $this->assertSame('Translated', Translations::get($first->fresh(), 'en'));
@@ -255,14 +255,14 @@ class AiTranslationsTest extends FeatureTestCase
 
         // Nothing left: no prompt; nor for a failure tried enough, or older than the days it's tried for.
         $prompts = [];
-        (new \App\Jobs\AiRetryTranslations())->handle();
+        \App\Jobs\AiRetryTranslations::dispatch();
         $this->assertSame([], $prompts);
         Summaries::updateData($first, fn ($data) => ['errors' => ['en' => 'Error occurred'], 'retries' => ['en' => Translations::RETRY_TIMES]]);
-        (new \App\Jobs\AiRetryTranslations())->handle();
+        \App\Jobs\AiRetryTranslations::dispatch();
         $this->assertSame([], $prompts);
         Summaries::updateData($first, fn ($data) => ['errors' => ['en' => 'Error occurred']]);
         \App\Thread::whereKey($first->id)->update(['created_at' => now()->subDays(Translations::RETRY_DAYS + 1)]);
-        (new \App\Jobs\AiRetryTranslations())->handle();
+        \App\Jobs\AiRetryTranslations::dispatch();
         $this->assertSame([], $prompts);
     }
 
