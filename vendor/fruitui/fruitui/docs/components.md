@@ -1113,7 +1113,7 @@ The details sit in a Show More (below), so notes and sources longer than a few l
 
 ### Long content
 
-Content that can run long beside something the reader needs to keep in view, such as a reply's translation shown before it's sent or a suggestion's notes, goes in `x-fruit::more`. Collapsed, it shows the first four lines, the last faded, with a Show More button; Show Less collapses it again. Content only a line or two longer shows in full, without the button, and so does all content until fruitMore has measured it. It is measured again as its width or content changes, including a Livewire morph or a list rendered from script, and Tabbing to a link the clamp hides shows the rest. Set `--f-more-lines` for another number of lines. Screen readers read all of it either way.
+Content that can run long beside something the reader needs to keep in view, such as a reply's translation shown before it's sent or a suggestion's notes, goes in `x-fruit::more`. Collapsed, it shows the first four lines of text, the last faded, with a Show More button (the gap between two paragraphs isn't a line, so the button never sits under a blank one). Show Less collapses it again. Content only a line or two longer shows in full, without the button, and so does all content until fruitMore has measured it. It is measured again as its width or content changes, including a Livewire morph or a list rendered from script, and Tabbing to a link the clamp hides shows the rest. Set `--f-more-lines` for another number of lines. Screen readers read all of it either way.
 
 ```blade
 <x-fruit::more>

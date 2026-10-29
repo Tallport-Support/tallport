@@ -670,17 +670,35 @@ function te({ threshold: e = 160 } = {}) {
 }
 //#endregion
 //#region src/js/more.js
-function ne() {
+function ne(e) {
+	let t = e.getBoundingClientRect().top - e.scrollTop, n = e.ownerDocument.createTreeWalker(e, NodeFilter.SHOW_TEXT), r = e.ownerDocument.createRange(), i = [];
+	for (; n.nextNode();) {
+		r.selectNodeContents(n.currentNode);
+		for (let e of r.getClientRects()) e.width && e.height && i.push({
+			top: e.top - t,
+			bottom: e.bottom - t
+		});
+	}
+	i.sort((e, t) => e.top - t.top);
+	let a = [];
+	for (let e of i) {
+		let t = a.at(-1);
+		t && e.top < t.bottom - 1 ? t.bottom = Math.max(t.bottom, e.bottom) : a.push(e);
+	}
+	return a;
+}
+function re() {
 	let e, t, n;
 	return {
 		overflowing: !1,
 		showingAll: !1,
+		height: 0,
 		init() {
 			let r = this.$el, i = r.querySelector(":scope > .f-more__content");
 			if (!i) return;
 			let a = () => {
-				let e = getComputedStyle(i), t = parseFloat(e.lineHeight) || parseFloat(e.fontSize) * 1.2, n = parseFloat(getComputedStyle(r).getPropertyValue("--f-more-lines")) || 4;
-				this.overflowing = i.scrollHeight > (n + 2) * t;
+				let e = getComputedStyle(i), t = parseFloat(e.lineHeight) || parseFloat(e.fontSize) * 1.2, n = parseFloat(getComputedStyle(r).getPropertyValue("--f-more-lines")) || 4, a = ne(i);
+				this.height = Math.ceil(a[n - 1]?.bottom ?? n * t), this.overflowing = a.length > n + 2 || i.scrollHeight - this.height > 4 * t;
 			}, o = () => {
 				cancelAnimationFrame(n), n = requestAnimationFrame(a);
 			};
@@ -710,7 +728,7 @@ var O = (e) => !!(e?.isConnected && e.getClientRects().length), k = "a:is(.f-for
 		i.top >= r.top && i.bottom <= r.bottom || (n.scrollTop += i.top + i.height / 2 - (r.top + r.height / 2));
 	}
 };
-function re() {
+function ie() {
 	let e, t;
 	return {
 		init() {
@@ -742,19 +760,19 @@ function re() {
 }
 //#endregion
 //#region src/js/busy.js
-var ie = ".f-button:is([aria-busy=\"true\"], [data-loading])";
-function ae(e = document) {
+var ae = ".f-button:is([aria-busy=\"true\"], [data-loading])";
+function oe(e = document) {
 	let t = (e) => {
-		e.target.closest?.(ie) && (e.preventDefault(), e.stopImmediatePropagation());
+		e.target.closest?.(ae) && (e.preventDefault(), e.stopImmediatePropagation());
 	};
 	return e.addEventListener("click", t, !0), () => e.removeEventListener("click", t, !0);
 }
 //#endregion
 //#region src/js/disabled.js
-var oe = ":is(.f-button, .f-menu-item, .f-tab, summary)[aria-disabled=\"true\"]";
-function se(e = document) {
+var se = ":is(.f-button, .f-menu-item, .f-tab, summary)[aria-disabled=\"true\"]";
+function ce(e = document) {
 	let t = (e) => {
-		e.target.closest?.(oe) && (e.preventDefault(), e.stopImmediatePropagation());
+		e.target.closest?.(se) && (e.preventDefault(), e.stopImmediatePropagation());
 	};
 	return e.addEventListener("click", t, !0), () => e.removeEventListener("click", t, !0);
 }
@@ -833,7 +851,7 @@ function P(e, t, { query: n, pick: r, filter: i = !0, exclude: a = () => !1, anc
 }
 //#endregion
 //#region src/js/autocomplete.js
-function ce() {
+function le() {
 	let e, t, n, r = () => e.dataset.fruitTrigger || "", i = () => {
 		let e = t.selectionStart ?? t.value.length, n = t.value.slice(0, e), i = n.search(/[^\s,]*$/), a = n.slice(i), o = r();
 		return o ? a.startsWith(o) ? {
@@ -869,7 +887,7 @@ function ce() {
 }
 //#endregion
 //#region src/js/command-palette.js
-function le() {
+function ue() {
 	let e, t, n, r, i, a, o = -1, s = () => [...n.querySelectorAll("[role=\"option\"]")].filter((e) => !e.hidden && !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true"), c = (e) => {
 		let r = s();
 		o = r.length ? (e + r.length) % r.length : -1;
@@ -917,13 +935,13 @@ function le() {
 }
 //#endregion
 //#region src/js/dropzone.js
-var ue = (e, t) => {
+var de = (e, t) => {
 	let n = (e.accept || "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
 	if (!n.length) return !0;
 	let r = t.name.toLowerCase(), i = (t.type || "").toLowerCase();
 	return n.some((e) => e.startsWith(".") ? r.endsWith(e) : e.endsWith("/*") ? i.startsWith(e.slice(0, -1)) : i === e);
 };
-function de() {
+function fe() {
 	let e;
 	return {
 		init() {
@@ -940,7 +958,7 @@ function de() {
 			}), r("drop", (e) => {
 				if (!a(e) || n.disabled) return;
 				e.preventDefault(), i = 0, t.removeAttribute("data-dragging");
-				let r = [...e.dataTransfer.files].filter((e) => ue(n, e));
+				let r = [...e.dataTransfer.files].filter((e) => de(n, e));
 				if (!r.length) return;
 				let o = new DataTransfer();
 				for (let e of n.multiple ? r : r.slice(0, 1)) o.items.add(e);
@@ -999,7 +1017,7 @@ function U(e, t, n, { onOpen: r, onFocus: i }) {
 		}
 	};
 }
-function fe() {
+function pe() {
 	let e, t, n, r, i, a, s = /* @__PURE__ */ new Date(), c = /* @__PURE__ */ new Date(), l = () => L(t.value), u = () => [L(t.min), L(t.max)], f = (e) => {
 		let [t, n] = u();
 		return !!(t && e < t || n && e > n);
@@ -1089,7 +1107,7 @@ function fe() {
 		}
 	};
 }
-var pe = [
+var me = [
 	["Red", "#ff3b30"],
 	["Orange", "#ff9500"],
 	["Yellow", "#ffcc00"],
@@ -1103,13 +1121,13 @@ var pe = [
 	["Pink", "#ff2d55"],
 	["Brown", "#a2845e"],
 	["Gray", "#8e8e93"]
-], W = 7, me = (e) => [
+], W = 7, he = (e) => [
 	1,
 	3,
 	5
 ].map((t) => parseInt(e.slice(t, t + 2), 16) / 255);
-function he(e) {
-	let [t, n, r] = me(e), i = Math.max(t, n, r), a = i - Math.min(t, n, r), o = 0;
+function ge(e) {
+	let [t, n, r] = he(e), i = Math.max(t, n, r), a = i - Math.min(t, n, r), o = 0;
 	return a && (o = i === t ? (n - r) / a % 6 : i === n ? (r - t) / a + 2 : (t - n) / a + 4), [
 		(o * 60 + 360) % 360,
 		i ? a / i : 0,
@@ -1127,14 +1145,14 @@ function G(e, t, n) {
 		r(1)
 	].map((e) => Math.round(e * 255).toString(16).padStart(2, "0")).join("")}`;
 }
-function ge() {
+function _e() {
 	let e, t, n, r, i, a, s, c, l, u, f, m = [
 		0,
 		0,
 		0
 	], h = () => {
 		let e = [...t.list?.options ?? []].filter((e) => /^#[0-9a-f]{6}$/i.test(e.value)).map((e) => [e.label || e.value, e.value.toLowerCase()]);
-		return e.length ? e : pe;
+		return e.length ? e : me;
 	}, g = () => [...r.querySelectorAll("[role=\"option\"]")], _ = () => {
 		let e = t.value.toLowerCase();
 		r.replaceChildren(...h().map(([t, n]) => {
@@ -1152,7 +1170,7 @@ function ge() {
 			brightness: d(i)
 		})), l.value = String(Math.round(n)), document.activeElement !== u && (u.value = t.value);
 	}, y = () => {
-		let [e, n, r] = he(t.value);
+		let [e, n, r] = ge(t.value);
 		m = [
 			n && r ? e : m[0],
 			n,
@@ -1280,8 +1298,8 @@ function ge() {
 }
 //#endregion
 //#region src/js/editor-content.js
-var _e = Symbol.for("fruitui.editor");
-function ve(e, t, { insert: n, set: r, toMarkdown: i, commit: a }) {
+var ve = Symbol.for("fruitui.editor");
+function ye(e, t, { insert: n, set: r, toMarkdown: i, commit: a }) {
 	let o = new AbortController(), s = (o) => {
 		let { html: s, markdown: c, mode: l, target: u } = o.detail ?? {};
 		if ((o.currentTarget !== window || u === t.id || u === t.name) && !(t.matches(":disabled") || t.readOnly)) {
@@ -1311,7 +1329,7 @@ function K(e) {
 	for (let e of t.querySelectorAll("p, div, li, h1, h2, h3, h4, h5, h6, blockquote, pre")) e.append("\n\n");
 	return t.textContent.replace(/\n{3,}/g, "\n\n").trim();
 }
-function ye() {
+function be() {
 	let e, t, n;
 	return {
 		init() {
@@ -1320,7 +1338,7 @@ function ye() {
 				e.key !== "Enter" || e.shiftKey || e.isComposing || e.defaultPrevented || this.$el.dataset.fruitEnter === "submit" && n.form && (e.preventDefault(), n.form.requestSubmit());
 			}, n.addEventListener("keydown", t);
 			let r = ({ html: e, markdown: t }) => this.$el.dataset.fruitMode === "markdown" ? t ?? (e ? K(e) : "") : e ?? t ?? "";
-			e = ve(this.$el, n, {
+			e = ye(this.$el, n, {
 				toMarkdown: () => p(n, n.value ? K(n.value) : "", { commit: !1 }),
 				insert: (e) => {
 					let t = r(e), i = n.selectionStart ?? n.value.length, a = n.selectionEnd ?? i;
@@ -1337,7 +1355,7 @@ function ye() {
 }
 //#endregion
 //#region src/js/selection.js
-function be() {
+function xe() {
 	let e, t, n, r, i, a, s, c, l, u = [], f = -1, h = !1, g = () => t.selectedOptions[0]?.label || "", _ = () => {
 		h = !1, l.hide(), r.hidden = !0, n.setAttribute("aria-expanded", "false"), n.removeAttribute("aria-activedescendant");
 	}, v = (e) => {
@@ -1386,7 +1404,7 @@ function be() {
 		}
 	};
 }
-function xe() {
+function Se() {
 	let e, t, n, r, i, a, s, c, l, u, d, f, h, g = [], _ = () => {
 		f && (t.hasAttribute("name") && (d = t.name.replace(/\[\]$/, ""), t.removeAttribute("name")), f.replaceChildren(...g.map((e) => {
 			let n = document.createElement("input");
@@ -1493,7 +1511,7 @@ function xe() {
 		}
 	};
 }
-function Se() {
+function Ce() {
 	let e, t, n = () => {
 		let t = Math.max(0, Number.parseInt(e.dataset.count ?? "0", 10) || 0), n = (e.dataset.fruitTemplate || ":count selected").split("|"), r = e.closest("[lang]")?.lang || navigator.language || "en", i = n.length > 1 && new Intl.PluralRules(r).select(t) !== "one" ? n[1] : n[0], a = e.querySelector(".f-selection-bar__count");
 		a && (a.textContent = i.trim().replace(":count", String(t))), e.hidden = t === 0;
@@ -1514,15 +1532,15 @@ function Se() {
 //#region src/js/navigation.js
 var q = "[role=\"menuitem\"], [role=\"menuitemcheckbox\"], [role=\"menuitemradio\"]", J = (e, t) => [...e.querySelectorAll(q)].filter((e) => t(e) && !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true" && e.getClientRects().length), Y = (e, t) => {
 	e.length && e[(t + e.length) % e.length].focus();
-}, Ce = (e) => [...e.childNodes].filter((e) => !e.classList?.contains("f-menu-item__shortcut")).map((e) => e.textContent).join("").trim().toLocaleLowerCase();
-function X(e, t, n) {
+}, X = (e) => [...e.childNodes].filter((e) => !e.classList?.contains("f-menu-item__shortcut")).map((e) => e.textContent).join("").trim().toLocaleLowerCase();
+function Z(e, t, n) {
 	let r = t.indexOf(document.activeElement);
 	return [
 		"ArrowDown",
 		"ArrowUp",
 		"Home",
 		"End"
-	].includes(e.key) ? (e.preventDefault(), Y(t, e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : r + (e.key === "ArrowDown" ? 1 : -1)), !0) : e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), clearTimeout(n.timer), n.search += e.key.toLocaleLowerCase(), [...t.slice(r + 1), ...t.slice(0, r + 1)].find((e) => Ce(e).startsWith(n.search))?.focus(), n.timer = setTimeout(() => {
+	].includes(e.key) ? (e.preventDefault(), Y(t, e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : r + (e.key === "ArrowDown" ? 1 : -1)), !0) : e.key.length === 1 && e.key !== " " && !e.ctrlKey && !e.metaKey && !e.altKey && (e.preventDefault(), clearTimeout(n.timer), n.search += e.key.toLocaleLowerCase(), [...t.slice(r + 1), ...t.slice(0, r + 1)].find((e) => X(e).startsWith(n.search))?.focus(), n.timer = setTimeout(() => {
 		n.search = "";
 	}, 600), !0);
 }
@@ -1547,7 +1565,7 @@ function we() {
 				if (n.target === t && ["ArrowDown", "ArrowUp"].includes(n.key)) {
 					if (t.getAttribute("aria-disabled") === "true") return;
 					n.preventDefault(), e.open = !0, r.show(), u(n.key === "ArrowDown" ? 0 : i.length - 1);
-				} else e.open && n.key === "Tab" ? o = setTimeout(() => r.close(!1), 0) : e.open && X(n, i, s);
+				} else e.open && n.key === "Tab" ? o = setTimeout(() => r.close(!1), 0) : e.open && Z(n, i, s);
 			}, a = (e) => {
 				let t = e.target.closest(q);
 				c(t) && !t.matches(":disabled") && t.getAttribute("aria-disabled") !== "true" && r.close(!0);
@@ -1558,7 +1576,7 @@ function we() {
 		}
 	};
 }
-function Z() {
+function Te() {
 	let e, t, n, r, i, a, o, s, c, l = {
 		x: 0,
 		y: 0
@@ -1599,7 +1617,7 @@ function Z() {
 				let i = n.target.getBoundingClientRect();
 				p(r, T(t) ? i.right : i.left, i.bottom, n.target);
 			}), g(e, "keydown", (t) => {
-				d(t.target) && (t.key === "Escape" ? (t.preventDefault(), t.stopPropagation(), h(!0)) : t.key === "Tab" ? (t.preventDefault(), h(!0)) : X(t, J(e, d), u));
+				d(t.target) && (t.key === "Escape" ? (t.preventDefault(), t.stopPropagation(), h(!0)) : t.key === "Tab" ? (t.preventDefault(), h(!0)) : Z(t, J(e, d), u));
 			}), g(e, "click", (e) => {
 				let t = e.target.closest(q);
 				d(t) && !t.matches(":disabled") && t.getAttribute("aria-disabled") !== "true" && h(!0);
@@ -1612,7 +1630,7 @@ function Z() {
 		}
 	};
 }
-function Te() {
+function Ee() {
 	let e, t, n, r, i, a, o;
 	return {
 		init() {
@@ -1637,7 +1655,7 @@ function Te() {
 		}
 	};
 }
-function Ee() {
+function De() {
 	let e, t, n, r, i = (t) => t?.closest("[data-fruit-tabs], [x-data^=\"fruitTabs\"]") === e, a = () => [...e.querySelectorAll("[role=\"tab\"]")].filter(i), o = () => a().filter((e) => !e.matches(":disabled") && e.getAttribute("aria-disabled") !== "true"), s = (t) => {
 		for (let n of a()) {
 			let r = n === t;
@@ -1674,7 +1692,7 @@ function Ee() {
 		}
 	};
 }
-function De() {
+function Oe() {
 	let e;
 	return {
 		init() {
@@ -1696,7 +1714,7 @@ function De() {
 //#region src/js/alpine.js
 var Q = !1;
 function $(e) {
-	e[_e] || e.data("fruitEditor", ye), e.data("fruitToast", n), e.magic("toast", () => t), e.data("fruitConfirmer", a), e.magic("confirm", () => i), e.data("fruitCopy", c), e.data("fruitListSelection", l), e.magic("dialog", () => b), e.data("fruitCombobox", be), e.data("fruitTokenField", xe), e.data("fruitSelectionBar", Se), e.data("fruitAutocomplete", ce), e.data("fruitCommandPalette", le), e.data("fruitDropzone", de), e.data("fruitMenu", we), e.data("fruitDatePicker", fe), e.data("fruitColorPicker", ge), e.data("fruitContextMenu", Z), e.data("fruitTooltip", Te), e.data("fruitTabs", Ee), e.data("fruitSplitter", ee), e.data("fruitHistory", te), e.data("fruitMore", ne), e.data("fruitDrilldown", re), e.data("fruitFloatingDisclosure", De), e.data("fruitDialogModel", C), typeof window < "u" && !Q && (S(window), x(document), w(document), ae(document), se(document), Q = !0);
+	e[ve] || e.data("fruitEditor", be), e.data("fruitToast", n), e.magic("toast", () => t), e.data("fruitConfirmer", a), e.magic("confirm", () => i), e.data("fruitCopy", c), e.data("fruitListSelection", l), e.magic("dialog", () => b), e.data("fruitCombobox", xe), e.data("fruitTokenField", Se), e.data("fruitSelectionBar", Ce), e.data("fruitAutocomplete", le), e.data("fruitCommandPalette", ue), e.data("fruitDropzone", fe), e.data("fruitMenu", we), e.data("fruitDatePicker", pe), e.data("fruitColorPicker", _e), e.data("fruitContextMenu", Te), e.data("fruitTooltip", Ee), e.data("fruitTabs", De), e.data("fruitSplitter", ee), e.data("fruitHistory", te), e.data("fruitMore", re), e.data("fruitDrilldown", ie), e.data("fruitFloatingDisclosure", Oe), e.data("fruitDialogModel", C), typeof window < "u" && !Q && (S(window), x(document), w(document), oe(document), ce(document), Q = !0);
 }
 //#endregion
 //#region src/js/livewire.js

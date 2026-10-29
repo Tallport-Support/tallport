@@ -1051,8 +1051,9 @@ textarea.f-input {
     margin-bottom: 0;
   }
 
-/* Long content as its first few lines, the last faded, with Show More for the rest (fruitMore
-     marks data-overflowing once the content is more than two lines longer). */
+/* Long content as its first few lines of text, the last faded, with Show More for the rest
+     (fruitMore marks data-overflowing once the content is more than two lines longer, and sets
+     --f-more-height where the last line shown ends). */
 
 .f-more {
     display: grid;
@@ -1068,7 +1069,7 @@ textarea.f-input {
   }
 
 .f-more[data-overflowing]:has(> .f-more__toggle[aria-expanded='false']) > .f-more__content {
-    max-height: calc(var(--f-more-lines, 4) * 1lh);
+    max-height: var(--f-more-height, calc(var(--f-more-lines, 4) * 1lh));
     overflow: hidden;
     -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 1lh), transparent);
     mask-image: linear-gradient(to bottom, black calc(100% - 1lh), transparent);

@@ -343,9 +343,9 @@
       "more": {
         "purpose": "Show long content as its first few lines, with a button for the rest.",
         "element": "`div` holding the content and, after it, a native `button type=button` (Show More, Show Less) with `aria-expanded`.",
-        "state": "fruitMore sets `data-overflowing` while the content is more than two lines longer than `--f-more-lines` (4), measuring again as its width or content changes, and binds the button's `aria-expanded`. Collapsed, the content shows that many lines, the last faded; content only a line or two longer, and all content before fruitMore runs, shows in full without the button.",
+        "state": "fruitMore sets `data-overflowing` while the content is more than two lines longer than `--f-more-lines` (4), measuring again as its width or content changes, and binds the button's `aria-expanded`. Collapsed, the content shows that many lines of text (a gap between paragraphs isn't one), the last faded, and fruitMore binds `--f-more-height` to where the last one ends; content only a line or two longer, and all content before fruitMore runs, shows in full without the button.",
         "keyboard": "Native button: Enter and Space show more or less. Tabbing to a link the clamp hides shows the rest.",
-        "options": "Slot: the content (prose, lists, sections). `--f-more-lines` sets how many lines show. Suggestion's `details` use it, and so can a translation shown before it's sent. Screen readers read all the content either way."
+        "options": "Slot: the content (prose, lists, sections). `--f-more-lines` sets how many lines show, read when the content is measured. Suggestion's `details` use it, and so can a translation shown before it's sent. Screen readers read all the content either way."
       }
     }
   },

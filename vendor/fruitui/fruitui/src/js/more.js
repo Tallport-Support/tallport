@@ -1,14 +1,42 @@
 /**
- * Long content shown as its first few lines (x-fruit::more). `overflowing` turns true while the
- * content is more than two lines taller than `--f-more-lines` (4), so Show More never hides just a
- * line or two; `showingAll` while the reader has asked for the rest. The content is measured again
- * as its width or the content itself changes (a Livewire morph, a list rendered from script).
+ * The content's lines of text, top to bottom, unscrolled and relative to its top. Lines are counted
+ * from the text itself, so the gap between two paragraphs or list items is never a line.
+ */
+function textLines(content) {
+  const origin = content.getBoundingClientRect().top - content.scrollTop;
+  const walker = content.ownerDocument.createTreeWalker(content, NodeFilter.SHOW_TEXT);
+  const range = content.ownerDocument.createRange();
+  const rects = [];
+  while (walker.nextNode()) {
+    range.selectNodeContents(walker.currentNode);
+    for (const rect of range.getClientRects())
+      if (rect.width && rect.height) rects.push({ top: rect.top - origin, bottom: rect.bottom - origin });
+  }
+  rects.sort((a, b) => a.top - b.top);
+  const lines = [];
+  for (const rect of rects) {
+    const last = lines.at(-1);
+    // Text on the same line (a link, bold) overlaps it vertically.
+    if (last && rect.top < last.bottom - 1) last.bottom = Math.max(last.bottom, rect.bottom);
+    else lines.push(rect);
+  }
+  return lines;
+}
+
+/**
+ * Long content shown as its first few lines of text (x-fruit::more). `overflowing` turns true while
+ * more than two lines of text follow the first `--f-more-lines` (4), or other content (a picture)
+ * makes it more than four lines taller, so Show More never hides just a line or two; `height` is
+ * where the last line shown ends, and `showingAll` is true while the reader has asked for the rest.
+ * The content is measured again as its width or the content itself changes (a Livewire morph, a
+ * list rendered from script).
  */
 export function fruitMore() {
   let resize, mutation, frame;
   return {
     overflowing: false,
     showingAll: false,
+    height: 0,
     init() {
       const root = this.$el;
       const content = root.querySelector(':scope > .f-more__content');
@@ -16,8 +44,10 @@ export function fruitMore() {
       const measure = () => {
         const style = getComputedStyle(content);
         const line = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.2;
-        const lines = parseFloat(getComputedStyle(root).getPropertyValue('--f-more-lines')) || 4;
-        this.overflowing = content.scrollHeight > (lines + 2) * line;
+        const shown = parseFloat(getComputedStyle(root).getPropertyValue('--f-more-lines')) || 4;
+        const lines = textLines(content);
+        this.height = Math.ceil(lines[shown - 1]?.bottom ?? shown * line);
+        this.overflowing = lines.length > shown + 2 || content.scrollHeight - this.height > 4 * line;
       };
       // A frame later: clamping changes the content's size, which would notify the observer again at once.
       const schedule = () => {
