@@ -266,6 +266,37 @@ class AiTranslationsTest extends FeatureTestCase
         $this->assertSame([], $prompts);
     }
 
+    /**
+     * A primary model too slow to answer (a stream, which no HTTP time limit cuts off as a whole)
+     * is stopped at its share of the time, so the backup still answers.
+     */
+    public function testASlowPrimaryLeavesTimeForTheBackup()
+    {
+        Option::set('aiassistant.providers', [
+            ['id' => 'p1', 'provider' => 'digitalocean', 'api_key' => encrypt('sk-one'), 'base_url' => ''],
+            ['id' => 'p2', 'provider' => 'xai', 'api_key' => encrypt('sk-two'), 'base_url' => ''],
+        ]);
+        Option::set('aiassistant.models', ['translations' => ['primary' => ['provider' => 'p1', 'model' => 'openai-gpt-6-luna'], 'backup' => ['provider' => 'p2', 'model' => 'grok-4.7']]]);
+        Option::$cache = [];
+        $calls = 0;
+        ThreadTranslator::fake(function () use (&$calls) {
+            // The primary's share of 3 seconds: 1.
+            if (++$calls == 1) {
+                usleep(1300000);
+            }
+
+            return ['translation' => 'Where is my order?', 'same_language' => false, 'detected_language' => 'nl'];
+        });
+
+        [$answer] = (new ThreadTranslator('en'))->streamJson('Translate the message', null, microtime(true) + 3);
+        $this->assertSame('Where is my order?', $answer['translation']);
+        $this->assertSame(2, $calls);
+        $this->assertSame([
+            ['openai-gpt-6-luna', \App\Ai\Usage::STATUS_FAILED_THEN_BACKUP, 'The AI took too long to answer.'],
+            ['grok-4.7', \App\Ai\Usage::STATUS_OK, null],
+        ], \App\Ai\Usage::orderBy('id')->get()->map(fn ($call) => [$call->model, $call->status, $call->error])->all());
+    }
+
     public function testInvalidChatBatchAnswersUseTheBackupModel()
     {
         $first_id = $this->first()->id;

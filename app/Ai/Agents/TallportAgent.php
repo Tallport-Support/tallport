@@ -134,6 +134,12 @@ abstract class TallportAgent implements Agent, HasProviderOptions
             $this->attempt['response'] = $response;
             $text = '';
             foreach ($response as $event) {
+                // A stream has no time limit as a whole (only each read waits at most $remaining):
+                // stopped at the model's share, so the backup gets the rest (withAttempts()).
+                if (microtime(true) - $started > $remaining) {
+                    $this->attempt['timed_out'] = true;
+                    throw new \RuntimeException(__('The AI took too long to answer.'));
+                }
                 // $on_activity: anything the model sends, its reasoning too (before it writes).
                 if ($on_activity) {
                     $on_activity();
