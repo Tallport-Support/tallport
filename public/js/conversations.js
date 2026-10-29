@@ -2224,9 +2224,11 @@ document.addEventListener('alpine:init', function () {
 			},
 
 			// A language's name in the page's language ("English"), else its code.
+			// As App\Ai\Settings::displayName() names it: "Chinese (Simplified)", capitalized.
 			languageName: function (code) {
 				try {
-					return new Intl.DisplayNames([document.documentElement.lang || 'en'], {type: 'language'}).of(code) || code;
+					var name = new Intl.DisplayNames([document.documentElement.lang || 'en'], {type: 'language', languageDisplay: 'standard'}).of(code) || code;
+					return name.charAt(0).toUpperCase() + name.slice(1);
 				} catch (e) {
 					return code;
 				}
