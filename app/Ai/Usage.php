@@ -40,6 +40,8 @@ class Usage extends Model
     const STATUS_FAST_REFUSED = 'fast_refused';
     // The model refused fast mode (the provider's faster tier) and was called again without it.
     const STATUS_FAST_TIER_REFUSED = 'fast_tier_refused';
+    // The model refused pictures and was called again without them.
+    const STATUS_IMAGES_REFUSED = 'images_refused';
 
     const ERROR_LENGTH = 1000;
 
@@ -286,6 +288,7 @@ class Usage extends Model
             self::STATUS_FAILED_THEN_BACKUP => [__('Failed, Backup Tried'), 'warning'],
             self::STATUS_FAST_REFUSED       => [__('Less Reasoning Refused'), 'warning'],
             self::STATUS_FAST_TIER_REFUSED  => [__('Fast Mode Refused'), 'warning'],
+            self::STATUS_IMAGES_REFUSED     => [__('Images Refused'), 'warning'],
         ][$this->status] ?? [$this->status, 'neutral'];
     }
 
@@ -313,7 +316,7 @@ class Usage extends Model
         $calls = self::whereIn('feature', self::SETTING_FEATURES[$setting_feature] ?? [$setting_feature])
             ->where('provider_id', $provider_id)
             ->where('model', $model)
-            ->whereNotIn('status', [self::STATUS_FAST_REFUSED, self::STATUS_FAST_TIER_REFUSED]);
+            ->whereNotIn('status', [self::STATUS_FAST_REFUSED, self::STATUS_FAST_TIER_REFUSED, self::STATUS_IMAGES_REFUSED]);
         $last = (clone $calls)->orderBy('id', 'desc')->first();
         if (!$last) {
             return null;

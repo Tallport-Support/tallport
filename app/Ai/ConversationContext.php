@@ -3,8 +3,11 @@
 namespace App\Ai;
 
 use App\Ai\Agents\TallportAgent;
+use App\Attachment;
 use App\Conversation;
+use App\Misc\AttachmentImages;
 use App\Thread;
+use Laravel\Ai\Files\Image;
 
 /**
  * The same bounded context for summaries, drafts and translations. Summary updates read
@@ -18,6 +21,11 @@ class ConversationContext
     const MAX_MEMORY_CHARS = 6000;
     const MAX_DOCUMENT_CHARS = 6000;
     const MAX_DOCUMENTATION_CHARS = 12000;
+
+    /**
+     * Pictures customers sent, shown to the models that draft and talk to them (images()).
+     */
+    const MAX_IMAGES = 4;
 
     public static function build(Conversation $conversation, $language, $incremental = false, $before_id = null, ?float $deadline = null, ?Thread $target = null, ?callable $on_step = null)
     {
@@ -141,6 +149,34 @@ class ConversationContext
         }
 
         return $best;
+    }
+
+    /**
+     * The newest pictures in the customer's messages of a context (build()), oldest first, for
+     * TallportAgent::withImages(): screenshots and photos, not icons or logos (AttachmentImages::forAi()).
+     */
+    public static function images(array $context)
+    {
+        $ids = array_column(array_filter($context['conversation']['messages'], fn ($message) => $message['type'] == 'customer_to_staff'), 'id');
+        if (!$ids) {
+            return [];
+        }
+        $images = [];
+        foreach (Attachment::whereIn('thread_id', $ids)->orderBy('thread_id', 'desc')->orderBy('id', 'desc')->get() as $attachment) {
+            if (count($images) >= self::MAX_IMAGES) {
+                break;
+            }
+            $content = AttachmentImages::forAi($attachment);
+            if ($content !== null) {
+                $images[] = [
+                    'message_id' => (int) $attachment->thread_id,
+                    'file_name' => mb_substr((string) $attachment->file_name, 0, 200),
+                    'file' => Image::fromBase64(base64_encode($content), 'image/jpeg'),
+                ];
+            }
+        }
+
+        return array_reverse($images);
     }
 
     public static function text(Thread $thread)

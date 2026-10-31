@@ -7,12 +7,14 @@ use App\Ai\CustomerContext;
 use App\Ai\Document;
 use App\Ai\Documents;
 use App\Ai\DraftJob;
+use App\Attachment;
 use App\Conversation;
 use App\Option;
 use App\Thread;
 use Illuminate\Http\Client\Request as HttpRequest;
 use Illuminate\Support\Facades\Http;
 use Laravel\Ai\Embeddings;
+use Laravel\Ai\Files\Base64Image;
 use Tests\FeatureTestCase;
 
 /**
@@ -286,6 +288,55 @@ class AiDraftsTest extends FeatureTestCase
 
         $this->assertSame('Hallo van de backup', end($events)['draft']);
         ReplyDrafter::assertPromptedTimes(2);
+    }
+
+    /**
+     * Pictures the customer sent are shown to the drafter, listed in the prompt with their
+     * message: the newest four, as JPEGs of at most 1568 pixels; not icons, other files or staff's.
+     */
+    public function testDraftSeesTheCustomersPictures()
+    {
+        $thread = $this->conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->first();
+        $files = ['old.png' => [400, 300], 'error.png' => [1200, 800], 'icon.png' => [40, 40], 'photo.jpg' => [3136, 2000], 'manual.pdf' => null, 'settings.png' => [800, 1600], 'crash.png' => [500, 900]];
+        foreach ($files as $name => $size) {
+            $type = str_ends_with($name, '.jpg') ? 'jpeg' : 'png';
+            Attachment::create($name, $size ? 'image/'.$type : 'application/pdf', null, $size ? $this->picture($size[0], $size[1], $type) : '%PDF-1.4', null, false, $thread->id);
+        }
+        $reply = Thread::create($this->conversation, Thread::TYPE_MESSAGE, 'See the picture.', ['source_via' => Thread::PERSON_USER, 'source_type' => Thread::SOURCE_TYPE_WEB, 'created_by_user_id' => $this->agent->id]);
+        Attachment::create('staff.png', 'image/png', null, $this->picture(600, 400), null, false, $reply->id);
+        $seen = null;
+        ReplyDrafter::fake(function ($prompt, $attachments) use (&$seen) {
+            $seen = [$prompt, collect($attachments)->all()];
+
+            return $this->draft();
+        });
+
+        $this->draftEvents($this->agent);
+
+        [$prompt, $attachments] = $seen;
+        $this->assertSame(1, preg_match('#<images>\n(.*?)\n</images>#s', $prompt, $match));
+        $this->assertSame([
+            ['image' => 1, 'message_id' => $thread->id, 'file_name' => 'error.png'],
+            ['image' => 2, 'message_id' => $thread->id, 'file_name' => 'photo.jpg'],
+            ['image' => 3, 'message_id' => $thread->id, 'file_name' => 'settings.png'],
+            ['image' => 4, 'message_id' => $thread->id, 'file_name' => 'crash.png'],
+        ], json_decode($match[1], true));
+        $this->assertContainsOnlyInstancesOf(Base64Image::class, $attachments);
+        $this->assertSame(['image/jpeg'], array_unique(array_map(fn ($file) => $file->mimeType(), $attachments)));
+        $this->assertSame([[1200, 800], [1568, 1000], [784, 1568], [500, 900]], array_map(fn ($file) => array_slice(getimagesizefromstring($file->content()), 0, 2), $attachments));
+    }
+
+    /**
+     * A picture made with GD.
+     */
+    protected function picture($width, $height, $type = 'png')
+    {
+        $image = imagecreatetruecolor($width, $height);
+        imagefilledrectangle($image, 0, 0, intdiv($width, 2), $height - 1, imagecolorallocate($image, 255, 0, 0));
+        ob_start();
+        $type == 'png' ? imagepng($image) : imagejpeg($image, null, 90);
+
+        return ob_get_clean();
     }
 
     public function testInvalidCompletedDraftsUseTheBackupModel()

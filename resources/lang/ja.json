@@ -2002,5 +2002,6 @@
     "High Confidence": "信頼度：高",
     "Dismiss Draft Details": "下書きの詳細を非表示",
     "The AI isn’t answering right now": "AI が現在応答していません",
-    "The server didn’t answer. Try again in a moment.": "サーバーが応答しませんでした。しばらくしてからもう一度お試しください。"
+    "The server didn’t answer. Try again in a moment.": "サーバーが応答しませんでした。しばらくしてからもう一度お試しください。",
+    "Images Refused": "画像拒否"
 }

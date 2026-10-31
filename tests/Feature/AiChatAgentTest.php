@@ -83,13 +83,17 @@ class AiChatAgentTest extends FeatureTestCase
     }
 
     /**
-     * The customer writes in the website chat.
+     * The customer writes in the website chat (with files: name => [mime type, content]).
      */
-    protected function write($text, $conversation = null)
+    protected function write($text, $conversation = null, array $files = [])
     {
+        $attachments = [];
+        foreach ($files as $name => [$mime_type, $content]) {
+            $attachments[] = ['file_name' => $name, 'mime_type' => $mime_type, 'data' => base64_encode($content)];
+        }
         $received = ChatConversations::receive($conversation, $this->customer, [
             'subject' => $text, 'mailbox_id' => $this->mailbox->id, 'source_type' => Conversation::SOURCE_TYPE_WEB, 'channel' => WebChat::CHANNEL,
-        ], ['body' => e($text)]);
+        ], ['body' => e($text), 'attachments' => $attachments]);
         \App\Subscription::processEvents();
 
         return $received['conversation']->fresh();
@@ -140,6 +144,29 @@ class AiChatAgentTest extends FeatureTestCase
         // Then it's the team's: the AI stays out.
         $this->write('Hello?', $conversation);
         $this->assertCount(2, $prompts);
+    }
+
+    /**
+     * A screenshot the customer sends is shown to it with their message.
+     */
+    public function testItSeesTheCustomersScreenshot()
+    {
+        $seen = null;
+        ChatIntake::fake(function ($prompt, $attachments) use (&$seen) {
+            $seen = [(string) $prompt, collect($attachments)->all()];
+
+            return $this->answer(['action' => 'hand_over', 'message' => 'Thanks! My human colleagues will reply here.', 'has_request' => true]);
+        })->preventStrayPrompts();
+        ob_start();
+        imagepng(imagecreatetruecolor(800, 600));
+
+        $conversation = $this->write('The app shows this', null, ['error.png' => ['image/png', ob_get_clean()]]);
+
+        $thread = $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->first();
+        $this->assertSame(1, preg_match('#<images>\n(.*?)\n</images>#s', $seen[0], $match));
+        $this->assertSame([['image' => 1, 'message_id' => $thread->id, 'file_name' => 'error.png']], json_decode($match[1], true));
+        $this->assertCount(1, $seen[1]);
+        $this->assertSame([800, 600], array_slice(getimagesizefromstring($seen[1][0]->content()), 0, 2));
     }
 
     public function testAPersonReplyingTakesTheChat()

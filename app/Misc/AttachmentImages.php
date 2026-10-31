@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Process;
  * the thumbnails. They are made on first request, kept on the attachments'
  * disk under attachment_previews/ and deleted with the attachment
  * (Attachment::deleteForever()). Where the server can't convert HEIC,
- * browsers decode it (public/js/attachments.js).
+ * browsers decode it (public/js/attachments.js). AI models are shown a
+ * smaller copy, made each time (forAi()).
  */
 class AttachmentImages
 {
@@ -36,6 +37,16 @@ class AttachmentImages
     const CONVERTED_MAX_SIDE = 4096;
 
     const CONVERTER_CACHE = 'heic_converter';
+
+    /**
+     * The longest side of a picture shown to an AI model (larger costs tokens and adds little).
+     */
+    const AI_MAX_SIDE = 1568;
+
+    /**
+     * Pictures with a shorter side (icons, logos in signatures) aren't shown to an AI model.
+     */
+    const AI_MIN_SIDE = 100;
 
     public static $thumbnail_mime_types = ['image/jpeg', 'image/pjpeg', 'image/png', 'image/gif', 'image/webp'];
 
@@ -194,6 +205,44 @@ class AttachmentImages
         $disk->put($path, $content);
 
         return $content !== '' ? $path : null;
+    }
+
+    /**
+     * An image attachment as a JPEG for an AI model to look at (App\Ai\ConversationContext::images()):
+     * upright, at most AI_MAX_SIDE pixels; null for other files, icons and logos, and what can't be read.
+     */
+    public static function forAi(Attachment $attachment)
+    {
+        if (!self::hasThumbnail($attachment)) {
+            return null;
+        }
+        $source = self::isHeic($attachment) ? self::converted($attachment) : $attachment->getStorageFilePath();
+        $file = $source ? self::localCopy($source) : null;
+        if (!$file) {
+            return null;
+        }
+
+        $image = null;
+        $size = @getimagesize($file[0]);
+        if ($size && in_array($size['mime'], self::$thumbnail_mime_types) && min($size[0], $size[1]) >= self::AI_MIN_SIDE && self::fitsInMemory($size[0], $size[1])) {
+            [$width, $height] = [$size[0], $size[1]];
+            // A camera photo is turned upright (Helper::resizeImage()): its sides swap.
+            if ($size['mime'] == 'image/jpeg' && function_exists('exif_read_data') && in_array((int) (@exif_read_data($file[0])['Orientation'] ?? 1), [5, 6, 7, 8])) {
+                [$width, $height] = [$height, $width];
+            }
+            $scale = min(1, self::AI_MAX_SIDE / max($width, $height));
+            $image = \Helper::resizeImage($file[0], $size['mime'], max(1, (int) round($width * $scale)), max(1, (int) round($height * $scale)));
+        }
+        if ($file[1]) {
+            @unlink($file[0]);
+        }
+        if (!$image) {
+            return null;
+        }
+        ob_start();
+        imagejpeg($image, null, 85);
+
+        return ob_get_clean();
     }
 
     /**

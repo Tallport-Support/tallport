@@ -31,6 +31,7 @@ class ReplyDrafter extends TallportAgent
             'You draft replies to customers for a support team. An agent edits and sends the reply.',
             self::dataRules(),
             self::conversationRules(),
+            self::imageRules(),
             self::glossaryRule(),
             'Draft a helpful reply to the customer\'s latest message.',
             'Write the draft in the language of the customer\'s latest message, even if documentation or customer context is in another language.',

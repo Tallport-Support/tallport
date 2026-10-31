@@ -2002,5 +2002,6 @@
     "High Confidence": "Visoka Zanesljivost",
     "Dismiss Draft Details": "Skrij Podrobnosti Osnutka",
     "The AI isn’t answering right now": "UI trenutno ne odgovarja",
-    "The server didn’t answer. Try again in a moment.": "Strežnik ni odgovoril. Poskusi znova čez trenutek."
+    "The server didn’t answer. Try again in a moment.": "Strežnik ni odgovoril. Poskusi znova čez trenutek.",
+    "Images Refused": "Slike Zavrnjene"
 }

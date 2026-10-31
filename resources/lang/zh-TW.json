@@ -2046,5 +2046,6 @@
     "High Confidence": "信心度高",
     "Dismiss Draft Details": "隱藏草稿詳細資料",
     "The AI isn’t answering right now": "AI 目前沒有回應",
-    "The server didn’t answer. Try again in a moment.": "伺服器沒有回應，請稍後再試。"
+    "The server didn’t answer. Try again in a moment.": "伺服器沒有回應，請稍後再試。",
+    "Images Refused": "圖片遭拒"
 }

@@ -54,7 +54,7 @@ class Drafts
         if ($on_step) {
             $on_step('thinking');
         }
-        [$answer] = (new ReplyDrafter($language))->recordFor(Usage::FEATURE_DRAFT, $conversation)->streamJson(
+        [$answer] = (new ReplyDrafter($language))->recordFor(Usage::FEATURE_DRAFT, $conversation)->withImages(ConversationContext::images($context))->streamJson(
             $context['prompt'], $on_draft ? fn ($answer) => $on_draft((string) ($answer['draft'] ?? ''), (string) ($answer['translation'] ?? '')) : null, $deadline,
             $on_step ? fn () => $on_step('activity') : null
         );

@@ -51,6 +51,7 @@ class ChatIntake extends TallportAgent implements HasStructuredOutput
             'You are an AI that takes a support team\'s new conversations first. This one is '.($this->email ? 'an email' : 'a chat').'. You never answer or solve the customer\'s request: you find out what the team needs to know, then hand the conversation to your human colleagues, who reply in the same conversation.',
             self::dataRules(),
             self::conversationRules(),
+            self::imageRules(),
             'Your own earlier messages are the staff messages by "AI".',
             'action: "ask" to ask the customer for what is missing, or "hand_over" to pass the conversation to the team.',
             'Ask for what a support agent would need before working on this request, and the customer hasn\'t told yet: what they need, when they only greeted or it is unclear; then the details an experienced support agent would ask for first with this kind of request, as the mailbox guidance or documentation say, or as is usual (for a problem: what exactly happens, on which device or system, which version, any error message; for an order: the order number). Don\'t ask for what the conversation or customer context already tells, or for what the team can look up itself. Ask for everything missing in one message, at most three short points.',

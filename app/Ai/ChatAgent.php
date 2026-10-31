@@ -224,7 +224,7 @@ class ChatAgent
             // Their language as far as known (a website chat's browser): for a greeting that doesn't tell.
             $customer_language = ChatTranslation::customerLanguage($conversation);
             $prompt = $context['prompt'].($customer_language ? "\n\n".ChatIntake::data('customer_language', Settings::languageName($customer_language).' ('.$customer_language.')') : '');
-            $answer = (new ChatIntake($language, $questions, ChannelMessages::key($conversation) == 'email'))->recordFor(Usage::FEATURE_AGENT, $conversation)->prompt($prompt)->toArray();
+            $answer = (new ChatIntake($language, $questions, ChannelMessages::key($conversation) == 'email'))->recordFor(Usage::FEATURE_AGENT, $conversation)->withImages(ConversationContext::images($context))->prompt($prompt)->toArray();
             $action = $answer['action'] ?? null;
             $message = trim((string) ($answer['message'] ?? ''));
             if (!in_array($action, ['ask', 'hand_over'], true) || ($action == 'ask' && $message === '')) {

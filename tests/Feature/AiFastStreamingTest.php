@@ -15,6 +15,7 @@ use App\Events\RealtimeConvTranslating;
 use App\Option;
 use Illuminate\Http\Client\Request as HttpRequest;
 use Illuminate\Support\Facades\Http;
+use Laravel\Ai\Files\Image;
 use Tests\FeatureTestCase;
 
 /**
@@ -432,6 +433,38 @@ class AiFastStreamingTest extends FeatureTestCase
      * A streamed translation through an OpenAI-compatible server (its HTTP API faked): the
      * server is asked for the stream's tokens, which count as usual.
      */
+    /**
+     * A model that can't see pictures (an OpenAI-compatible one that says so) drafts without
+     * them, the log says so, and it is sent none from then on.
+     */
+    public function testAModelThatRefusesPicturesIsCalledWithoutThem()
+    {
+        $this->useModel('digitalocean', 'llama3.3-70b-instruct');
+        $answer = json_encode(['draft' => 'Hallo', 'translation' => 'Hello', 'language' => 'nl', 'confidence' => 'medium', 'documentation_urls' => [], 'staff_notes' => []]);
+        $stream = implode("\n\n", [
+            'data: '.json_encode(['model' => 'llama3.3-70b-instruct', 'choices' => [['index' => 0, 'delta' => ['content' => $answer]]]]),
+            'data: '.json_encode(['model' => 'llama3.3-70b-instruct', 'choices' => [['index' => 0, 'delta' => [], 'finish_reason' => 'stop']]]),
+            'data: [DONE]',
+        ])."\n\n";
+        Http::fake(['https://inference.do-ai.run/v1/chat/completions' => Http::sequence()
+            ->push(['error' => ['message' => 'Invalid content type. image_url is only supported by certain models.', 'type' => 'invalid_request_error', 'param' => 'messages.[1].content.[1].type']], 400)
+            ->push($stream, 200, ['Content-Type' => 'text/event-stream'])
+            ->push($stream, 200, ['Content-Type' => 'text/event-stream'])]);
+        $images = [['message_id' => 7, 'file_name' => 'error.png', 'file' => Image::fromBase64(base64_encode('picture'), 'image/jpeg')]];
+
+        [$draft] = (new ReplyDrafter('en'))->withImages($images)->streamJson('Draft a reply');
+        (new ReplyDrafter('en'))->withImages($images)->streamJson('Draft a reply');
+
+        $this->assertSame('Hallo', $draft['draft']);
+        $requests = Http::recorded()->map(fn ($pair) => json_encode($pair[0]->data()))->values();
+        $this->assertCount(3, $requests);
+        $this->assertSame([true, false, false], $requests->map(fn ($body) => str_contains($body, 'data:image\/jpeg;base64,') && str_contains($body, 'error.png'))->all());
+        $this->assertSame([false, false], [str_contains($requests[1], 'error.png'), str_contains($requests[2], 'error.png')]);
+        $this->assertSame([\App\Ai\Usage::STATUS_IMAGES_REFUSED, \App\Ai\Usage::STATUS_OK, \App\Ai\Usage::STATUS_OK], \App\Ai\Usage::orderBy('id')->pluck('status')->all());
+        $this->assertTrue(Providers::imagesRejected(Providers::textName('p1'), 'llama3.3-70b-instruct'));
+        $this->assertFalse(Providers::fastRejected(Providers::textName('p1'), 'llama3.3-70b-instruct'));
+    }
+
     public function testStreamedTranslationThroughTheProvidersApi()
     {
         $this->useModel('ollama', 'qwen3:8b');

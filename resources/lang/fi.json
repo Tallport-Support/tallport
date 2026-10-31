@@ -2018,5 +2018,6 @@
     "High Confidence": "Korkea Luotettavuus",
     "Dismiss Draft Details": "Piilota Luonnoksen Tiedot",
     "The AI isn’t answering right now": "Tekoäly ei vastaa juuri nyt",
-    "The server didn’t answer. Try again in a moment.": "Palvelin ei vastannut. Yritä hetken kuluttua uudelleen."
+    "The server didn’t answer. Try again in a moment.": "Palvelin ei vastannut. Yritä hetken kuluttua uudelleen.",
+    "Images Refused": "Kuvat Hylätty"
 }

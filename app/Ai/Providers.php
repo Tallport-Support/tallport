@@ -328,7 +328,7 @@ class Providers
     }
 
     /**
-     * A model refused the fast options or fast mode: it's called without them for a while.
+     * A model refused the fast options, fast mode or pictures: it's called without them for a while.
      */
     const FAST_REJECTED_DAYS = 30;
 
@@ -355,6 +355,19 @@ class Providers
     public static function rememberFastTierRejected($name, $model)
     {
         \Cache::put(self::rejectionKey('ai_fast_tier_rejected_', $name, $model), true, now()->addDays(self::FAST_REJECTED_DAYS));
+    }
+
+    /**
+     * A model that can't see pictures (TallportAgent::withImages()).
+     */
+    public static function imagesRejected($name, $model)
+    {
+        return (bool) \Cache::get(self::rejectionKey('ai_images_rejected_', $name, $model));
+    }
+
+    public static function rememberImagesRejected($name, $model)
+    {
+        \Cache::put(self::rejectionKey('ai_images_rejected_', $name, $model), true, now()->addDays(self::FAST_REJECTED_DAYS));
     }
 
     protected static function rejectionKey($prefix, $name, $model)
