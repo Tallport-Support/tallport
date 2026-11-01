@@ -673,11 +673,14 @@ function te({ threshold: e = 160 } = {}) {
 function ne(e) {
 	let t = e.getBoundingClientRect().top - e.scrollTop, n = e.ownerDocument.createTreeWalker(e, NodeFilter.SHOW_TEXT), r = e.ownerDocument.createRange(), i = [];
 	for (; n.nextNode();) {
-		r.selectNodeContents(n.currentNode);
-		for (let e of r.getClientRects()) e.width && e.height && i.push({
-			top: e.top - t,
-			bottom: e.bottom - t
-		});
+		let a = n.currentNode.parentElement.closest("h1, h2, h3, h4, h5, h6");
+		if (!(a && e.contains(a))) {
+			r.selectNodeContents(n.currentNode);
+			for (let e of r.getClientRects()) e.width && e.height && i.push({
+				top: e.top - t,
+				bottom: e.bottom - t
+			});
+		}
 	}
 	i.sort((e, t) => e.top - t.top);
 	let a = [];

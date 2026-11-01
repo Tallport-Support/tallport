@@ -1,6 +1,7 @@
 /**
  * The content's lines of text, top to bottom, unscrolled and relative to its top. Lines are counted
- * from the text itself, so the gap between two paragraphs or list items is never a line.
+ * from the text itself, so the gap between two paragraphs or list items is never a line, and a
+ * heading's lines are left out: a section's heading shows with the lines under it.
  */
 function textLines(content) {
   const origin = content.getBoundingClientRect().top - content.scrollTop;
@@ -8,6 +9,8 @@ function textLines(content) {
   const range = content.ownerDocument.createRange();
   const rects = [];
   while (walker.nextNode()) {
+    const heading = walker.currentNode.parentElement.closest('h1, h2, h3, h4, h5, h6');
+    if (heading && content.contains(heading)) continue;
     range.selectNodeContents(walker.currentNode);
     for (const rect of range.getClientRects())
       if (rect.width && rect.height) rects.push({ top: rect.top - origin, bottom: rect.bottom - origin });
@@ -24,13 +27,12 @@ function textLines(content) {
 }
 
 /**
- * Long content shown as its first few lines of text (x-fruit::more): `--f-more-shown`, which is
- * --f-more-lines, or 4 (2 on a phone). `overflowing` turns true while more than two lines of text
- * follow those, or other content (a picture) makes it more than four lines taller, so Show More
- * never hides just a line or two; `height` is where the last line shown ends, and `showingAll` is
- * true while the reader has asked for the rest.
- * The content is measured again as its width or the content itself changes (a Livewire morph, a
- * list rendered from script).
+ * Long content shown as its first few lines of text, headings aside (x-fruit::more): `--f-more-shown`,
+ * which is --f-more-lines, or 4 (2 on a phone). `overflowing` turns true while more than two lines
+ * of text follow those, or other content (a picture) makes it more than four lines taller, so Show
+ * More never hides just a line or two; `height` is where the last line shown ends, and `showingAll`
+ * is true while the reader has asked for the rest. The content is measured again as its width or
+ * the content itself changes (a Livewire morph, a list rendered from script).
  */
 export function fruitMore() {
   let resize, mutation, frame;
