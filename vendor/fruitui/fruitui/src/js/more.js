@@ -24,10 +24,11 @@ function textLines(content) {
 }
 
 /**
- * Long content shown as its first few lines of text (x-fruit::more). `overflowing` turns true while
- * more than two lines of text follow the first `--f-more-lines` (4), or other content (a picture)
- * makes it more than four lines taller, so Show More never hides just a line or two; `height` is
- * where the last line shown ends, and `showingAll` is true while the reader has asked for the rest.
+ * Long content shown as its first few lines of text (x-fruit::more): `--f-more-shown`, which is
+ * --f-more-lines, or 4 (2 on a phone). `overflowing` turns true while more than two lines of text
+ * follow those, or other content (a picture) makes it more than four lines taller, so Show More
+ * never hides just a line or two; `height` is where the last line shown ends, and `showingAll` is
+ * true while the reader has asked for the rest.
  * The content is measured again as its width or the content itself changes (a Livewire morph, a
  * list rendered from script).
  */
@@ -44,7 +45,7 @@ export function fruitMore() {
       const measure = () => {
         const style = getComputedStyle(content);
         const line = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.2;
-        const shown = parseFloat(getComputedStyle(root).getPropertyValue('--f-more-lines')) || 4;
+        const shown = parseFloat(getComputedStyle(root).getPropertyValue('--f-more-shown')) || 4;
         const lines = textLines(content);
         this.height = Math.ceil(lines[shown - 1]?.bottom ?? shown * line);
         this.overflowing = lines.length > shown + 2 || content.scrollHeight - this.height > 4 * line;

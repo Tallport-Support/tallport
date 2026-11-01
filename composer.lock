@@ -1213,13 +1213,13 @@
             "version": "dev-main",
             "source": {
                 "type": "git",
-                "url": "git@github.com:FruitUI/fruitui.git",
-                "reference": "25646aef36b3bd01ba7878bf0ef38a1130c27d65"
+                "url": "https://github.com/FruitUI/fruitui.git",
+                "reference": "e15357c2dcd506b225333d3b39fba26fb3bbae93"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FruitUI/fruitui/zipball/25646aef36b3bd01ba7878bf0ef38a1130c27d65",
-                "reference": "25646aef36b3bd01ba7878bf0ef38a1130c27d65",
+                "url": "https://api.github.com/repos/FruitUI/fruitui/zipball/e15357c2dcd506b225333d3b39fba26fb3bbae93",
+                "reference": "e15357c2dcd506b225333d3b39fba26fb3bbae93",
                 "shasum": ""
             },
             "require": {
@@ -1282,7 +1282,7 @@
                 "issues": "https://github.com/FruitUI/fruitui/issues",
                 "source": "https://github.com/FruitUI/fruitui"
             },
-            "time": "2026-10-29T03:40:23+00:00"
+            "time": "2026-11-01T01:29:41+00:00"
         },
         {
             "name": "graham-campbell/result-type",

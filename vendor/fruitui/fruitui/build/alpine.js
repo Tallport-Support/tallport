@@ -697,7 +697,7 @@ function re() {
 			let r = this.$el, i = r.querySelector(":scope > .f-more__content");
 			if (!i) return;
 			let a = () => {
-				let e = getComputedStyle(i), t = parseFloat(e.lineHeight) || parseFloat(e.fontSize) * 1.2, n = parseFloat(getComputedStyle(r).getPropertyValue("--f-more-lines")) || 4, a = ne(i);
+				let e = getComputedStyle(i), t = parseFloat(e.lineHeight) || parseFloat(e.fontSize) * 1.2, n = parseFloat(getComputedStyle(r).getPropertyValue("--f-more-shown")) || 4, a = ne(i);
 				this.height = Math.ceil(a[n - 1]?.bottom ?? n * t), this.overflowing = a.length > n + 2 || i.scrollHeight - this.height > 4 * t;
 			}, o = () => {
 				cancelAnimationFrame(n), n = requestAnimationFrame(a);

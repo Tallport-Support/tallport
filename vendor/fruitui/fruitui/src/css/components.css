@@ -487,8 +487,15 @@
      (fruitMore marks data-overflowing once the content is more than two lines longer, and sets
      --f-more-height where the last line shown ends). */
   .f-more {
+    --f-more-shown: var(--f-more-lines, 4);
     display: grid;
     gap: 4px;
+  }
+  /* A phone has room for fewer beside a conversation: two, unless --f-more-lines says otherwise. */
+  @media (max-width: 600px), (max-height: 500px) {
+    .f-more {
+      --f-more-shown: var(--f-more-lines, 2);
+    }
   }
   .f-more__content {
     min-width: 0;
@@ -497,7 +504,7 @@
     margin-bottom: 0;
   }
   .f-more[data-overflowing]:has(> .f-more__toggle[aria-expanded='false']) > .f-more__content {
-    max-height: var(--f-more-height, calc(var(--f-more-lines, 4) * 1lh));
+    max-height: var(--f-more-height, calc(var(--f-more-shown) * 1lh));
     overflow: hidden;
     -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 1lh), transparent);
     mask-image: linear-gradient(to bottom, black calc(100% - 1lh), transparent);
