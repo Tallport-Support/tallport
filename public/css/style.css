@@ -3076,6 +3076,13 @@ h1.settings-toolbar__title {
 .conv-composer-docked .conv-reply-body[inert] .f-editor {
     opacity: 0.45;
 }
+/* On a phone, while the reply's translation is ready to send, the field is at most three lines
+   (its 6px padding above and below) and scrolls: the conversation stays in view. */
+@media (max-width: 600px), (max-height: 500px) {
+    .conv-composer-docked:has(.conv-translation-preview--ready) .f-editor--inline {
+        --f-editor-max-height: calc(3lh + 12px);
+    }
+}
 
 /* A mailbox's team chat (livewire/team-chat), as FruitUI's Support example's room:
    the messages and the composer in one readable column. */
