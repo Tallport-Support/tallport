@@ -147,7 +147,7 @@ class ChatTranslation
         $language = self::customerLanguage($conversation);
         $deadline = microtime(true) + self::REPLY_SECONDS;
         $context = ConversationContext::build($conversation, $language, false, null, $deadline);
-        [$answer] = (new ReplyTranslator($language))->recordFor(Usage::FEATURE_REPLY_TRANSLATION, $conversation, null, $user ? $user->id : null)->streamJson(
+        [$answer] = (new ReplyTranslator($language, $html))->recordFor(Usage::FEATURE_REPLY_TRANSLATION, $conversation, null, $user ? $user->id : null)->streamJson(
             $context['prompt']."\n\n".TallportAgent::data('reply', $html),
             $on_translation ? fn ($answer) => $on_translation((string) ($answer['translation'] ?? '')) : null, $deadline
         );
@@ -163,6 +163,42 @@ class ChatTranslation
         }
 
         return ['html' => $translation];
+    }
+
+    /**
+     * The script each language is written in, where it isn't Latin (Settings::LANGUAGES).
+     */
+    const SCRIPTS = [
+        'ms-Arab'    => 'Arabic',
+        'el-monoton' => 'Greek',
+        'el-polyton' => 'Greek',
+        'th'         => 'Thai',
+        'uk'         => 'Cyrillic',
+        'ru'         => 'Cyrillic',
+        'kk'         => 'Cyrillic',
+        'he'         => 'Hebrew',
+        'ja'         => 'Han|Hiragana|Katakana',
+        'ko'         => 'Hangul',
+        'zh-Hans'    => 'Han',
+        'zh-Hant'    => 'Han',
+    ];
+
+    /**
+     * Whether a reply (HTML) can be in a language, by the script it's written in: not when hardly
+     * any of it is (an English reply isn't Chinese). A Chinese or Japanese character counts as a
+     * word; links and email addresses don't count.
+     */
+    public static function mayBeIn($html, $language)
+    {
+        $text = preg_replace('/\S+:\/\/\S+|www\.\S+|\S+@\S+/u', ' ', html_entity_decode(strip_tags((string) $html), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        preg_match_all('/[\p{Han}\p{Hiragana}\p{Katakana}]|[^\P{L}\p{Han}\p{Hiragana}\p{Katakana}]+/u', $text, $words);
+        if (!$words[0]) {
+            return true;
+        }
+        $script = '/^[\p{'.str_replace('|', '}\p{', self::SCRIPTS[$language] ?? 'Latin').'}]/u';
+        $in_script = count(preg_grep($script, $words[0]));
+
+        return $in_script / count($words[0]) >= 0.2;
     }
 
     /**

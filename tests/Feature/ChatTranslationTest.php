@@ -249,6 +249,38 @@ class ChatTranslationTest extends FeatureTestCase
     }
 
     /**
+     * "Already in the customer's language" isn't believed of a reply in another script: an English
+     * reply to a Chinese customer isn't sent as written, the agent sees the error; a Chinese one is.
+     */
+    public function testAReplyInAnotherScriptIsNotTakenForTheCustomersLanguage()
+    {
+        $this->setCustomerLanguage('zh-Hans');
+        ReplyTranslator::fake([['translation' => '', 'same_language' => true, 'note' => '']]);
+
+        $this->composer()->call('previewTranslation', '<p>Thank you for your report. We have to wait for the Beijing meeting to conclude.</p>')->assertReturned('error')
+            ->assertSee('The reply could not be translated: Error occurred (ID:')->assertSee('Send as Written');
+        $this->assertSame(0, $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->count());
+
+        ReplyTranslator::fake([['translation' => '', 'same_language' => true, 'note' => '']]);
+        $this->composer()->call('previewTranslation', '<p>谢谢您的报告。请在 12VPX 应用里选择 Tokyo M 服务器。</p>')->assertReturned('same');
+    }
+
+    public function testWhetherAReplyCanBeInALanguageByItsScript()
+    {
+        $this->assertFalse(ChatTranslation::mayBeIn('<p>We&rsquo;re still waiting.</p>', 'zh-Hans'));
+        $this->assertFalse(ChatTranslation::mayBeIn('<p>OK</p>', 'ja'));
+        $this->assertFalse(ChatTranslation::mayBeIn('<p>谢谢您的报告。</p>', 'en'));
+        $this->assertFalse(ChatTranslation::mayBeIn('<p>Thanks, see https://12vpx.com/zh/帮助</p>', 'zh-Hans'));
+        $this->assertFalse(ChatTranslation::mayBeIn('<p>We are looking into it.</p>', 'ru'));
+
+        $this->assertTrue(ChatTranslation::mayBeIn('<p>请在 12VPX 应用里打开“设置” → “协议”，把协议从 Automatic 改成 Stealth，然后重新连接 Tokyo M。</p>', 'zh-Hans'));
+        $this->assertTrue(ChatTranslation::mayBeIn('<p>ありがとうございます。</p>', 'ja'));
+        $this->assertTrue(ChatTranslation::mayBeIn('<p>Дякуємо!</p>', 'uk'));
+        $this->assertTrue(ChatTranslation::mayBeIn('<p>Bedankt, ik kijk ernaar.</p>', 'nl'));
+        $this->assertTrue(ChatTranslation::mayBeIn('<p><a href="https://12vpx.com/help">https://12vpx.com/help</a></p>', 'zh-Hans'));
+    }
+
+    /**
      * A customer's burst of messages: translated together, a few seconds after the latest,
      * with the chat before them for context; the customer's messages per hour count each.
      */

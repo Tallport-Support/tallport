@@ -13,9 +13,15 @@ class ReplyTranslator extends TallportAgent
 {
     public $language;
 
-    public function __construct($language)
+    /**
+     * The reply (HTML).
+     */
+    public $reply;
+
+    public function __construct($language, $reply = '')
     {
         $this->language = $language;
+        $this->reply = (string) $reply;
     }
 
     public function feature(): string
@@ -57,8 +63,15 @@ class ReplyTranslator extends TallportAgent
         ];
     }
 
+    /**
+     * "Already in the target language" only of a reply that can be (ChatTranslation::mayBeIn()):
+     * it's sent as written, and a model mistaken about an English reply to a Chinese customer
+     * would have it go out untranslated. Otherwise the backup model is asked, or the agent sees
+     * the error.
+     */
     protected function validAnswer(array $answer)
     {
-        return $this->validTranslation($answer);
+        return $this->validTranslation($answer)
+            && (!$answer['same_language'] || \App\Ai\ChatTranslation::mayBeIn($this->reply, $this->language));
     }
 }

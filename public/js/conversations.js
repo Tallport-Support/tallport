@@ -1460,6 +1460,9 @@ document.addEventListener('alpine:init', function () {
 			// field is ready for the next one right away. If it can't be saved, it's back in the editor.
 			submit: function (status) {
 				var self = this;
+				// Send as Written is for this send only, also when it stops here.
+				var as_written = this.as_written;
+				this.as_written = false;
 				if (this.uploading.length) {
 					return;
 				}
@@ -1471,13 +1474,11 @@ document.addEventListener('alpine:init', function () {
 					var html = editor() ? editor().value : '';
 					// A translated conversation (App\Ai\ChatTranslation): the translation first, for a
 					// look; sent later with the status chosen now.
-					if (self.$root.hasAttribute('data-translating') && !self.as_written) {
+					if (self.$root.hasAttribute('data-translating') && !as_written) {
 						self.send_status = status;
 						self.translate(html);
 						return;
 					}
-					var as_written = self.as_written;
-					self.as_written = false;
 					self.dirty = false;
 					var shown = self.showSending(html);
 					if (chat) {
