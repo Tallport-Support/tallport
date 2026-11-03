@@ -167,7 +167,7 @@
                 @if ($thread->canRetrySend())
                     <x-fruit::button variant="ghost" class="btn-thread-retry" wire:click="retry({{ $thread->id }})">{{ __('Retry') }}</x-fruit::button>
                 @endif
-                <x-fruit::button variant="ghost" :data-fruit-dialog-url="route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id]))" :data-fruit-dialog-title="__('Outgoing Emails')" data-fruit-dialog-size="large">{{ __('View log') }}</x-fruit::button>
+                <x-fruit::button variant="ghost" :data-fruit-dialog-url="route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id]))" :data-fruit-dialog-title="$conversation->hasChannel() ? __('Log') : __('Outgoing Emails')" data-fruit-dialog-size="large">{{ __('View log') }}</x-fruit::button>
             </x-slot:status>
         @elseif (!$thread_is_draft && ($delivery_notice = App\Misc\DeliveryReports::replyNotice($thread)))
             {{-- Delivered but reported as spam, delivered, or delayed (App\Misc\DeliveryReports::markReply()). --}}

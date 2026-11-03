@@ -941,9 +941,15 @@ class ConversationsController extends Controller
             }
         }
 
+        // A chat reply: its tries on the channel, else why it wasn't sent (tallport:check-outgoing).
+        [$channel, $channel_log] = $thread->conversation->hasChannel() ? \App\Misc\ChatLog::reply($thread) : [null, []];
+
         return view('conversations/ajax_html/send_log', [
             'customers_log' => $customers_log,
             'users_log'     => $users_log,
+            'channel'       => $channel,
+            'channel_log'   => $channel_log,
+            'send_message'  => $thread->conversation->hasChannel() && $thread->isSendStatusError() ? (string) ($thread->getSendStatusData()['msg'] ?? '') : '',
         ]);
     }
 

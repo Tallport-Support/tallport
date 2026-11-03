@@ -285,4 +285,32 @@ class SendReplyToTelegramJobTest extends FeatureTestCase
         $job->failed(new \Exception('Timed out'));
         $this->assertSame(['Timed out'], TelegramSend::where('thread_id', $given_up->id)->pluck('error')->all());
     }
+
+    /**
+     * A reply not sent: its View log shows its tries with Telegram's error (a chat reply has no
+     * Outgoing Emails entries), or, without tries, why it wasn't sent.
+     */
+    public function testTheRepliesViewLogShowsItsTries()
+    {
+        $this->fakeTelegram(['sendMessage' => $this->error(502, 'Bad Gateway')]);
+        $reply = $this->reply();
+        foreach ([1, 2, 3] as $attempt) {
+            $job = (new SendReplyToTelegram($reply->id))->withFakeQueueInteractions();
+            $job->job->attempts = $attempt;
+            $job->handle();
+        }
+        $this->assertTrue($reply->fresh()->isSendStatusError());
+
+        $this->actingAs($this->agent)->get('/conversation/ajax-html/send_log?thread_id='.$reply->id)->assertOk()
+            ->assertSeeInOrder(['Telegram</h3>', 'Failed, Will Retry', 'Bad Gateway', 'Attempt: 3', 'Failed, Will Retry', 'Attempt: 2'])
+            ->assertDontSee('There were no send attempts yet');
+
+        $this->reply();
+        $unsent = Thread::where('type', Thread::TYPE_MESSAGE)->orderBy('id', 'desc')->first();
+        $unsent->updateSendStatusData(['msg' => 'Not sent: no job is sending this reply (found by tallport:check-outgoing).']);
+        $unsent->send_status = SendLog::STATUS_SEND_ERROR;
+        $unsent->save();
+        $this->get('/conversation/ajax-html/send_log?thread_id='.$unsent->id)->assertOk()
+            ->assertSee('Not sent: no job is sending this reply (found by tallport:check-outgoing).');
+    }
 }

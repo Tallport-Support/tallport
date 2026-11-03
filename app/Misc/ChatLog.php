@@ -50,20 +50,7 @@ class ChatLog
     {
         $activity = ActivityLog::query()->whereIn('log_name', [$channel, 'chat_'.$channel])
             ->select(['id', 'created_at', 'subject_id as mailbox_id', 'properties->status as outcome'])->selectRaw("'activity' as source");
-        if ($channel === 'telegram') {
-            $delivery = TelegramSend::query()->select(['id', 'created_at', 'mailbox_id'])
-                ->selectRaw("CASE WHEN status = 1 THEN 'succeeded' ELSE 'failed' END as outcome, 'delivery' as source");
-            $model = TelegramSend::class;
-        } elseif ($channel === 'nostr') {
-            $delivery = NostrEvent::query()->select(['id', 'created_at', 'mailbox_id'])
-                ->selectRaw("CASE WHEN status = 1 THEN 'succeeded' WHEN status = 2 THEN 'failed' ELSE 'pending' END as outcome, 'delivery' as source");
-            $model = NostrEvent::class;
-        } else {
-            $delivery = MatrixEvent::query()->join('matrix_mailboxes', 'matrix_mailboxes.id', '=', 'matrix_events.matrix_mailbox_id')
-                ->whereIn('kind', ['incoming', 'outgoing'])->select(['matrix_events.id', 'matrix_events.created_at', 'matrix_mailboxes.mailbox_id'])
-                ->selectRaw("CASE WHEN matrix_events.status IN ('sent', 'received') THEN 'succeeded' WHEN matrix_events.status = 'rejected' OR (matrix_events.status = 'pending' AND attempts > 0) THEN 'failed' ELSE matrix_events.status END as outcome, 'delivery' as source");
-            $model = MatrixEvent::class;
-        }
+        [$delivery, $model] = self::deliveries($channel);
         $query = DB::query()->fromSub($activity->unionAll($delivery)->toBase(), 'channel_log');
         $mailbox_ids = (clone $query)->distinct()->pluck('mailbox_id');
         if ($outcome === 'failed') {
@@ -75,12 +62,7 @@ class ChatLog
         $entries = $query->orderByDesc('created_at')->orderByDesc('id')->orderBy('source')->paginate(50)->withQueryString();
         $rows = $entries->getCollection();
         $activities = ActivityLog::whereIn('id', $rows->where('source', 'activity')->pluck('id'))->get()->keyBy('id');
-        $deliveries = $model::whereIn('id', $rows->where('source', 'delivery')->pluck('id'));
-        if ($channel !== 'matrix') {
-            $deliveries->with($channel === 'telegram' ? ['conversation', 'customer'] : ['conversation.customer']);
-        }
-        // The encrypted Matrix payload is never needed to display a log.
-        $deliveries = $deliveries->get($channel === 'matrix' ? ['id', 'kind', 'status', 'attempts', 'thread_id', 'conversation_id', 'remote_id', 'transaction_id', 'room_id'] : ['*'])->keyBy('id');
+        $deliveries = self::loadDeliveries($channel, $model, $rows->where('source', 'delivery')->pluck('id'));
         $thread_ids = $activities->toBase()->map(fn ($entry) => $entry->properties['details']['thread_id'] ?? null);
         if ($channel === 'matrix') {
             $thread_ids = $thread_ids->merge($deliveries->pluck('thread_id'));
@@ -95,6 +77,61 @@ class ChatLog
         }));
 
         return compact('entries', 'mailboxes', 'outcome', 'mailbox_id', 'channel');
+    }
+
+    /**
+     * A chat reply's tries on its channel, newest first, as its Outgoing log shows them (the
+     * reply's View log): [channel, entries]. Nothing for a website chat (the visitor fetches it).
+     */
+    public static function reply(\App\Thread $thread)
+    {
+        $conversation = $thread->conversation;
+        $channel = [\App\Telegram\Telegram::CHANNEL => 'telegram', \App\Nostr\Nostr::channel() => 'nostr', \App\Matrix\Matrix::CHANNEL => 'matrix'][$conversation->channel] ?? null;
+        if (!$channel) {
+            return [null, []];
+        }
+        [$delivery, $model] = self::deliveries($channel);
+        $table = (new $model())->getTable();
+        $rows = $delivery->where($table.'.thread_id', $thread->id)->orderByDesc($table.'.created_at')->orderByDesc($table.'.id')->toBase()->get();
+        $deliveries = self::loadDeliveries($channel, $model, $rows->pluck('id'));
+        $threads = collect([$thread->id => $conversation->id]);
+        $conversations = collect([$conversation->id => $conversation]);
+
+        return [$channel, $rows->map(fn ($row) => self::present($row, $deliveries->get($row->id), $conversation->mailbox, $threads, $conversations))->all()];
+    }
+
+    /**
+     * A channel's delivery records for the log, with their outcome: [query, model].
+     */
+    private static function deliveries($channel)
+    {
+        if ($channel === 'telegram') {
+            $delivery = TelegramSend::query()->select(['id', 'created_at', 'mailbox_id'])
+                ->selectRaw("CASE WHEN status = 1 THEN 'succeeded' ELSE 'failed' END as outcome, 'delivery' as source");
+            $model = TelegramSend::class;
+        } elseif ($channel === 'nostr') {
+            $delivery = NostrEvent::query()->select(['id', 'created_at', 'mailbox_id'])
+                ->selectRaw("CASE WHEN status = 1 THEN 'succeeded' WHEN status = 2 THEN 'failed' ELSE 'pending' END as outcome, 'delivery' as source");
+            $model = NostrEvent::class;
+        } else {
+            $delivery = MatrixEvent::query()->join('matrix_mailboxes', 'matrix_mailboxes.id', '=', 'matrix_events.matrix_mailbox_id')
+                ->whereIn('kind', ['incoming', 'outgoing'])->select(['matrix_events.id', 'matrix_events.created_at', 'matrix_mailboxes.mailbox_id'])
+                ->selectRaw("CASE WHEN matrix_events.status IN ('sent', 'received') THEN 'succeeded' WHEN matrix_events.status = 'rejected' OR (matrix_events.status = 'pending' AND attempts > 0) THEN 'failed' ELSE matrix_events.status END as outcome, 'delivery' as source");
+            $model = MatrixEvent::class;
+        }
+
+        return [$delivery, $model];
+    }
+
+    private static function loadDeliveries($channel, $model, $ids)
+    {
+        $deliveries = $model::whereIn('id', $ids);
+        if ($channel !== 'matrix') {
+            $deliveries->with($channel === 'telegram' ? ['conversation', 'customer'] : ['conversation.customer']);
+        }
+
+        // The encrypted Matrix payload is never needed to display a log.
+        return $deliveries->get($channel === 'matrix' ? ['id', 'kind', 'status', 'attempts', 'thread_id', 'conversation_id', 'remote_id', 'transaction_id', 'room_id'] : ['*'])->keyBy('id');
     }
 
     private static function present($row, $entry, $mailbox, $threads, $conversations)

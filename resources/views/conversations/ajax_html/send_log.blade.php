@@ -1,6 +1,32 @@
-@if (!$customers_log && !$users_log)
-    <x-fruit::alert tone="warning">{{ __("There were no send attempts yet") }}</x-fruit::alert>
+@if (!$customers_log && !$users_log && !$channel_log)
+    <x-fruit::alert tone="warning">{{ $send_message !== '' ? $send_message : __("There were no send attempts yet") }}</x-fruit::alert>
 @else
+    @if ($channel_log)
+        {{-- A chat reply's tries, as in its channel's log (Logs » Telegram; App\Misc\ChatLog::reply()). --}}
+        <h3 class="f-headline send-log-heading">{{ App\ActivityLog::getLogTitle('out_'.$channel) }}</h3>
+
+        <table class="f-table send-log-table">
+            <tr>
+                <th>{{ __("Date") }}</th>
+                <th>{{ __("Status") }}</th>
+            </tr>
+            @foreach ($channel_log as $entry)
+                <tr>
+                    <td>{{ App\User::dateFormat($entry['date'], 'M j, Y H:i:s') }}</td>
+                    <td>
+                        <x-fruit::badge :tone="$entry['tone']">{{ $entry['status'] }}</x-fruit::badge>
+                        @if ($entry['message'])
+                            <div class="f-help">{{ $entry['message'] }}</div>
+                        @endif
+                        @if ($details = array_filter($entry['details']))
+                            <div class="f-help">{{ implode(' · ', array_map(fn ($label, $value) => $label.': '.$value, array_keys($details), $details)) }}</div>
+                        @endif
+                    </td>
+                </tr>
+            @endforeach
+        </table>
+    @endif
+
     @if (!empty($customers_log))
     	<h3 class="f-headline send-log-heading">{{ __("Emails to Customers") }}</h3>
 
