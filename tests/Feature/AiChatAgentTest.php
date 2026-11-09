@@ -83,9 +83,10 @@ class AiChatAgentTest extends FeatureTestCase
     }
 
     /**
-     * The customer writes in the website chat (with files: name => [mime type, content]).
+     * The customer writes in the website chat (with files: name => [mime type, content]), or
+     * their app does ($app_text: their logs).
      */
-    protected function write($text, $conversation = null, array $files = [])
+    protected function write($text, $conversation = null, array $files = [], $app_text = false)
     {
         $attachments = [];
         foreach ($files as $name => [$mime_type, $content]) {
@@ -93,7 +94,7 @@ class AiChatAgentTest extends FeatureTestCase
         }
         $received = ChatConversations::receive($conversation, $this->customer, [
             'subject' => $text, 'mailbox_id' => $this->mailbox->id, 'source_type' => Conversation::SOURCE_TYPE_WEB, 'channel' => WebChat::CHANNEL,
-        ], ['body' => e($text), 'attachments' => $attachments]);
+        ], ['body' => e($text), 'attachments' => $attachments, 'app_text' => $app_text]);
         \App\Subscription::processEvents();
 
         return $received['conversation']->fresh();
@@ -211,6 +212,50 @@ class AiChatAgentTest extends FeatureTestCase
         $conversation = $this->write('hello again', $conversation);
         $this->assertSame('<p>What can we help you with?</p>', $this->messages($conversation)[1]);
         $this->assertTrue(ChatAgent::holds($conversation));
+    }
+
+    /**
+     * Logs the customer's app sends aren't hidden: the team sees the chat at once, nobody's, while
+     * it asks there too; it isn't closed when nobody answers.
+     */
+    public function testTheTeamSeesLogsTheCustomersAppSends()
+    {
+        \Illuminate\Support\Facades\Bus::swap(\Illuminate\Support\Facades\Bus::getFacadeRoot()->dispatcher);
+        $logs = ['vpx-logs.txt' => ['text/plain', 'line 1']];
+        ChatIntake::fake([
+            $this->answer(['message' => 'What were you doing when this happened?']),
+            $this->answer(),
+            $this->answer(['message' => 'What happened before you sent these logs?']),
+        ])->preventStrayPrompts();
+
+        // Logs start the chat: nobody's, the team told; its question goes out; nobody answers: handed
+        // over with a draft, not closed, the team not told again.
+        $conversation = $this->write('Shared diagnostic logs: vpx-logs.txt', null, $logs, true);
+        $this->assertNull($conversation->user_id);
+        $this->assertSame(['<p>What were you doing when this happened?</p>'], $this->messages($conversation));
+        $this->assertCount(1, $this->sentEmailsTo($this->agent->email));
+        $this->assertSame(Conversation::STATUS_ACTIVE, (int) $conversation->status);
+        $this->assertTrue($conversation->getMeta(ChatAgent::META)['done']);
+        $this->assertNotNull(ChatAgent::handoverDraft($conversation, $this->agent));
+        $this->assertFalse($conversation->threads()->where('action_type', Thread::ACTION_TYPE_USER_CHANGED)->exists());
+
+        // Logs in a chat it has: the team sees it from then on, told as of a new conversation; it
+        // goes on asking there until a person replies.
+        \Illuminate\Support\Facades\Bus::fake([\App\Jobs\AiChatAgentSilence::class]);
+        $this->customer = Customer::createWithoutEmail(['channel' => WebChat::CHANNEL, 'channel_id' => 'v2']);
+        $conversation = $this->write('hi');
+        $this->assertTrue(ChatAgent::holds($conversation));
+        $conversation = $this->write('Shared diagnostic logs: vpx-logs.txt', $conversation, $logs, true);
+        $this->assertNull($conversation->user_id);
+        $this->assertCount(2, $this->sentEmailsTo($this->agent->email));
+        $this->assertSame('<p>What happened before you sent these logs?</p>', $this->messages($conversation)[1]);
+        $this->assertTrue(ChatAgent::handles($conversation));
+        $this->sendReply($this->agent, ['mailbox_id' => $this->mailbox->id, 'conversation_id' => $conversation->id, 'body' => '<p>Hi, Alex here.</p>', 'user_id' => $this->agent->id]);
+        $conversation = $conversation->fresh();
+        $this->assertTrue($conversation->getMeta(ChatAgent::META)['done']);
+        // Given back to nobody, it stays out.
+        $conversation->user_id = null;
+        $this->assertFalse(ChatAgent::handles($conversation));
     }
 
     public function testFailingOrOutOfQuestionsItHandsOver()

@@ -18,8 +18,8 @@ class AiChatAgent
         }
         switch (get_class($event)) {
             case 'App\Events\CustomerCreatedConversation':
-                if (ChatAgent::takes($conversation, $event->thread ?? null)) {
-                    ChatAgent::take($conversation);
+                if (ChatAgent::takes($conversation, $event->last_thread ?? null)) {
+                    ChatAgent::take($conversation, $event->last_thread ?? null);
                 }
                 break;
             case 'App\Events\CustomerReplied':

@@ -18,8 +18,9 @@ use App\User;
  * turns it on for, email and chats alike. It asks the customer for what the team needs to know
  * (Agents\ChatIntake), never answering, at most MAX_QUESTIONS times, then hands the conversation to
  * the team: a reply drafted for them, unassigned, notified as a new conversation. While it has one, it's
- * Assigned to it and nobody is notified; a person replying or reassigning it takes it. ("Chat" in
- * names here means any conversation.)
+ * Assigned to it and nobody is notified; a person replying or reassigning it takes it. What the
+ * customer's app sends (their logs: app_text) the team sees at once: it asks there too, the
+ * conversation nobody's (open()). ("Chat" in names here means any conversation.)
  */
 class ChatAgent
 {
@@ -125,6 +126,17 @@ class ChatAgent
         return $conversation->user_id && (int) $conversation->user_id === (int) self::userId();
     }
 
+    /**
+     * Whether it's still asking in a chat: one it has, or one the team sees (open()) that nobody
+     * has taken.
+     */
+    public static function handles(Conversation $conversation)
+    {
+        $state = (array) $conversation->getMeta(self::META, []);
+
+        return empty($state['done']) && (self::holds($conversation) || (!empty($state['open']) && !$conversation->user_id));
+    }
+
     public static function wrote(Thread $thread)
     {
         return $thread->created_by_user_id && (int) $thread->created_by_user_id === (int) self::userId();
@@ -140,40 +152,66 @@ class ChatAgent
 
     /**
      * Take a new chat: Assigned to it, its first message once the customer has finished writing.
+     * One their app started (their logs) the team sees: it asks there too (open()).
      */
-    public static function take(Conversation $conversation)
+    public static function take(Conversation $conversation, ?Thread $thread = null)
     {
-        $conversation->setUser(self::user()->id);
-        $conversation->setMeta(self::META, ['questions' => 0]);
-        $conversation->save();
-        $conversation->mailbox->updateFoldersCounters();
+        if ($thread && $thread->getMeta('app_text')) {
+            $conversation->setMeta(self::META, ['questions' => 0, 'open' => true], true);
+        } else {
+            $conversation->setUser(self::user()->id);
+            $conversation->setMeta(self::META, ['questions' => 0]);
+            $conversation->save();
+            $conversation->mailbox->updateFoldersCounters();
+        }
         AiChatAgentReply::dispatch($conversation->id)->delay(now()->addSeconds(self::WAIT));
     }
 
     /**
-     * The customer wrote in a chat it has: its next message (once they've finished writing). An
+     * The customer wrote in a chat it's in: its next message (once they've finished writing). An
      * auto-responder's or a bounce gets none (it hands over once its question goes unanswered).
+     * What their app sends (their logs) shows the team a chat it has (open()).
      */
     public static function customerReplied(Conversation $conversation, ?Thread $thread = null)
     {
-        if (self::holds($conversation) && empty($conversation->getMeta(self::META, [])['done'])
-            && (!$thread || (!$thread->isAutoResponder() && !$thread->isBounce()))
-        ) {
+        if (self::handles($conversation) && (!$thread || (!$thread->isAutoResponder() && !$thread->isBounce()))) {
+            if ($thread && $thread->getMeta('app_text') && self::holds($conversation)) {
+                self::open($conversation);
+            }
             AiChatAgentReply::dispatch($conversation->id)->delay(now()->addSeconds(self::WAIT));
         }
     }
 
     /**
-     * A person replied in a chat it still has: theirs now (with nobody chosen, nobody's).
+     * A person replied in a chat it's in: theirs now (with nobody chosen, nobody's).
      */
     public static function personReplied(Conversation $conversation, Thread $thread)
     {
-        if (self::holds($conversation) && !self::wrote($thread)) {
+        if (self::wrote($thread)) {
+            return;
+        }
+        $state = (array) $conversation->getMeta(self::META, []);
+        if (self::holds($conversation)) {
             self::finish($conversation);
             $conversation->setUser(null);
             $conversation->save();
             $conversation->mailbox->updateFoldersCounters();
+        } elseif (!empty($state['open']) && empty($state['done'])) {
+            // Also when they took it with their reply.
+            self::finish($conversation);
         }
+    }
+
+    /**
+     * Show the team a chat it has, as a new conversation, nobody's: it goes on asking there until
+     * a person replies, and hands over with its draft but without telling them again.
+     */
+    protected static function open(Conversation $conversation)
+    {
+        $user = self::user();
+        $conversation->setMeta(self::META, ['open' => true] + (array) $conversation->getMeta(self::META, []));
+        $conversation->changeUser(null, $user);
+        Subscription::registerEvent(Subscription::EVENT_TYPE_NEW, $conversation, $user->id);
     }
 
     /**
@@ -196,7 +234,7 @@ class ChatAgent
         }
         // More from the customer while it thought.
         $conversation->refresh();
-        if ($answered && self::holds($conversation) && $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->where('id', '>', $answered)->exists()) {
+        if ($answered && self::handles($conversation) && $conversation->threads()->where('type', Thread::TYPE_CUSTOMER)->where('id', '>', $answered)->exists()) {
             self::customerReplied($conversation);
         }
     }
@@ -209,7 +247,7 @@ class ChatAgent
         $conversation->refresh();
         $state = (array) $conversation->getMeta(self::META, []);
         $last = self::lastMessage($conversation);
-        if (!self::holds($conversation) || !empty($state['done']) || !$last || $last->type != Thread::TYPE_CUSTOMER) {
+        if (!self::handles($conversation) || !$last || $last->type != Thread::TYPE_CUSTOMER) {
             return null;
         }
         $mailbox = $conversation->mailbox;
@@ -239,14 +277,16 @@ class ChatAgent
 
         // A person took it, or it was handed over, while it thought.
         $conversation->refresh();
-        if (!self::holds($conversation) || !empty($conversation->getMeta(self::META, [])['done'])) {
+        if (!self::handles($conversation)) {
             return $last->id;
         }
         if ($action == 'ask' && $questions < self::MAX_QUESTIONS) {
             $thread = self::send($conversation, $message, $answer);
             $has_request = !empty($answer['has_request']);
-            $conversation->setMeta(self::META, ['questions' => $questions + 1, 'has_request' => $has_request], true);
-            AiChatAgentSilence::dispatch($conversation->id, $thread->id)->delay(now()->addMinutes($has_request ? self::HAND_OVER_AFTER : self::CLOSE_AFTER));
+            $state = (array) $conversation->getMeta(self::META, []);
+            $conversation->setMeta(self::META, ['questions' => $questions + 1, 'has_request' => $has_request] + $state, true);
+            // One the team sees isn't closed (silence()).
+            AiChatAgentSilence::dispatch($conversation->id, $thread->id)->delay(now()->addMinutes($has_request || !empty($state['open']) ? self::HAND_OVER_AFTER : self::CLOSE_AFTER));
         } else {
             // What it's about, in the list, instead of a greeting; an email keeps its subject (the
             // customer's, which their replies carry).
@@ -263,17 +303,17 @@ class ChatAgent
     }
 
     /**
-     * No answer to its question ($thread_id): a chat with a request goes to the team; one without
-     * closes, and opens again (still its) when the customer writes.
+     * No answer to its question ($thread_id): a chat with a request, or one the team sees (open()),
+     * goes to the team; one without closes, and opens again (still its) when the customer writes.
      */
     public static function silence(Conversation $conversation, $thread_id)
     {
         $state = (array) $conversation->getMeta(self::META, []);
         $last = self::lastMessage($conversation);
-        if (!self::holds($conversation) || !empty($state['done']) || !$conversation->isActive() || !$last || $last->id != $thread_id) {
+        if (!self::handles($conversation) || !$conversation->isActive() || !$last || $last->id != $thread_id) {
             return;
         }
-        if (!empty($state['has_request'])) {
+        if (!empty($state['has_request']) || !empty($state['open'])) {
             self::handOver($conversation);
         } else {
             $conversation->changeStatus(Conversation::STATUS_CLOSED, self::user());
@@ -282,8 +322,9 @@ class ChatAgent
 
     /**
      * Hand the chat to the team: its last message to the customer, a reply drafted for them
-     * (draft()), unassigned, and people told as of a new conversation. $answer: Agents\ChatIntake's
-     * (the message's translation). $error: why it couldn't go on, a note instead of the draft.
+     * (draft()), unassigned, and people told as of a new conversation (of one they see, open(),
+     * they were told). $answer: Agents\ChatIntake's (the message's translation). $error: why it
+     * couldn't go on, a note instead of the draft.
      */
     public static function handOver(Conversation $conversation, $message = '', array $answer = [], $error = '')
     {
@@ -297,9 +338,11 @@ class ChatAgent
             self::draft($conversation);
         }
         self::finish($conversation);
-        $conversation->changeUser(null, $user);
-        Subscription::registerEvent(Subscription::EVENT_TYPE_NEW, $conversation, $user->id);
-        Subscription::processEvents();
+        if (self::holds($conversation)) {
+            $conversation->changeUser(null, $user);
+            Subscription::registerEvent(Subscription::EVENT_TYPE_NEW, $conversation, $user->id);
+            Subscription::processEvents();
+        }
     }
 
     /**
