@@ -104,7 +104,8 @@ class MailboxesController extends Controller
         $to = $parameters['to'];
         unset($parameters['to']);
         $key = isset($parameters['mailbox_id']) ? 'mailbox_id' : 'id';
-        $mailbox = Mailbox::find($parameters[$key]);
+        // An ID, or a short name (2.53's and 2.55's addresses).
+        $mailbox = \App\Misc\Addresses::findMailbox($parameters[$key]);
         if ($mailbox) {
             $parameters[$key] = $mailbox->getSlug();
         }
