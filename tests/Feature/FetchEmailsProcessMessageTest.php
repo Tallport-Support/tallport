@@ -378,7 +378,8 @@ class FetchEmailsProcessMessageTest extends FeatureTestCase
 
         $this->replyInUi($conversation);
         $reply = $conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
-        $this->assertSame($reply->created_at->format('Y-m-d H:i:s'), $conversation->fresh()->last_sent_at->format('Y-m-d H:i:s'));
+        // The same moment, though the reply's time and the conversation's are taken apart (a second may pass).
+        $this->assertEqualsWithDelta($reply->created_at->getTimestamp(), $conversation->fresh()->last_sent_at->getTimestamp(), 1);
 
         \Session::start();
         $this->actingAs($this->agent)->post(route('conversations.undo.submit', ['thread_id' => $reply->id]), ['_token' => csrf_token()]);
