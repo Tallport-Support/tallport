@@ -155,6 +155,26 @@ class MatrixTest extends FeatureTestCase
         $this->assertSame('three', $identity->fresh()->sync_token);
     }
 
+    /**
+     * The sync is a queued job, without the terminate handler that sends notifications.
+     */
+    public function testTheTeamIsNotified()
+    {
+        $agent = $this->createUser();
+        \App\Subscription::create(['user_id' => $agent->id, 'medium' => \App\Subscription::MEDIUM_EMAIL, 'event' => \App\Subscription::EVENT_NEW_CONVERSATION]);
+        [$identity] = $this->identity($this->createMailbox([$agent]));
+        $batches = [$this->batch('one'), $this->batch('two', [$this->message('$new', 'Hello')])];
+        Http::fake(function ($request) use (&$batches) {
+            return Http::response(str_ends_with(parse_url($request->url(), PHP_URL_PATH), '/state') ? $this->state(false) : array_shift($batches));
+        });
+
+        \App\Jobs\SyncMatrixMailbox::dispatchSync($identity->id);
+        \App\Jobs\SyncMatrixMailbox::dispatchSync($identity->id);
+
+        $this->assertSame(1, Conversation::where('channel', Matrix::CHANNEL)->count());
+        $this->assertCount(1, $this->sentEmailsTo($agent->email));
+    }
+
     /** @dataProvider deviceStatuses */
     public function testPendingEncryptedMessageIsFilledInPlaceAndReplayCannotCreateAnotherMessage($status)
     {

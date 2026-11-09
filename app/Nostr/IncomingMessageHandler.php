@@ -185,6 +185,9 @@ class IncomingMessageHandler
         $this->log(sprintf('message from %s -> conversation #%s (%s)',
         Keys::shortNpub($pubkey), $conversation->number, $new ? 'new' : 'reopened'));
 
+        // The listener is a command: no terminate handler sends the notifications.
+        \App\Subscription::processEvents();
+
         return $thread;
     }
 

@@ -47,5 +47,7 @@ class SyncMatrixMailbox implements ShouldQueue, ShouldBeUnique
             }
             $identity->save();
         }
+        // A job: no terminate handler sends the notifications (also for what came before a failure).
+        \App\Subscription::processEvents();
     }
 }

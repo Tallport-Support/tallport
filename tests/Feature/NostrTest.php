@@ -173,6 +173,19 @@ class NostrTest extends FeatureTestCase
             ->assertDontSee('@endif', false);
     }
 
+    /**
+     * The listener is a command, without the terminate handler that sends notifications.
+     */
+    public function testTheTeamIsNotified()
+    {
+        $cfg = $this->setUpNostr();
+        \App\Subscription::create(['user_id' => $this->agent->id, 'medium' => \App\Subscription::MEDIUM_EMAIL, 'event' => \App\Subscription::EVENT_NEW_CONVERSATION]);
+
+        $this->receive($cfg, 'Hello, my VPN won\'t connect.');
+
+        $this->assertCount(1, $this->sentEmailsTo($this->agent->email));
+    }
+
     public function testDuplicatesNextMessagesAndReopenWindow()
     {
         $cfg = $this->setUpNostr();
