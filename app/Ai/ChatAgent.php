@@ -247,7 +247,8 @@ class ChatAgent
         $conversation->refresh();
         $state = (array) $conversation->getMeta(self::META, []);
         $last = self::lastMessage($conversation);
-        if (!self::handles($conversation) || !$last || $last->type != Thread::TYPE_CUSTOMER) {
+        // Closed meanwhile (the website chat's End Chat): nothing to ask.
+        if (!self::handles($conversation) || !$last || $last->type != Thread::TYPE_CUSTOMER || $conversation->isClosed()) {
             return null;
         }
         $mailbox = $conversation->mailbox;
@@ -265,7 +266,7 @@ class ChatAgent
             $answer = (new ChatIntake($language, $questions, ChannelMessages::key($conversation) == 'email'))->recordFor(Usage::FEATURE_AGENT, $conversation)->withImages(ConversationContext::images($context))->prompt($prompt)->toArray();
             $action = $answer['action'] ?? null;
             $message = trim((string) ($answer['message'] ?? ''));
-            if (!in_array($action, ['ask', 'hand_over'], true) || ($action == 'ask' && $message === '')) {
+            if (!in_array($action, ['ask', 'hand_over', 'close'], true) || ($action == 'ask' && $message === '') || ($action == 'close' && !$questions)) {
                 throw new \UnexpectedValueException('The AI gave no usable answer.');
             }
         } catch (\Throwable $e) {
@@ -275,12 +276,15 @@ class ChatAgent
             return $last->id;
         }
 
-        // A person took it, or it was handed over, while it thought.
+        // A person took it, it was handed over, or closed, while it thought.
         $conversation->refresh();
-        if (!self::handles($conversation)) {
+        if (!self::handles($conversation) || $conversation->isClosed()) {
             return $last->id;
         }
-        if ($action == 'ask' && $questions < self::MAX_QUESTIONS) {
+        // The customer needs nothing more: closed, and still its when they write again (as silence()).
+        if ($action == 'close') {
+            $conversation->changeStatus(Conversation::STATUS_CLOSED, self::user());
+        } elseif ($action == 'ask' && $questions < self::MAX_QUESTIONS) {
             $thread = self::send($conversation, $message, $answer);
             $has_request = !empty($answer['has_request']);
             $state = (array) $conversation->getMeta(self::META, []);

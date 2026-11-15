@@ -2003,5 +2003,9 @@
     "Dismiss Draft Details": "Skryť Podrobnosti Návrhu",
     "The AI isn’t answering right now": "AI momentálne neodpovedá",
     "The server didn’t answer. Try again in a moment.": "Server neodpovedal. Skúste to o chvíľu znova.",
-    "Images Refused": "Obrázky Odmietnuté"
+    "Images Refused": "Obrázky Odmietnuté",
+    "End Chat": "Ukončiť Chat",
+    "You ended the chat.": "Ukončili ste chat.",
+    "Close When Resolved": "Uzavrieť po Vyriešení",
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Konverzácia sa uzavrie, keď zákazník napíše, že jeho požiadavka je vyriešená, a nič ďalšie nežiada."
 }

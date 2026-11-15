@@ -2003,5 +2003,9 @@
     "Dismiss Draft Details": "Sakrij Detalje Nacrta",
     "The AI isn’t answering right now": "Umjetna inteligencija trenutno ne odgovara",
     "The server didn’t answer. Try again in a moment.": "Poslužitelj nije odgovorio. Pokušajte ponovno za trenutak.",
-    "Images Refused": "Slike Odbijene"
+    "Images Refused": "Slike Odbijene",
+    "End Chat": "Završi Chat",
+    "You ended the chat.": "Završili ste chat.",
+    "Close When Resolved": "Zatvori Kada je Riješeno",
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Razgovor se zatvara kada kupac napiše da je njegov zahtjev riješen i ne traži ništa više."
 }

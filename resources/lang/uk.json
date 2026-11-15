@@ -2003,5 +2003,9 @@
     "Dismiss Draft Details": "Сховати Деталі Чернетки",
     "The AI isn’t answering right now": "ШІ зараз не відповідає",
     "The server didn’t answer. Try again in a moment.": "Сервер не відповів. Спробуйте ще раз за мить.",
-    "Images Refused": "Зображення Відхилено"
+    "Images Refused": "Зображення Відхилено",
+    "End Chat": "Завершити Чат",
+    "You ended the chat.": "Ви завершили чат.",
+    "Close When Resolved": "Закривати Вирішені Розмови",
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Розмова закривається, коли клієнт пише, що його запит вирішено, і більше нічого не просить."
 }

@@ -400,9 +400,9 @@ class Settings
     }
 
     /**
-     * Features that can be turned off per mailbox (all on by default).
+     * Features that can be turned off per mailbox (all on by default). closing: App\Ai\Resolved.
      */
-    const FEATURES = ['summaries', 'translations', 'drafts'];
+    const FEATURES = ['summaries', 'translations', 'drafts', 'closing'];
 
     public static function enabled($feature, $mailbox)
     {

@@ -186,6 +186,41 @@ class AiChatAgentTest extends FeatureTestCase
     }
 
     /**
+     * The customer needs nothing more after its question: closed, nothing sent, still the AI's when
+     * they write again. A chat they end (End Chat) while it would ask gets no question.
+     */
+    public function testTheCustomerNeedsNothingMore()
+    {
+        $prompts = [];
+        ChatIntake::fake(function ($prompt) use (&$prompts) {
+            $prompts[] = $prompt;
+
+            return count($prompts) == 2 ? $this->answer(['action' => 'close', 'message' => '']) : $this->answer();
+        })->preventStrayPrompts();
+        // A new conversation always gets a person.
+        $this->assertStringNotContainsString('"close"', (new ChatIntake('en', 0))->instructions());
+        $this->assertStringContainsString('"close"', (new ChatIntake('en', 1))->instructions());
+
+        $conversation = $this->write('hello');
+        $conversation = $this->write('Never mind, I found it myself.', $conversation);
+        $this->assertTrue($conversation->isClosed());
+        $this->assertSame(ChatAgent::userId(), (int) $conversation->closed_by_user_id);
+        $this->assertTrue(ChatAgent::holds($conversation));
+        $this->assertCount(1, $this->messages($conversation));
+        $this->assertCount(0, $this->sentEmailsTo($this->agent->email));
+
+        $conversation = $this->write('Actually, one more question.', $conversation);
+        $this->assertTrue($conversation->isActive());
+        $this->assertCount(2, $this->messages($conversation));
+
+        // Ended before its next step: nothing asked.
+        $conversation->changeStatus(Conversation::STATUS_CLOSED, null, true, $this->customer);
+        ChatAgent::reply($conversation->fresh());
+        $this->assertCount(2, $this->messages($conversation));
+        $this->assertCount(3, $prompts);
+    }
+
+    /**
      * The silence checks run for real here: the sync queue runs each at once, as if the customer
      * never answered.
      */

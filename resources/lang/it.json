@@ -2003,5 +2003,9 @@
     "Dismiss Draft Details": "Nascondi Dettagli della Bozza",
     "The AI isn’t answering right now": "L’IA non risponde in questo momento",
     "The server didn’t answer. Try again in a moment.": "Il server non ha risposto. Riprova tra un momento.",
-    "Images Refused": "Immagini Rifiutate"
+    "Images Refused": "Immagini Rifiutate",
+    "End Chat": "Termina Chat",
+    "You ended the chat.": "Ha terminato la chat.",
+    "Close When Resolved": "Chiudi Quando Risolto",
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Una conversazione viene chiusa quando il cliente scrive che la sua richiesta è risolta e non chiede altro."
 }

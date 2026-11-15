@@ -619,6 +619,9 @@ class Thread extends Model
             } else {
                 $person = $this->created_by_user_cached->getFullName();
             }
+        } elseif ($this->type == self::TYPE_LINEITEM && $this->created_by_customer) {
+            // The customer's own (the website chat's End Chat); a visitor may have no name yet.
+            $person = $this->created_by_customer->getFullName(true) ?: __('Customer');
         }
 
         // https://github.com/tormjens/eventy/issues/19

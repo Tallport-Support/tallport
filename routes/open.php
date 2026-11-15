@@ -36,6 +36,7 @@ Route::post('/t/v', 'WebChatController@start')->name('web_chat.start');
 Route::get('/t/m', 'WebChatController@messages')->name('web_chat.messages');
 Route::post('/t/m', 'WebChatController@send')->name('web_chat.send');
 Route::post('/t/r', 'WebChatController@read')->name('web_chat.read');
+Route::post('/t/d', 'WebChatController@end')->name('web_chat.end');
 Route::get('/t/f', 'WebChatController@file')->middleware('throttle:120,1')->name('web_chat.file');
 Route::get('/t/a', 'WebChatController@photo')->name('web_chat.photo');
 Route::get('/t/{name}', 'WebChatController@asset')->where('name', 's|j|x')->name('web_chat.asset');

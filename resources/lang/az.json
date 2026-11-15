@@ -2003,5 +2003,9 @@
     "Dismiss Draft Details": "Qaralama Təfərrüatlarını Gizlət",
     "The AI isn’t answering right now": "Süni intellekt hazırda cavab vermir",
     "The server didn’t answer. Try again in a moment.": "Server cavab vermədi. Bir az sonra yenidən cəhd edin.",
-    "Images Refused": "Şəkillər Rədd Edildi"
+    "Images Refused": "Şəkillər Rədd Edildi",
+    "End Chat": "Çatı Bitir",
+    "You ended the chat.": "Çatı bitirdiniz.",
+    "Close When Resolved": "Həll Olunduqda Bağla",
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Müştəri sorğusunun həll olunduğunu yazıb başqa heç nə istəmədikdə söhbət bağlanır."
 }

@@ -2004,5 +2004,9 @@
     "Dismiss Draft Details": "隐藏草稿详情",
     "The AI isn’t answering right now": "AI 目前没有响应",
     "The server didn’t answer. Try again in a moment.": "服务器没有响应。请稍后再试。",
-    "Images Refused": "图片被拒绝"
+    "Images Refused": "图片被拒绝",
+    "End Chat": "结束聊天",
+    "You ended the chat.": "您已结束聊天。",
+    "Close When Resolved": "解决后关闭",
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "当客户写明其请求已解决且不再需要其他帮助时，对话将关闭。"
 }

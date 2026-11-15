@@ -1937,7 +1937,10 @@ class Conversation extends Model
         return $this->hasChannel() && (bool) $this->getMeta('chat_unavailable');
     }
 
-    public function changeStatus($new_status, $user = null, $create_thread = true)
+    /**
+     * $customer: the customer did it (the website chat's End Chat), without a user.
+     */
+    public function changeStatus($new_status, $user = null, $create_thread = true, $customer = null)
     {
         if ($this->isChatUnavailable() && in_array(self::toMainStatus($new_status), [self::STATUS_ACTIVE, self::STATUS_PENDING])) {
             return;
@@ -1970,6 +1973,7 @@ class Conversation extends Model
             $thread->source_type = Thread::SOURCE_TYPE_WEB;
             $thread->customer_id = $this->customer_id;
             $thread->created_by_user_id = $user ? $user->id : null;
+            $thread->created_by_customer_id = $customer ? $customer->id : null;
             $thread->save();
         }
 

@@ -2094,5 +2094,9 @@
     "Dismiss Draft Details": "Amaga els Detalls de l’Esborrany",
     "The AI isn’t answering right now": "La IA no respon ara mateix",
     "The server didn’t answer. Try again in a moment.": "El servidor no ha respost. Torneu-ho a intentar d’aquí a un moment.",
-    "Images Refused": "Imatges Rebutjades"
+    "Images Refused": "Imatges Rebutjades",
+    "End Chat": "Finalitza el Xat",
+    "You ended the chat.": "Heu finalitzat el xat.",
+    "Close When Resolved": "Tanca Quan Estigui Resolt",
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Una conversa es tanca quan el client escriu que la seva sol·licitud està resolta i no demana res més."
 }

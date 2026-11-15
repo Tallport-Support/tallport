@@ -39,6 +39,9 @@
                     <x-fruit::field :label="__('Drafts')" :description="__('Reply drafts for agents to review and send.')" layout="row">
                         <x-fruit::switch name="features[drafts]" value="1" :checked="$ai_features_on['drafts']" x-on:change="drafts = $el.checked" />
                     </x-fruit::field>
+                    <x-fruit::field :label="__('Close When Resolved')" :description="__('A conversation closes when the customer writes that their request is resolved and asks for nothing more.')" layout="row">
+                        <x-fruit::switch name="features[closing]" value="1" :checked="$ai_features_on['closing']" />
+                    </x-fruit::field>
                 </x-fruit::form-section>
 
                 {{-- The AI agent (App\Ai\ChatAgent): the channels it takes new conversations on. --}}

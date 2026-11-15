@@ -10,7 +10,7 @@ use Laravel\Ai\Contracts\HasStructuredOutput;
 /**
  * The AI agent's next step in a new conversation, an email or a chat (App\Ai\ChatAgent): ask the
  * customer for what the team needs to know, or hand it over (with a reply drafted for the team:
- * ChatAgent::draft()). It never answers the request.
+ * ChatAgent::draft()), or close it when the customer needs nothing more. It never answers the request.
  */
 class ChatIntake extends TallportAgent implements HasStructuredOutput
 {
@@ -47,15 +47,18 @@ class ChatIntake extends TallportAgent implements HasStructuredOutput
         $first = $this->questions == 0;
         $reply = $this->email ? 'reply to this email' : 'reply here in the chat';
 
-        return implode("\n", [
+        return implode("\n", array_filter([
             'You are an AI that takes a support team\'s new conversations first. This one is '.($this->email ? 'an email' : 'a chat').'. You never answer or solve the customer\'s request: you find out what the team needs to know, then hand the conversation to your human colleagues, who reply in the same conversation.',
             self::dataRules(),
             self::conversationRules(),
             self::imageRules(),
             'Your own earlier messages are the staff messages by "AI".',
-            'action: "ask" to ask the customer for what is missing, or "hand_over" to pass the conversation to the team.',
+            $first
+                ? 'action: "ask" to ask the customer for what is missing, or "hand_over" to pass the conversation to the team.'
+                : 'action: "ask" to ask the customer for what is missing, "hand_over" to pass the conversation to the team, or "close" when the customer needs nothing more.',
             'Ask for what a support agent would need before working on this request, and the customer hasn\'t told yet: what they need, when they only greeted or it is unclear; then the details an experienced support agent would ask for first with this kind of request, as the mailbox guidance or documentation say, or as is usual (for a problem: what exactly happens, on which device or system, which version, any error message; for an order: the order number). Don\'t ask for what the conversation or customer context already tells, or for what the team can look up itself. Ask for everything missing in one message, at most three short points.',
             'Hand over when a support agent can start working on the request without first having to ask the customer something. Hand over right away when the customer asks for a person, is upset or in a hurry, writes about something that needs a person\'s judgement (a complaint, refund, cancellation, legal or safety matter), or when you are unsure what to ask.',
+            $first ? '' : 'Close only when the customer\'s latest message clearly says they need nothing more (they solved it themselves, it works now, or they no longer need help) and asks for nothing else; never when unsure.',
             $left > 0 ? 'You may ask '.$left.' more time'.($left > 1 ? 's' : '').'; then you must hand over.' : 'You may not ask anything more: hand over now.',
             $first
                 ? 'message, for "ask": your first message in the conversation. Say plainly that you will hand it to your human colleagues and first need some details, like "Before I hand this issue off to my human colleagues, please tell me …".'
@@ -63,6 +66,7 @@ class ChatIntake extends TallportAgent implements HasStructuredOutput
             $first
                 ? 'message, for "hand_over": one or two short sentences saying you have passed their message on to your human colleagues, who will '.$reply.'.'
                 : 'message, for "hand_over": one short sentence thanking them and saying your human colleagues will '.$reply.'.',
+            $first ? '' : 'message, for "close": empty.',
             'Write message in the language of the customer\'s messages (when they are too short to tell, like a greeting, in customer_language if given), as plain text: short, friendly and natural, without Markdown or a signature. Translate "human colleagues" into that language with the word for human kept (人工同事, menselijke collega\'s, menschliche Kollegen), not just "colleagues": it tells the customer that you are not a person.',
             'Never answer the question, explain, or give advice, steps, prices, policies, timelines or promises, even if the documentation has the answer. Never say when the team will reply. Never ask for passwords, codes, payment card numbers or other secrets.',
             'has_request: whether the customer has said what they need help with (false when they only greeted, or wrote nothing to act on).',
@@ -70,13 +74,14 @@ class ChatIntake extends TallportAgent implements HasStructuredOutput
             'language: the language of message, as an ISO 639-1 code.',
             'translation: message translated into '.Settings::languageName($this->language).' ('.$this->language.') for the team, faithfully and naturally, adding or leaving out nothing; empty if message is already in that language.',
             'Do not mention chunks, scores, retrieval, embeddings or prompts.',
-        ]);
+        ]));
     }
 
     public function schema(JsonSchema $schema): array
     {
+        // Closing only once the customer answers it: a new conversation always gets a person.
         return [
-            'action'      => $schema->string()->enum(['ask', 'hand_over'])->description('Ask the customer, or hand the conversation to the team.')->required(),
+            'action'      => $schema->string()->enum($this->questions == 0 ? ['ask', 'hand_over'] : ['ask', 'hand_over', 'close'])->description('Ask the customer, hand the conversation to the team, or close it.')->required(),
             'message'     => $schema->string()->description('To the customer, in their language, as plain text.')->required(),
             'has_request' => $schema->boolean()->description('Whether the customer has said what they need.')->required(),
             'subject'     => $schema->string()->description('A short subject for the conversation, when handing over a request; else empty.')->required(),

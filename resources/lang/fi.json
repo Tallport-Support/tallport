@@ -2019,5 +2019,9 @@
     "Dismiss Draft Details": "Piilota Luonnoksen Tiedot",
     "The AI isn’t answering right now": "Tekoäly ei vastaa juuri nyt",
     "The server didn’t answer. Try again in a moment.": "Palvelin ei vastannut. Yritä hetken kuluttua uudelleen.",
-    "Images Refused": "Kuvat Hylätty"
+    "Images Refused": "Kuvat Hylätty",
+    "End Chat": "Lopeta Chat",
+    "You ended the chat.": "Lopetit chatin.",
+    "Close When Resolved": "Sulje Kun Ratkaistu",
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Keskustelu suljetaan, kun asiakas kirjoittaa, että hänen asiansa on ratkaistu, eikä pyydä mitään muuta."
 }

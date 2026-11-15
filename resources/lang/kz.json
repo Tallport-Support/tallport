@@ -2396,5 +2396,9 @@
     "Dismiss Draft Details": "Жоба Мәліметтерін Жасыру",
     "The AI isn’t answering right now": "ЖИ қазір жауап бермей тұр",
     "The server didn’t answer. Try again in a moment.": "Сервер жауап бермеді. Сәлден кейін қайталап көріңіз.",
-    "Images Refused": "Суреттер Қабылданбады"
+    "Images Refused": "Суреттер Қабылданбады",
+    "End Chat": "Чатты Аяқтау",
+    "You ended the chat.": "Сіз чатты аяқтадыңыз.",
+    "Close When Resolved": "Шешілгенде Жабу",
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Клиент өтінішінің шешілгенін жазып, басқа ештеңе сұрамаса, тикет жабылады."
 }

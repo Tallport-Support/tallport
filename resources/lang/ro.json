@@ -2003,5 +2003,9 @@
     "Dismiss Draft Details": "Ascunde Detaliile Schiței",
     "The AI isn’t answering right now": "AI-ul nu răspunde momentan",
     "The server didn’t answer. Try again in a moment.": "Serverul nu a răspuns. Încercați din nou peste câteva momente.",
-    "Images Refused": "Imagini Refuzate"
+    "Images Refused": "Imagini Refuzate",
+    "End Chat": "Încheie Chatul",
+    "You ended the chat.": "Ați încheiat chatul.",
+    "Close When Resolved": "Închide Când Este Rezolvat",
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "O conversație se închide când clientul scrie că solicitarea sa este rezolvată și nu mai cere nimic."
 }

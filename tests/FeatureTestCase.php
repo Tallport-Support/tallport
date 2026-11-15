@@ -63,6 +63,10 @@ abstract class FeatureTestCase extends TestCase
         (new \ReflectionProperty(\App\Workflows\Runner::class, 'robot'))->setValue(null, null);
         (new \ReflectionProperty(\App\Ai\ChatAgent::class, 'user'))->setValue(null, null);
 
+        // Where the AI is set up, a customer's reply is checked for being resolved (App\Ai\Resolved):
+        // never by a real model, and never resolved but in the tests about it.
+        \App\Ai\Agents\ResolvedCheck::fake(fn () => ['resolved' => false]);
+
         // No customer photos looked up online (Gravatar unless set) but in
         // the tests about them.
         \Option::set(\App\Misc\CustomerPhotos::OPTION, \App\Misc\CustomerPhotos::NONE);

@@ -59,6 +59,7 @@
                 'soundOn'  => __('Sound On'),
                 'soundOff' => __('Sound Off'),
                 'typing'   => __(':name is typing…'),
+                'ended'    => __('You ended the chat.'),
             ],
         ];
     @endphp
@@ -73,6 +74,11 @@
             </div>
             {{-- The chime for an answer the visitor may miss, on or off (kept in this browser). --}}
             <button class="f-button f-button--ghost f-button--icon widget-sound" type="button" @click="toggleSound" :aria-pressed="String(sound)" aria-pressed="true" aria-label="{{ __('Sound') }}" :title="sound ? text.soundOn : text.soundOff" title="{{ __('Sound On') }}"><x-icon.volume-2 class="f-icon" aria-hidden="true" x-show="sound" /><x-icon.volume-x class="f-icon" aria-hidden="true" x-show="!sound" x-cloak /></button>
+            {{-- Ending the chat while it's open (the visitor needs nothing more): writing again continues it. --}}
+            <x-fruit::menu :title="__('More Actions')" x-show="chatOpen" x-cloak>
+                <x-slot:trigger class="f-button--ghost f-button--icon" :aria-label="__('More Actions')" :title="__('More Actions')"><x-icon.ellipsis class="f-icon" aria-hidden="true" /></x-slot:trigger>
+                <x-fruit::menu-item x-on:click="end">{{ __('End Chat') }}</x-fruit::menu-item>
+            </x-fruit::menu>
             <button class="f-button f-button--ghost f-button--icon widget-close" type="button" x-show="embedded" x-cloak @click="close" aria-label="{{ __('Close Chat') }}" title="{{ __('Close Chat') }}"><x-icon.x class="f-icon" aria-hidden="true" /></button>
         </header>
         <div class="f-alert f-alert--warning widget-offline" role="status" x-show="!online" x-cloak><x-icon.triangle-alert class="f-icon f-alert__icon" aria-hidden="true" /><div class="f-alert__body">{{ __('You’re offline. Your messages will be sent when you’re back.') }}</div></div>
@@ -81,7 +87,7 @@
                 <template x-for="entry in timeline" :key="entry.id">
                     <li class="widget-entry" :data-kind="entry.kind" :data-first="entry.first" :data-last="entry.last" :data-entry-id="entry.id">
                         <template x-if="entry.kind === 'event'">
-                            <p class="f-message-event widget-event"><span class="f-message-event__icon" aria-hidden="true"><x-icon.mail class="f-icon" /></span><span class="f-message-event__text" x-text="entry.body"></span></p>
+                            <p class="f-message-event widget-event"><span class="f-message-event__icon" aria-hidden="true"><template x-if="entry.event === 'ended'"><x-icon.circle-check class="f-icon" /></template><template x-if="entry.event !== 'ended'"><x-icon.mail class="f-icon" /></template></span><span class="f-message-event__text" x-text="entry.body"></span></p>
                         </template>
                         {{-- After their first message: the reply can go by email too, once a code confirms the address. --}}
                         <template x-if="entry.kind === 'email'">

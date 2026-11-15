@@ -1999,5 +1999,9 @@
     "Dismiss Draft Details": "Entwurfsdetails Ausblenden",
     "The AI isn’t answering right now": "Die KI antwortet gerade nicht",
     "The server didn’t answer. Try again in a moment.": "Der Server hat nicht geantwortet. Bitte gleich noch einmal probieren.",
-    "Images Refused": "Bilder Abgelehnt"
+    "Images Refused": "Bilder Abgelehnt",
+    "End Chat": "Chat Beenden",
+    "You ended the chat.": "Sie haben den Chat beendet.",
+    "Close When Resolved": "Gelöste Gespräche Schließen",
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Ein Gespräch wird geschlossen, wenn der Kunde schreibt, dass sein Anliegen gelöst ist, und nichts weiter möchte."
 }

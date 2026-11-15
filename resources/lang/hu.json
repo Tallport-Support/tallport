@@ -2003,5 +2003,9 @@
     "Dismiss Draft Details": "Piszkozat Részleteinek Elrejtése",
     "The AI isn’t answering right now": "Az MI most nem válaszol",
     "The server didn’t answer. Try again in a moment.": "A szerver nem válaszolt. Próbáld újra egy kicsit később.",
-    "Images Refused": "Képek Elutasítva"
+    "Images Refused": "Képek Elutasítva",
+    "End Chat": "Chat Befejezése",
+    "You ended the chat.": "Ön befejezte a chatet.",
+    "Close When Resolved": "Lezárás Megoldáskor",
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "A beszélgetés lezárul, amikor az ügyfél azt írja, hogy a kérése megoldódott, és nem kér mást."
 }

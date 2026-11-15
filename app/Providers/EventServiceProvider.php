@@ -77,6 +77,7 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\AiUpdateSummary',
             'App\Listeners\AiTranslateMessage',
             'App\Listeners\AiChatAgent',
+            'App\Listeners\AiCloseResolved',
         ],
 
         'App\Events\UserCreatedConversation' => [

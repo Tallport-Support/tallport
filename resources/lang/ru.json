@@ -2003,5 +2003,9 @@
     "Dismiss Draft Details": "Скрыть Детали Черновика",
     "The AI isn’t answering right now": "ИИ сейчас не отвечает",
     "The server didn’t answer. Try again in a moment.": "Сервер не ответил. Попробуйте ещё раз через минуту.",
-    "Images Refused": "Изображения Отклонены"
+    "Images Refused": "Изображения Отклонены",
+    "End Chat": "Завершить Чат",
+    "You ended the chat.": "Вы завершили чат.",
+    "Close When Resolved": "Закрывать Решённые Тикеты",
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Тикет закрывается, когда клиент пишет, что его вопрос решён, и больше ничего не просит."
 }

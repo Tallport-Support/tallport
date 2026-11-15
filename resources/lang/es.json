@@ -2003,5 +2003,9 @@
     "Dismiss Draft Details": "Ocultar Detalles del Borrador",
     "The AI isn’t answering right now": "La IA no responde en este momento",
     "The server didn’t answer. Try again in a moment.": "El servidor no respondió. Intente de nuevo en un momento.",
-    "Images Refused": "Imágenes Rechazadas"
+    "Images Refused": "Imágenes Rechazadas",
+    "End Chat": "Finalizar Chat",
+    "You ended the chat.": "Ha finalizado el chat.",
+    "Close When Resolved": "Cerrar al Resolverse",
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Una conversación se cierra cuando el cliente escribe que su solicitud está resuelta y no pide nada más."
 }

@@ -45,6 +45,8 @@ document.addEventListener('alpine:init', function () {
             // The newest message the server says won't change (the team's can still be undone a moment).
             cursor: 0,
             hasConversation: false,
+            // Their conversation isn't closed: they can end it (end()).
+            chatOpen: false,
             activeAt: Date.now(),
             // New chats taken now (the widget's hourly limit); a visitor with a conversation keeps it.
             available: config.available,
@@ -249,6 +251,7 @@ document.addEventListener('alpine:init', function () {
                     self.emailState(data);
                     self.unread = data.unread;
                     self.writing = data.typing || '';
+                    self.chatOpen = Boolean(data.open);
                     if (self.shown) self.markRead();
                     else self.post('unread', Object.assign({ count: self.unread, label: data.unread_label }, news ? self.news(news) : {}));
                     if (news) {
@@ -396,6 +399,8 @@ document.addEventListener('alpine:init', function () {
                     id: 'm' + message.id,
                     serverId: message.id,
                     kind: message.kind,
+                    // An event's kind: where they ended the chat.
+                    event: message.event,
                     team: message.team,
                     author: message.kind === 'visitor' ? this.text.you : message.author,
                     initials: message.initials,
@@ -473,6 +478,8 @@ document.addEventListener('alpine:init', function () {
                     else entry.state = '';
                     self.proof = null;
                     self.hasConversation = true;
+                    // Their message opens it again too.
+                    if (data.message.id) self.chatOpen = true;
                     self.schedule(config.poll.active * 1000);
                 }).catch(function (error) {
                     var data = error.data || {};
@@ -537,6 +544,19 @@ document.addEventListener('alpine:init', function () {
                 this.waitTimer = setInterval(tick, 1000);
             },
 
+            /** They need nothing more: the chat ends (closed for the team); writing again continues it. */
+            end: function () {
+                var self = this;
+                this.api('POST', 'd').then(function () {
+                    self.chatOpen = false;
+                    self.announcement = self.text.ended;
+                    self.$refs.title.focus();
+                    self.schedule(0);
+                }).catch(function (error) {
+                    self.error = error.message;
+                });
+            },
+
             /** New chats aren't taken now: said, and (for a new visitor) nothing to write in. */
             unavailable: function (message) {
                 this.available = false;
@@ -560,7 +580,7 @@ document.addEventListener('alpine:init', function () {
                         toldMemory = 0;
                     }
                     clearTimeout(timer);
-                    Object.assign(self, { entries: [], cursor: 0, hasConversation: false, writing: '', email: null, emailStep: 'address', emailDraft: '' });
+                    Object.assign(self, { entries: [], cursor: 0, hasConversation: false, chatOpen: false, writing: '', email: null, emailStep: 'address', emailDraft: '' });
                     return self.poll();
                 }).catch(function () {});
             },
@@ -649,7 +669,7 @@ document.addEventListener('alpine:init', function () {
                 this.token(null);
                 memory = null;
                 toldMemory = 0;
-                Object.assign(this, { entries: [], greeting: config.greeting, draft: '', files: [], error: '', unread: 0, writing: '', announcement: '', cursor: 0, hasConversation: false,
+                Object.assign(this, { entries: [], greeting: config.greeting, draft: '', files: [], error: '', unread: 0, writing: '', announcement: '', cursor: 0, hasConversation: false, chatOpen: false,
                     email: null, emailStep: 'address', emailDraft: '', emailError: '', codeDraft: '', codeError: '', codeNotice: '', codesLeft: 3 });
                 this.post('unread', { count: 0, label: this.text.label });
             },

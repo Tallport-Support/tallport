@@ -2003,5 +2003,9 @@
     "Dismiss Draft Details": "Skrij Podrobnosti Osnutka",
     "The AI isn’t answering right now": "UI trenutno ne odgovarja",
     "The server didn’t answer. Try again in a moment.": "Strežnik ni odgovoril. Poskusi znova čez trenutek.",
-    "Images Refused": "Slike Zavrnjene"
+    "Images Refused": "Slike Zavrnjene",
+    "End Chat": "Končaj Klepet",
+    "You ended the chat.": "Končali ste klepet.",
+    "Close When Resolved": "Zapri Rešene Pogovore",
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Pogovor se zapre, ko stranka napiše, da je njena zahteva rešena, in ne prosi za nič drugega."
 }

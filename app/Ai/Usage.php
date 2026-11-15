@@ -20,12 +20,14 @@ class Usage extends Model
     const FEATURE_EMBEDDING = 'embedding';
     // The AI agent's steps in chats (App\Ai\ChatAgent), with the drafts' models.
     const FEATURE_AGENT = 'agent';
+    // Whether a customer's message says their request is resolved (App\Ai\Resolved), with the summaries' models.
+    const FEATURE_CLOSING = 'closing';
 
     /**
      * The calls of each feature in the settings (Settings::MODEL_FEATURES).
      */
     const SETTING_FEATURES = [
-        'summaries'    => [self::FEATURE_SUMMARY],
+        'summaries'    => [self::FEATURE_SUMMARY, self::FEATURE_CLOSING],
         'translations' => [self::FEATURE_TRANSLATION, self::FEATURE_REPLY_TRANSLATION],
         'drafts'       => [self::FEATURE_DRAFT, self::FEATURE_AGENT],
         'language'     => [self::FEATURE_LANGUAGE],
@@ -274,6 +276,7 @@ class Usage extends Model
             self::FEATURE_LANGUAGE          => __('Language Detection'),
             self::FEATURE_EMBEDDING         => __('Documentation'),
             self::FEATURE_AGENT             => __('Agent'),
+            self::FEATURE_CLOSING           => __('Close When Resolved'),
         ][$feature] ?? $feature;
     }
 

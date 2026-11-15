@@ -2010,5 +2010,9 @@
     "Dismiss Draft Details": "Masquer les Détails du Brouillon",
     "The AI isn’t answering right now": "L’IA ne répond pas pour le moment",
     "The server didn’t answer. Try again in a moment.": "Le serveur n’a pas répondu. Veuillez réessayer dans un instant.",
-    "Images Refused": "Images Refusées"
+    "Images Refused": "Images Refusées",
+    "End Chat": "Terminer le Tchat",
+    "You ended the chat.": "Vous avez mis fin au tchat.",
+    "Close When Resolved": "Fermer une Fois Résolu",
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Une conversation est fermée quand le client écrit que sa demande est résolue et ne demande rien de plus."
 }

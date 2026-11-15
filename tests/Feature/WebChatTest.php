@@ -97,7 +97,7 @@ class WebChatTest extends FeatureTestCase
         // An answer the visitor may miss: its words for the launcher (the tab's title, the card), in their
         // language, and the chime's Sound button in the header.
         $response->assertSee('\u0022replied\u0022:\u0022:name heeft geantwoord\u0022', false)->assertSee('\u0022dismiss\u0022:\u0022Verbergen\u0022', false)
-            ->assertSeeInOrder(['widget-sound', 'aria-label="Geluid"', 'title="Geluid Aan"', 'widget-close'], false)
+            ->assertSeeInOrder(['widget-sound', 'aria-label="Geluid"', 'title="Geluid Aan"', 'x-show="chatOpen"', 'Chat Beëindigen', 'widget-close'], false)
             // Asked often enough for the card while closed, slowly from a tab in the background.
             ->assertSee('\u0022closed\u0022:15,\u0022hidden\u0022:60', false);
 
@@ -266,6 +266,43 @@ class WebChatTest extends FeatureTestCase
     /**
      * A conversation continues within the mailbox's Reopen Window; after it, a new one starts.
      */
+    /**
+     * End Chat: the conversation closes as the visitor's (the team sees who), the window says so,
+     * and writing again continues it.
+     */
+    public function testTheVisitorEndsTheChat()
+    {
+        $token = $this->visitorToken();
+        $this->api('POST', '/t/d', [], $token)->assertOk();
+        $this->assertSame(0, Visitor::count(), 'Nothing to end before they write.');
+        $this->api('POST', '/t/m', ['body' => 'Where is my order?'], $token)->assertOk();
+        $conversation = Visitor::firstOrFail()->conversation;
+        $this->assertTrue($this->api('GET', '/t/m?after=0', [], $token)->json('open'));
+
+        $this->api('POST', '/t/d', [], $token)->assertOk();
+        $conversation->refresh();
+        $this->assertTrue($conversation->isClosed());
+        $this->assertNull($conversation->closed_by_user_id);
+        $line = $conversation->threads()->where('action_type', Thread::ACTION_TYPE_STATUS_CHANGED)->firstOrFail();
+        $this->assertSame($conversation->customer_id, (int) $line->created_by_customer_id);
+        // A visitor without a name yet.
+        $this->assertSame('Customer marked as Closed', trim(strip_tags($line->getActionText('', false, true, null, $line->getActionPerson()))));
+        $page = $this->actingAs($this->agent)->get('/conversation/'.$conversation->id)->assertOk()->getContent();
+        $this->assertMatchesRegularExpression('/Customer(\s|<!--\[if ENDBLOCK\]><!\[endif\]-->)*marked as Closed/', $page);
+        $poll = $this->api('GET', '/t/m?after=0', [], $token)->json();
+        $this->assertFalse($poll['open']);
+        $this->assertSame(['visitor', 'event'], array_column($poll['messages'], 'kind'));
+        $this->assertSame(['ended', 'You ended the chat.'], [$poll['messages'][1]['event'], $poll['messages'][1]['body']]);
+        // Once.
+        $this->api('POST', '/t/d', [], $token)->assertOk();
+        $this->assertSame(1, $conversation->threads()->where('action_type', Thread::ACTION_TYPE_STATUS_CHANGED)->count());
+
+        $this->api('POST', '/t/m', ['body' => 'One more thing'], $token)->assertOk();
+        $this->assertTrue($conversation->fresh()->isActive());
+        $this->assertTrue($this->api('GET', '/t/m?after=0', [], $token)->json('open'));
+        $this->api('POST', '/t/d', [], 'not-a-visitor-token-but-long-enough-to-check')->assertUnauthorized();
+    }
+
     public function testANewConversationAfterTheReopenWindow()
     {
         $token = $this->visitorToken();

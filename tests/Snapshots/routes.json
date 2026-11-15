@@ -3138,6 +3138,20 @@
         "methods": [
             "POST"
         ],
+        "uri": "t/d",
+        "name": "web_chat.end",
+        "action": "WebChatController@end",
+        "middleware": [
+            "open"
+        ],
+        "where": {
+            "id": "[0-9]+"
+        }
+    },
+    {
+        "methods": [
+            "POST"
+        ],
         "uri": "t/e",
         "name": "web_chat.email_code",
         "action": "WebChatController@emailCode",

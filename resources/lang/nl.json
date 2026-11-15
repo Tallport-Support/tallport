@@ -2003,5 +2003,9 @@
     "Dismiss Draft Details": "Conceptdetails Verbergen",
     "The AI isn’t answering right now": "De AI antwoordt op dit moment niet",
     "The server didn’t answer. Try again in a moment.": "De server antwoordde niet. Probeer het zo opnieuw.",
-    "Images Refused": "Afbeeldingen Geweigerd"
+    "Images Refused": "Afbeeldingen Geweigerd",
+    "End Chat": "Chat Beëindigen",
+    "You ended the chat.": "U hebt de chat beëindigd.",
+    "Close When Resolved": "Sluiten Wanneer Opgelost",
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Een gesprek wordt gesloten wanneer de klant schrijft dat de vraag is opgelost en verder niets vraagt."
 }

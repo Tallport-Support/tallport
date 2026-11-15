@@ -91,8 +91,10 @@ class WebChatController extends Controller
         $messages = [];
         $unread = 0;
         $typing = null;
+        $open = false;
         $cursor = (int) $request->after;
         if ($visitor->exists && ($conversation = $visitor->currentConversation())) {
+            $open = $conversation->isActive() || $conversation->isPending();
             foreach ($this->threads($conversation)->where('id', '>', $cursor)->get() as $thread) {
                 $messages[] = $this->message($thread);
             }
@@ -114,6 +116,8 @@ class WebChatController extends Controller
             'unread_label' => trans_choice(':name, :count unread message|:name, :count unread messages', $unread, ['name' => __('Chat with :name', ['name' => WebChat::teamName($visitor->mailbox)])]),
             'cursor'       => $cursor,
             'typing'       => $typing,
+            // Not closed: the visitor can end it (end()).
+            'open'         => $open,
             // The team's messages up to this one are read: older ones are never news to announce.
             'read'         => (int) $visitor->read_thread_id,
             // By name once the website has signed them in.
@@ -342,6 +346,22 @@ class WebChatController extends Controller
     }
 
     /**
+     * The visitor ended the chat (they need nothing more): the conversation closes, as theirs.
+     * Writing again continues it, as after the team closes it.
+     */
+    public function end(Request $request)
+    {
+        $visitor = $this->visitor($request);
+        $this->limit('end:'.$visitor->token, 20, 600);
+        $conversation = $visitor->exists ? $visitor->currentConversation() : null;
+        if ($conversation && ($conversation->isActive() || $conversation->isPending())) {
+            $conversation->changeStatus(Conversation::STATUS_CLOSED, null, true, $visitor->customer);
+        }
+
+        return response()->json([]);
+    }
+
+    /**
      * A file in the conversation, by its token (links can't carry the visitor's token).
      */
     public function file(Request $request)
@@ -456,7 +476,8 @@ class WebChatController extends Controller
 
     /**
      * What the visitor sees of the conversation: their messages, the team's replies (not notes,
-     * drafts or what the team can still undo) and the auto reply (App\Jobs\SendChatAutoReply).
+     * drafts or what the team can still undo), the auto reply (App\Jobs\SendChatAutoReply) and
+     * where they ended the chat (end()).
      */
     protected function threads(Conversation $conversation)
     {
@@ -475,6 +496,9 @@ class WebChatController extends Controller
                     })
                     ->orWhere(function ($query) {
                         $query->where('type', Thread::TYPE_LINEITEM)->where('action_type', Thread::ACTION_TYPE_AUTO_REPLY);
+                    })
+                    ->orWhere(function ($query) {
+                        $query->where('type', Thread::TYPE_LINEITEM)->where('action_type', Thread::ACTION_TYPE_STATUS_CHANGED)->whereNotNull('created_by_customer_id');
                     });
             })
             ->orderBy('id');
@@ -482,6 +506,9 @@ class WebChatController extends Controller
 
     protected function message(Thread $thread)
     {
+        if ($thread->type == Thread::TYPE_LINEITEM && $thread->action_type == Thread::ACTION_TYPE_STATUS_CHANGED) {
+            return ['id' => $thread->id, 'kind' => 'event', 'event' => 'ended', 'body' => __('You ended the chat.'), 'time' => $thread->created_at->toIso8601String(), 'files' => []];
+        }
         // The auto reply: the mailbox's own message, at once.
         if ($thread->type == Thread::TYPE_LINEITEM) {
             $mailbox = $thread->conversation->mailbox;
