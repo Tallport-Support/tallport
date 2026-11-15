@@ -74,6 +74,7 @@ class SavedRepliesController extends Controller
         $saved_reply->parent_saved_reply_id = $parent_id;
         $saved_reply->global = (bool) $request->global;
         $saved_reply->auto_load = (bool) $request->auto_load;
+        $saved_reply->as_written = (bool) $request->as_written;
 
         // Files: removed ones deleted, new ones added.
         $attachment_ids = array_map('intval', (array) $saved_reply->attachments);

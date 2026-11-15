@@ -2014,5 +2014,7 @@
     "End Chat": "Terminer le Tchat",
     "You ended the chat.": "Vous avez mis fin au tchat.",
     "Close When Resolved": "Fermer une Fois Résolu",
-    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Une conversation est fermée quand le client écrit que sa demande est résolue et ne demande rien de plus."
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Une conversation est fermée quand le client écrit que sa demande est résolue et ne demande rien de plus.",
+    "Don’t Translate": "Ne Pas Traduire",
+    "Sent as written where replies are translated, for a reply already in several languages": "Envoyée telle quelle là où les réponses sont traduites, pour une réponse déjà en plusieurs langues"
 }

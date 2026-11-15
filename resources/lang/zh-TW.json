@@ -2051,5 +2051,7 @@
     "End Chat": "結束聊天",
     "You ended the chat.": "您已結束聊天。",
     "Close When Resolved": "解決後關閉",
-    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "當客戶寫明其請求已解決且不再需要其他協助時，對話將會關閉。"
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "當客戶寫明其請求已解決且不再需要其他協助時，對話將會關閉。",
+    "Don’t Translate": "不翻譯",
+    "Sent as written where replies are translated, for a reply already in several languages": "在回覆會被翻譯的對話中依原文傳送，適用於已包含多種語言的回覆"
 }

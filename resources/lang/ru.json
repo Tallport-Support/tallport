@@ -2007,5 +2007,7 @@
     "End Chat": "Завершить Чат",
     "You ended the chat.": "Вы завершили чат.",
     "Close When Resolved": "Закрывать Решённые Тикеты",
-    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Тикет закрывается, когда клиент пишет, что его вопрос решён, и больше ничего не просит."
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Тикет закрывается, когда клиент пишет, что его вопрос решён, и больше ничего не просит.",
+    "Don’t Translate": "Не Переводить",
+    "Sent as written where replies are translated, for a reply already in several languages": "Отправляется без перевода там, где ответы переводятся, — для ответа, уже написанного на нескольких языках"
 }

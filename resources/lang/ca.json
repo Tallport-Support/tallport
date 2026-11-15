@@ -2098,5 +2098,7 @@
     "End Chat": "Finalitza el Xat",
     "You ended the chat.": "Heu finalitzat el xat.",
     "Close When Resolved": "Tanca Quan Estigui Resolt",
-    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Una conversa es tanca quan el client escriu que la seva sol·licitud està resolta i no demana res més."
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Una conversa es tanca quan el client escriu que la seva sol·licitud està resolta i no demana res més.",
+    "Don’t Translate": "No Traduir",
+    "Sent as written where replies are translated, for a reply already in several languages": "S'envia tal com està on les respostes es tradueixen, per a una resposta que ja és en diversos idiomes"
 }

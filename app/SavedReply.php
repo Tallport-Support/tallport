@@ -18,6 +18,7 @@ class SavedReply extends Model
         'attachments' => 'array',
         'global'      => 'boolean',
         'auto_load'   => 'boolean',
+        'as_written'  => 'boolean',
     ];
 
     const NAME_MAX_LENGTH = 75;

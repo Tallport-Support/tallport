@@ -2007,5 +2007,7 @@
     "End Chat": "Končaj Klepet",
     "You ended the chat.": "Končali ste klepet.",
     "Close When Resolved": "Zapri Rešene Pogovore",
-    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Pogovor se zapre, ko stranka napiše, da je njena zahteva rešena, in ne prosi za nič drugega."
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Pogovor se zapre, ko stranka napiše, da je njena zahteva rešena, in ne prosi za nič drugega.",
+    "Don’t Translate": "Ne Prevajaj",
+    "Sent as written where replies are translated, for a reply already in several languages": "Pošlje se brez prevoda tudi tam, kjer se odgovori prevajajo – za odgovor, ki je že v več jezikih"
 }

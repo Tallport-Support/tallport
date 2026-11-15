@@ -2007,5 +2007,7 @@
     "End Chat": "Çatı Bitir",
     "You ended the chat.": "Çatı bitirdiniz.",
     "Close When Resolved": "Həll Olunduqda Bağla",
-    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Müştəri sorğusunun həll olunduğunu yazıb başqa heç nə istəmədikdə söhbət bağlanır."
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Müştəri sorğusunun həll olunduğunu yazıb başqa heç nə istəmədikdə söhbət bağlanır.",
+    "Don’t Translate": "Tərcümə Etmə",
+    "Sent as written where replies are translated, for a reply already in several languages": "Cavabların tərcümə edildiyi yerdə yazıldığı kimi göndərilir; artıq bir neçə dildə olan cavab üçün"
 }

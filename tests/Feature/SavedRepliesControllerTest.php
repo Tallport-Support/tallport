@@ -43,6 +43,23 @@ class SavedRepliesControllerTest extends FeatureTestCase
         return $this->postAjax($user, route('saved_replies.ajax'), $data);
     }
 
+    /**
+     * Don't Translate (a reply in several languages): kept as checked, and off when unchecked.
+     */
+    public function testDontTranslate()
+    {
+        \Session::start();
+        $page = route('mailboxes.saved_replies.create', ['id' => $this->mailbox->id]);
+        $this->actingAs($this->admin)->get($page)->assertOk()->assertSee('Don’t Translate')->assertSee('for a reply already in several languages');
+        $save = fn (array $data) => $this->actingAs($this->admin)->post(route('mailboxes.saved_replies.save', ['id' => $this->mailbox->id]), array_merge(['_token' => csrf_token(), 'name' => 'Opening Hours'], $data));
+
+        $save(['as_written' => 1])->assertRedirect();
+        $saved_reply = SavedReply::where('name', 'Opening Hours')->firstOrFail();
+        $this->assertTrue($saved_reply->as_written);
+        $save(['saved_reply_id' => $saved_reply->id])->assertRedirect();
+        $this->assertFalse($saved_reply->fresh()->as_written);
+    }
+
     public function testRemovingAFile()
     {
         \Session::start();

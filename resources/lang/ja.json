@@ -2007,5 +2007,7 @@
     "End Chat": "チャットを終了",
     "You ended the chat.": "チャットを終了しました。",
     "Close When Resolved": "解決したら完了にする",
-    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "顧客がリクエストは解決したと書き、それ以上何も求めていない場合、会話を完了にします。"
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "顧客がリクエストは解決したと書き、それ以上何も求めていない場合、会話を完了にします。",
+    "Don’t Translate": "翻訳しない",
+    "Sent as written where replies are translated, for a reply already in several languages": "返信が翻訳される場合も原文のまま送信します（すでに複数の言語で書かれた返信向け）"
 }

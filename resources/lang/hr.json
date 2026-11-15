@@ -2007,5 +2007,7 @@
     "End Chat": "Završi Chat",
     "You ended the chat.": "Završili ste chat.",
     "Close When Resolved": "Zatvori Kada je Riješeno",
-    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Razgovor se zatvara kada kupac napiše da je njegov zahtjev riješen i ne traži ništa više."
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Razgovor se zatvara kada kupac napiše da je njegov zahtjev riješen i ne traži ništa više.",
+    "Don’t Translate": "Ne Prevodi",
+    "Sent as written where replies are translated, for a reply already in several languages": "Šalje se bez prijevoda i ondje gdje se odgovori prevode, za odgovor koji je već na više jezika"
 }

@@ -2007,5 +2007,7 @@
     "End Chat": "Sohbeti Sonlandır",
     "You ended the chat.": "Sohbeti sonlandırdınız.",
     "Close When Resolved": "Çözüldüğünde Kapat",
-    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Müşteri talebinin çözüldüğünü yazıp başka bir şey istemediğinde konuşma kapatılır."
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Müşteri talebinin çözüldüğünü yazıp başka bir şey istemediğinde konuşma kapatılır.",
+    "Don’t Translate": "Çevirme",
+    "Sent as written where replies are translated, for a reply already in several languages": "Yanıtların çevrildiği yerde yazıldığı gibi gönderilir; zaten birkaç dilde olan bir yanıt için"
 }

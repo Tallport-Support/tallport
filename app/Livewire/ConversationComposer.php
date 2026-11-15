@@ -368,7 +368,8 @@ class ConversationComposer extends Component
 
     /**
      * The reply translated for a preview: "ready", "error" (shown, with Send as Written),
-     * "same" (in the customer's language already: sent as it is) or "off".
+     * "same" (in the customer's language already, or a saved reply that isn't translated: sent
+     * as it is) or "off".
      */
     public function previewTranslation($html)
     {
@@ -380,6 +381,11 @@ class ConversationComposer extends Component
             Fruit::toast(__('Please enter a message'), 'danger');
 
             return 'empty';
+        }
+        if ($this->savedReplyAsWritten()) {
+            $this->translation = null;
+
+            return 'same';
         }
         @set_time_limit(180);
         // Shown as it's written (wire:stream in conversations/partials/chat_translation).
@@ -641,6 +647,25 @@ class ConversationComposer extends Component
     /**
      * The text as HTML: Markdown rendered with the formats the editor allows.
      */
+    /**
+     * A saved reply that's sent as written (its Don't Translate: one already in several
+     * languages) was inserted, and its text is still in the reply. Changed, it's translated as
+     * any reply.
+     */
+    protected function savedReplyAsWritten()
+    {
+        $saved_reply = $this->saved_reply_id ? \App\SavedReply::find($this->saved_reply_id) : null;
+        if (!$saved_reply || !$saved_reply->as_written) {
+            return false;
+        }
+        $conversation = $this->conversation();
+        // Its words, whatever the editor made of the formatting.
+        $words = fn ($html) => mb_strtolower(preg_replace('/[^\p{L}\p{N}]+/u', '', \Helper::htmlToText((string) $html)));
+        $text = $words($saved_reply->render($conversation->mailbox, auth()->user(), $conversation));
+
+        return $text !== '' && str_contains($words($this->html()), $text);
+    }
+
     protected function html()
     {
         if (!$this->markdown) {

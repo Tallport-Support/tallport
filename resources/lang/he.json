@@ -2007,5 +2007,7 @@
     "End Chat": "סיום הצ'אט",
     "You ended the chat.": "הצ'אט הסתיים.",
     "Close When Resolved": "סגירת שיחות שנפתרו",
-    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "שיחה נסגרת כשהלקוח כותב שהפנייה שלו נפתרה ואינו מבקש דבר נוסף."
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "שיחה נסגרת כשהלקוח כותב שהפנייה שלו נפתרה ואינו מבקש דבר נוסף.",
+    "Don’t Translate": "ללא תרגום",
+    "Sent as written where replies are translated, for a reply already in several languages": "נשלחת כפי שנכתבה גם כשתשובות מתורגמות, עבור תשובה שכבר כתובה בכמה שפות"
 }

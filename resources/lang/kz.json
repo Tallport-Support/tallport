@@ -2400,5 +2400,7 @@
     "End Chat": "Чатты Аяқтау",
     "You ended the chat.": "Сіз чатты аяқтадыңыз.",
     "Close When Resolved": "Шешілгенде Жабу",
-    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Клиент өтінішінің шешілгенін жазып, басқа ештеңе сұрамаса, тикет жабылады."
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Клиент өтінішінің шешілгенін жазып, басқа ештеңе сұрамаса, тикет жабылады.",
+    "Don’t Translate": "Аудармау",
+    "Sent as written where replies are translated, for a reply already in several languages": "Жауаптар аударылатын жерде жазылғандай жіберіледі – бірнеше тілде жазылған жауап үшін"
 }

@@ -2007,5 +2007,7 @@
     "End Chat": "Chat Befejezése",
     "You ended the chat.": "Ön befejezte a chatet.",
     "Close When Resolved": "Lezárás Megoldáskor",
-    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "A beszélgetés lezárul, amikor az ügyfél azt írja, hogy a kérése megoldódott, és nem kér mást."
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "A beszélgetés lezárul, amikor az ügyfél azt írja, hogy a kérése megoldódott, és nem kér mást.",
+    "Don’t Translate": "Nincs Fordítás",
+    "Sent as written where replies are translated, for a reply already in several languages": "Fordítás nélkül küldjük ott is, ahol a válaszokat lefordítjuk – több nyelven már megírt válaszhoz"
 }

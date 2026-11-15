@@ -2007,5 +2007,7 @@
     "End Chat": "Termina Chat",
     "You ended the chat.": "Ha terminato la chat.",
     "Close When Resolved": "Chiudi Quando Risolto",
-    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Una conversazione viene chiusa quando il cliente scrive che la sua richiesta è risolta e non chiede altro."
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Una conversazione viene chiusa quando il cliente scrive che la sua richiesta è risolta e non chiede altro.",
+    "Don’t Translate": "Non Tradurre",
+    "Sent as written where replies are translated, for a reply already in several languages": "Inviata così com'è dove le risposte vengono tradotte, per una risposta già in più lingue"
 }

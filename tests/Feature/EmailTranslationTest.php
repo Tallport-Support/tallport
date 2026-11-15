@@ -127,6 +127,43 @@ class EmailTranslationTest extends FeatureTestCase
     }
 
     /**
+     * A saved reply that isn't translated (Don't Translate: one in several languages) goes as
+     * written, with the agent's words around it too; changed, it's translated as any reply.
+     */
+    public function testASavedReplyInSeveralLanguagesGoesAsWritten()
+    {
+        $this->setCustomerLanguage('nl');
+        ReplyTranslator::fake(fn () => ['translation' => '<p>Vertaald</p>', 'same_language' => false, 'note' => '']);
+        $saved_reply = new \App\SavedReply();
+        $saved_reply->mailbox_id = $this->mailbox->id;
+        $saved_reply->name = 'Opening Hours';
+        $saved_reply->text = '<p>We are open from 9 to 5, {%customer.firstName%}.</p><p>Wij zijn open van 9 tot 5.</p><p>Wir haben von 9 bis 17 Uhr geöffnet.</p>';
+        $saved_reply->as_written = true;
+        $saved_reply->save();
+        // As the editor has it: filled in, its formatting its own.
+        $inserted = "<p>Hi Casey,</p>\n<p>We are open from 9 to 5, Casey.</p>\n<p>Wij zijn open van 9 tot 5.</p>\n<p>Wir haben von 9 bis 17&nbsp;Uhr geöffnet.</p>";
+
+        $composer = $this->composer()->call('open', 'reply')->call('savedReply', $saved_reply->id);
+        $composer->call('previewTranslation', $inserted)->assertReturned('same');
+        ReplyTranslator::assertNeverPrompted();
+
+        // Changed: translated.
+        $this->streamed(fn () => $composer->call('previewTranslation', '<p>We are open from 9 to 6, Casey.</p><p>Wij zijn open van 9 tot 5.</p>'));
+        $composer->assertReturned('ready');
+        $saved_reply->as_written = false;
+        $saved_reply->save();
+        $this->streamed(fn () => $composer->call('previewTranslation', $inserted));
+        $composer->assertReturned('ready');
+        $saved_reply->as_written = true;
+        $saved_reply->save();
+
+        // Sent as written, as the composer does on "same".
+        $composer->call('discardTranslation')->call('previewTranslation', $inserted)->assertReturned('same');
+        $composer->call('send', null, $inserted, true)->assertReturned(true);
+        $this->assertStringContainsString('Wir haben von 9 bis 17', $this->sentEmailsTo('casey@customer.example.org')[0]->getBody());
+    }
+
+    /**
      * The AI unavailable: nothing is sent until the agent sends it as written, with their status.
      */
     public function testWhenTheAiFailsTheReplyCanBeSentAsWritten()

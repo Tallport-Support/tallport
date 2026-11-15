@@ -2007,5 +2007,7 @@
     "End Chat": "Chat Beëindigen",
     "You ended the chat.": "U hebt de chat beëindigd.",
     "Close When Resolved": "Sluiten Wanneer Opgelost",
-    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Een gesprek wordt gesloten wanneer de klant schrijft dat de vraag is opgelost en verder niets vraagt."
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Een gesprek wordt gesloten wanneer de klant schrijft dat de vraag is opgelost en verder niets vraagt.",
+    "Don’t Translate": "Niet Vertalen",
+    "Sent as written where replies are translated, for a reply already in several languages": "Verzonden zoals geschreven waar antwoorden worden vertaald, voor een antwoord dat al in meerdere talen is"
 }

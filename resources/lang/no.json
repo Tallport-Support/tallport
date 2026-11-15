@@ -2010,5 +2010,7 @@
     "End Chat": "Avslutt Chatten",
     "You ended the chat.": "Du avsluttet chatten.",
     "Close When Resolved": "Lukk Når Løst",
-    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "En samtale lukkes når kunden skriver at saken er løst, og ikke ber om noe mer."
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "En samtale lukkes når kunden skriver at saken er løst, og ikke ber om noe mer.",
+    "Don’t Translate": "Ikke Oversett",
+    "Sent as written where replies are translated, for a reply already in several languages": "Sendes som skrevet der svar oversettes, for et svar som allerede er på flere språk"
 }

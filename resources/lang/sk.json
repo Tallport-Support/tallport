@@ -2007,5 +2007,7 @@
     "End Chat": "Ukončiť Chat",
     "You ended the chat.": "Ukončili ste chat.",
     "Close When Resolved": "Uzavrieť po Vyriešení",
-    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Konverzácia sa uzavrie, keď zákazník napíše, že jeho požiadavka je vyriešená, a nič ďalšie nežiada."
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Konverzácia sa uzavrie, keď zákazník napíše, že jeho požiadavka je vyriešená, a nič ďalšie nežiada.",
+    "Don’t Translate": "Neprekladať",
+    "Sent as written where replies are translated, for a reply already in several languages": "Odošle sa bez prekladu aj tam, kde sa odpovede prekladajú – pre odpoveď, ktorá už je v niekoľkých jazykoch"
 }

@@ -2007,5 +2007,7 @@
     "End Chat": "Завершити Чат",
     "You ended the chat.": "Ви завершили чат.",
     "Close When Resolved": "Закривати Вирішені Розмови",
-    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Розмова закривається, коли клієнт пише, що його запит вирішено, і більше нічого не просить."
+    "A conversation closes when the customer writes that their request is resolved and asks for nothing more.": "Розмова закривається, коли клієнт пише, що його запит вирішено, і більше нічого не просить.",
+    "Don’t Translate": "Не Перекладати",
+    "Sent as written where replies are translated, for a reply already in several languages": "Надсилається без перекладу там, де відповіді перекладаються, — для відповіді, уже написаної кількома мовами"
 }

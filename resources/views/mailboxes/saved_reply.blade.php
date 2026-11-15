@@ -51,6 +51,8 @@
                 <x-fruit::checkbox name="global" value="1" :checked="(bool) old('global', $saved_reply->global)" :description="__('Available in every mailbox (with what is under it)')">{{ __('Global') }}</x-fruit::checkbox>
 
                 <x-fruit::checkbox name="auto_load" value="1" :checked="(bool) old('auto_load', $saved_reply->auto_load)" :description="__('Put in every new reply of this mailbox')">{{ __('Default reply') }}</x-fruit::checkbox>
+
+                <x-fruit::checkbox name="as_written" value="1" :checked="(bool) old('as_written', $saved_reply->as_written)" :description="__('Sent as written where replies are translated, for a reply already in several languages')">{{ __('Don’t Translate') }}</x-fruit::checkbox>
             </x-fruit::form-section>
 
             @if ($saved_reply->exists)
