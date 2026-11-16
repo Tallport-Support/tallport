@@ -35,4 +35,5 @@ return [
     'route PATCH home'   => 'redirect route registered for every verb; GET is tested',
     'route DELETE home'  => 'redirect route registered for every verb; GET is tested',
     'route OPTIONS home' => 'redirect route registered for every verb; GET is tested',
+    'route QUERY home'   => 'redirect route registered for every verb; GET is tested',
 ];
