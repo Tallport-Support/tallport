@@ -174,6 +174,27 @@ class ChatTranslationTest extends FeatureTestCase
     }
 
     /**
+     * Sent, its preview is gone: also when the browser sends it with the emptied field's draft
+     * save, which has nothing to save (the same request), so Send Translation can't be clicked again.
+     */
+    public function testThePreviewIsGoneOnceSent()
+    {
+        $this->setCustomerLanguage('nl');
+        $composer = $this->composer()
+            ->call('aiDraft', '<p>I will look into it.</p>', '', '', 'I will look into it.')
+            ->call('aiDraftTranslated', '<p>I will look into it.</p>', '<p>Ik zoek het voor u uit.</p>')
+            ->assertSee('Will be sent in Dutch');
+
+        $composer->update(calls: [
+            ['method' => 'saveDraft', 'params' => [false], 'path' => ''],
+            ['method' => 'sendTranslation', 'params' => ['<p>I will look into it.</p>'], 'path' => ''],
+        ], updates: ['body' => '']);
+
+        $composer->assertSet('translation', null)->assertDontSee('Will be sent in Dutch')->assertDontSee('Ik zoek het voor u uit.');
+        $this->assertSame(1, $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->count());
+    }
+
+    /**
      * The AI unavailable (or the mailbox's tokens used up): the reply isn't sent; the agent
      * sees why and can send it as written. One in the chat's language already goes as written.
      */

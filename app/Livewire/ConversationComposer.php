@@ -244,14 +244,12 @@ class ConversationComposer extends Component
      */
     public function saveDraft($force = false)
     {
+        // Nothing to save. Not skipRender(): the browser sends this with what emptied the field, a
+        // send, which must show (its translation preview gone).
         if (!in_array($this->mode, ['reply', 'forward'])) {
-            $this->skipRender();
-
             return;
         }
         if (!$force && !$this->thread_id && !$this->hasText() && !$this->attachments) {
-            $this->skipRender();
-
             return;
         }
 
