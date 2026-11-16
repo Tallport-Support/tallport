@@ -53,7 +53,7 @@ class PendingRequest
     /**
      * The Guzzle client instance.
      *
-     * @var \GuzzleHttp\Client
+     * @var \GuzzleHttp\Client|null
      */
     protected $client;
 
@@ -102,7 +102,7 @@ class PendingRequest
     /**
      * The request cookies.
      *
-     * @var array
+     * @var \GuzzleHttp\Cookie\CookieJar
      */
     protected $cookies;
 
@@ -137,7 +137,7 @@ class PendingRequest
     /**
      * The number of times to try the request.
      *
-     * @var int
+     * @var array<int, int>|int
      */
     protected $tries = 1;
 
@@ -781,7 +781,7 @@ class PendingRequest
      */
     public function throw(?callable $callback = null)
     {
-        $this->throwCallback = $callback ?: fn () => null;
+        $this->throwCallback = $callback ?: static fn () => null;
 
         return $this;
     }
@@ -1145,7 +1145,7 @@ class PendingRequest
      */
     protected function expandUrlParameters(string $url)
     {
-        if (! str_contains($url, '{')) {
+        if (empty($this->urlParameters) || ! str_contains($url, '{')) {
             return $url;
         }
 

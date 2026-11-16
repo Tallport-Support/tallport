@@ -46,11 +46,21 @@ class ExceptionReporter
     protected bool $reportingViewException = false;
 
     /**
+     * The Blade mapper resolved for the currently reporting exception.
+     */
+    protected ?BladeMapper $bladeMapper = null;
+
+    /**
      * The captured identifiers, keyed by exception.
      *
      * @var \WeakMap<\Throwable, string>
      */
     protected WeakMap $exceptionIds;
+
+    /**
+     * The time the Octane request was received.
+     */
+    protected ?float $octaneRequestReceivedAt = null;
 
     /**
      * The name of the currently running Artisan command.
@@ -120,6 +130,11 @@ class ExceptionReporter
     ];
 
     /**
+     * The memory reserved for reporting fatal errors.
+     */
+    protected ?string $reservedMemory;
+
+    /**
      * Create a new Exception Reporter instance.
      *
      * @param  array{
@@ -132,11 +147,13 @@ class ExceptionReporter
      */
     public function __construct(
         protected Events $events,
-        protected Closure|BladeMapper $bladeMapper,
+        protected Closure $bladeMapperResolver,
         protected string $basePath,
         protected array $config,
     ) {
         $this->exceptionIds = new WeakMap;
+
+        $this->reservedMemory = str_repeat('x', 32768);
     }
 
     /**
@@ -144,10 +161,16 @@ class ExceptionReporter
      */
     public function __invoke(Throwable $e): ?bool
     {
+        if ($e instanceof FatalError) {
+            $this->reservedMemory = null;
+        }
+
         $previousReportingViewException = $this->reportingViewException;
+        $previousBladeMapper = $this->bladeMapper;
 
         try {
             $this->reportingViewException = $this->isViewException($e);
+            $this->bladeMapper = null;
 
             $e = $this->unwrapViewException($e);
 
@@ -162,6 +185,7 @@ class ExceptionReporter
             return null;
         } finally {
             $this->reportingViewException = $previousReportingViewException;
+            $this->bladeMapper = $previousBladeMapper;
 
             if ($this->scheduledTaskAwaitingFailureReport) {
                 $this->flushScheduledTaskContext();
@@ -270,6 +294,14 @@ class ExceptionReporter
     }
 
     /**
+     * Prepare for an incoming Octane request.
+     */
+    public function prepareForOctaneRequest(): void
+    {
+        $this->octaneRequestReceivedAt = (float) Date::now()->format('U.u');
+    }
+
+    /**
      * Retrieve the request execution context.
      *
      * @return array<string, mixed>
@@ -295,7 +327,7 @@ class ExceptionReporter
     /**
      * Retrieve the request headers.
      *
-     * @return array<string, list<string|null>>
+     * @return array<string, list<string|null>>|null
      */
     protected function requestHeaders(): ?array
     {
@@ -938,20 +970,6 @@ class ExceptionReporter
     }
 
     /**
-     * Capture the trace identifier of the current execution in the given context.
-     */
-    public function rememberTraceIdInContext(ContextRepository $context): void
-    {
-        try {
-            $context->addHidden('laravel_cloud_trace_id', $this->traceIdFromContext() ?? (
-                App::runningInConsole() ? $this->consoleCommandTraceId() : Request::header('Cloud-Request-ID')
-            ));
-        } catch (Throwable) {
-            //
-        }
-    }
-
-    /**
      * Determine if a queue worker is running.
      */
     protected function isProcessingJob(): bool
@@ -1055,12 +1073,35 @@ class ExceptionReporter
     }
 
     /**
+     * Handle context dehydrating.
+     */
+    public function handleContextDehydrating(ContextRepository $context): void
+    {
+        $this->rememberUserIdInContext($context);
+        $this->rememberTraceIdInContext($context);
+    }
+
+    /**
      * Capture the authenticated user's identifier in the given context.
      */
-    public function rememberUserIdInContext(ContextRepository $context): void
+    protected function rememberUserIdInContext(ContextRepository $context): void
     {
         try {
             $context->addHidden('laravel_cloud_user_id', $this->userId());
+        } catch (Throwable) {
+            //
+        }
+    }
+
+    /**
+     * Capture the trace identifier of the current execution in the given context.
+     */
+    protected function rememberTraceIdInContext(ContextRepository $context): void
+    {
+        try {
+            $context->addHidden('laravel_cloud_trace_id', $this->traceIdFromContext() ?? (
+                App::runningInConsole() ? $this->consoleCommandTraceId() : Request::header('Cloud-Request-ID')
+            ));
         } catch (Throwable) {
             //
         }
@@ -1267,9 +1308,7 @@ class ExceptionReporter
      */
     protected function bladeMapper(): BladeMapper
     {
-        return $this->bladeMapper instanceof Closure
-            ? $this->bladeMapper = ($this->bladeMapper)()
-            : $this->bladeMapper;
+        return $this->bladeMapper ??= ($this->bladeMapperResolver)();
     }
 
     /**
@@ -1302,9 +1341,11 @@ class ExceptionReporter
     protected function laravelStartedAtTimestamp(): ?string
     {
         try {
-            $microtime = defined('LARAVEL_START')
-                ? LARAVEL_START
-                : $_SERVER['REQUEST_TIME_FLOAT'];
+            $microtime = match (true) {
+                $this->octaneRequestReceivedAt !== null => $this->octaneRequestReceivedAt,
+                defined('LARAVEL_START') => LARAVEL_START,
+                default => $_SERVER['REQUEST_TIME_FLOAT'],
+            };
 
             return Date::createFromTimestampUTC($microtime)->toDateTimeString('microsecond');
         } catch (Throwable) {

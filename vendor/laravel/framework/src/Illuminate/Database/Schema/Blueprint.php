@@ -54,21 +54,21 @@ class Blueprint
     /**
      * The storage engine that should be used for the table.
      *
-     * @var string
+     * @var string|null
      */
     public $engine;
 
     /**
      * The default character set that should be used for the table.
      *
-     * @var string
+     * @var string|null
      */
     public $charset;
 
     /**
      * The collation that should be used for the table.
      *
-     * @var string
+     * @var string|null
      */
     public $collation;
 
@@ -1070,7 +1070,7 @@ class Blueprint
 
         $column = $column ?: $model->getForeignKey();
 
-        if ($model->getKeyType() === 'int') {
+        if (in_array($model->getKeyType(), ['int', 'integer'])) {
             return $this->foreignId($column)
                 ->table($model->getTable())
                 ->referencesModelColumn($model->getKeyName());

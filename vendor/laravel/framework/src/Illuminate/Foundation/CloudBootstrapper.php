@@ -15,7 +15,9 @@ use Illuminate\Foundation\Bootstrap\LoadConfiguration;
 use Illuminate\Foundation\Cloud\Events;
 use Illuminate\Foundation\Cloud\ExceptionReporter;
 use Illuminate\Foundation\Cloud\FailedJobProvider;
+use Illuminate\Foundation\Cloud\JsonFormatter;
 use Illuminate\Foundation\Cloud\QueueConnector;
+use Illuminate\Foundation\Cloud\SocketHandler;
 use Illuminate\Foundation\Exceptions\Renderer\Mappers\BladeMapper;
 use Illuminate\Log\Context\Events\ContextDehydrating;
 use Illuminate\Queue\Connectors\SqsConnector;
@@ -26,7 +28,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\ConfigurationUrlParser;
 use Illuminate\Support\Env;
 use Illuminate\Support\Str;
-use Monolog\Handler\SocketHandler;
+use Laravel\Octane\Events\RequestReceived;
 use PDO;
 use Throwable;
 
@@ -57,6 +59,7 @@ class CloudBootstrapper
                 static::configurePostgresConnections($app);
                 static::configureManagedQueues($app);
                 static::configureQueueCredentialCaching($app);
+                static::configureExceptions($app);
             },
             HandleExceptions::class => function () use ($app) {
                 static::configureCloudLogging($app);
@@ -304,7 +307,7 @@ class CloudBootstrapper
             'driver' => 'monolog',
             'level' => $_ENV['LOG_LEVEL'] ?? $_SERVER['LOG_LEVEL'] ?? 'debug',
             'handler' => SocketHandler::class,
-            'formatter' => LaravelCloudJsonFormatter::class,
+            'formatter' => JsonFormatter::class,
             'formatter_with' => [
                 'includeStacktraces' => true,
             ],
@@ -323,12 +326,26 @@ class CloudBootstrapper
     }
 
     /**
+     * Configure the Laravel Cloud exception reporting if applicable.
+     *
+     * @throws \JsonException
+     */
+    public static function configureExceptions(Application $app): void
+    {
+        if (! isset($_SERVER['LARAVEL_CLOUD_EXCEPTIONS'])) {
+            return;
+        }
+
+        $app['config']->set('_cloud.exceptions', json_decode($_SERVER['LARAVEL_CLOUD_EXCEPTIONS'], associative: true, flags: JSON_THROW_ON_ERROR));
+    }
+
+    /**
      * Register the Laravel Cloud exception reporter if applicable.
      */
     public static function registerExceptionReporting(Application $app): void
     {
         try {
-            if (! isset($_SERVER['LARAVEL_CLOUD_EXCEPTIONS'])) {
+            if (! is_array($config = $app['config']->get('_cloud.exceptions'))) {
                 return;
             }
 
@@ -338,7 +355,7 @@ class CloudBootstrapper
                 'redact_request_payload_fields' => ['_token', 'password', 'password_confirmation', 'current_password'],
                 'redact_headers' => ['Authorization', 'Cookie', 'Proxy-Authorization', 'X-CSRF-TOKEN', 'X-XSRF-TOKEN'],
                 'redact_command_input_fields' => ['token', 'password', 'key', 'secret'],
-                ...json_decode($_SERVER['LARAVEL_CLOUD_EXCEPTIONS'], associative: true, flags: JSON_THROW_ON_ERROR),
+                ...$config,
             ];
 
             $exceptionReporter = $app->instance(ExceptionReporter::class, new ExceptionReporter(
@@ -349,9 +366,17 @@ class CloudBootstrapper
             ));
 
             // Defer registration of the reporter until exception handler is resolved...
-            $registerReporter = function ($handler) use ($exceptionReporter) {
+            $reportableRegistered = false;
+
+            $registerReporter = function ($handler) use ($exceptionReporter, &$reportableRegistered) {
+                if ($reportableRegistered) {
+                    return;
+                }
+
                 try {
                     $handler->reportable($exceptionReporter);
+
+                    $reportableRegistered = true;
                 } catch (Throwable) {
                     //
                 }
@@ -361,10 +386,11 @@ class CloudBootstrapper
                 ? $registerReporter($app[ExceptionHandlerContract::class])
                 : $app->afterResolving(ExceptionHandlerContract::class, $registerReporter);
 
-            $app['events']->listen(fn (ContextDehydrating $event) => $exceptionReporter->rememberUserIdInContext($event->context));
-            $app['events']->listen(fn (ContextDehydrating $event) => $exceptionReporter->rememberTraceIdInContext($event->context));
+            $app['events']->listen(fn (ContextDehydrating $event) => $exceptionReporter->handleContextDehydrating($event->context));
 
             if (! $app->runningInConsole()) {
+                $app['events']->listen(fn (RequestReceived $event) => $exceptionReporter->prepareForOctaneRequest());
+
                 $app['events']->listen(function (Logout $event) use ($exceptionReporter) {
                     if ($event->user !== null) {
                         $exceptionReporter->rememberUser($event->user);
