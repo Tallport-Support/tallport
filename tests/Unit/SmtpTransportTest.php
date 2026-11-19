@@ -89,6 +89,30 @@ class SmtpTransportTest extends TestCase
         $this->assertEquals(17, $this->transport(['port' => 587])->getStream()->getTimeout());
     }
 
+    /**
+     * Against tests/Support/fake-smtp-server.php, which closes connections idle for 0.3 seconds.
+     */
+    public function testConnectionTheServerClosedIsOpenedAgain()
+    {
+        $server = proc_open([PHP_BINARY, base_path('tests/Support/fake-smtp-server.php'), '0.3'], [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+        $port = (int) fgets($pipes[1]);
+        $email = (new \Symfony\Component\Mime\Email())->from('mailbox@example.org')->to('agent@example.org')->subject('Notification')->text('Hello');
+
+        try {
+            $transport = $this->transport(['host' => '127.0.0.1', 'port' => $port, 'encryption' => '']);
+            $transport->send($email);
+            usleep(500000);
+            $transport->send($email);
+            $transport->stop();
+            $received = [fgets($pipes[1]), fgets($pipes[1])];
+        } finally {
+            proc_terminate($server);
+            proc_close($server);
+        }
+
+        $this->assertSame(["message\n", "message\n"], $received);
+    }
+
     public function testQueueIdFromServerReply()
     {
         $sent = new SentMessage(new RawMessage('x'), new Envelope(new Address('a@example.org'), [new Address('b@example.org')]));

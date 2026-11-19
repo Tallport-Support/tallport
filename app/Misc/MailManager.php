@@ -72,6 +72,12 @@ class MailManager extends BaseMailManager
             $transport->getStream()->setTimeout((float) config('mail.smtp_timeout'));
         }
 
+        // The queue worker keeps the connection open between emails. Check it (NOOP) before
+        // each one and reconnect if the server closed it: Symfony checks only after 100 seconds,
+        // and servers close idle connections sooner (production's within 75 seconds, "451 4.4.2
+        // Timeout waiting for data from client."), which failed the email until a retry.
+        $transport->setPingThreshold(0);
+
         return $this->configureSmtpTransport($transport, $config);
     }
 
