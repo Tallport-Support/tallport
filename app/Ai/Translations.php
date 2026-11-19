@@ -87,12 +87,12 @@ class Translations
 
     /**
      * A message's translation for the user reading it: a customer's message, or a
-     * reply made from a draft with the draft's translation. Asks for a missing one.
+     * reply made from a draft with the draft's translation. Asks for a missing one ($ask).
      * Not for a customer's message in a language the user reads, unless they asked.
      *
      * @return array wanted (bool), language (the user's), translation (or null)
      */
-    public static function forThread(Thread $thread, $user)
+    public static function forThread(Thread $thread, $user, $ask = true)
     {
         $result = ['wanted' => false, 'language' => null, 'translation' => null];
         $language = $thread->conversation ? Settings::language($thread->conversation->mailbox, $user) : null;
@@ -108,11 +108,51 @@ class Translations
         $result['wanted'] = true;
         $result['language'] = $language;
         $result['translation'] = self::get($thread, $result['language']);
-        if ($thread->type == Thread::TYPE_CUSTOMER && self::isMissing($thread, $result['language'])) {
+        if ($ask && $thread->type == Thread::TYPE_CUSTOMER && self::isMissing($thread, $result['language'])) {
             \App\Jobs\AiTranslateThread::request($thread, $result['language']);
         }
 
         return $result;
+    }
+
+    /**
+     * A message in a notification email as the user reads it on the page
+     * (conversations/partials/thread): its translation and a note saying what it is, the
+     * original left out. Null: read as written. Asks for no translation.
+     *
+     * @return array|null html, note
+     */
+    public static function forEmail(Thread $thread, $user)
+    {
+        ['language' => $language, 'translation' => $translation] = self::forThread($thread, $user, false);
+        if ($translation === null || trim($translation) === '') {
+            return null;
+        }
+        $data = Summaries::data($thread);
+        // A reply written in the user's language: the customer received the translation.
+        if ($thread->type == Thread::TYPE_MESSAGE && ($data['written_in'] ?? (empty($data['language']) ? $language : null)) === $language) {
+            $sent_in = $data['sent_in'] ?? $data['language'] ?? null;
+            $notes = [$sent_in ? __('Sent to the customer in :language', ['language' => Settings::displayName($sent_in)]) : __('As sent to the customer')];
+        } else {
+            $notes = [!empty($data['language']) ? __('Translated from :language', ['language' => Settings::displayName($data['language'])]) : __('Translation')];
+        }
+        if (!empty($data['truncated'])) {
+            $notes[] = __('Only the first :count characters were translated.', ['count' => Summaries::MAX_THREAD_CHARS]);
+        }
+
+        return [
+            'html' => self::isHtml($thread, $language) && preg_match('/<[a-z][^>]*>/i', $translation) ? safe_raw_html($translation) : nl2br(e($translation)),
+            'note' => implode(' ', $notes),
+        ];
+    }
+
+    /**
+     * Whether a customer's message is still being translated into its mailbox's language
+     * (asked for when it came, AiTranslateMessage), which its notification waits for.
+     */
+    public static function awaited(Thread $thread)
+    {
+        return self::isWanted($thread) && self::reason($thread, Settings::language($thread->conversation->mailbox)) == ['waiting'];
     }
 
     /**

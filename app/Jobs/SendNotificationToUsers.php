@@ -22,6 +22,11 @@ class SendNotificationToUsers implements ShouldQueue
 
     public $threads;
 
+    /**
+     * Seconds after a customer's message its notification may wait for its translation.
+     */
+    const TRANSLATION_WAIT = 60;
+
     // Max retries + 1
     public $tries = 168; // One per hour
 
@@ -70,6 +75,14 @@ class SendNotificationToUsers implements ShouldQueue
 
         // If thread is draft, it means it has been undone
         if ($last_thread->isDraft()) {
+            return;
+        }
+
+        // A customer's message is shown translated (Translations::forEmail()): wait a little
+        // for its translation, as a new job, so a failed send is still retried as before.
+        if (\App\Ai\Translations::awaited($last_thread) && $last_thread->created_at->gt(now()->subSeconds(self::TRANSLATION_WAIT))) {
+            self::dispatch($this->users, $this->conversation, $this->threads)->delay(now()->addSeconds(10))->onQueue('emails');
+
             return;
         }
 

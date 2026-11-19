@@ -8,6 +8,7 @@ use App\Ai\ChatTranslation;
 use App\Ai\Settings;
 use App\Ai\Translations;
 use App\Conversation;
+use App\Jobs\SendNotificationToUsers;
 use App\Livewire\ConversationComposer;
 use App\Option;
 use App\Telegram\Telegram;
@@ -273,6 +274,60 @@ class EmailTranslationTest extends FeatureTestCase
      * Customer emails are translated for reading with email translation on (the mailbox's
      * Translations feature off), one message at a time, not as a chat's batch.
      */
+    protected function notify()
+    {
+        $conversation = $this->conversation->fresh();
+        (new SendNotificationToUsers(collect([$this->agent]), $conversation, $conversation->getThreads()))->withFakeQueueInteractions()->handle();
+    }
+
+    /**
+     * A notification email shows the messages as the agent reads them on the page: a customer's
+     * translated, saying from which language; a reply as written, saying in which it was sent.
+     */
+    public function testNotificationsShowMessagesAsTheAgentReadsThem()
+    {
+        $this->setCustomerLanguage('nl');
+        ReplyTranslator::fake([['translation' => '<p>Ik zoek het voor u uit.</p>', 'same_language' => false, 'note' => '']]);
+        $composer = $this->composer()->call('open', 'reply');
+        $this->streamed(fn () => $composer->call('previewTranslation', '<p>I will look into it.</p>'));
+        $composer->call('sendTranslation', '<p>I will look into it.</p>', Conversation::STATUS_PENDING)->assertReturned('sent');
+        $this->captured_mail->flush();
+
+        $this->notify();
+
+        $email = $this->sentEmailsTo($this->agent->email)[0];
+        foreach ([$email->getBody(), $email->getTextBody()] as $body) {
+            $this->assertMatchesRegularExpression('/I will look into it\..*Sent to the customer in Dutch.*Where is my order\?.*Translated from Dutch/s', $body);
+            $this->assertStringNotContainsString('Ik zoek het voor u uit.', $body);
+            $this->assertStringNotContainsString('Waar blijft mijn bestelling?', $body);
+        }
+    }
+
+    /**
+     * A customer's message still being translated: its notification waits (as a new job, a
+     * moment later), for a minute after the message at most, then shows it as written.
+     */
+    public function testANotificationWaitsForItsMessagesTranslation()
+    {
+        $thread = Thread::create($this->conversation, Thread::TYPE_CUSTOMER, 'Is er al nieuws?', [
+            'customer_id' => $this->conversation->customer_id, 'source_via' => Thread::PERSON_CUSTOMER, 'source_type' => Thread::SOURCE_TYPE_EMAIL,
+        ]);
+        $this->captured_mail->flush();
+        \Illuminate\Support\Facades\Queue::fake();
+
+        $this->notify();
+
+        \Illuminate\Support\Facades\Queue::assertPushed(SendNotificationToUsers::class, fn ($job) => $job->delay > now());
+        $this->assertCount(0, $this->sentEmailsTo($this->agent->email));
+
+        $thread->created_at = now()->subSeconds(SendNotificationToUsers::TRANSLATION_WAIT + 1);
+        $thread->save();
+        $this->notify();
+
+        $this->assertStringContainsString('Is er al nieuws?', $this->sentEmailsTo($this->agent->email)[0]->getBody());
+        \Illuminate\Support\Facades\Queue::assertPushed(SendNotificationToUsers::class, 1);
+    }
+
     public function testIncomingEmailsAreTranslatedForReading()
     {
         Option::set('aiassistant.mailbox_features_off', [$this->mailbox->id => ['translations']]);

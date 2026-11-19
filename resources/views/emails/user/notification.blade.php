@@ -71,9 +71,20 @@
 						</p>
 					@endif
 					@action('email_notification.before_body', $thread, $user, $conversation)
+					{{-- As the page shows it: translated for the user, saying so. --}}
+					@php
+						$translated = App\Ai\Translations::forEmail($thread, $user);
+					@endphp
 					<div>
-						{!! safe_raw_html($thread->getCleanBody() ?? '') !!}
+						@if ($translated)
+							{!! $translated['html'] !!}
+						@else
+							{!! safe_raw_html($thread->getCleanBody() ?? '') !!}
+						@endif
 					</div>
+					@if ($translated)
+						<div style="{{ $muted_style }}">{{ $translated['note'] }}</div>
+					@endif
 
 					@if ($thread->has_attachments)
 						<br>
