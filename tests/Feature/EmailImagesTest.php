@@ -69,6 +69,9 @@ class EmailImagesTest extends FeatureTestCase
         $sent = $this->sentEmailsTo('casey@customer.example.org');
         $this->assertCount(1, $sent);
         $this->assertStringNotContainsString('/storage/attachment/', $sent[0]->getBody());
+        // The text part names the image, without its address.
+        $this->assertStringContainsString('See [screen]', $sent[0]->getTextBody());
+        $this->assertStringNotContainsString('/storage/attachment/', $sent[0]->getTextBody());
         $parts = $sent[0]->message->getAttachments();
         $this->assertCount(1, $parts, 'Inline only, not attached a second time.');
         $this->assertSame('inline', $parts[0]->getDisposition());

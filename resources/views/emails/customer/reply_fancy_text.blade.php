@@ -11,7 +11,8 @@
 		}
 	}
 	// Html2Text\Html2Text::convert($thread->body) - this was causing "AttValue: " expected in Entity" error sometimes
-	$text = \Helper::htmlToText($thread->body, true);
+	// An image is its alt text ([image.png]), never its address: it's in the email inline (App\Misc\EmailImages).
+	$text = \Helper::htmlToText($thread->body);
 	if ($thread->source_via == App\Thread::PERSON_USER && \Eventy::filter('reply_email.include_signature', true, $thread)) {
 		$text .= "\n".\Helper::htmlToText($conversation->getSignatureProcessed(['thread' => $thread], false, $signature_mailbox));
 	}
