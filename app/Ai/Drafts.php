@@ -74,17 +74,19 @@ class Drafts
     }
 
     /**
-     * A reply made from a draft keeps the draft's translation, shown with it.
+     * A reply sent translated, or made from a draft, keeps the agent's version (HTML, its
+     * images too), shown with it.
      */
     public static function keepTranslation(Thread $thread, $request)
     {
-        $translation = trim(strip_tags((string) $request->input('ai_draft_translation', '')));
+        $translation = trim((string) $request->input('ai_draft_translation', ''));
         $language = (string) $request->input('ai_draft_translation_language', '');
         if ($thread->type != Thread::TYPE_MESSAGE || $translation === '' || !Settings::isLanguage($language)) {
             return;
         }
         $data = Summaries::data($thread);
         $data['translations'][$language] = mb_substr($translation, 0, 20000);
+        $data['html'] = array_values(array_unique(array_merge((array) ($data['html'] ?? []), [$language])));
         // The agent's own version (written, or read in the draft): shown as the message, the
         // version sent beside it (conversations/partials/thread).
         $data['written_in'] = $language;

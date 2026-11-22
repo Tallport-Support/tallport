@@ -116,7 +116,7 @@ class EmailTranslationTest extends FeatureTestCase
 
         $reply = $this->conversation->threads()->where('type', Thread::TYPE_MESSAGE)->first();
         $this->assertStringContainsString('Ik zoek het voor u uit.', $reply->body);
-        $this->assertSame('I will look into it.', Translations::get($reply, 'en'));
+        $this->assertSame('<p>I will look into it.</p>', Translations::get($reply, 'en'));
         $this->assertSame(Conversation::STATUS_PENDING, $this->conversation->fresh()->status);
 
         $emails = $this->sentEmailsTo('casey@customer.example.org');
@@ -125,6 +125,28 @@ class EmailTranslationTest extends FeatureTestCase
         $this->assertStringContainsString('Kind regards, Support', $emails[0]->getBody());
         $this->assertStringNotContainsString('I will look into it.', $emails[0]->getBody());
         $this->assertStringContainsString('Bestelling', $emails[0]->getSubject());
+    }
+
+    /**
+     * A reply sent translated shows as the agent wrote it, its formatting and pictures too.
+     */
+    public function testAReplySentTranslatedShowsItsPicturesAsWritten()
+    {
+        $this->setCustomerLanguage('nl');
+        $this->agent->markdown_replies = true;
+        $this->agent->save();
+        $attachment = \App\Attachment::create('screen.png', 'image/png', \App\Attachment::TYPE_IMAGE, 'PNGDATA', null, true, null, $this->agent->id);
+        $markdown = "See **this**:\n\n![screen.png](".$attachment->url().')';
+        ReplyTranslator::fake([['translation' => '<p>Zie <strong>dit</strong>:</p><p><img src="'.e($attachment->url()).'" alt="screen.png" /></p>', 'same_language' => false, 'note' => '']]);
+
+        $composer = $this->composer()->call('open', 'reply')
+            ->call('attach', [['id' => encrypt($attachment->id), 'name' => 'screen.png', 'url' => $attachment->url(), 'embed' => true]]);
+        $this->streamed(fn () => $composer->call('previewTranslation', $markdown));
+        $composer->call('sendTranslation', $markdown)->assertReturned('sent');
+
+        $html = $this->actingAs($this->agent)->followingRedirects()->get($this->conversation->url())->getContent();
+        // The picture right after the text, a thumbnail; what the customer got folded beside it.
+        $this->assertMatchesRegularExpression('#thread-content.*?See <strong>this</strong>:</p>\s*<p><a class="f-message__image attachment-link"[^>]*data-attachment-id="'.$attachment->id.'".*?f-message__original.*?Sent to the customer in Dutch.*?Zie <strong>dit</strong>#s', $html);
     }
 
     /**

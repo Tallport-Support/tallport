@@ -224,9 +224,7 @@
                 <div class="thread-content f-prose" dir="auto">
                     @if ($thread_is_draft)
                         {!! App\Misc\EmailColors::neutral(safe_raw_html($thread->getCleanBody())) !!}
-                    @elseif ($ai_written)
-                        {!! nl2br(e($ai_translation)) !!}
-                    @elseif ($ai_read_translated)
+                    @elseif ($ai_written || $ai_read_translated)
                         {!! App\Misc\MessageImages::thumbnails((string) view('conversations/partials/ai_translation', compact('thread', 'ai_language', 'ai_translation'))) !!}
                     @else
                         @include('conversations/partials/thread_body')

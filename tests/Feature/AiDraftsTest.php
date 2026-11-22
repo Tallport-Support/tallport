@@ -512,8 +512,8 @@ class AiDraftsTest extends FeatureTestCase
         ]);
 
         $reply = Thread::where('conversation_id', $this->conversation->id)->where('type', Thread::TYPE_MESSAGE)->first();
-        $this->assertSame('Hello Casey', json_decode($reply->ai_assistant, true)['translations']['en']);
-        $this->getConversationPage($this->agent)->assertSeeInOrder(['Hello Casey', 'f-message__original', 'As sent to the customer', 'Hallo Casey'], false);
+        $this->assertSame('Hello <b>Casey</b>', json_decode($reply->ai_assistant, true)['translations']['en']);
+        $this->getConversationPage($this->agent)->assertSeeInOrder(['Hello <b>Casey</b>', 'f-message__original', 'As sent to the customer', 'Hallo Casey'], false);
     }
 
     // Customer context settings.

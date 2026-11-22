@@ -425,7 +425,7 @@ class ConversationComposer extends Component
             return 'changed';
         }
         $this->body = (string) $html;
-        $this->ai_draft_translation = \Helper::htmlToText($this->html());
+        $this->ai_draft_translation = $this->html();
         $this->ai_draft_translation_language = \App\Ai\ChatTranslation::agentLanguage($this->conversation(), auth()->user());
         $body = $this->translation['html'];
         $this->translation = null;
@@ -499,7 +499,8 @@ class ConversationComposer extends Component
             $this->open('reply');
         }
         $this->body = (string) ($this->markdown && $markdown !== null ? $markdown : $html);
-        $this->ai_draft_translation = (string) $translation;
+        // Written in Markdown, kept as HTML (Drafts::keepTranslation()).
+        $this->ai_draft_translation = \App\Misc\Markdown::toHtml((string) $translation);
         $this->ai_draft_translation_language = (string) $language;
         $this->dispatch('fruit-editor-set', target: 'body', html: (string) $html, markdown: (string) ($markdown ?? $html));
     }

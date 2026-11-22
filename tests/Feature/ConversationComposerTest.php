@@ -294,7 +294,7 @@ class ConversationComposerTest extends FeatureTestCase
         $this->composer()->call('open', 'note')
             ->dispatch('composer-ai-draft', html: '<p>Your zipper ships today.</p>', translation: 'Je rits wordt vandaag verzonden.', language: 'nl')
             ->assertSet('mode', 'reply')->assertSet('body', '<p>Your zipper ships today.</p>')
-            ->assertSet('ai_draft_translation', 'Je rits wordt vandaag verzonden.')->assertSet('ai_draft_translation_language', 'nl')
+            ->assertSet('ai_draft_translation', '<p>Je rits wordt vandaag verzonden.</p>')->assertSet('ai_draft_translation_language', 'nl')
             ->assertDispatched('fruit-editor-set', target: 'body', html: '<p>Your zipper ships today.</p>');
 
         // Into the reply being written.
