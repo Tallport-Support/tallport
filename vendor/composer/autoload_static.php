@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitb55d1d82b07722b1d214e7fcd88afc05
+class ComposerStaticInit0c6310b47793c6714d1a87cebe39ffc2
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -3830,6 +3830,10 @@ class ComposerStaticInitb55d1d82b07722b1d214e7fcd88afc05
         'Illuminate\\JsonSchema\\Deserializer' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/JsonSchema/Deserializer.php',
         'Illuminate\\JsonSchema\\JsonSchema' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/JsonSchema/JsonSchema.php',
         'Illuminate\\JsonSchema\\JsonSchemaTypeFactory' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/JsonSchema/JsonSchemaTypeFactory.php',
+        'Illuminate\\JsonSchema\\Rules\\DistinctArrayItems' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/JsonSchema/Rules/DistinctArrayItems.php',
+        'Illuminate\\JsonSchema\\Rules\\MatchesAnyOf' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/JsonSchema/Rules/MatchesAnyOf.php',
+        'Illuminate\\JsonSchema\\Rules\\MatchesEnum' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/JsonSchema/Rules/MatchesEnum.php',
+        'Illuminate\\JsonSchema\\Rules\\RejectEmptyString' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/JsonSchema/Rules/RejectEmptyString.php',
         'Illuminate\\JsonSchema\\Serializer' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/JsonSchema/Serializer.php',
         'Illuminate\\JsonSchema\\Types\\AnyOfType' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/JsonSchema/Types/AnyOfType.php',
         'Illuminate\\JsonSchema\\Types\\ArrayType' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/JsonSchema/Types/ArrayType.php',
@@ -3840,6 +3844,7 @@ class ComposerStaticInitb55d1d82b07722b1d214e7fcd88afc05
         'Illuminate\\JsonSchema\\Types\\StringType' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/JsonSchema/Types/StringType.php',
         'Illuminate\\JsonSchema\\Types\\Type' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/JsonSchema/Types/Type.php',
         'Illuminate\\JsonSchema\\Types\\UnionType' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/JsonSchema/Types/UnionType.php',
+        'Illuminate\\JsonSchema\\ValidationRules' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/JsonSchema/ValidationRules.php',
         'Illuminate\\Log\\Context\\ContextLogProcessor' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Log/Context/ContextLogProcessor.php',
         'Illuminate\\Log\\Context\\ContextServiceProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Log/Context/ContextServiceProvider.php',
         'Illuminate\\Log\\Context\\Events\\ContextDehydrating' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Log/Context/Events/ContextDehydrating.php',
@@ -3937,6 +3942,7 @@ class ComposerStaticInitb55d1d82b07722b1d214e7fcd88afc05
         'Illuminate\\Queue\\Attributes\\MaxExceptions' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Attributes/MaxExceptions.php',
         'Illuminate\\Queue\\Attributes\\Queue' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Attributes/Queue.php',
         'Illuminate\\Queue\\Attributes\\ReadsQueueAttributes' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Attributes/ReadsQueueAttributes.php',
+        'Illuminate\\Queue\\Attributes\\RetryFor' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Attributes/RetryFor.php',
         'Illuminate\\Queue\\Attributes\\Timeout' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Attributes/Timeout.php',
         'Illuminate\\Queue\\Attributes\\Tries' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Attributes/Tries.php',
         'Illuminate\\Queue\\Attributes\\UniqueFor' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/Attributes/UniqueFor.php',
@@ -4452,6 +4458,7 @@ class ComposerStaticInitb55d1d82b07722b1d214e7fcd88afc05
         'Illuminate\\View\\FileViewFinder' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/View/FileViewFinder.php',
         'Illuminate\\View\\InvokableComponentVariable' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/View/InvokableComponentVariable.php',
         'Illuminate\\View\\Middleware\\ShareErrorsFromSession' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php',
+        'Illuminate\\View\\RawTemplate' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/View/RawTemplate.php',
         'Illuminate\\View\\View' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/View/View.php',
         'Illuminate\\View\\ViewException' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/View/ViewException.php',
         'Illuminate\\View\\ViewFinderInterface' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/View/ViewFinderInterface.php',
@@ -9516,10 +9523,10 @@ class ComposerStaticInitb55d1d82b07722b1d214e7fcd88afc05
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitb55d1d82b07722b1d214e7fcd88afc05::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitb55d1d82b07722b1d214e7fcd88afc05::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitb55d1d82b07722b1d214e7fcd88afc05::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitb55d1d82b07722b1d214e7fcd88afc05::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit0c6310b47793c6714d1a87cebe39ffc2::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit0c6310b47793c6714d1a87cebe39ffc2::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit0c6310b47793c6714d1a87cebe39ffc2::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit0c6310b47793c6714d1a87cebe39ffc2::$classMap;
 
         }, null, ClassLoader::class);
     }
