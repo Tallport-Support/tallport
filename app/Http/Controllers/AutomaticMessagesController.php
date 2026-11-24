@@ -204,7 +204,8 @@ class AutomaticMessagesController extends Controller
 
                 return response()->json(['status' => 'error', 'msg' => __('The translation failed. Try again later.')], 422);
             }
-            $translations[$language] = ['message' => (string) $answer['message']] + ($request->filled('subject') ? ['subject' => (string) ($answer['subject'] ?? '')] : []);
+            $translations[$language] = ['message' => \App\Ai\Agents\MessageTranslator::lineBreaks((string) $answer['message'], $request->message)]
+                + ($request->filled('subject') ? ['subject' => \App\Ai\Agents\MessageTranslator::lineBreaks((string) ($answer['subject'] ?? ''), $request->subject)] : []);
         }
 
         return response()->json(['status' => 'success', 'translations' => $translations]);

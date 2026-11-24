@@ -56,6 +56,20 @@ class MessageTranslator extends TallportAgent implements HasStructuredOutput
         ]));
     }
 
+    /**
+     * A translation with its line breaks as line breaks: the message reaches the model as a JSON
+     * string (data()), and it sometimes copies a line break as the characters "\r\n". Kept when the
+     * original has those characters itself.
+     */
+    public static function lineBreaks($translation, $original)
+    {
+        if (str_contains($original, '\r') || str_contains($original, '\n')) {
+            return $translation;
+        }
+
+        return str_replace(['\r\n', '\r', '\n'], "\n", $translation);
+    }
+
     public function schema(JsonSchema $schema): array
     {
         return [

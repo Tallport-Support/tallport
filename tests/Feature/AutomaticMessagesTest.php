@@ -193,6 +193,25 @@ class AutomaticMessagesTest extends FeatureTestCase
     }
 
     /**
+     * A line break the model wrote as the characters "\r\n" (the message reaches it as a JSON
+     * string) is a line break again; a default with those characters keeps them.
+     */
+    public function testTranslateFromDefaultKeepsLineBreaks()
+    {
+        $url = route('mailboxes.automatic_messages.translate', ['id' => $this->mailbox->getSlug()]);
+        Option::set('aiassistant.api_key', encrypt('sk-test'));
+        MessageTranslator::fake([
+            ['message' => '<p>接続が遅い場合：</p>\r\n\r\n<p>カレンダー：</p>', 'subject' => 'ありがとう'],
+            ['message' => '<p>Pfad: C:\new</p>'],
+        ]);
+
+        $this->postAjax($this->admin, $url, ['message' => "<p>Slow connections:</p>\r\n\r\n<p>Calendar:</p>", 'subject' => 'Thanks', 'format' => 'html', 'languages' => ['ja']])->assertOk()
+            ->assertExactJson(['status' => 'success', 'translations' => ['ja' => ['message' => "<p>接続が遅い場合：</p>\n\n<p>カレンダー：</p>", 'subject' => 'ありがとう']]]);
+        $this->postAjax($this->admin, $url, ['message' => '<p>Path: C:\new</p>', 'format' => 'html', 'languages' => ['de']])->assertOk()
+            ->assertExactJson(['status' => 'success', 'translations' => ['de' => ['message' => '<p>Pfad: C:\new</p>']]]);
+    }
+
+    /**
      * Each channel as before: the website chat's greeting becomes the mailbox's; Telegram's Start
      * text its own greeting; Nostr's auto reply its own (the switch on, Email's none, when the
      * mailbox's was off); Matrix none of either. Versions that were off go.
