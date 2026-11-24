@@ -93,9 +93,10 @@ class SendAutoReply implements ShouldQueue
         }
 
         $provider_message_id = null;
+        $auto_reply = new AutoReply($this->conversation, $this->mailbox, $this->customer, $headers, $from_alias);
         try {
             $sent_message = Mail::to([['name' => $this->customer->getFullName(), 'email' => $customer_email]])
-                ->send(new AutoReply($this->conversation, $this->mailbox, $this->customer, $headers, $from_alias));
+                ->send($auto_reply);
             // The sending service's Message-ID (or ID), which the customer's reply refers to.
             $provider_message_id = \App\Misc\MailProviders::sentMessageId($sent_message);
         } catch (\Exception $e) {
@@ -140,6 +141,10 @@ class SendAutoReply implements ShouldQueue
 
         if ($exception) {
             throw $exception;
+        }
+        // Sent: in the conversation, as the customer got it (its message, AutoReply::build()).
+        if ($status == SendLog::STATUS_ACCEPTED) {
+            \App\AutoReply\AutoReplies::line($this->conversation, (string) ($auto_reply->viewData['auto_reply_message'] ?? ''))->save();
         }
     }
 

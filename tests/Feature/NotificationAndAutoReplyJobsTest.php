@@ -392,6 +392,35 @@ class NotificationAndAutoReplyJobsTest extends FeatureTestCase
         $this->assertCount(0, $this->sentEmails());
     }
 
+    /**
+     * The auto reply sent is in the conversation as the customer got it (its variables filled in),
+     * as the mailbox's message, collapsed to its first lines; the AI reads it as the auto reply.
+     */
+    public function testAutoReplyIsInTheConversation()
+    {
+        $this->enableAutoReply();
+        $this->mailbox->auto_reply_message = '<p>Hi {%customer.firstName%},</p><p>We will answer within a day.</p>';
+        $this->mailbox->save();
+
+        $conversation = $this->receiveCustomerEmail();
+
+        $this->assertCount(1, $this->autoRepliesTo('casey@customer.example.org'));
+        $line = $conversation->threads()->where('type', Thread::TYPE_LINEITEM)->where('action_type', Thread::ACTION_TYPE_AUTO_REPLY)->sole();
+        $this->assertTrue($line->isAutoReply());
+        $this->assertSame('<p>Hi Casey,</p><p>We will answer within a day.</p>', $line->body);
+
+        $page = $this->actingAs($this->agent)->get(route('conversations.view', ['id' => $conversation->id]))->assertOk();
+        $html = $page->getContent();
+        $this->assertMatchesRegularExpression('/<article[^>]*f-message--outgoing[^>]*thread-auto-reply[^>]*id="thread-'.$line->id.'"/', $html);
+        $page->assertSeeInOrder(['thread-auto-reply', 'Shop Support', 'Auto Reply', 'f-more', 'Hi Casey,', 'We will answer within a day.'], false);
+        $page->assertDontSee('sent the auto reply');
+
+        $messages = \App\Ai\ConversationContext::history($conversation)['messages'];
+        $this->assertSame(['customer_to_staff', 'auto_reply'], array_column($messages, 'type'));
+        $this->assertSame('Shop Support', $messages[1]['author']);
+        $this->assertStringContainsString('We will answer within a day.', $messages[1]['body']);
+    }
+
     public function testAutoReplyComesFromTheAliasTheCustomerWrote()
     {
         $this->enableAutoReply();
@@ -437,6 +466,8 @@ class NotificationAndAutoReplyJobsTest extends FeatureTestCase
         $this->assertEquals(SendLog::STATUS_SEND_ERROR, $log->status);
         $this->assertSame('Connection refused', $log->status_message);
         $this->assertEquals($conversation->customer_id, $log->customer_id);
+        // Not sent: not in the conversation.
+        $this->assertFalse($conversation->threads()->where('action_type', Thread::ACTION_TYPE_AUTO_REPLY)->exists());
         $activity = ActivityLog::where('description', ActivityLog::DESCRIPTION_EMAILS_SENDING_ERROR_TO_CUSTOMER)->first();
         $this->assertEquals($conversation->customer_id, $activity->causer_id);
     }

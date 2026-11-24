@@ -53,6 +53,36 @@ class AutoReplies
     }
 
     /**
+     * The auto reply sent to a conversation's customer, for the conversation (Thread::isAutoReply()):
+     * the message as they got it, as HTML; from no person ("System sent the auto reply"). Not saved.
+     */
+    public static function line(Conversation $conversation, $html)
+    {
+        $thread = new Thread();
+        $thread->conversation_id = $conversation->id;
+        $thread->type = Thread::TYPE_LINEITEM;
+        $thread->action_type = Thread::ACTION_TYPE_AUTO_REPLY;
+        $thread->body = $html;
+        $thread->status = $conversation->status;
+        $thread->state = Thread::STATE_PUBLISHED;
+        $thread->source_via = Thread::PERSON_USER;
+        $thread->source_type = Thread::SOURCE_TYPE_API;
+        $thread->customer_id = null;
+        $thread->created_by_user_id = null;
+
+        return $thread;
+    }
+
+    /**
+     * A chat's auto reply, sent as plain text, as HTML (line()): just <br>s, which come back as one
+     * line break each (ChatDelivery::plainText(), for the website chat's window).
+     */
+    public static function textHtml($text)
+    {
+        return '<p>'.str_replace("\n", '<br>', e(str_replace(["\r\n", "\r"], "\n", trim((string) $text)))).'</p>';
+    }
+
+    /**
      * The auto reply for a conversation: subject, message and language (null
      * for the default auto reply).
      */

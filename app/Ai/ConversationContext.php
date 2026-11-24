@@ -72,8 +72,10 @@ class ConversationContext
 
     public static function threads(Conversation $conversation)
     {
+        // The auto reply the customer got too (Thread::isAutoReply()).
         return $conversation->threads()
-            ->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE, Thread::TYPE_NOTE])
+            ->where(fn ($query) => $query->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE, Thread::TYPE_NOTE])
+                ->orWhere(fn ($query) => $query->where('type', Thread::TYPE_LINEITEM)->whereIn('action_type', [Thread::ACTION_TYPE_AUTO_REPLY, Thread::ACTION_TYPE_NOSTR_AUTO_REPLY])))
             ->where('state', Thread::STATE_PUBLISHED);
     }
 
@@ -102,9 +104,9 @@ class ConversationContext
             $truncated = $truncated || mb_strlen($body) > mb_strlen($text);
             $messages[] = [
                 'id' => (int) $thread->id,
-                'author' => mb_substr($thread->getCreatedBy()->getFullName(), 0, 200),
+                'author' => mb_substr($thread->isAutoReply() ? $conversation->mailbox->name : $thread->getCreatedBy()->getFullName(), 0, 200),
                 'type' => $thread->type == Thread::TYPE_CUSTOMER ? 'customer_to_staff'
-                    : ($thread->type == Thread::TYPE_NOTE ? 'internal_note' : 'staff_to_customer'),
+                    : ($thread->type == Thread::TYPE_NOTE ? 'internal_note' : ($thread->isAutoReply() ? 'auto_reply' : 'staff_to_customer')),
                 'date' => (string) $thread->created_at,
                 'body' => $text,
                 'truncated' => mb_strlen($body) > mb_strlen($text),

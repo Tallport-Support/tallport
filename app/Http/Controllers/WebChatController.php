@@ -514,7 +514,7 @@ class WebChatController extends Controller
             $mailbox = $thread->conversation->mailbox;
 
             return ['id' => $thread->id, 'kind' => 'team', 'team' => true, 'author' => WebChat::teamName($mailbox), 'initials' => mb_strtoupper(mb_substr(WebChat::teamName($mailbox), 0, 1)),
-                'photo' => WebChat::teamPhoto($mailbox), 'body' => (string) $thread->body, 'time' => $thread->created_at->toIso8601String(), 'files' => []];
+                'photo' => WebChat::teamPhoto($mailbox), 'body' => \App\Misc\ChatDelivery::plainText($thread), 'time' => $thread->created_at->toIso8601String(), 'files' => []];
         }
         $team = $thread->type == Thread::TYPE_MESSAGE;
         // Without an agent: the mailbox's own message, with its name and image.

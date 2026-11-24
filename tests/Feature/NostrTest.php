@@ -395,6 +395,16 @@ class NostrTest extends FeatureTestCase
         $line->source_type = Thread::SOURCE_TYPE_WEB;
         $line->save();
         $this->assertSame('System sent the Nostr auto reply: "Thanks, we will get back to you."', html_entity_decode($line->getActionText('', true)));
+
+        // Kept as plain text before: HTML (AutoRepliesAsHtml), the same line; once.
+        $line->body = "Thanks & bye,\nthe team";
+        $line->save();
+        require_once database_path('migrations/2026_12_03_010101_auto_replies_as_html.php');
+        (new \AutoRepliesAsHtml())->up();
+        (new \AutoRepliesAsHtml())->up();
+        $this->assertSame("<p>Thanks &amp; bye,<br>the team</p>", $line->fresh()->body);
+        $this->assertSame('System sent the Nostr auto reply: "Thanks & bye, the team"', html_entity_decode($line->fresh()->getActionText('', true)));
+        $this->assertSame("Thanks & bye,\nthe team", \App\Misc\ChatDelivery::plainText($line->fresh()));
     }
 
     // Settings and commands.

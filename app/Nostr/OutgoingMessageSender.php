@@ -223,18 +223,7 @@ class OutgoingMessageSender
         ]);
 
         if ($result['ok']) {
-            $thread = new Thread();
-            $thread->conversation_id = $conversation->id;
-            $thread->type = Thread::TYPE_LINEITEM;
-            $thread->action_type = self::ACTION_TYPE_AUTO_REPLY;
-            $thread->body = $text;
-            $thread->status = $conversation->status;
-            $thread->state = Thread::STATE_PUBLISHED;
-            $thread->source_via = Thread::PERSON_USER;
-            $thread->source_type = Thread::SOURCE_TYPE_API;
-            // No person: the line item reads "System sent the auto reply".
-            $thread->customer_id = null;
-            $thread->created_by_user_id = null;
+            $thread = \App\AutoReply\AutoReplies::line($conversation, \App\AutoReply\AutoReplies::textHtml($text));
             $thread->headers = $this->headersFor($result, $cfg, $pubkey, $last);
             $thread->save();
 

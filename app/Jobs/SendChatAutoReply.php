@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\AutoReply\AutoReplies;
 use App\AutoReply\ChannelMessages;
 use App\Conversation;
 use App\Misc\HtmlToText;
@@ -14,7 +15,7 @@ use Illuminate\Queue\InteractsWithQueue;
 /**
  * A new chat conversation's auto reply (App\AutoReply\ChannelMessages: the mailbox's, or the
  * channel's own), in the customer's language: sent on Telegram, Matrix and Nostr, shown by the website
- * chat's window; a line in the conversation says it was ("System sent the auto reply").
+ * chat's window; the conversation has it too (AutoReplies::line()).
  */
 class SendChatAutoReply implements ShouldQueue
 {
@@ -96,18 +97,6 @@ class SendChatAutoReply implements ShouldQueue
                 return;
         }
 
-        $thread = new Thread();
-        $thread->conversation_id = $conversation->id;
-        $thread->type = Thread::TYPE_LINEITEM;
-        $thread->action_type = Thread::ACTION_TYPE_AUTO_REPLY;
-        $thread->body = $text;
-        $thread->status = $conversation->status;
-        $thread->state = Thread::STATE_PUBLISHED;
-        $thread->source_via = Thread::PERSON_USER;
-        $thread->source_type = Thread::SOURCE_TYPE_API;
-        // No person: "System sent the auto reply".
-        $thread->customer_id = null;
-        $thread->created_by_user_id = null;
-        $thread->save();
+        AutoReplies::line($conversation, AutoReplies::textHtml($text))->save();
     }
 }

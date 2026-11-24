@@ -11,6 +11,38 @@
 @if (!empty($editing) && $editing == $thread->id)
     {{-- Edited in place (App\Livewire\ConversationThread). --}}
     @include('conversations/partials/edit_thread')
+@elseif ($thread->isAutoReply())
+    @php
+        [$thread_body, $thread_signature] = App\Misc\MessageBody::forThread($thread, $conversation, $mailbox);
+    @endphp
+    {{-- The auto reply the customer got: the mailbox's message, its first lines only (it's long, and
+         would push the customer's message out of view). Not printed, like the events. --}}
+    <x-fruit::message :layout="empty($chat) ? 'stacked' : 'inline'" direction="outgoing" class="thread thread-type-lineitem thread-auto-reply" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()">
+        <x-slot:avatar>
+            @if ($mailbox->photo_url)
+                <x-fruit::avatar :src="$mailbox->getPhotoUrl()" />
+            @else
+                <x-fruit::avatar>{{ mb_strtoupper(mb_substr($mailbox->name, 0, 1)) }}</x-fruit::avatar>
+            @endif
+        </x-slot:avatar>
+        <x-slot:author>{{ $mailbox->name }}</x-slot:author>
+        <x-slot:meta><x-fruit::badge>{{ __('Auto Reply') }}</x-fruit::badge></x-slot:meta>
+        <x-slot:time><a href="#thread-{{ $thread->id }}" class="thread-date" title="{{ $thread_date_title }}">{{ $thread_date }}</a></x-slot:time>
+        @action('thread.after_header', $thread, $loop, $threads, $conversation, $mailbox)
+        <div class="thread-body">
+            <x-fruit::more><div class="thread-content f-prose" dir="auto">@include('conversations/partials/thread_body')</div></x-fruit::more>
+        </div>
+        @if (Auth::user()->isAdmin() && !\Helper::isPrint())
+            <x-slot:actions>
+                <x-fruit::menu :title="__('More Actions')" class="thread-options">
+                    <x-slot:trigger class="f-button--ghost f-button--icon f-button--small" :aria-label="__('More Actions')"><x-icon.ellipsis class="f-icon" aria-hidden="true" /></x-slot:trigger>
+                    <ul class="menu-module-items" role="none">@action('thread.menu', $thread)</ul>
+                    <x-fruit::menu-link :href="route('conversations.ajax_html', array_merge(['action' => 'send_log'], ($page_query ?? \Request::all()), ['thread_id' => $thread->id]))" data-fruit-dialog-url :data-fruit-dialog-title="__('Outgoing Emails')" data-fruit-dialog-size="large">{{ __("Outgoing Emails") }}</x-fruit::menu-link>
+                    <ul class="menu-module-items" role="none">@action('thread.menu.append', $thread)</ul>
+                </x-fruit::menu>
+            </x-slot:actions>
+        @endif
+    </x-fruit::message>
 @elseif ($thread->type == App\Thread::TYPE_LINEITEM)
     {{-- An event between messages (assignments, status changes, merges). --}}
     <x-fruit::message-event class="thread thread-type-lineitem thread-state-{{ $thread->getStateName() }}" id="thread-{{ $thread->id }}" data-thread_id="{{ $thread->id }}" :datetime="$thread->created_at->toIso8601String()">

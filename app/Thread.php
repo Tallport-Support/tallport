@@ -865,6 +865,15 @@ class Thread extends Model
     }
 
     /**
+     * The auto reply the customer got (App\AutoReply\AutoReplies::line()), the Nostr module's of
+     * before too: a line item with the message as its body, shown as the mailbox's message.
+     */
+    public function isAutoReply()
+    {
+        return $this->type == self::TYPE_LINEITEM && in_array($this->action_type, [self::ACTION_TYPE_AUTO_REPLY, self::ACTION_TYPE_NOSTR_AUTO_REPLY]);
+    }
+
+    /**
      * Is thread created from incoming bounce email.
      *
      * @return bool [description]

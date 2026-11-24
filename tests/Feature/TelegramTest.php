@@ -270,6 +270,8 @@ class TelegramTest extends FeatureTestCase
         $this->assertStringNotContainsString('<', $text);
         $line = $this->conversation()->threads()->where('type', Thread::TYPE_LINEITEM)->where('action_type', Thread::ACTION_TYPE_AUTO_REPLY)->firstOrFail();
         $this->assertStringContainsString('sent the auto reply', $line->getActionText());
+        // As sent, for the conversation (and the AI).
+        $this->assertSame(\App\AutoReply\AutoReplies::textHtml($text), $line->body);
 
         $own = fn ($mode, $texts = []) => \App\AutoReply\ChannelMessages::saveSettings($this->mailbox, ['greeting' => ['mode' => 'tallport', 'texts' => []], 'channels' => ['telegram' => ['auto_reply' => ['mode' => $mode, 'texts' => $texts]]]]);
         $own('own', ['' => 'Hello {%customer.firstName%}!', 'ja' => 'こんにちは！']);

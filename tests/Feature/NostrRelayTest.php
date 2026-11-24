@@ -1151,7 +1151,7 @@ class NostrRelayTest extends FeatureTestCase
         $this->assertSame([['p', $customer_pubkey], ['subject', 'Order 12'], ['e', $rumor['id'], $url, 'reply']], $sent['tags']);
         $line = $conversation->threads()->where('type', \App\Thread::TYPE_LINEITEM)->first();
         $this->assertSame(\App\Nostr\OutgoingMessageSender::ACTION_TYPE_AUTO_REPLY, (int) $line->action_type);
-        $this->assertSame('Thanks, we will answer soon.', $line->body);
+        $this->assertSame('<p>Thanks, we will answer soon.</p>', $line->body);
         $this->assertStringContainsString('Nostr-Relays: '.$url.' (accepted)', $line->headers);
         $this->assertSame($line->id, NostrEvent::where('rumor_id', $sent['id'])->value('thread_id'));
 
